@@ -1,0 +1,153 @@
+import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/api/api_posts.dart';
+import 'package:lebenswiki_app/api/api_shorts.dart';
+import 'package:lebenswiki_app/components/cards/short_card.dart';
+import 'package:lebenswiki_app/components/cards/short_card_scaffold.dart';
+import 'package:lebenswiki_app/components/input/input_styling.dart';
+import 'package:lebenswiki_app/data/enums.dart';
+import 'package:lebenswiki_app/data/loading.dart';
+
+class SearchView extends StatefulWidget {
+  final ContentType contentType;
+
+  const SearchView({
+    Key? key,
+    required this.contentType,
+  }) : super(key: key);
+
+  @override
+  _SearchViewState createState() => _SearchViewState();
+}
+
+class _SearchViewState extends State<SearchView> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FutureBuilder(
+          future: widget.contentType == ContentType.shortsByCategory
+              ? getAllShorts("")
+              : getAllPosts(""),
+          builder: (context, AsyncSnapshot snapshot) {
+            if (!snapshot.hasData) {
+              return Loading();
+            } else if (snapshot.data[1].length == 0) {
+              return Center(
+                child: Text(
+                    "Keine ${widget.contentType == ContentType.shortsByCategory ? "Shorts" : "Packs"} gefunden"),
+              );
+            } else {
+              return FilterView(
+                packList: snapshot.data[1],
+                contentType: widget.contentType,
+              );
+            }
+          }),
+    );
+  }
+}
+
+class FilterView extends StatefulWidget {
+  final ContentType contentType;
+  final packList;
+
+  const FilterView({
+    Key? key,
+    required this.contentType,
+    required this.packList,
+  }) : super(key: key);
+
+  @override
+  _FilterViewState createState() => _FilterViewState();
+}
+
+class _FilterViewState extends State<FilterView> {
+  final TextEditingController _searchController = TextEditingController();
+  final GlobalKey _key1 = GlobalKey();
+  List _filteredPacks = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: const [
+            CloseButton(),
+          ],
+        ),
+        _buildSearchBar(),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: (_filteredPacks.isEmpty)
+                  ? widget.packList.length
+                  : _filteredPacks.length,
+              itemBuilder: (context, index) {
+                var currentPack = (_filteredPacks.isEmpty)
+                    ? widget.packList[index]
+                    : _filteredPacks[index];
+                return ShortCardScaffold(
+                  packData: currentPack,
+                  voteReload: () {},
+                  contentType: widget.contentType,
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 5.0),
+      child: AuthInputStyling(
+        fillColor: const Color.fromRGBO(245, 245, 247, 1),
+        child: TextFormField(
+          onChanged: (value) {
+            setState(() {
+              _filteredPacks = _filterShorts(widget.packList, value);
+            });
+          },
+          controller: _searchController,
+          key: _key1,
+          decoration: const InputDecoration(
+            hintText: "Suche nach Artikeln oder Keywörtern...",
+            icon: Padding(
+              padding: EdgeInsets.only(left: 10.0, top: 5.0),
+              child: Icon(
+                Icons.search,
+                size: 30.0,
+                color: Color.fromRGBO(115, 115, 115, 1),
+              ),
+            ),
+            border: InputBorder.none,
+          ),
+        ),
+      ),
+    );
+  }
+
+  List _filterShorts(shortsList, query) {
+    List queriedShorts = [];
+    for (int i = 0; i < shortsList.length; i++) {
+      var currentShort = shortsList[i];
+      var shortTitle = currentShort["title"].toUpperCase();
+      var shortContent = currentShort["content"].toUpperCase();
+      if (shortTitle.contains(query.toUpperCase())) {
+        queriedShorts.add(currentShort);
+      } else if (shortContent.contains(query.toUpperCase())) {
+        queriedShorts.add(currentShort);
+      }
+    }
+    return queriedShorts;
+  }
+
+  void upvote(id) {
+    print("Upvoting through search!");
+  }
+}

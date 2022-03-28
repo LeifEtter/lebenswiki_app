@@ -1,0 +1,56 @@
+Date : 2022-03-20 16:56:03
+Directory : /Users/leifetter/Documents/GitHub/lebenswiki_app/lib
+Total : 22 files,  604 codes, 89 comments, 44 blanks, all 737 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Dart     |         22 |        604 |         89 |         44 |        737 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                   | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                      |         22 |        604 |         89 |         44 |        737 |
+| api                                                                                                    |          1 |         24 |          0 |          2 |         26 |
+| components                                                                                             |         14 |        429 |         89 |         40 |        558 |
+| components/buttons                                                                                     |          2 |        -80 |         86 |         -5 |          1 |
+| components/card_functions                                                                              |          3 |         45 |          0 |          5 |         50 |
+| components/cards                                                                                       |          3 |        344 |          3 |         25 |        372 |
+| components/feed                                                                                        |          2 |         49 |          0 |          5 |         54 |
+| components/input                                                                                       |          1 |         24 |          0 |          5 |         29 |
+| components/navigation                                                                                  |          3 |         47 |          0 |          5 |         52 |
+| data                                                                                                   |          2 |         -9 |          0 |         -4 |        -13 |
+| views                                                                                                  |          5 |        160 |          0 |          6 |        166 |
++--------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                               | language | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/api/api_comments.dart                             | Dart     |         24 |          0 |          2 |         26 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/components/buttons/authentication_buttons.dart    | Dart     |          1 |          0 |          0 |          1 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/components/buttons/main_buttons.dart              | Dart     |        -81 |         86 |         -5 |          0 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/components/card_functions/bookmark_functions.dart | Dart     |         18 |          0 |          2 |         20 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/components/card_functions/reaction_functions.dart | Dart     |          6 |          0 |          0 |          6 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/components/card_functions/report_dialog.dart      | Dart     |         21 |          0 |          3 |         24 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/components/cards/comment_card.dart                | Dart     |        263 |          0 |         17 |        280 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/components/cards/short_card.dart                  | Dart     |        -34 |          3 |          0 |        -31 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/components/cards/short_card_scaffold.dart         | Dart     |        115 |          0 |          8 |        123 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/components/feed/get_content.dart                  | Dart     |          2 |          0 |          0 |          2 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/components/feed/get_content_comments.dart         | Dart     |         47 |          0 |          5 |         52 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/components/input/comment_input.dart               | Dart     |         24 |          0 |          5 |         29 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/components/navigation/main_appbar.dart            | Dart     |         -4 |          0 |          0 |         -4 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/components/navigation/menu_bar.dart               | Dart     |         15 |          0 |          1 |         16 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/components/navigation/top_nav.dart                | Dart     |         36 |          0 |          4 |         40 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/data/enums.dart                                   | Dart     |          1 |          0 |          0 |          1 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/data/text_styles.dart                             | Dart     |        -10 |          0 |         -4 |        -14 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/views/authentication_view.dart                    | Dart     |          1 |          0 |          0 |          1 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/views/developer_info.dart                         | Dart     |         26 |          0 |          1 |         27 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/views/display_pack.dart                           | Dart     |          1 |          0 |          0 |          1 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/views/profile_view.dart                           | Dart     |        131 |          0 |          5 |        136 |
+| /Users/leifetter/Documents/GitHub/lebenswiki_app/lib/views/search_view.dart                            | Dart     |          1 |          0 |          0 |          1 |
+| Total                                                                                                  |          |        604 |         89 |         44 |        737 |
++--------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
