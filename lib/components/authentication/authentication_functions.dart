@@ -9,13 +9,10 @@ class AuthenticationFunctions {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => const AuthenticationWrapper(),
     ));
-    print("logging out");
   }
 }
 
 List convertError(error) {
-  print("Converting");
-  print(error);
   switch (error) {
     case "User credential do not exist":
       return ["email", "No such Email is registered"];

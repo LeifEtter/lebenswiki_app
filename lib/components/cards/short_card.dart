@@ -48,15 +48,83 @@ class _ShortCardState extends State<ShortCard> {
   @override
   Widget build(BuildContext context) {
     convertReactions(widget.packData["reactions"]);
+    double screenWidth = MediaQuery.of(context).size.width;
     return Stack(
       children: [
+        Positioned.fill(
+          right: 1.0,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: !(widget.contentType == ContentType.comments)
+                ? VoteButtonStack(
+                    userId: widget.userId,
+                    currentVotes: getVoteCount(
+                      widget.packData["upVote"],
+                      widget.packData["downVote"],
+                    ),
+                    changeVote: voteCallback,
+                    id: widget.packData["id"],
+                    hasDownvoted:
+                        hasVoted(widget.userId, widget.packData["downVote"]),
+                    hasUpvoted:
+                        hasVoted(widget.userId, widget.packData["upVote"]),
+                  )
+                : Container(),
+          ),
+        ),
+        Positioned.fill(
+          right: 15.0,
+          top: 5.0,
+          child: Align(
+            alignment: Alignment.topRight,
+            child: !(widget.contentType == ContentType.comments)
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: GestureDetector(
+                      child: Image.asset(
+                        isBookmarked(widget.userId, widget.contentType,
+                                widget.packData["bookmarks"])
+                            ? "assets/icons/bookmark_filled.png"
+                            : "assets/icons/bookmark.png",
+                        width: 20.0,
+                      ),
+                      onTap: () {
+                        isBookmarked(widget.userId, widget.contentType,
+                                widget.packData["bookmarks"])
+                            ? unbookmarkShort(widget.packData["id"])
+                            : bookmarkShort(widget.packData["id"]);
+                        widget.voteReload();
+                      },
+                    ),
+                  )
+                : Container(),
+          ),
+        ),
+        Positioned.fill(
+          right: 15.0,
+          bottom: 5.0,
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              constraints: BoxConstraints(),
+              onPressed: () {
+                print("open options Menu");
+                setState(() {
+                  optionsMenuOpen = true;
+                });
+              },
+              icon: const Icon(Icons.more_horiz_outlined),
+            ),
+          ),
+        ),
         IntrinsicHeight(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding:
-                    const EdgeInsets.only(left: 20.0, top: 15.0, bottom: 10.0),
+                padding: const EdgeInsets.only(
+                    left: 20.0, top: 15.0, bottom: 10.0, right: 50.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -79,7 +147,7 @@ class _ShortCardState extends State<ShortCard> {
                             ? 5
                             : 0),
                     Container(
-                      width: 270,
+                      width: screenWidth * 0.7,
                       child: Text(
                         widget.packData[
                             !(widget.contentType == ContentType.comments)
@@ -111,69 +179,6 @@ class _ShortCardState extends State<ShortCard> {
                         ),
                       ],
                     )
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    !(widget.contentType == ContentType.comments)
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 5.0),
-                            child: GestureDetector(
-                              child: Image.asset(
-                                isBookmarked(
-                                  widget.userId,
-                                  widget.contentType,
-                                  widget.packData["bookmarks"],
-                                )
-                                    ? "assets/icons/bookmark_filled.png"
-                                    : "assets/icons/bookmark.png",
-                                width: 20.0,
-                              ),
-                              onTap: () {
-                                isBookmarked(
-                                  widget.userId,
-                                  widget.contentType,
-                                  widget.packData["bookmarks"],
-                                )
-                                    ? unbookmarkShort(widget.packData["id"])
-                                    : bookmarkShort(widget.packData["id"]);
-                                widget.voteReload();
-                              },
-                            ),
-                          )
-                        : Container(),
-                    !(widget.contentType == ContentType.comments)
-                        ? VoteButtonStack(
-                            userId: widget.userId,
-                            currentVotes: getVoteCount(
-                              widget.packData["upVote"],
-                              widget.packData["downVote"],
-                            ),
-                            changeVote: voteCallback,
-                            id: widget.packData["id"],
-                            hasDownvoted: hasVoted(
-                                widget.userId, widget.packData["downVote"]),
-                            hasUpvoted: hasVoted(
-                                widget.userId, widget.packData["upVote"]),
-                          )
-                        : Container(),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 5.0),
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        constraints: BoxConstraints(),
-                        onPressed: () {
-                          print("open options Menu");
-                          setState(() {
-                            optionsMenuOpen = true;
-                          });
-                        },
-                        icon: const Icon(Icons.more_horiz_outlined),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -236,10 +241,6 @@ class _ShortCardState extends State<ShortCard> {
   }
 
   void updateReaction(userId, reaction) async {
-    /*checkReaction(userId, widget.packData["reactions"])
-        ? print("Has already reacted")
-        :*/
-
     widget.contentType == ContentType.comments
         ? await addCommentReaction(widget.packData["id"], reaction)
         : await addReaction(widget.packData["id"], reaction);

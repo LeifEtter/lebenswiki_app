@@ -19,7 +19,6 @@ Future<String> createComment(
   if (res.statusCode == 200) {
     return "Creation Successful";
   } else {
-    print("Error Creating Comment: ${res.body}");
     return "Error Creating Comment";
   }
 }
@@ -39,6 +38,5 @@ Future<String> addCommentReaction(
   if (res.statusCode == 201) {
     return "Short Upvote Success";
   }
-  print("error");
   return "Null";
 }

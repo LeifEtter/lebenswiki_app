@@ -20,7 +20,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       titleSpacing: 10,
       title: const Padding(
-        padding: const EdgeInsets.only(top: 0),
+        padding: EdgeInsets.only(top: 0),
         child: Text(
           "Lebenswiki",
           style: LebenswikiTextStyles.logoText,
@@ -34,12 +34,6 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
-        TextButton(
-          child: Text("Logout"),
-          onPressed: () {
-            AuthenticationFunctions().logout(context);
-          },
-        ),
         IconButton(
           icon: Image.asset("assets/icons/profile_icon.png", width: 20.0),
           onPressed: () {

@@ -61,7 +61,7 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                       userId: snapshot.data,
                       commentExpand: _triggerComments,
                     ),
-                    widget.contentType == ContentType.packsByCategory
+                    widget.contentType == ContentType.shortsByCategory
                         ? Visibility(
                             visible: _commentsExpanded,
                             child: Column(
@@ -69,19 +69,26 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                                 Divider(),
                                 Row(
                                   children: [
-                                    const SizedBox(width: 20.0),
-                                    CommentInput(
-                                      child: TextField(
-                                        maxLines: null,
-                                        controller: _commentController,
-                                        decoration: const InputDecoration(
-                                          contentPadding: EdgeInsets.all(10.0),
-                                          border: InputBorder.none,
+                                    const SizedBox(width: 10.0),
+                                    Expanded(
+                                      child: CommentInput(
+                                        child: TextField(
+                                          maxLines: null,
+                                          controller: _commentController,
+                                          decoration: const InputDecoration(
+                                            contentPadding:
+                                                EdgeInsets.all(12.0),
+                                            border: InputBorder.none,
+                                            isDense: true,
+                                          ),
                                         ),
                                       ),
                                     ),
                                     IconButton(
-                                      icon: const Icon(Icons.add),
+                                      icon: const Icon(
+                                        Icons.add,
+                                        size: 30.0,
+                                      ),
                                       onPressed: () {
                                         createComment(
                                           _commentController.text.toString(),
@@ -123,6 +130,7 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
   }
 
   void _triggerComments() {
+    print("triggering");
     setState(() {
       _commentsExpanded ? _commentsExpanded = false : _commentsExpanded = true;
     });

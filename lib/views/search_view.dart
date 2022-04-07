@@ -69,7 +69,7 @@ class _FilterViewState extends State<FilterView> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 20),
+        const SizedBox(height: 40),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: const [

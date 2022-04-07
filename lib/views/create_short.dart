@@ -7,7 +7,6 @@ import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
 import 'package:lebenswiki_app/testing/border.dart';
-import 'package:lebenswiki_app/views/draft_view.dart';
 import 'package:lebenswiki_app/views/your_shorts_view.dart';
 
 class CreateShort extends StatefulWidget {

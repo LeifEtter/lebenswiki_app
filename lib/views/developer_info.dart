@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/api/api_universal.dart';
 import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
@@ -13,7 +14,7 @@ class DeveloperInfoView extends StatefulWidget {
 }
 
 class _DeveloperInfoViewState extends State<DeveloperInfoView> {
-  final TextEditingController feedbackController = TextEditingController();
+  final TextEditingController _feedbackController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +169,7 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                           left: 30.0, right: 30.0, top: 25.0),
                       child: AuthInputBiography(
                         child: TextFormField(
-                          controller: feedbackController,
+                          controller: _feedbackController,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.all(10.0),
@@ -186,7 +187,10 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                           Expanded(
                             child: LebenswikiBlueButton(
                               text: "Feedback abschicken",
-                              callback: sendFeedback,
+                              callback: () {
+                                createFeedback(
+                                    _feedbackController.text.toString());
+                              },
                               categories: [],
                             ),
                           ),
@@ -202,16 +206,5 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
         ],
       ),
     ));
-  }
-
-  Future sendFeedback() async {
-    final Email send_email = Email(
-      body: feedbackController.text.toString(),
-      subject: 'Feedback to Lebenswiki APP',
-      recipients: ['leif.etter@gmail.com'],
-      isHTML: false,
-    );
-
-    await FlutterEmailSender.send(send_email);
   }
 }

@@ -238,7 +238,6 @@ class _ProfileViewState extends State<ProfileView> {
     errorMap.forEach((k, v) {
       v != "" ? isValidated = false : 0;
     });
-    print("isValidated");
   }
 
   void update() {

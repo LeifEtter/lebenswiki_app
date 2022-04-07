@@ -88,7 +88,6 @@ class _PackCardState extends State<PackCard> {
   }
 
   Route _displayRoute() {
-    print("Displaying");
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) =>
           DisplayPack(packData: widget.packData),

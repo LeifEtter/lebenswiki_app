@@ -55,7 +55,6 @@ Future<String> createShort(
   if (res.statusCode == 201) {
     return "Creation Successful";
   } else {
-    print("Error Creating Short: ${res.body}");
     return "Error Creating Short";
   }
 }
@@ -144,10 +143,8 @@ Future<String> publishShort(
     "authorization": token,
   });
   if (res.statusCode == 201) {
-    print("Success Publish");
     return "Post Publish Success";
   }
-  print("error");
   return "Null";
 }
 
@@ -162,10 +159,8 @@ Future<String> unpublishShort(
     "authorization": token,
   });
   if (res.statusCode == 201) {
-    print("Success Publish");
     return "Post Publish Success";
   }
-  print("error");
   return "Null";
 }
 
@@ -184,7 +179,6 @@ Future<String> voteShort(
   if (res.statusCode == 201) {
     return "Short Upvote Success";
   }
-  print("error");
   return "Null";
 }
 
@@ -195,8 +189,6 @@ Future<List> getBookmarkedShorts(String nullSafety) async {
     "authorization": token,
   });
 
-  print("Getting Bookmarked Shorts");
-  print(res.statusCode);
   if (res.statusCode == 201) {
     var responseData = jsonDecode(res.body);
     var posts = responseData["body"];
@@ -266,7 +258,6 @@ Future<String> removeVote(
   if (res.statusCode == 201) {
     return "Short Upvote Success";
   }
-  print("error");
   return "Null";
 }
 
@@ -281,10 +272,8 @@ Future<String> removeShort(
     "authorization": token,
   });
   if (res.statusCode == 201) {
-    print("Removed Short sucessfully");
     return "Success";
   }
-  print("Couldn't Remove Short");
   return "Null";
 }
 
@@ -303,7 +292,6 @@ Future<String> addReaction(
   if (res.statusCode == 201) {
     return "Short Upvote Success";
   }
-  print("error");
   return "Null";
 }
 
@@ -344,7 +332,6 @@ Future<String> reportShort(
   if (res.statusCode == 201) {
     return "Report Sucessfull";
   } else {
-    print("Error Reporting Short: ${res.body}");
     return "Error Reporting Short:";
   }
 }
@@ -362,10 +349,8 @@ Future<String> deleteReaction(
     },
   );
   if (res.statusCode == 200 || res.statusCode == 201) {
-    print("Deleting Reaction sucesful");
     return "Success";
   } else {
-    print("Failed deleting Reaction");
     return "Failed";
   }
 }

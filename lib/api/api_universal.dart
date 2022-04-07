@@ -74,7 +74,6 @@ Future<Map> updatePassword2(
     "error": "",
   };
   if (res.statusCode == 200 && res.statusCode == 201) {
-    print("Update Succesful");
     return responseMap;
   }
 
@@ -97,7 +96,6 @@ Future<Map> updatePassword(
     "error": "",
   };
   if (res.statusCode == 200 && res.statusCode == 201) {
-    print("Update Succesful");
     return responseMap;
   }
 
@@ -140,5 +138,22 @@ Future<List> getBlocked() async {
     return responseData["body"];
   } else {
     return [];
+  }
+}
+
+Future<String> createFeedback(String feedback) async {
+  var prefs = await SharedPreferences.getInstance();
+  String token = prefs.getString("token") ?? "";
+  var res = await http.post(Uri.parse("$SERVER_IP/feedbacks/create"),
+      headers: {
+        "Content-type": "application/json",
+        "authorization": token,
+      },
+      body: jsonEncode({"feedback": feedback}));
+  print(res.body);
+  if (res.statusCode == 201) {
+    return "Success";
+  } else {
+    return "Error";
   }
 }

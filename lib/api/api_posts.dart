@@ -79,7 +79,7 @@ Future<List> getPosts() async {
 Future<List> getAllPosts(var nullsafety) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.get(Uri.parse("$SERVER_IP/posts/unpublished"), headers: {
+  var res = await http.get(Uri.parse("$SERVER_IP/posts/published"), headers: {
     "authorization": token,
   });
 
@@ -125,7 +125,6 @@ Future<String> publishPost(
     },
   );
   if (res.statusCode == 201) {
-    print("Success Publish");
     return "Post Publish Success";
   }
   return "Null";

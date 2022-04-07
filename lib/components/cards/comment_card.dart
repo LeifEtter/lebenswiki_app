@@ -163,7 +163,6 @@ class _CommentCardState extends State<CommentCard> {
                                     padding: EdgeInsets.zero,
                                     constraints: BoxConstraints(),
                                     onPressed: () {
-                                      print("open options Menu");
                                       setState(() {
                                         optionsMenuOpen = true;
                                       });

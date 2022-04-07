@@ -37,8 +37,8 @@ class _GetContentState extends State<GetContent> {
     updateParameters();
     return FutureBuilder(
       future: getBlocked(),
-      builder: (context, AsyncSnapshot snapshot1) {
-        if (!snapshot1.hasData) {
+      builder: (context, AsyncSnapshot blockedList) {
+        if (!blockedList.hasData) {
           return Loading();
         } else {
           return FutureBuilder(
@@ -62,8 +62,13 @@ class _GetContentState extends State<GetContent> {
                 if (widget.category == 99 && snapshot.data[1].length > 1) {
                   snapshot.data[1] = sortPacks(snapshot.data[1]);
                 }
-                //snapshot.data[1] =
-                //  filterBlocked(snapshot.data[1], snapshot1.data);
+                snapshot.data[1] =
+                    filterBlocked(snapshot.data[1], blockedList.data);
+                if ((snapshot.data.isEmpty) | (snapshot.data[1].length == 0)) {
+                  return Center(
+                    child: Text(errorText),
+                  );
+                }
                 return Expanded(
                   child: ListView.builder(
                     addAutomaticKeepAlives: true,
@@ -134,27 +139,21 @@ class _GetContentState extends State<GetContent> {
   }
 
   List filterBlocked(packList, blockedList) {
-    //print("Before: ${packList.length}");
-    //print("This is blockedList: $blockedList");
-    //print("PackList Before: $packList");
     List<Map> filteredPackList = [];
     bool canAdd = true;
+
     for (Map pack in packList) {
       canAdd = true;
-      for (Map blocked in blockedList) {
-        //print("Blocked: ${blocked["int"]}");
-        //print(pack["creatorId"]);
-        if (blocked["int"] == pack["creatorId"]) {
-          //print("found");
-          canAdd = false;
-          break;
+      for (Map report in blockedList) {
+        for (Map blocked in report["blocked"]) {
+          if (blocked["id"] == pack["creatorId"]) {
+            canAdd = false;
+            break;
+          }
         }
       }
-      //print(canAdd);
       canAdd ? filteredPackList.add(pack) : null;
     }
-    //print("After: ${filteredPackList.length}");
-    //print(filteredPackList);
     return filteredPackList;
   }
 

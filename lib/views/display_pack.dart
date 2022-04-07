@@ -29,14 +29,14 @@ class _DisplayPackState extends State<DisplayPack> {
           ListView(
             shrinkWrap: true,
             children: [
-              SizedBox(height: 10.0),
+              const SizedBox(height: 10.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [
+                children: const [
                   CloseButton(),
                 ],
               ),
-              SizedBox(height: 10.0),
+              const SizedBox(height: 10.0),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: Text(
@@ -44,7 +44,7 @@ class _DisplayPackState extends State<DisplayPack> {
                   style: LebenswikiTextStyles.shortContent.displayShortTitle,
                 ),
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: Text(
@@ -53,12 +53,12 @@ class _DisplayPackState extends State<DisplayPack> {
                       LebenswikiTextStyles.shortContent.displayShortDescription,
                 ),
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               Padding(
                 padding: const EdgeInsets.only(left: 15.0),
                 child: CreatorInfo(packData: widget.packData),
               ),
-              SizedBox(height: 25),
+              const SizedBox(height: 25),
               Container(
                 height: 180,
                 decoration: BoxDecoration(
@@ -68,8 +68,11 @@ class _DisplayPackState extends State<DisplayPack> {
                 ),
               ),
               Container(
-                child: Markdown(data: markdown),
-                height: 1000,
+                child: Markdown(
+                  shrinkWrap: true,
+                  data: markdown,
+                  physics: const NeverScrollableScrollPhysics(),
+                ),
               ),
             ],
           ),

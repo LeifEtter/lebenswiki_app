@@ -205,7 +205,6 @@ class _AuthenticationViewState extends State<AuthenticationView> {
     errorMap.forEach((k, v) {
       v != "" ? isValidated = false : 0;
     });
-    print(isValidated);
 
     isValidated ? {isSignUp ? signUp() : signIn()} : setState(() {});
   }

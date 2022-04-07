@@ -21,7 +21,6 @@ Future<Map> register(String email, String password, String name,
         "biography": biography,
         "profileImage": profileImage,
       }));
-  print(res.body);
   var responseData = jsonDecode(res.body.toString());
   if (res.statusCode == 201) {
     responseMap["message"] = responseData["message"];
@@ -57,10 +56,8 @@ Future<Map> login(String email, String password) async {
     prefs.setInt("userId", responseData["id"]);
     responseMap["token"] = responseToken;
     responseMap["userId"] = responseData["id"];
-    print(responseMap["userId"]);
     return responseMap;
   } else {
-    print(responseData["message"]);
     responseMap["error"] = responseData["message"];
     return responseMap;
   }
