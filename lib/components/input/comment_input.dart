@@ -16,7 +16,6 @@ class _CommentInputState extends State<CommentInput> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 275,
       constraints: const BoxConstraints(minHeight: 30),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.0),

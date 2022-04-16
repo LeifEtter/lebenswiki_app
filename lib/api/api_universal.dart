@@ -55,31 +55,6 @@ Future<Map> updateProfile(
   }
 }
 
-Future<Map> updatePassword2(
-  String oldpassword,
-  String password,
-) async {
-  var prefs = await SharedPreferences.getInstance();
-  String token = prefs.getString("token") ?? "";
-  var res = await http.patch(Uri.parse("$SERVER_IP/users/password/update"),
-      headers: {
-        "Content-type": "application/json",
-        "authorization": token,
-      },
-      body: jsonEncode(<String, String>{
-        "oldPassword": oldpassword,
-        "newPassword": password,
-      }));
-  var responseMap = {
-    "error": "",
-  };
-  if (res.statusCode == 200 && res.statusCode == 201) {
-    return responseMap;
-  }
-
-  return responseMap;
-}
-
 Future<Map> updatePassword(
   String oldpassword,
   String password,
@@ -150,7 +125,6 @@ Future<String> createFeedback(String feedback) async {
         "authorization": token,
       },
       body: jsonEncode({"feedback": feedback}));
-  print(res.body);
   if (res.statusCode == 201) {
     return "Success";
   } else {

@@ -34,6 +34,12 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
+        /*TextButton(
+          child: Text("Logout"),
+          onPressed: () {
+            AuthenticationFunctions().logout(context);
+          },
+        ),*/
         IconButton(
           icon: Image.asset("assets/icons/profile_icon.png", width: 20.0),
           onPressed: () {

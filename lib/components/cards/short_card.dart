@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/api_comments.dart';
 import 'package:lebenswiki_app/api/api_shorts.dart';
 import 'package:lebenswiki_app/api/api_universal.dart';
 import 'package:lebenswiki_app/components/buttons/vote_button.dart';
 import 'package:lebenswiki_app/components/card_functions/bookmark_functions.dart';
-import 'package:lebenswiki_app/components/card_functions/options_functions.dart';
 import 'package:lebenswiki_app/components/card_functions/reaction_functions.dart';
 import 'package:lebenswiki_app/components/card_functions/report_dialog.dart';
 import 'package:lebenswiki_app/components/card_functions/vote_functions.dart';
@@ -20,6 +20,7 @@ class ShortCard extends StatefulWidget {
   final ContentType contentType;
   final int userId;
   final Function commentExpand;
+  final Function(MenuType, Map) menuCallback;
 
   const ShortCard({
     Key? key,
@@ -28,6 +29,7 @@ class ShortCard extends StatefulWidget {
     required this.contentType,
     required this.userId,
     required this.commentExpand,
+    required this.menuCallback,
   }) : super(key: key);
 
   @override
@@ -107,12 +109,9 @@ class _ShortCardState extends State<ShortCard> {
             alignment: Alignment.bottomRight,
             child: IconButton(
               padding: EdgeInsets.zero,
-              constraints: BoxConstraints(),
+              constraints: const BoxConstraints(),
               onPressed: () {
-                print("open options Menu");
-                setState(() {
-                  optionsMenuOpen = true;
-                });
+                widget.menuCallback(MenuType.moreShort, widget.packData);
               },
               icon: const Icon(Icons.more_horiz_outlined),
             ),
@@ -196,48 +195,8 @@ class _ShortCardState extends State<ShortCard> {
             widget.voteReload,
           ),
         ),
-        Visibility(
-          visible: optionsMenuOpen,
-          child: buildOptionsMenu(
-            widget.userId,
-            triggerOptionsMenu,
-            showReportDialog,
-          ),
-        ),
       ],
     );
-  }
-
-  void showReportDialog() {
-    _reportDialog();
-  }
-
-  Future<void> _reportDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 160),
-          child: ReportDialog(
-            reportCallback: _reportCallback,
-            chosenReason: chosenReason,
-          ),
-        );
-      },
-    );
-  }
-
-  void _reportCallback(String reason, bool blockUser) {
-    //print("Reporting short: ${reason}, and blockuser: ${blockUser}");
-    blockUser ? blockUserAPI(widget.packData["creator"]["id"], reason) : null;
-    reportShort(widget.packData["id"], reason).whenComplete(() {
-      setState(() {
-        optionsMenuOpen = false;
-      });
-      widget.voteReload();
-      Navigator.pop(context);
-    });
   }
 
   void updateReaction(userId, reaction) async {
@@ -251,12 +210,6 @@ class _ShortCardState extends State<ShortCard> {
   void triggerReactionMenu() {
     setState(() {
       reactionMenuOpen ? reactionMenuOpen = false : reactionMenuOpen = true;
-    });
-  }
-
-  void triggerOptionsMenu() {
-    setState(() {
-      optionsMenuOpen ? optionsMenuOpen = false : optionsMenuOpen = true;
     });
   }
 

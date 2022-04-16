@@ -7,6 +7,7 @@ import 'package:lebenswiki_app/components/buttons/authentication_buttons.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
 import 'package:lebenswiki_app/data/loading.dart';
+import 'package:lebenswiki_app/data/shadows.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -48,8 +49,10 @@ class _ProfileViewState extends State<ProfileView> {
                     const TopNav(pageName: "Profil", backName: "Menu"),
                     SizedBox(height: 10.0),
                     CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        snapshot.data["profileImage"],
+                      child: ClipOval(
+                        child: Image.network(
+                          snapshot.data["profileImage"],
+                        ),
                       ),
                       radius: 45,
                     ),

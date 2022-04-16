@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/api_shorts.dart';
 import 'package:lebenswiki_app/components/buttons/vote_button.dart';
 import 'package:lebenswiki_app/components/card_functions/bookmark_functions.dart';
-import 'package:lebenswiki_app/components/card_functions/options_functions.dart';
 import 'package:lebenswiki_app/components/card_functions/reaction_functions.dart';
 import 'package:lebenswiki_app/components/card_functions/report_dialog.dart';
 import 'package:lebenswiki_app/components/card_functions/vote_functions.dart';
@@ -189,11 +188,7 @@ class _CommentCardState extends State<CommentCard> {
                     ),
                     Visibility(
                       visible: optionsMenuOpen,
-                      child: buildOptionsMenu(
-                        snapshot.data,
-                        triggerOptionsMenu,
-                        showReportDialog,
-                      ),
+                      child: Container(),
                     ),
                   ],
                 ),
@@ -203,30 +198,6 @@ class _CommentCardState extends State<CommentCard> {
         }
       },
     );
-  }
-
-  void showReportDialog() {
-    _reportDialog();
-  }
-
-  Future<void> _reportDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 160),
-          child: ReportDialog(
-            reportCallback: _reportCallback,
-            chosenReason: chosenReason,
-          ),
-        );
-      },
-    );
-  }
-
-  void _reportCallback(String reason, bool blockUser) {
-    //print("Reporting short: ${reason}, and blockuser: ${blockUser}");
   }
 
   void updateReaction(userId, reaction) async {
@@ -240,12 +211,6 @@ class _CommentCardState extends State<CommentCard> {
   void triggerReactionMenu() {
     setState(() {
       reactionMenuOpen ? reactionMenuOpen = false : reactionMenuOpen = true;
-    });
-  }
-
-  void triggerOptionsMenu() {
-    setState(() {
-      optionsMenuOpen ? optionsMenuOpen = false : optionsMenuOpen = true;
     });
   }
 

@@ -28,11 +28,6 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
   }
 
   @override
-  void dispose() {
-    _tabController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     MediaQueryData queryData;
     queryData = MediaQuery.of(context);
@@ -50,11 +45,13 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
                 controller: _tabController,
                 tabs: const [
                   Tab(
-                    child: Text("Veröffentlichte",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 17.0,
-                        )),
+                    child: Text(
+                      "Veröffentlichte",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 17.0,
+                      ),
+                    ),
                   ),
                   Tab(
                     child: Text(
@@ -78,6 +75,7 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
                       GetContent(
                         reload: reload,
                         contentType: ContentType.yourShorts,
+                        menuCallback: (String, Map) {},
                       ),
                     ],
                   ),
@@ -86,6 +84,7 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
                       GetContent(
                         reload: reload,
                         contentType: ContentType.drafts,
+                        menuCallback: (String, Map) {},
                       ),
                     ],
                   ),

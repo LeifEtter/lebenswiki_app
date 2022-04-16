@@ -7,3 +7,9 @@ enum ContentType {
   yourShorts,
   comments,
 }
+
+enum MenuType {
+  reactShort,
+  moreShort,
+  commentShort,
+}

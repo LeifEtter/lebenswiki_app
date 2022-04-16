@@ -14,12 +14,14 @@ class ShortCardScaffold extends StatefulWidget {
   final Map packData;
   final Function voteReload;
   final ContentType contentType;
+  final Function(MenuType, Map) menuCallback;
 
   const ShortCardScaffold({
     Key? key,
     required this.packData,
     required this.voteReload,
     required this.contentType,
+    required this.menuCallback,
   }) : super(key: key);
 
   @override
@@ -60,6 +62,7 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                       contentType: widget.contentType,
                       userId: snapshot.data,
                       commentExpand: _triggerComments,
+                      menuCallback: widget.menuCallback,
                     ),
                     widget.contentType == ContentType.shortsByCategory
                         ? Visibility(
@@ -107,6 +110,7 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                                     reload: widget.voteReload,
                                     userId: snapshot.data,
                                     comments: widget.packData["comments"],
+                                    menuCallback: widget.menuCallback,
                                   ),
                                 )
                               ],
@@ -130,7 +134,6 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
   }
 
   void _triggerComments() {
-    print("triggering");
     setState(() {
       _commentsExpanded ? _commentsExpanded = false : _commentsExpanded = true;
     });

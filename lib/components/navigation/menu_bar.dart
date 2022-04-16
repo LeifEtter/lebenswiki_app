@@ -8,6 +8,7 @@ import 'package:lebenswiki_app/views/bookmark_view.dart';
 import 'package:lebenswiki_app/views/developer_info.dart';
 import 'package:lebenswiki_app/views/profile_view.dart';
 import 'package:lebenswiki_app/views/your_shorts_view.dart';
+import 'package:share_plus/share_plus.dart';
 
 class MenuBar extends StatefulWidget {
   final Map profileData;
@@ -89,7 +90,9 @@ class _MenuBarState extends State<MenuBar> {
                   padding: const EdgeInsets.only(
                       left: 25.0, right: 25.0, top: 15.0, bottom: 15.0),
                   child: LebenswikiBlueButton(
-                    callback: () {},
+                    callback: () {
+                      Share.share('Hey, check die Lebenswiki App aus!');
+                    },
                     text: "Lebenswiki mit Freunden teilen",
                     categories: [],
                   ),

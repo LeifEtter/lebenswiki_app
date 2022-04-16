@@ -8,16 +8,21 @@ import 'package:lebenswiki_app/components/buttons/add_button.dart';
 import 'package:lebenswiki_app/components/navigation/router.dart';
 import 'package:lebenswiki_app/components/navigation/routing_constants.dart';
 import 'package:lebenswiki_app/data/loading.dart';
-import 'package:lebenswiki_app/views/authentication_signup.dart';
-import 'package:lebenswiki_app/views/authentication_view.dart';
+import 'package:lebenswiki_app/views/authentication/authentication_signup.dart';
+import 'package:lebenswiki_app/views/authentication/authentication_view.dart';
 import 'package:lebenswiki_app/views/content_feed.dart';
-import 'package:lebenswiki_app/views/new_authentication_view.dart';
-import 'package:lebenswiki_app/views/search_view.dart';
+import 'package:lebenswiki_app/views/community/search_view.dart';
+import 'package:lebenswiki_app/views/packs/pack_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lebenswiki_app/data/enums.dart';
 
+final tokenProvider = Provider((_) => 'Some token');
 void main() {
-  runApp(MyApp());
+  runApp(
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -65,11 +70,9 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
           return Loading();
         }
         if (token.data.length == 0) {
-          return Scaffold(body: AuthenticationView());
-          //return OnboardingView();
+          return const Scaffold(body: AuthenticationView());
         } else {
           return const NavBarWrapper();
-          //return NewAuthenticationView();
         }
       },
     );
@@ -104,10 +107,7 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
         contentType: ContentType.packsByCategory,
         isSearching: _isSearching,
       ),
-      ContentFeed(
-        contentType: ContentType.shortsByCategory,
-        isSearching: _isSearching,
-      ),
+      PackView(),
     ];
     return Scaffold(
       drawer: const MenuBar(

@@ -146,7 +146,7 @@ class _CreateShortState extends State<CreateShort> {
         shape: BoxShape.circle,
         image: DecorationImage(
           image: NetworkImage(profileData["profileImage"]),
-          fit: BoxFit.fill,
+          fit: BoxFit.fitWidth,
         ),
       ),
     );

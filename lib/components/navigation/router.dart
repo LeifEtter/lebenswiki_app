@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/components/navigation/routing_constants.dart';
 import 'package:lebenswiki_app/main.dart';
-import 'package:lebenswiki_app/views/authentication_view.dart';
+import 'package:lebenswiki_app/views/authentication/authentication_view.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {

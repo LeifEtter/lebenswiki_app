@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class ReportDialog extends StatefulWidget {
   final Function reportCallback;
   final String? chosenReason;
+  final Map packData;
 
   const ReportDialog({
     Key? key,
     required this.reportCallback,
     required this.chosenReason,
+    required this.packData,
   }) : super(key: key);
 
   @override
@@ -35,16 +37,17 @@ class _ReportDialogState extends State<ReportDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Short Melden"),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+      title: const Text("Short Melden"),
       actions: <Widget>[
         TextButton(
-          child: Text("Abbrechen"),
+          child: const Text("Abbrechen"),
           onPressed: () => Navigator.pop(context),
         ),
         TextButton(
-          child: Text("Melden"),
+          child: const Text("Melden"),
           onPressed: () {
-            widget.reportCallback(chosenReason, blockUser);
+            widget.reportCallback(chosenReason, blockUser, widget.packData);
           },
         )
       ],
@@ -52,7 +55,7 @@ class _ReportDialogState extends State<ReportDialog> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
-            children: [Text("Grund:")],
+            children: const [Text("Grund:")],
           ),
           DropdownButton<String>(
             isExpanded: true,

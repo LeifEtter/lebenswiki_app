@@ -76,7 +76,8 @@ class _DisplayPackState extends State<DisplayPack> {
               ),
             ],
           ),
-          Positioned.fill(
+          /*Positioned.fill(
+            right: 10.0,
             child: Align(
               alignment: Alignment.bottomRight,
               child: ShareOptions(
@@ -84,7 +85,7 @@ class _DisplayPackState extends State<DisplayPack> {
                 bookmarkCallback: () {},
               ),
             ),
-          ),
+          ),*/
         ],
       ),
     );

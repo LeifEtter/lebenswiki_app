@@ -3,8 +3,6 @@ import 'package:lebenswiki_app/api/api_universal.dart';
 import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
-import 'package:lebenswiki_app/data/text_styles.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 class DeveloperInfoView extends StatefulWidget {
   const DeveloperInfoView({Key? key}) : super(key: key);
@@ -33,7 +31,7 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
               children: [
                 const Text(
                   "Evangelische Akademie Loccum",
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.start,
                   style: TextStyle(
                     fontSize: 25.0,
                     fontWeight: FontWeight.w500,
@@ -90,7 +88,7 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                 ),
                 SizedBox(height: 30),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: const [
                     Text(
                       "Lebenswiki",

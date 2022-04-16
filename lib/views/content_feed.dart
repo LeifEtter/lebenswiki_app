@@ -51,6 +51,7 @@ class _ContentFeedState extends State<ContentFeed> {
                         : snapshot.data[_currentCategory - 1]["id"],
                     contentType: widget.contentType,
                     reload: reload,
+                    menuCallback: _menuCallback,
                   ),
                 ],
               ),
@@ -130,5 +131,96 @@ class _ContentFeedState extends State<ContentFeed> {
       categoryTabs.add(tab);
     }
     return categoryTabs;
+  }
+
+  void _menuCallback(MenuType menuType, Map packData) {
+    showBottomMenu();
+    //showCommentField();
+  }
+
+  void showCommentField() {
+    showBottomSheet(
+      context: context,
+      builder: (contet) {
+        return Container(
+          height: 100,
+        );
+      },
+    );
+  }
+
+  void showBottomMenu() {
+    showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      context: context,
+      builder: (context) {
+        return Container(
+          height: 300,
+          padding: const EdgeInsets.only(top: 20.0, left: 30.0),
+          child: Column(
+            children: [
+              _buildMenuItem(
+                Icons.flag,
+                "Melden",
+                "Diesen Short melden",
+                () {},
+              ),
+              _buildMenuItem(
+                Icons.comment_outlined,
+                "Kommentieren",
+                "Schreibe einen Kommentar",
+                () {},
+              ),
+              _buildMenuItem(
+                Icons.bookmark_outline,
+                "Speichern",
+                "Zu gespeicherten Shorts hinzufügen",
+                () {},
+              ),
+            ],
+          ),
+        );
+      },
+      isDismissible: true,
+    );
+  }
+
+  Widget _buildMenuItem(
+      IconData icon, String title, String description, Function menuAction) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: GestureDetector(
+        onTap: () => menuAction(),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 40.0,
+            ),
+            const SizedBox(width: 20.0),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                  ),
+                ),
+                Text(
+                  description,
+                  style: const TextStyle(
+                    fontSize: 15.0,
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -79,7 +79,7 @@ Future<List> getPosts() async {
 Future<List> getAllPosts(var nullsafety) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.get(Uri.parse("$SERVER_IP/posts/published"), headers: {
+  var res = await http.get(Uri.parse("$SERVER_IP/posts/"), headers: {
     "authorization": token,
   });
 
@@ -97,8 +97,8 @@ Future<List> getAllPosts(var nullsafety) async {
 Future<List> getPostsByCategory(categoryId) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res =
-      await http.get(Uri.parse("$SERVER_IP/categories/$categoryId"), headers: {
+  var res = await http
+      .get(Uri.parse("$SERVER_IP/categories/published/$categoryId"), headers: {
     "authorization": token,
   });
   if (res.statusCode == 200) {

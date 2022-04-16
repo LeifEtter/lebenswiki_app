@@ -13,12 +13,14 @@ class GetContent extends StatefulWidget {
   final int category;
   final Function reload;
   final ContentType contentType;
+  final Function(MenuType, Map) menuCallback;
 
   const GetContent({
     Key? key,
     this.category = 0,
     required this.reload,
     required this.contentType,
+    required this.menuCallback,
   }) : super(key: key);
 
   @override
@@ -34,7 +36,7 @@ class _GetContentState extends State<GetContent> {
 
   @override
   Widget build(BuildContext context) {
-    updateParameters();
+    _updateParameters();
     return FutureBuilder(
       future: getBlocked(),
       builder: (context, AsyncSnapshot blockedList) {
@@ -53,17 +55,19 @@ class _GetContentState extends State<GetContent> {
                 );
               } else {
                 //Fix Null error when switching screens
-                if ((snapshot.data[0] == "short") &&
+                /*if ((snapshot.data[0] == "short") &&
                         (widget.contentType == ContentType.packsByCategory) ||
                     ((snapshot.data[0] == "packs") &&
                         (widget.contentType == ContentType.shortsByCategory))) {
                   return Loading();
-                }
+                }*/
+                //If Category is new (categoryId: 99) then sort packs by creation date
                 if (widget.category == 99 && snapshot.data[1].length > 1) {
-                  snapshot.data[1] = sortPacks(snapshot.data[1]);
+                  snapshot.data[1] = _sortPacks(snapshot.data[1]);
                 }
+                //Filter out all blocked shorts
                 snapshot.data[1] =
-                    filterBlocked(snapshot.data[1], blockedList.data);
+                    _filterBlocked(snapshot.data[1], blockedList.data);
                 if ((snapshot.data.isEmpty) | (snapshot.data[1].length == 0)) {
                   return Center(
                     child: Text(errorText),
@@ -86,12 +90,14 @@ class _GetContentState extends State<GetContent> {
                             packData: currentPack,
                             voteReload: widget.reload,
                             contentType: widget.contentType,
+                            menuCallback: widget.menuCallback,
                           );
                         case ContentType.shortBookmarks:
                           return ShortCardScaffold(
                             packData: currentPack,
                             voteReload: widget.reload,
                             contentType: widget.contentType,
+                            menuCallback: widget.menuCallback,
                           );
                         case ContentType.packBookmarks:
                           return PackCard(
@@ -125,7 +131,7 @@ class _GetContentState extends State<GetContent> {
     );
   }
 
-  List sortPacks(packList) {
+  List _sortPacks(packList) {
     Map pack = packList[0];
     var date = pack["creationDate"];
     DateTime parseDt = DateTime.parse(date);
@@ -138,7 +144,7 @@ class _GetContentState extends State<GetContent> {
     return packList;
   }
 
-  List filterBlocked(packList, blockedList) {
+  List _filterBlocked(packList, blockedList) {
     List<Map> filteredPackList = [];
     bool canAdd = true;
 
@@ -157,10 +163,10 @@ class _GetContentState extends State<GetContent> {
     return filteredPackList;
   }
 
-  void updateParameters() {
+  void _updateParameters() {
     switch (widget.contentType) {
       case ContentType.packsByCategory:
-        packFuture = getAllPosts;
+        packFuture = widget.category == 99 ? getAllPosts : getPostsByCategory;
         provideCategory = true;
         errorText = "Keine Packs für diese Kategorie gefunden";
         break;
