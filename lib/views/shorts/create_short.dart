@@ -6,8 +6,7 @@ import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
-import 'package:lebenswiki_app/testing/border.dart';
-import 'package:lebenswiki_app/views/your_shorts_view.dart';
+import 'package:lebenswiki_app/views/menu/your_shorts_view.dart';
 
 class CreateShort extends StatefulWidget {
   const CreateShort({
@@ -32,7 +31,7 @@ class _CreateShortState extends State<CreateShort> {
           future: getCategories(),
           builder: (context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
-              return Loading();
+              return const Loading();
             } else {
               return DefaultTabController(
                 length: snapshot.data.length,
@@ -45,7 +44,7 @@ class _CreateShortState extends State<CreateShort> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              SizedBox(width: 20.0),
+                              const SizedBox(width: 20.0),
                               Expanded(
                                 child: TextField(
                                   decoration: const InputDecoration(
@@ -71,7 +70,7 @@ class _CreateShortState extends State<CreateShort> {
                                     future: getUserData(),
                                     builder: (context, AsyncSnapshot snapshot) {
                                       if (!snapshot.hasData) {
-                                        return Loading();
+                                        return const Loading();
                                       } else {
                                         return _buildIndicator(snapshot.data);
                                       }
@@ -99,7 +98,7 @@ class _CreateShortState extends State<CreateShort> {
                         bottom: 20.0,
                         child: Align(
                           alignment: Alignment.bottomRight,
-                          child: Container(
+                          child: SizedBox(
                             width: 150,
                             child: Row(
                               children: [
@@ -157,19 +156,20 @@ class _CreateShortState extends State<CreateShort> {
       _titleController.text.toString(),
       [categories[_currentCategory]["id"]],
       _contentController.text.toString(),
-    ).then((value) => print(value));
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const YourShorts(
-          chosenTab: 1,
+    ).then(
+      (_) => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const YourShorts(
+            chosenTab: 1,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildTabBar(List categories) {
-    return Container(
+    return SizedBox(
       height: 55,
       child: TabBar(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10),

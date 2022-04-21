@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api_access.dart';
@@ -7,7 +6,7 @@ import 'api_access.dart';
 Future<List> getCategories() async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.get(Uri.parse("$SERVER_IP/categories"), headers: {
+  var res = await http.get(Uri.parse("$serverIp/categories"), headers: {
     "authorization": token,
   });
   if (res.statusCode == 200) {
@@ -30,7 +29,7 @@ Future<Map> updateProfile(
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res = await http.put(
-    Uri.parse("$SERVER_IP/users/profile/update"),
+    Uri.parse("$serverIp/users/profile/update"),
     headers: {
       "Content-type": "application/json",
       "authorization": token,
@@ -61,7 +60,7 @@ Future<Map> updatePassword(
 ) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.patch(Uri.parse("$SERVER_IP/users/password/update"),
+  var res = await http.patch(Uri.parse("$serverIp/users/password/update"),
       headers: {
         "Content-type": "application/json",
         "authorization": token,
@@ -81,7 +80,7 @@ Future<String> blockUserAPI(int id, String reason) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res = await http.post(
-    Uri.parse("$SERVER_IP/blocks/create/$id"),
+    Uri.parse("$serverIp/blocks/create/$id"),
     headers: {
       "Content-type": "application/json",
       "authorization": token,
@@ -102,7 +101,7 @@ Future<List> getBlocked() async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res = await http.get(
-    Uri.parse("$SERVER_IP/blocks/"),
+    Uri.parse("$serverIp/blocks/"),
     headers: {
       "Content-type": "application/json",
       "authorization": token,
@@ -119,7 +118,7 @@ Future<List> getBlocked() async {
 Future<String> createFeedback(String feedback) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.post(Uri.parse("$SERVER_IP/feedbacks/create"),
+  var res = await http.post(Uri.parse("$serverIp/feedbacks/create"),
       headers: {
         "Content-type": "application/json",
         "authorization": token,

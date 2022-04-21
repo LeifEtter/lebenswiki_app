@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_shorts.dart';
 import 'package:lebenswiki_app/components/cards/short_card.dart';
-import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/enums.dart';
 
 class GetContentComments extends StatefulWidget {

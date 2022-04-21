@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/testing/border.dart';
 
 class BottomNavBar extends StatefulWidget {
   final int currentIndex;

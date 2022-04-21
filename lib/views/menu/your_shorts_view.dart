@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
 import 'package:lebenswiki_app/data/enums.dart';
-import 'package:lebenswiki_app/data/text_styles.dart';
 
 class YourShorts extends StatefulWidget {
   final int chosenTab;
@@ -29,17 +28,13 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData queryData;
-    queryData = MediaQuery.of(context);
-    var deviceWidth = queryData.size.width;
-    var deviceHeight = queryData.size.height;
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             const TopNav(pageName: "Deine Shorts", backName: "Menu"),
             const SizedBox(height: 0),
-            Container(
+            SizedBox(
               height: 50,
               child: TabBar(
                 controller: _tabController,
@@ -65,7 +60,7 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
                 ],
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Expanded(
               child: TabBarView(
                 controller: _tabController,
@@ -75,7 +70,7 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
                       GetContent(
                         reload: reload,
                         contentType: ContentType.yourShorts,
-                        menuCallback: (String, Map) {},
+                        menuCallback: (MenuType menuType, Map packData) {},
                       ),
                     ],
                   ),
@@ -84,7 +79,7 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
                       GetContent(
                         reload: reload,
                         contentType: ContentType.drafts,
-                        menuCallback: (String, Map) {},
+                        menuCallback: (MenuType menuType, Map packData) {},
                       ),
                     ],
                   ),

@@ -1,29 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/api_shorts.dart';
 import 'package:lebenswiki_app/components/buttons/vote_button.dart';
-import 'package:lebenswiki_app/components/card_functions/bookmark_functions.dart';
-import 'package:lebenswiki_app/components/card_functions/reaction_functions.dart';
-import 'package:lebenswiki_app/components/card_functions/report_dialog.dart';
-import 'package:lebenswiki_app/components/card_functions/vote_functions.dart';
+import 'package:lebenswiki_app/helper/actions/bookmark_functions.dart';
+import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
+import 'package:lebenswiki_app/helper/actions/vote_functions.dart';
 import 'package:lebenswiki_app/components/cards/creator_info.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
-import 'package:lebenswiki_app/testing/border.dart';
 import 'package:lebenswiki_app/data/enums.dart';
-import 'package:lebenswiki_app/views/report_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CommentCard extends StatefulWidget {
   final Map packData;
   final Function voteReload;
   final ContentType contentType;
+  final Function(MenuType menuType, Map packdata) menuCallback;
 
   const CommentCard({
     Key? key,
     required this.packData,
     required this.voteReload,
     required this.contentType,
+    required this.menuCallback,
   }) : super(key: key);
 
   @override
@@ -49,7 +48,7 @@ class _CommentCardState extends State<CommentCard> {
       future: getUserId(),
       builder: (context, AsyncSnapshot snapshot) {
         if (!snapshot.hasData) {
-          return Loading();
+          return const Loading();
         } else {
           return Padding(
             padding: const EdgeInsets.only(top: 5, left: 10.0, right: 10.0),
@@ -83,7 +82,7 @@ class _CommentCardState extends State<CommentCard> {
                                   style: LebenswikiTextStyles.packTitle,
                                 ),
                                 const SizedBox(height: 5),
-                                Container(
+                                SizedBox(
                                   width: 270,
                                   child: Text(
                                     widget.packData["content"],
@@ -94,17 +93,18 @@ class _CommentCardState extends State<CommentCard> {
                                 Row(
                                   children: [
                                     IconButton(
-                                      constraints: BoxConstraints(),
+                                      constraints: const BoxConstraints(),
                                       onPressed: () {},
-                                      icon: Icon(Icons.comment_outlined),
+                                      icon: const Icon(Icons.comment_outlined),
                                     ),
-                                    Container(
+                                    SizedBox(
                                       height: 30,
                                       width: 200,
                                       child: reactionBar(
                                         convertReactions(
                                             widget.packData["reactions"]),
-                                        triggerReactionMenu,
+                                        widget.menuCallback,
+                                        widget.packData,
                                       ),
                                     ),
                                   ],
@@ -160,7 +160,7 @@ class _CommentCardState extends State<CommentCard> {
                                   padding: const EdgeInsets.only(bottom: 5.0),
                                   child: IconButton(
                                     padding: EdgeInsets.zero,
-                                    constraints: BoxConstraints(),
+                                    constraints: const BoxConstraints(),
                                     onPressed: () {
                                       setState(() {
                                         optionsMenuOpen = true;
@@ -174,21 +174,6 @@ class _CommentCardState extends State<CommentCard> {
                           ),
                         ],
                       ),
-                    ),
-                    Visibility(
-                      visible: reactionMenuOpen,
-                      child: buildReactionMenu(
-                        snapshot.data,
-                        widget.packData["id"],
-                        allReactions,
-                        updateReaction,
-                        triggerReactionMenu,
-                        widget.voteReload,
-                      ),
-                    ),
-                    Visibility(
-                      visible: optionsMenuOpen,
-                      child: Container(),
                     ),
                   ],
                 ),
@@ -208,12 +193,6 @@ class _CommentCardState extends State<CommentCard> {
     widget.voteReload();
   }
 
-  void triggerReactionMenu() {
-    setState(() {
-      reactionMenuOpen ? reactionMenuOpen = false : reactionMenuOpen = true;
-    });
-  }
-
   void voteCallback(isUpvote) {
     vote(
       isUpvote,
@@ -229,16 +208,5 @@ class _CommentCardState extends State<CommentCard> {
     var prefs = await SharedPreferences.getInstance();
     int? userId = prefs.getInt("userId");
     return userId;
-  }
-
-  void _routeYourShorts() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ReportView(
-          packData: widget.packData,
-        ),
-      ),
-    );
   }
 }

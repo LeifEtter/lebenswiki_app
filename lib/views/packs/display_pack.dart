@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:lebenswiki_app/components/actions/share_options.dart';
-import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/components/cards/creator_info.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
 import 'package:quill_markdown/quill_markdown.dart';
-import 'package:markdown/markdown.dart' as md;
 
 class DisplayPack extends StatefulWidget {
   final Map packData;
@@ -67,7 +64,7 @@ class _DisplayPackState extends State<DisplayPack> {
                       image: NetworkImage(widget.packData["titleImage"])),
                 ),
               ),
-              Container(
+              SizedBox(
                 child: Markdown(
                   shrinkWrap: true,
                   data: markdown,

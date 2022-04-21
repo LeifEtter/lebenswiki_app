@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
-import 'package:lebenswiki_app/views/create_short.dart';
-import 'package:lebenswiki_app/views/display_pack.dart';
+import 'package:lebenswiki_app/views/shorts/create_short.dart';
 
 class AddButton extends StatelessWidget {
   const AddButton({
@@ -36,7 +35,8 @@ class AddButton extends StatelessWidget {
 
   Route _createShortRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => CreateShort(),
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          const CreateShort(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);
         const end = Offset.zero;

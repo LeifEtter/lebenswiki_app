@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/data/enums.dart';
 
 bool isBookmarked(int userId, ContentType contentType, bookmarkData) {

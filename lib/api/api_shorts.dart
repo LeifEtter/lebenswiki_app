@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api_access.dart';
@@ -42,7 +41,7 @@ Future<String> createShort(
 ) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.post(Uri.parse("$SERVER_IP/shorts/create"),
+  var res = await http.post(Uri.parse("$serverIp/shorts/create"),
       headers: {
         "Content-type": "application/json",
         "authorization": token,
@@ -62,7 +61,7 @@ Future<String> createShort(
 Future<List> getAllShorts(String nullSafety) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.get(Uri.parse("$SERVER_IP/shorts/"), headers: {
+  var res = await http.get(Uri.parse("$serverIp/shorts/"), headers: {
     "authorization": token,
   });
   if (res.statusCode == 200) {
@@ -81,7 +80,7 @@ Future<List> getDrafts(String nullSafety) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res =
-      await http.get(Uri.parse("$SERVER_IP/shorts/unpublished"), headers: {
+      await http.get(Uri.parse("$serverIp/shorts/unpublished"), headers: {
     "authorization": token,
   });
   if (res.statusCode == 200) {
@@ -99,7 +98,7 @@ Future<List> getShortsByCategory(categoryId) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res = await http
-      .get(Uri.parse("$SERVER_IP/categories/shorts/${categoryId}"), headers: {
+      .get(Uri.parse("$serverIp/categories/shorts/$categoryId"), headers: {
     "authorization": token,
   });
   if (res.statusCode == 200) {
@@ -117,7 +116,7 @@ Future<List> getShortsNew(categoryId) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res = await http.get(
-      Uri.parse("$SERVER_IP/categories/shorts/${categoryId + 1}"),
+      Uri.parse("$serverIp/categories/shorts/${categoryId + 1}"),
       headers: {
         "authorization": token,
       });
@@ -138,7 +137,7 @@ Future<String> publishShort(
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res =
-      await http.put(Uri.parse("$SERVER_IP/shorts/publish/$postId"), headers: {
+      await http.put(Uri.parse("$serverIp/shorts/publish/$postId"), headers: {
     "Content-type": "application/json",
     "authorization": token,
   });
@@ -154,7 +153,7 @@ Future<String> unpublishShort(
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res = await http
-      .put(Uri.parse("$SERVER_IP/shorts/unpublish/$postId"), headers: {
+      .put(Uri.parse("$serverIp/shorts/unpublish/$postId"), headers: {
     "Content-type": "application/json",
     "authorization": token,
   });
@@ -171,7 +170,7 @@ Future<String> voteShort(
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res = await http.put(
-      Uri.parse("$SERVER_IP/shorts/${isUpvote ? "upvote" : "downvote"}/$id"),
+      Uri.parse("$serverIp/shorts/${isUpvote ? "upvote" : "downvote"}/$id"),
       headers: {
         "Content-type": "application/json",
         "authorization": token,
@@ -185,7 +184,7 @@ Future<String> voteShort(
 Future<List> getBookmarkedShorts(String nullSafety) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.get(Uri.parse("$SERVER_IP/shorts/bookmarks"), headers: {
+  var res = await http.get(Uri.parse("$serverIp/shorts/bookmarks"), headers: {
     "authorization": token,
   });
 
@@ -204,7 +203,7 @@ Future<String> bookmarkShort(int id) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res =
-      await http.put(Uri.parse("$SERVER_IP/shorts/bookmarks/$id"), headers: {
+      await http.put(Uri.parse("$serverIp/shorts/bookmarks/$id"), headers: {
     "authorization": token,
   });
   if (res.statusCode == 200) {
@@ -218,7 +217,7 @@ Future<String> unbookmarkShort(int id) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res =
-      await http.put(Uri.parse("$SERVER_IP/shorts/unbookmarks/$id"), headers: {
+      await http.put(Uri.parse("$serverIp/shorts/unbookmarks/$id"), headers: {
     "authorization": token,
   });
   if (res.statusCode == 200) {
@@ -232,7 +231,7 @@ Future<String> removeUpvote(int id) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res =
-      await http.get(Uri.parse("$SERVER_IP/shorts/bookmarks/$id"), headers: {
+      await http.get(Uri.parse("$serverIp/shorts/bookmarks/$id"), headers: {
     "authorization": token,
   });
   if (res.statusCode == 200) {
@@ -250,7 +249,7 @@ Future<String> removeVote(
   String token = prefs.getString("token") ?? "";
   var res = await http.put(
       Uri.parse(
-          "$SERVER_IP/shorts/${isUpvote ? "upvote" : "downvote"}/remove/$id"),
+          "$serverIp/shorts/${isUpvote ? "upvote" : "downvote"}/remove/$id"),
       headers: {
         "Content-type": "application/json",
         "authorization": token,
@@ -267,7 +266,7 @@ Future<String> removeShort(
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res =
-      await http.delete(Uri.parse("$SERVER_IP/shorts/delete/$id"), headers: {
+      await http.delete(Uri.parse("$serverIp/shorts/delete/$id"), headers: {
     "Content-type": "application/json",
     "authorization": token,
   });
@@ -283,7 +282,7 @@ Future<String> addReaction(
 ) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.put(Uri.parse("$SERVER_IP/shorts/reaction/$id"),
+  var res = await http.put(Uri.parse("$serverIp/shorts/reaction/$id"),
       headers: {
         "Content-type": "application/json",
         "authorization": token,
@@ -298,7 +297,7 @@ Future<String> addReaction(
 Future<List> getCreatorShorts(String nullSafety) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.get(Uri.parse("$SERVER_IP/shorts/published"), headers: {
+  var res = await http.get(Uri.parse("$serverIp/shorts/published"), headers: {
     "authorization": token,
   });
 
@@ -320,7 +319,7 @@ Future<String> reportShort(
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res = await http.post(
-    Uri.parse("$SERVER_IP/reports/create/short/$id"),
+    Uri.parse("$serverIp/reports/create/short/$id"),
     headers: {
       "Content-type": "application/json",
       "authorization": token,
@@ -342,7 +341,7 @@ Future<String> deleteReaction(
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res = await http.put(
-    Uri.parse("$SERVER_IP/shorts/reaction/remove/$id"),
+    Uri.parse("$serverIp/shorts/reaction/remove/$id"),
     headers: {
       "Content-type": "application/json",
       "authorization": token,

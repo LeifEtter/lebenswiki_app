@@ -29,7 +29,7 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
             GetContent(
               reload: reload,
               contentType: ContentType.shortBookmarks,
-              menuCallback: (String, Map) {},
+              menuCallback: (MenuType menuType, Map packData) {},
             ),
           ],
         ),

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/data/colors.dart';
-import 'package:lebenswiki_app/testing/border.dart';
 
 class VoteButtonStack extends StatefulWidget {
   final int currentVotes;
@@ -33,7 +31,7 @@ class _VoteButtonStackState extends State<VoteButtonStack> {
         Positioned.fill(
           child: Align(
             alignment: Alignment.center,
-            child: Container(
+            child: SizedBox(
               child: Center(
                   child: Text(
                 "$votes",
@@ -47,7 +45,7 @@ class _VoteButtonStackState extends State<VoteButtonStack> {
             ),
           ),
         ),
-        Container(
+        SizedBox(
           width: 50,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -61,7 +59,7 @@ class _VoteButtonStackState extends State<VoteButtonStack> {
                     "assets/icons/upvote.png",
                   ),
                   color: widget.hasUpvoted
-                      ? Color.fromRGBO(115, 148, 192, 1)
+                      ? const Color.fromRGBO(115, 148, 192, 1)
                       : Colors.black,
                   size: 30.0,
                 ),
@@ -75,7 +73,7 @@ class _VoteButtonStackState extends State<VoteButtonStack> {
                     "assets/icons/downvote.png",
                   ),
                   color: widget.hasDownvoted
-                      ? Color.fromRGBO(115, 148, 192, 1)
+                      ? const Color.fromRGBO(115, 148, 192, 1)
                       : Colors.black,
                   size: 30.0,
                 ),

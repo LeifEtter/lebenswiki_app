@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api_access.dart';
@@ -10,7 +9,7 @@ Future<String> createComment(
 ) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.post(Uri.parse("$SERVER_IP/comments/create/shorts/$id"),
+  var res = await http.post(Uri.parse("$serverIp/comments/create/shorts/$id"),
       headers: {
         "Content-type": "application/json",
         "authorization": token,
@@ -29,7 +28,7 @@ Future<String> addCommentReaction(
 ) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.put(Uri.parse("$SERVER_IP/comments/reaction/$id"),
+  var res = await http.put(Uri.parse("$serverIp/comments/reaction/$id"),
       headers: {
         "Content-type": "application/json",
         "authorization": token,

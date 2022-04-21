@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/authentication/authentication_functions.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
-import 'package:lebenswiki_app/testing/border.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final Function callback;
   final Function searchRoute;
 
   const MainAppBar({
     Key? key,
-    required this.callback,
     required this.searchRoute,
   }) : super(key: key);
 
@@ -57,5 +53,5 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

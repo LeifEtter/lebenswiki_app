@@ -7,7 +7,7 @@ class AuthInputStyling extends StatefulWidget {
 
   const AuthInputStyling({
     Key? key,
-    required TextFormField this.child,
+    required this.child,
     this.isError = false,
     this.fillColor = Colors.white,
     this.isDeactivated = false,
@@ -43,7 +43,7 @@ class _AuthInputStylingState extends State<AuthInputStyling> {
                   color: Colors.grey.withOpacity(0.3),
                   spreadRadius: 1,
                   blurRadius: 4,
-                  offset: Offset(1, 2),
+                  offset: const Offset(1, 2),
                 )
         ],
       ),
@@ -56,7 +56,7 @@ class AuthInputBiography extends StatefulWidget {
 
   const AuthInputBiography({
     Key? key,
-    required TextFormField this.child,
+    required this.child,
     this.fillColor = Colors.white,
   }) : super(key: key);
 
@@ -83,7 +83,7 @@ class _AuthInputBiographyState extends State<AuthInputBiography> {
             color: Colors.grey.withOpacity(0.3),
             spreadRadius: 1,
             blurRadius: 4,
-            offset: Offset(1, 2),
+            offset: const Offset(1, 2),
           ),
         ],
       ),

@@ -1,13 +1,11 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/api_authentication.dart';
 import 'package:lebenswiki_app/api/api_universal.dart';
-import 'package:lebenswiki_app/components/authentication/authentication_functions.dart';
+import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/components/buttons/authentication_buttons.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
 import 'package:lebenswiki_app/data/loading.dart';
-import 'package:lebenswiki_app/data/shadows.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -34,9 +32,9 @@ class _ProfileViewState extends State<ProfileView> {
           future: getUserData(),
           builder: (context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
-              return Loading();
+              return const Loading();
             } else if (snapshot.data == null) {
-              return Text("Please log in");
+              return const Text("Please log in");
             } else {
               _profileImageController.text = snapshot.data["profileImage"];
               _nameController.text = snapshot.data["name"];
@@ -47,7 +45,7 @@ class _ProfileViewState extends State<ProfileView> {
                 child: ListView(
                   children: [
                     const TopNav(pageName: "Profil", backName: "Menu"),
-                    SizedBox(height: 10.0),
+                    const SizedBox(height: 10.0),
                     CircleAvatar(
                       child: ClipOval(
                         child: Image.network(
@@ -56,12 +54,12 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                       radius: 45,
                     ),
-                    SizedBox(height: 10.0),
+                    const SizedBox(height: 10.0),
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text("Profilbild"),
                     ),
-                    SizedBox(height: 5.0),
+                    const SizedBox(height: 5.0),
                     AuthInputStyling(
                       child: TextFormField(
                         controller: _profileImageController,
@@ -71,17 +69,17 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10.0),
+                    const SizedBox(height: 10.0),
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text("Biografie"),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     AuthInputBiography(
                       child: TextFormField(
                         controller: _biographyController,
                         obscureText: false,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.all(10.0),
                         ),
@@ -89,12 +87,12 @@ class _ProfileViewState extends State<ProfileView> {
                         maxLines: 5,
                       ),
                     ),
-                    SizedBox(height: 30.0),
+                    const SizedBox(height: 30.0),
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text("Name"),
                     ),
-                    SizedBox(height: 5.0),
+                    const SizedBox(height: 5.0),
                     AuthInputStyling(
                       child: TextFormField(
                         controller: _nameController,
@@ -104,12 +102,12 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 15.0),
+                    const SizedBox(height: 15.0),
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text("Email Adresse"),
                     ),
-                    SizedBox(height: 5.0),
+                    const SizedBox(height: 5.0),
                     AuthInputStyling(
                       child: TextFormField(
                         controller: _emailController,
@@ -119,7 +117,7 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     AuthenticationButton(
                       text: "Änderungen Speichern",
                       color: Colors.blue,
@@ -132,14 +130,14 @@ class _ProfileViewState extends State<ProfileView> {
                         );
                       },
                     ),
-                    SizedBox(height: 20),
-                    Divider(),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
+                    const Divider(),
+                    const SizedBox(height: 20),
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text("Altes Passwort"),
                     ),
-                    SizedBox(height: 5.0),
+                    const SizedBox(height: 5.0),
                     AuthInputStyling(
                       child: TextFormField(
                         controller: _oldPasswordController,
@@ -150,12 +148,12 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text("Neues Passwort"),
                     ),
-                    SizedBox(height: 5.0),
+                    const SizedBox(height: 5.0),
                     AuthInputStyling(
                       child: TextFormField(
                         controller: _passwordController,
@@ -166,12 +164,12 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 15.0),
+                    const SizedBox(height: 15.0),
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text("Neues Passwort wiederholen"),
                     ),
-                    SizedBox(height: 5.0),
+                    const SizedBox(height: 5.0),
                     AuthInputStyling(
                       child: TextFormField(
                         controller: _repeatPasswordController,
@@ -182,7 +180,7 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     AuthenticationButton(
                       text: "Passwort Speichern",
                       color: Colors.blue,
@@ -190,7 +188,7 @@ class _ProfileViewState extends State<ProfileView> {
                         changePassword();
                       },
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                   ],
                 ),
               );
@@ -254,8 +252,6 @@ class _ProfileViewState extends State<ProfileView> {
         List errorList = convertError(responseMap["error"]);
         errorMap[errorList[0]] = errorList[1];
         setState(() {});
-      } else {
-        print("Profile Updated");
       }
     });
   }
@@ -270,7 +266,7 @@ class _ProfileViewState extends State<ProfileView> {
         errorMap[errorList[0]] = errorList[1];
         setState(() {});
       } else {
-        print("Password Updated");
+        //print("Password Updated");
       }
     }).whenComplete(() {
       _oldPasswordController.text = "";

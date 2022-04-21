@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/api/api_comments.dart';
 import 'package:lebenswiki_app/api/api_shorts.dart';
-import 'package:lebenswiki_app/api/api_universal.dart';
 import 'package:lebenswiki_app/components/buttons/vote_button.dart';
-import 'package:lebenswiki_app/components/card_functions/bookmark_functions.dart';
-import 'package:lebenswiki_app/components/card_functions/reaction_functions.dart';
-import 'package:lebenswiki_app/components/card_functions/report_dialog.dart';
-import 'package:lebenswiki_app/components/card_functions/vote_functions.dart';
+import 'package:lebenswiki_app/helper/actions/bookmark_functions.dart';
+import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
+import 'package:lebenswiki_app/helper/actions/vote_functions.dart';
 import 'package:lebenswiki_app/components/cards/creator_info.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
-import 'package:lebenswiki_app/testing/border.dart';
 import 'package:lebenswiki_app/data/enums.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -56,51 +51,44 @@ class _ShortCardState extends State<ShortCard> {
         Positioned.fill(
           right: 1.0,
           child: Align(
-            alignment: Alignment.centerRight,
-            child: !(widget.contentType == ContentType.comments)
-                ? VoteButtonStack(
-                    userId: widget.userId,
-                    currentVotes: getVoteCount(
-                      widget.packData["upVote"],
-                      widget.packData["downVote"],
-                    ),
-                    changeVote: voteCallback,
-                    id: widget.packData["id"],
-                    hasDownvoted:
-                        hasVoted(widget.userId, widget.packData["downVote"]),
-                    hasUpvoted:
-                        hasVoted(widget.userId, widget.packData["upVote"]),
-                  )
-                : Container(),
-          ),
+              alignment: Alignment.centerRight,
+              child: VoteButtonStack(
+                userId: widget.userId,
+                currentVotes: getVoteCount(
+                  widget.packData["upVote"],
+                  widget.packData["downVote"],
+                ),
+                changeVote: voteCallback,
+                id: widget.packData["id"],
+                hasDownvoted:
+                    hasVoted(widget.userId, widget.packData["downVote"]),
+                hasUpvoted: hasVoted(widget.userId, widget.packData["upVote"]),
+              )),
         ),
         Positioned.fill(
           right: 15.0,
           top: 5.0,
           child: Align(
-            alignment: Alignment.topRight,
-            child: !(widget.contentType == ContentType.comments)
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: GestureDetector(
-                      child: Image.asset(
-                        isBookmarked(widget.userId, widget.contentType,
-                                widget.packData["bookmarks"])
-                            ? "assets/icons/bookmark_filled.png"
-                            : "assets/icons/bookmark.png",
-                        width: 20.0,
-                      ),
-                      onTap: () {
-                        isBookmarked(widget.userId, widget.contentType,
-                                widget.packData["bookmarks"])
-                            ? unbookmarkShort(widget.packData["id"])
-                            : bookmarkShort(widget.packData["id"]);
-                        widget.voteReload();
-                      },
-                    ),
-                  )
-                : Container(),
-          ),
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 5.0),
+                child: GestureDetector(
+                  child: Image.asset(
+                    isBookmarked(widget.userId, widget.contentType,
+                            widget.packData["bookmarks"])
+                        ? "assets/icons/bookmark_filled.png"
+                        : "assets/icons/bookmark.png",
+                    width: 20.0,
+                  ),
+                  onTap: () {
+                    isBookmarked(widget.userId, widget.contentType,
+                            widget.packData["bookmarks"])
+                        ? unbookmarkShort(widget.packData["id"])
+                        : bookmarkShort(widget.packData["id"]);
+                    widget.voteReload();
+                  },
+                ),
+              )),
         ),
         Positioned.fill(
           right: 15.0,
@@ -127,53 +115,39 @@ class _ShortCardState extends State<ShortCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    !(widget.contentType == ContentType.comments)
-                        ? CreatorInfo(
-                            packData: widget.packData,
-                          )
-                        : Container(),
-                    !(widget.contentType == ContentType.comments)
-                        ? SizedBox(height: 5)
-                        : Container(),
-                    !(widget.contentType == ContentType.comments)
-                        ? Text(
-                            widget.packData["title"],
-                            style: LebenswikiTextStyles.packTitle,
-                          )
-                        : Container(),
+                    CreatorInfo(
+                      packData: widget.packData,
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      widget.packData["title"],
+                      style: LebenswikiTextStyles.packTitle,
+                    ),
+                    const SizedBox(height: 5),
                     SizedBox(
-                        height: !(widget.contentType == ContentType.comments)
-                            ? 5
-                            : 0),
-                    Container(
                       width: screenWidth * 0.7,
                       child: Text(
-                        widget.packData[
-                            !(widget.contentType == ContentType.comments)
-                                ? "content"
-                                : "commentResponse"],
+                        widget.packData["content"],
                         style: LebenswikiTextStyles.packDescription,
                       ),
                     ),
-                    SizedBox(
-                      height:
-                          widget.contentType == ContentType.comments ? 10 : 20,
-                    ),
+                    const SizedBox(height: 20),
                     Row(
                       children: [
                         IconButton(
-                          constraints: BoxConstraints(),
+                          constraints: const BoxConstraints(),
                           onPressed: () {
                             widget.commentExpand();
                           },
-                          icon: Icon(Icons.comment_outlined),
+                          icon: const Icon(Icons.comment_outlined),
                         ),
-                        Container(
+                        SizedBox(
                           height: 30,
                           width: 200,
                           child: reactionBar(
                             convertReactions(widget.packData["reactions"]),
-                            triggerReactionMenu,
+                            widget.menuCallback,
+                            widget.packData,
                           ),
                         ),
                       ],
@@ -184,33 +158,8 @@ class _ShortCardState extends State<ShortCard> {
             ],
           ),
         ),
-        Visibility(
-          visible: reactionMenuOpen,
-          child: buildReactionMenu(
-            widget.userId,
-            widget.packData["id"],
-            allReactions,
-            updateReaction,
-            triggerReactionMenu,
-            widget.voteReload,
-          ),
-        ),
       ],
     );
-  }
-
-  void updateReaction(userId, reaction) async {
-    widget.contentType == ContentType.comments
-        ? await addCommentReaction(widget.packData["id"], reaction)
-        : await addReaction(widget.packData["id"], reaction);
-    reactionMenuOpen = false;
-    widget.voteReload();
-  }
-
-  void triggerReactionMenu() {
-    setState(() {
-      reactionMenuOpen ? reactionMenuOpen = false : reactionMenuOpen = true;
-    });
   }
 
   void voteCallback(isUpvote) {

@@ -3,7 +3,6 @@ import 'package:lebenswiki_app/api/api_shorts.dart';
 import 'package:lebenswiki_app/api/api_posts.dart';
 import 'package:lebenswiki_app/api/api_universal.dart';
 import 'package:lebenswiki_app/components/cards/pack_card.dart';
-import 'package:lebenswiki_app/components/cards/short_card.dart';
 import 'package:lebenswiki_app/components/cards/short_card_minimal.dart';
 import 'package:lebenswiki_app/components/cards/short_card_scaffold.dart';
 import 'package:lebenswiki_app/data/loading.dart';
@@ -28,11 +27,10 @@ class GetContent extends StatefulWidget {
 }
 
 class _GetContentState extends State<GetContent> {
-  bool isShort = false;
   bool provideCategory = false;
   String errorText = "";
-  Function packFuture = () {};
-  Widget card = Container();
+  late Function packFuture;
+  late Widget card;
 
   @override
   Widget build(BuildContext context) {
@@ -41,38 +39,29 @@ class _GetContentState extends State<GetContent> {
       future: getBlocked(),
       builder: (context, AsyncSnapshot blockedList) {
         if (!blockedList.hasData) {
-          return Loading();
+          return const Loading();
         } else {
           return FutureBuilder(
             future: packFuture(provideCategory ? widget.category : ""),
             builder: (context, AsyncSnapshot snapshot) {
               if (!snapshot.hasData) {
-                return Loading();
+                return const Loading();
               } else if ((snapshot.data.isEmpty) |
                   (snapshot.data[1].length == 0)) {
                 return Center(
                   child: Text(errorText),
                 );
               } else {
-                //Fix Null error when switching screens
-                /*if ((snapshot.data[0] == "short") &&
-                        (widget.contentType == ContentType.packsByCategory) ||
-                    ((snapshot.data[0] == "packs") &&
-                        (widget.contentType == ContentType.shortsByCategory))) {
-                  return Loading();
-                }*/
                 //If Category is new (categoryId: 99) then sort packs by creation date
-                if (widget.category == 99 && snapshot.data[1].length > 1) {
+                /*if (widget.category == 99 && snapshot.data[1].length > 1) {
                   snapshot.data[1] = _sortPacks(snapshot.data[1]);
-                }
+                }*/
+                widget.category == 99
+                    ? snapshot.data[1] = _sortPacks(snapshot.data[1])
+                    : null;
                 //Filter out all blocked shorts
                 snapshot.data[1] =
                     _filterBlocked(snapshot.data[1], blockedList.data);
-                if ((snapshot.data.isEmpty) | (snapshot.data[1].length == 0)) {
-                  return Center(
-                    child: Text(errorText),
-                  );
-                }
                 return Expanded(
                   child: ListView.builder(
                     addAutomaticKeepAlives: true,
@@ -132,10 +121,6 @@ class _GetContentState extends State<GetContent> {
   }
 
   List _sortPacks(packList) {
-    Map pack = packList[0];
-    var date = pack["creationDate"];
-    DateTime parseDt = DateTime.parse(date);
-
     packList.sort((a, b) {
       return DateTime.parse(a["creationDate"])
           .compareTo(DateTime.parse(b["creationDate"]));

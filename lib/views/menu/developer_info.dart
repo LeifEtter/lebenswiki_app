@@ -37,7 +37,7 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                Divider(),
+                const Divider(),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -86,7 +86,7 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                     ),
                   ],
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: const [
@@ -149,9 +149,9 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
-                Divider(),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
+                const Divider(),
+                const SizedBox(height: 10),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -177,7 +177,7 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10.0),
+                    const SizedBox(height: 10.0),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30.0),
                       child: Row(
@@ -189,7 +189,6 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                                 createFeedback(
                                     _feedbackController.text.toString());
                               },
-                              categories: [],
                             ),
                           ),
                         ],
@@ -197,7 +196,7 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                     ),
                   ],
                 ),
-                SizedBox(height: 30.0),
+                const SizedBox(height: 30.0),
               ],
             ),
           ),

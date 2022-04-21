@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/api_authentication.dart';
-import 'package:lebenswiki_app/components/authentication/authentication_functions.dart';
+import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/components/buttons/authentication_buttons.dart';
-import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
@@ -44,7 +42,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
   Widget build(BuildContext context) {
     MediaQueryData queryData;
     queryData = MediaQuery.of(context);
-    return Container(
+    return SizedBox(
       child: Padding(
         padding: EdgeInsets.only(
             top: queryData.size.height / (isSignUp ? 12 : 6),
@@ -104,7 +102,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Visibility(
                 visible: isSignUp,
                 child: Row(
@@ -120,7 +118,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
                         });
                       },
                     ),
-                    Text("Das Standardprofilbild verwenden")
+                    const Text("Das Standardprofilbild verwenden")
                   ],
                 ),
               ),
@@ -168,7 +166,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
       hintText: hintText,
       prefixIcon: Icon(
         prefixIcon,
-        color: Color.fromRGBO(115, 148, 192, 1),
+        color: const Color.fromRGBO(115, 148, 192, 1),
       ),
       border: InputBorder.none,
       hintStyle: const TextStyle(
@@ -251,7 +249,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Scaffold(
+        builder: (context) => const Scaffold(
           body: NavBarWrapper(),
         ),
       ),

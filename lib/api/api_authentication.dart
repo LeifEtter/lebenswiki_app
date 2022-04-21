@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api_access.dart';
@@ -10,7 +9,7 @@ Future<Map> register(String email, String password, String name,
     "error": "",
     "message": "",
   };
-  var res = await http.post(Uri.parse("$SERVER_IP/users/register/"),
+  var res = await http.post(Uri.parse("$serverIp/users/register/"),
       headers: {
         "Content-type": "application/json",
       },
@@ -38,7 +37,7 @@ Future<Map> login(String email, String password) async {
     "userId": 0,
   };
 
-  var res = await http.post(Uri.parse("$SERVER_IP/users/login"),
+  var res = await http.post(Uri.parse("$serverIp/users/login"),
       headers: {
         "Content-type": "application/json",
       },
@@ -66,7 +65,7 @@ Future<Map> login(String email, String password) async {
 Future<Map> getUserData() async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.get(Uri.parse("$SERVER_IP/users/profile"), headers: {
+  var res = await http.get(Uri.parse("$serverIp/users/profile"), headers: {
     "authorization": token,
   });
   if (res.statusCode == 200) {

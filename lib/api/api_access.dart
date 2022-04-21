@@ -1,1 +1,1 @@
-const SERVER_IP = 'https://api.lebenswiki.com/api/v1';
+const serverIp = 'https://api.lebenswiki.com/api/v1';

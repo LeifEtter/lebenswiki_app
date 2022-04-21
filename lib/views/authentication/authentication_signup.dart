@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/authentication/authentication_functions.dart';
+import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
 
@@ -16,7 +16,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _biographyController = TextEditingController();
-  final TextEditingController _profileImageController = TextEditingController();
+  //final TextEditingController _profileImageController = TextEditingController();
   final PageController _pageController = PageController();
   Map errorMap = {
     "name": "",
@@ -30,7 +30,6 @@ class _OnboardingViewState extends State<OnboardingView> {
     MediaQueryData queryData;
     queryData = MediaQuery.of(context);
     var deviceWidth = queryData.size.width;
-    var deviceHeight = queryData.size.height;
     return Scaffold(
       body: Form(
         key: _authFormKey,
@@ -44,14 +43,14 @@ class _OnboardingViewState extends State<OnboardingView> {
                     .authenticationContent.authenticationTitle,
               ),
               const SizedBox(height: 40),
-              Container(
+              SizedBox(
                 width: deviceWidth,
                 height: 200,
                 child: PageView(
                   controller: _pageController,
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: Column(
                         children: [
                           AuthInputStyling(
@@ -101,19 +100,19 @@ class _OnboardingViewState extends State<OnboardingView> {
                   ],
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
                   children: [
-                    Spacer(),
+                    const Spacer(),
                     Expanded(
-                      child: Container(
+                      child: SizedBox(
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () {
                             _pageController.nextPage(
-                                duration: Duration(milliseconds: 1000),
+                                duration: const Duration(milliseconds: 1000),
                                 curve: Curves.easeInBack);
                           },
                           child: Row(

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/api/api_authentication.dart';
 import 'package:lebenswiki_app/components/navigation/bottom_nav_bar.dart';
 import 'package:lebenswiki_app/components/navigation/main_appbar.dart';
 import 'package:lebenswiki_app/components/navigation/menu_bar.dart';
 import 'package:lebenswiki_app/components/buttons/add_button.dart';
 import 'package:lebenswiki_app/components/navigation/router.dart';
-import 'package:lebenswiki_app/components/navigation/routing_constants.dart';
+import 'package:lebenswiki_app/components/pack/1-template_page.dart';
+import 'package:lebenswiki_app/components/pack/create_pack.dart';
+import 'package:lebenswiki_app/components/pack/test_parent.dart';
+import 'package:lebenswiki_app/data/routing_constants.dart';
+import 'package:lebenswiki_app/components/pack/hardcode_pack.dart';
 import 'package:lebenswiki_app/data/loading.dart';
-import 'package:lebenswiki_app/views/authentication/authentication_signup.dart';
 import 'package:lebenswiki_app/views/authentication/authentication_view.dart';
-import 'package:lebenswiki_app/views/content_feed.dart';
 import 'package:lebenswiki_app/views/community/search_view.dart';
 import 'package:lebenswiki_app/views/packs/pack_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,9 +20,7 @@ import 'package:lebenswiki_app/data/enums.dart';
 final tokenProvider = Provider((_) => 'Some token');
 void main() {
   runApp(
-    ProviderScope(
-      child: MyApp(),
-    ),
+    const MyApp(),
   );
 }
 
@@ -38,7 +37,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "Outfit",
       ),
       onGenerateRoute: generateRoute,
-      initialRoute: AuthenticationWrapperRoute,
+      initialRoute: authenticationWrapperRoute,
     );
   }
 }
@@ -67,12 +66,14 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
       future: getToken(),
       builder: (context, AsyncSnapshot token) {
         if (!token.hasData) {
-          return Loading();
+          return const Loading();
         }
         if (token.data.length == 0) {
           return const Scaffold(body: AuthenticationView());
         } else {
-          return const NavBarWrapper();
+          //return const NavBarWrapper();
+          return const PackPageView();
+          //return const CreatePack();
         }
       },
     );
@@ -93,8 +94,8 @@ class NavBarWrapper extends StatefulWidget {
 
 class _NavBarWrapperState extends State<NavBarWrapper> {
   int _currentIndex = 0;
-  bool _isSearching = false;
 
+  @override
   void initState() {
     super.initState();
     _currentIndex = widget.initialTab;
@@ -103,11 +104,8 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> _pages = <Widget>[
-      ContentFeed(
-        contentType: ContentType.packsByCategory,
-        isSearching: _isSearching,
-      ),
-      PackView(),
+      const PackView(),
+      const PackView(),
     ];
     return Scaffold(
       drawer: const MenuBar(
@@ -116,7 +114,6 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
       floatingActionButton: const AddButton(),
       backgroundColor: Colors.white,
       appBar: MainAppBar(
-        callback: toggleSearch,
         searchRoute: _searchRoute,
       ),
       bottomNavigationBar: BottomNavBar(
@@ -133,15 +130,7 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
     });
   }
 
-  void toggleSearch() {
-    setState(() {
-      !_isSearching ? _isSearching = true : _isSearching = false;
-    });
-  }
-
   Route _searchRoute() {
-    bool isShort;
-    _currentIndex == 0 ? isShort = false : isShort = true;
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => const SearchView(
         contentType: ContentType.shortsByCategory,

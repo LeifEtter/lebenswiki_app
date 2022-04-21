@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/navigation/routing_constants.dart';
+import 'package:lebenswiki_app/data/routing_constants.dart';
 import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/views/authentication/authentication_view.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
-    case AuthenticationWrapperRoute:
+    case authenticationWrapperRoute:
       return PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             const AuthenticationWrapper(),
@@ -23,10 +23,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           );
         },
       );
-    case AuthenticationViewRoute:
-      return MaterialPageRoute(builder: (context) => AuthenticationView());
+    case authenticationViewRoute:
+      return MaterialPageRoute(builder: (context) => const AuthenticationView());
     default:
-      return MaterialPageRoute(builder: (context) => AuthenticationWrapper());
+      return MaterialPageRoute(builder: (context) => const AuthenticationWrapper());
   }
 
   //return MaterialPageRoute(builder: (context) => AuthenticationWrapper());

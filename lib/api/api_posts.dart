@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api_access.dart';
@@ -13,7 +12,7 @@ Future<String> createPost(
 ) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.post(Uri.parse("$SERVER_IP/posts/create"),
+  var res = await http.post(Uri.parse("$serverIp/posts/create"),
       headers: {
         "Content-type": "application/json",
         "authorization": token,
@@ -41,7 +40,7 @@ Future<String> updatePost(
 ) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.put(Uri.parse("$SERVER_IP/posts/update/$postId"),
+  var res = await http.put(Uri.parse("$serverIp/posts/update/$postId"),
       headers: {
         "Content-type": "application/json",
         "authorization": token,
@@ -62,7 +61,7 @@ Future<String> updatePost(
 Future<List> getPosts() async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.get(Uri.parse("$SERVER_IP/users/profile"), headers: {
+  var res = await http.get(Uri.parse("$serverIp/users/profile"), headers: {
     "authorization": token,
   });
   if (res.statusCode == 200) {
@@ -79,7 +78,7 @@ Future<List> getPosts() async {
 Future<List> getAllPosts(var nullsafety) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http.get(Uri.parse("$SERVER_IP/posts/"), headers: {
+  var res = await http.get(Uri.parse("$serverIp/posts/"), headers: {
     "authorization": token,
   });
 
@@ -98,7 +97,7 @@ Future<List> getPostsByCategory(categoryId) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res = await http
-      .get(Uri.parse("$SERVER_IP/categories/published/$categoryId"), headers: {
+      .get(Uri.parse("$serverIp/categories/published/$categoryId"), headers: {
     "authorization": token,
   });
   if (res.statusCode == 200) {
@@ -118,7 +117,7 @@ Future<String> publishPost(
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
   var res = await http.patch(
-    Uri.parse("$SERVER_IP/posts/publish/$postId"),
+    Uri.parse("$serverIp/posts/publish/$postId"),
     headers: {
       "Content-type": "application/json",
       "authorization": token,

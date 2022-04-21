@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/navigation/routing_constants.dart';
-import 'package:lebenswiki_app/testing/border.dart';
+import 'package:lebenswiki_app/data/routing_constants.dart';
 
 class TopNav extends StatelessWidget {
   final String pageName;
@@ -48,11 +47,11 @@ class TopNav extends StatelessWidget {
           Expanded(
             child: TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, AuthenticationWrapperRoute);
+                Navigator.pushNamed(context, authenticationWrapperRoute);
               },
-              child: Align(
+              child: const Align(
                 alignment: Alignment.centerRight,
-                child: const Text(
+                child: Text(
                   "Fertig",
                   style: TextStyle(
                     fontSize: 15.0,

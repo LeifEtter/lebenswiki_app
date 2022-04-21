@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/api_shorts.dart';
 
 int getVoteCount(upvoteData, downvoteData) {

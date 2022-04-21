@@ -15,17 +15,18 @@ class ShareOptions extends StatelessWidget {
     return Container(
       width: 130,
       height: 65,
-      padding: EdgeInsets.symmetric(horizontal: 20.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(width: 1.0, color: Color.fromRGBO(240, 240, 240, 1)),
+        border: Border.all(
+            width: 1.0, color: const Color.fromRGBO(240, 240, 240, 1)),
         borderRadius: BorderRadius.circular(30.0),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Image.asset("assets/icons/share_icon.png", width: 28),
-          SizedBox(width: 20.0),
+          const SizedBox(width: 20.0),
           Image.asset("assets/icons/bookmark.png", width: 18),
         ],
       ),

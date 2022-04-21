@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/api_authentication.dart';
-import 'package:lebenswiki_app/components/authentication/authentication_functions.dart';
+import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
-import 'package:lebenswiki_app/views/bookmark_view.dart';
-import 'package:lebenswiki_app/views/developer_info.dart';
-import 'package:lebenswiki_app/views/profile_view.dart';
-import 'package:lebenswiki_app/views/your_shorts_view.dart';
+import 'package:lebenswiki_app/views/menu/bookmark_view.dart';
+import 'package:lebenswiki_app/views/menu/developer_info.dart';
+import 'package:lebenswiki_app/views/menu/profile_view.dart';
+import 'package:lebenswiki_app/views/menu/your_shorts_view.dart';
 import 'package:share_plus/share_plus.dart';
 
 class MenuBar extends StatefulWidget {
@@ -42,9 +42,9 @@ class _MenuBarState extends State<MenuBar> {
         future: getUserData(),
         builder: (context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
-            return Loading();
+            return const Loading();
           } else if (snapshot.data == null) {
-            return Text("No Profile Data found");
+            return const Text("No Profile Data found");
           } else {
             if (snapshot.data["profileImage"] == "something") {
               snapshot.data["profileImage"] =
@@ -85,7 +85,7 @@ class _MenuBarState extends State<MenuBar> {
                 _buildDrawerItem(Icons.logout, "Ausloggen", () {
                   AuthenticationFunctions().logout(context);
                 }),
-                Divider(),
+                const Divider(),
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 25.0, right: 25.0, top: 15.0, bottom: 15.0),
@@ -94,10 +94,9 @@ class _MenuBarState extends State<MenuBar> {
                       Share.share('Hey, check die Lebenswiki App aus!');
                     },
                     text: "Lebenswiki mit Freunden teilen",
-                    categories: [],
                   ),
                 ),
-                Divider(),
+                const Divider(),
               ],
             );
           }
@@ -131,7 +130,7 @@ class _MenuBarState extends State<MenuBar> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProfileView(),
+        builder: (context) => const ProfileView(),
       ),
     );
   }
@@ -161,7 +160,7 @@ class _MenuBarState extends State<MenuBar> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DeveloperInfoView(),
+        builder: (context) => const DeveloperInfoView(),
       ),
     );
   }

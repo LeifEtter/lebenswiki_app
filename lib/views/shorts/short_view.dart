@@ -10,16 +10,16 @@ import 'package:lebenswiki_app/data/enums.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/helper/is_loading.dart';
 
-class PackView extends StatefulWidget {
-  const PackView({
+class ShortView extends StatefulWidget {
+  const ShortView({
     Key? key,
   }) : super(key: key);
 
   @override
-  _PackViewState createState() => _PackViewState();
+  _ShortViewState createState() => _ShortViewState();
 }
 
-class _PackViewState extends State<PackView> {
+class _ShortViewState extends State<ShortView> {
   int _currentCategory = 0;
   String? chosenReason = "Illegal unter der NetzDG";
 
@@ -43,7 +43,7 @@ class _PackViewState extends State<PackView> {
                           ? 99
                           : snapshot.data[_currentCategory - 1]["id"],
                       reload: reload,
-                      contentType: ContentType.packsByCategory,
+                      contentType: ContentType.shortsByCategory,
                       menuCallback: _menuCallback,
                     )
                   ],
@@ -91,7 +91,7 @@ class _PackViewState extends State<PackView> {
               buildMenuItem(
                 Icons.flag,
                 "Melden",
-                "Dieses Pack melden",
+                "Diesen Short melden",
                 () {
                   _reportDialog(packData);
                 },
@@ -105,7 +105,7 @@ class _PackViewState extends State<PackView> {
               buildMenuItem(
                 Icons.bookmark_outline,
                 "Speichern",
-                "Zu gespeicherten Packs hinzufügen",
+                "Zu gespeicherten Shorts hinzufügen",
                 () {},
               ),
             ],

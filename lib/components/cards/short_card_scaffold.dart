@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/api_comments.dart';
 import 'package:lebenswiki_app/components/cards/short_card.dart';
-import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/components/feed/get_content_comments.dart';
 import 'package:lebenswiki_app/components/input/comment_input.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
-import 'package:lebenswiki_app/testing/border.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lebenswiki_app/data/enums.dart';
 
@@ -41,7 +39,7 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
         if (!snapshot.hasData ||
             snapshot.data == null ||
             widget.packData["bookmarks"] == null) {
-          return Loading();
+          return const Loading();
         } else {
           return Padding(
             padding: const EdgeInsets.only(top: 5, left: 10.0, right: 10.0),
@@ -69,7 +67,7 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                             visible: _commentsExpanded,
                             child: Column(
                               children: [
-                                Divider(),
+                                const Divider(),
                                 Row(
                                   children: [
                                     const SizedBox(width: 10.0),
@@ -103,7 +101,7 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                                     )
                                   ],
                                 ),
-                                SizedBox(height: 8),
+                                const SizedBox(height: 8),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10.0),
                                   child: GetContentComments(
@@ -140,6 +138,5 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }

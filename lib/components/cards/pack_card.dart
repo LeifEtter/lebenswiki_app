@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_posts.dart';
 import 'package:lebenswiki_app/components/cards/creator_info.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
-import 'package:lebenswiki_app/testing/border.dart';
-import 'package:lebenswiki_app/views/display_pack.dart';
+import 'package:lebenswiki_app/views/packs/display_pack.dart';
 
 class PackCard extends StatefulWidget {
   final Map packData;
@@ -87,7 +85,7 @@ class _PackCardState extends State<PackCard> {
     );
   }
 
-  Route _displayRoute() {
+  /*Route _displayRoute() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) =>
           DisplayPack(packData: widget.packData),
@@ -102,5 +100,5 @@ class _PackCardState extends State<PackCard> {
         );
       },
     );
-  }
+  }*/
 }

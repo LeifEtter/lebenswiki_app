@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/api_posts.dart';
 import 'package:lebenswiki_app/api/api_shorts.dart';
-import 'package:lebenswiki_app/components/cards/short_card.dart';
 import 'package:lebenswiki_app/components/cards/short_card_scaffold.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/data/enums.dart';
@@ -29,7 +28,7 @@ class _SearchViewState extends State<SearchView> {
               : getAllPosts(""),
           builder: (context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
-              return Loading();
+              return const Loading();
             } else if (snapshot.data[1].length == 0) {
               return Center(
                 child: Text(
@@ -48,7 +47,7 @@ class _SearchViewState extends State<SearchView> {
 
 class FilterView extends StatefulWidget {
   final ContentType contentType;
-  final packList;
+  final List packList;
 
   const FilterView({
     Key? key,
@@ -93,7 +92,7 @@ class _FilterViewState extends State<FilterView> {
                   packData: currentPack,
                   voteReload: () {},
                   contentType: widget.contentType,
-                  menuCallback: (String, Map) {},
+                  menuCallback: (MenuType menuType, Map packData) {},
                 );
               },
             ),
@@ -149,6 +148,6 @@ class _FilterViewState extends State<FilterView> {
   }
 
   void upvote(id) {
-    print("Upvoting through search!");
+    //print("Upvoting through search!");
   }
 }
