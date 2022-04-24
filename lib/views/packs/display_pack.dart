@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:lebenswiki_app/components/cards/creator_info.dart';
+import 'package:lebenswiki_app/components/card_components/creator_info.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
 import 'package:quill_markdown/quill_markdown.dart';
 

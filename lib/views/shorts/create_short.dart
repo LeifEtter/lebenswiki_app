@@ -43,21 +43,21 @@ class _CreateShortState extends State<CreateShort> {
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              const SizedBox(width: 20.0),
-                              Expanded(
-                                child: TextField(
-                                  decoration: const InputDecoration(
-                                    hintText: "Titel",
-                                    border: InputBorder.none,
-                                  ),
-                                  controller: _titleController,
-                                ),
-                              ),
-                              const CloseButton(),
+                            children: const [
+                              CloseButton(),
                             ],
                           ),
                           _buildTabBar(snapshot.data),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25.0),
+                            child: TextField(
+                              decoration: const InputDecoration(
+                                hintText: "Titel",
+                                border: InputBorder.none,
+                              ),
+                              controller: _titleController,
+                            ),
+                          ),
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 20.0),

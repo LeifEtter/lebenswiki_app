@@ -5,6 +5,9 @@ import 'package:lebenswiki_app/api/api_universal.dart';
 import 'package:lebenswiki_app/components/cards/pack_card.dart';
 import 'package:lebenswiki_app/components/cards/short_card_minimal.dart';
 import 'package:lebenswiki_app/components/cards/short_card_scaffold.dart';
+import 'package:lebenswiki_app/data/example_data.dart';
+import 'package:lebenswiki_app/views/packs_new/hardcode_pack.dart';
+import 'package:lebenswiki_app/components/cards/hardcode_pack_card.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/enums.dart';
 
@@ -103,6 +106,11 @@ class _GetContentState extends State<GetContent> {
                             reload: widget.reload,
                             packData: currentPack,
                             contentType: widget.contentType,
+                          );
+                        case ContentType.hardcodePacks:
+                          return HardcodePackCard(
+                            packData: ExampleData().packData,
+                            reload: widget.reload,
                           );
                         default:
                           return const Center(

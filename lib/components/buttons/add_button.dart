@@ -10,24 +10,23 @@ class AddButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(_createShortRoute());
-      },
+    return FloatingActionButton(
+      elevation: 0,
+      backgroundColor: const Color.fromRGBO(0, 0, 0, 0),
+      onPressed: () => Navigator.of(context).push(_createShortRoute()),
       child: Container(
-        width: 55,
-        height: 55,
-        child: const Icon(
-          Icons.add_rounded,
-          size: 52.0,
-          color: Colors.white,
-        ),
+        height: 60,
+        width: 60,
         decoration: BoxDecoration(
           boxShadow: [
             LebenswikiShadows().fancyShadow,
           ],
           borderRadius: BorderRadius.circular(10.0),
           gradient: LebenswikiColors.blueGradient,
+        ),
+        child: const Icon(
+          Icons.add_rounded,
+          size: 52.0,
         ),
       ),
     );

@@ -4,7 +4,7 @@ import 'package:lebenswiki_app/components/buttons/vote_button.dart';
 import 'package:lebenswiki_app/helper/actions/bookmark_functions.dart';
 import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
 import 'package:lebenswiki_app/helper/actions/vote_functions.dart';
-import 'package:lebenswiki_app/components/cards/creator_info.dart';
+import 'package:lebenswiki_app/components/card_components/creator_info.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
 import 'package:lebenswiki_app/data/enums.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -111,7 +111,7 @@ class _ShortCardState extends State<ShortCard> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                    left: 20.0, top: 15.0, bottom: 10.0, right: 50.0),
+                    left: 20.0, top: 15.0, bottom: 10.0, right: 0.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -119,9 +119,12 @@ class _ShortCardState extends State<ShortCard> {
                       packData: widget.packData,
                     ),
                     const SizedBox(height: 5),
-                    Text(
-                      widget.packData["title"],
-                      style: LebenswikiTextStyles.packTitle,
+                    SizedBox(
+                      width: screenWidth * 0.7,
+                      child: Text(
+                        widget.packData["title"],
+                        style: LebenswikiTextStyles.packTitle,
+                      ),
                     ),
                     const SizedBox(height: 5),
                     SizedBox(

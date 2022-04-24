@@ -1,28 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
-import 'package:lebenswiki_app/components/pack/example_data.dart';
+import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/helper/packs/evaluating_elements.dart';
 
 class PackPageView extends StatefulWidget {
-  const PackPageView({Key? key}) : super(key: key);
+  final List packData;
+
+  const PackPageView({
+    Key? key,
+    required this.packData,
+  }) : super(
+          key: key,
+        );
 
   @override
   _PackPageViewState createState() => _PackPageViewState();
 }
 
 class _PackPageViewState extends State<PackPageView> {
-  late List<Widget> pageList;
+  List<Widget> pageList = [];
   int currentPage = 0;
   late double progressBarWidth;
   late double indicatorSectionWidth;
 
   @override
+  void initState() {
+    super.initState();
+    for (List pageData in widget.packData) {
+      pageList.add(
+        _buildPage(pageData),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    pageList = [
-      _buildPage(ExampleData().pageData1),
-      _buildPage(ExampleData().pageData2),
-      _buildPage(ExampleData().pageData3),
-    ];
     progressBarWidth = MediaQuery.of(context).size.width - 40;
     indicatorSectionWidth = progressBarWidth / (pageList.length - 1);
     return Scaffold(
@@ -31,7 +43,7 @@ class _PackPageViewState extends State<PackPageView> {
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 50.0, bottom: 100.0),
-            child: TopNav(pageName: "Pack 1", backName: "Pack Liste"),
+            child: TopNav(pageName: "Investieren", backName: "Packs"),
           ),
           Expanded(
             child: SizedBox(
@@ -67,15 +79,17 @@ class _PackPageViewState extends State<PackPageView> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: const [
                 Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(Icons.bookmark),
+                  padding: EdgeInsets.only(top: 15.0, right: 15.0),
+                  child: Icon(
+                    Icons.bookmark,
+                    size: 40.0,
+                  ),
                 ),
               ],
             ),
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
-              padding:
-                  const EdgeInsets.only(left: 20.0, right: 10.0, top: 20.0),
+              padding: const EdgeInsets.only(left: 20.0, right: 10.0, top: 5.0),
               shrinkWrap: true,
               itemCount: pageData.length,
               itemBuilder: (BuildContext context, int index) {
@@ -101,7 +115,7 @@ class _PackPageViewState extends State<PackPageView> {
           AnimatedContainer(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
-              color: Colors.blue,
+              color: const Color.fromRGBO(115, 148, 192, 1),
             ),
             width: indicatorSectionWidth * currentPage,
             height: 10,

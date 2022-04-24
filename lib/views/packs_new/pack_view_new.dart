@@ -12,16 +12,16 @@ import 'package:lebenswiki_app/data/enums.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/helper/is_loading.dart';
 
-class PackView extends StatefulWidget {
-  const PackView({
+class PackViewNew extends StatefulWidget {
+  const PackViewNew({
     Key? key,
   }) : super(key: key);
 
   @override
-  _PackViewState createState() => _PackViewState();
+  _PackViewNewState createState() => _PackViewNewState();
 }
 
-class _PackViewState extends State<PackView> {
+class _PackViewNewState extends State<PackViewNew> {
   int _currentCategory = 0;
   String? chosenReason = "Illegal unter der NetzDG";
 
@@ -40,15 +40,8 @@ class _PackViewState extends State<PackView> {
                       snapshot.data,
                       _onTabbarChoose,
                     ),
-                    /*GetContent(
-                      category: _currentCategory == 0
-                          ? 99
-                          : snapshot.data[_currentCategory - 1]["id"],
-                      reload: reload,
-                      contentType: ContentType.hardcodePacks,
-                      menuCallback: _menuCallback,
-                    )*/
                     ListView(
+                      shrinkWrap: true,
                       children: [
                         HardcodePackCard(
                           packData: ExampleData().packData,

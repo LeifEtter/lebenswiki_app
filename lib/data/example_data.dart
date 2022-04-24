@@ -78,4 +78,6 @@ class ExampleData {
           "src": "assets/images/zins_graph.png",
         },
       ];
+
+  List get packData => [pageData1, pageData2, pageData3];
 }

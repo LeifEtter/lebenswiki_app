@@ -5,15 +5,13 @@ import 'package:lebenswiki_app/components/navigation/main_appbar.dart';
 import 'package:lebenswiki_app/components/navigation/menu_bar.dart';
 import 'package:lebenswiki_app/components/buttons/add_button.dart';
 import 'package:lebenswiki_app/components/navigation/router.dart';
-import 'package:lebenswiki_app/components/pack/1-template_page.dart';
-import 'package:lebenswiki_app/components/pack/create_pack.dart';
-import 'package:lebenswiki_app/components/pack/test_parent.dart';
 import 'package:lebenswiki_app/data/routing_constants.dart';
-import 'package:lebenswiki_app/components/pack/hardcode_pack.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/views/authentication/authentication_view.dart';
+import 'package:lebenswiki_app/views/community/community_view.dart';
 import 'package:lebenswiki_app/views/community/search_view.dart';
 import 'package:lebenswiki_app/views/packs/pack_view.dart';
+import 'package:lebenswiki_app/views/packs_new/pack_view_new.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lebenswiki_app/data/enums.dart';
 
@@ -71,8 +69,8 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
         if (token.data.length == 0) {
           return const Scaffold(body: AuthenticationView());
         } else {
-          //return const NavBarWrapper();
-          return const PackPageView();
+          return const NavBarWrapper();
+          //return const PackPageView();
           //return const CreatePack();
         }
       },
@@ -104,8 +102,8 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> _pages = <Widget>[
-      const PackView(),
-      const PackView(),
+      const PackViewNew(),
+      const CommunityView(),
     ];
     return Scaffold(
       drawer: const MenuBar(

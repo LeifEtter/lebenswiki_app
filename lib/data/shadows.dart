@@ -17,6 +17,13 @@ class LebenswikiShadows {
 
   final BoxShadow cardShadow = BoxShadow(
     color: Colors.grey.withOpacity(0.2),
+    spreadRadius: 3,
+    blurRadius: 6,
+    offset: const Offset(1, 2),
+  );
+
+  final BoxShadow cardShadowSave = BoxShadow(
+    color: Colors.grey.withOpacity(0.2),
     spreadRadius: 2,
     blurRadius: 5,
     offset: const Offset(2, 5),

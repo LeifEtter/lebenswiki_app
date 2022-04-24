@@ -57,6 +57,7 @@ flutter:
     - assets/icons/verified_person_filled.png
     - assets/icons/community_filled.png
     - assets/images/zins_graph.png
+    - assets/images/investieren_pack_image.png
 
   fonts:
     - family: Outfit

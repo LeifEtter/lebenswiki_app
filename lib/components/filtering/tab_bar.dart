@@ -15,7 +15,7 @@ Widget buildTabBar(List categories, Function chooseCallback) {
       unselectedLabelColor: LebenswikiColors.categoryLabelColorUnselected,
       isScrollable: true,
       onTap: (value) {
-        chooseCallback;
+        chooseCallback(value);
       },
       tabs: generateTabs(categories),
     ),
