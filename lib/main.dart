@@ -8,10 +8,9 @@ import 'package:lebenswiki_app/components/navigation/router.dart';
 import 'package:lebenswiki_app/data/routing_constants.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/views/authentication/authentication_view.dart';
-import 'package:lebenswiki_app/views/community/community_view.dart';
-import 'package:lebenswiki_app/views/community/search_view.dart';
-import 'package:lebenswiki_app/views/packs/pack_view.dart';
+import 'package:lebenswiki_app/views/shorts/search_view.dart';
 import 'package:lebenswiki_app/views/packs_new/pack_view_new.dart';
+import 'package:lebenswiki_app/views/shorts/short_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lebenswiki_app/data/enums.dart';
 
@@ -103,7 +102,7 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
   Widget build(BuildContext context) {
     final List<Widget> _pages = <Widget>[
       const PackViewNew(),
-      const CommunityView(),
+      const ShortView(),
     ];
     return Scaffold(
       drawer: const MenuBar(

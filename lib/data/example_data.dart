@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class ExampleData {
   List<Map> get pageData1 => [
         {

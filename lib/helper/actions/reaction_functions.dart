@@ -47,7 +47,7 @@ Map convertReactions(reactionData) {
   return reactionMap;
 }
 
-Widget reactionBar(reactionMap, menuCallback, packData) {
+Widget reactionBar(reactionMap, Function menuCallback, packData, isComment) {
   return ListView.builder(
     shrinkWrap: true,
     scrollDirection: Axis.horizontal,
@@ -60,7 +60,10 @@ Widget reactionBar(reactionMap, menuCallback, packData) {
           child: GestureDetector(
             child: Image.asset("assets/emojis/add_reaction.png"),
             onTap: () {
-              menuCallback(MenuType.reactShort, packData);
+              menuCallback(
+                isComment ? MenuType.reactShortComment : MenuType.reactShort,
+                packData,
+              );
               //openMenu();
               /*setState(() {
                 reactionMenuOpen = true;

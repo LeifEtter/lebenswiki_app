@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_shorts.dart';
-import 'package:lebenswiki_app/components/buttons/vote_button.dart';
-import 'package:lebenswiki_app/helper/actions/bookmark_functions.dart';
 import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
 import 'package:lebenswiki_app/helper/actions/vote_functions.dart';
 import 'package:lebenswiki_app/components/card_components/creator_info.dart';
@@ -94,6 +91,7 @@ class _CommentCardState extends State<CommentCard> {
                                             widget.packData["reactions"]),
                                         widget.menuCallback,
                                         widget.packData,
+                                        true,
                                       ),
                                     ),
                                   ],

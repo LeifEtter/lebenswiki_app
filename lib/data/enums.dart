@@ -11,6 +11,7 @@ enum ContentType {
 
 enum MenuType {
   reactShort,
+  reactShortComment,
   moreShort,
   commentShort,
 }

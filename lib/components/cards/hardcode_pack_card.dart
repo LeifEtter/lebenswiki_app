@@ -4,7 +4,6 @@ import 'package:lebenswiki_app/views/packs_new/hardcode_pack.dart';
 import 'package:lebenswiki_app/components/card_components/read_time.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
-import 'package:lebenswiki_app/views/packs/display_pack.dart';
 
 class HardcodePackCard extends StatefulWidget {
   final List packData;

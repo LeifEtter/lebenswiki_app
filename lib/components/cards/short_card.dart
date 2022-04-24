@@ -152,6 +152,7 @@ class _ShortCardState extends State<ShortCard> {
                             convertReactions(widget.packData["reactions"]),
                             widget.menuCallback,
                             widget.packData,
+                            false,
                           ),
                         ),
                       ],

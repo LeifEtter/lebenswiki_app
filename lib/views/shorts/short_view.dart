@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/api/api_comments.dart';
 import 'package:lebenswiki_app/api/api_shorts.dart';
 import 'package:lebenswiki_app/api/api_universal.dart';
 import 'package:lebenswiki_app/components/actions/modal_sheet.dart';
@@ -69,7 +70,10 @@ class _ShortViewState extends State<ShortView> {
         showMoreMenu(packData);
         break;
       case MenuType.reactShort:
-        showReactionMenu(packData);
+        showReactionMenu(packData, false);
+        break;
+      case MenuType.reactShortComment:
+        showReactionMenu(packData, true);
         break;
       default:
       //print("Unknown menuType");
@@ -116,7 +120,7 @@ class _ShortViewState extends State<ShortView> {
     );
   }
 
-  void showReactionMenu(Map packData) {
+  void showReactionMenu(Map packData, bool isComment) {
     showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
@@ -148,7 +152,10 @@ class _ShortViewState extends State<ShortView> {
                   var currentReactionLower = allReactions[index].toLowerCase();
                   return GestureDetector(
                     onTap: () async {
-                      await addReaction(packData["id"], currentReaction);
+                      isComment
+                          ? await addCommentReaction(
+                              packData["id"], currentReaction)
+                          : await addReaction(packData["id"], currentReaction);
                       Navigator.pop(context);
                       reload();
                     },

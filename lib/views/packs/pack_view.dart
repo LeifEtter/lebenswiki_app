@@ -6,7 +6,6 @@ import 'package:lebenswiki_app/data/example_data.dart';
 import 'package:lebenswiki_app/components/cards/hardcode_pack_card.dart';
 import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
 import 'package:lebenswiki_app/components/actions/report_dialog.dart';
-import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/components/filtering/tab_bar.dart';
 import 'package:lebenswiki_app/data/enums.dart';
 import 'package:lebenswiki_app/data/loading.dart';
@@ -79,6 +78,9 @@ class _PackViewState extends State<PackView> {
         showMoreMenu(packData);
         break;
       case MenuType.reactShort:
+        showReactionMenu(packData);
+        break;
+      case MenuType.reactShortComment:
         showReactionMenu(packData);
         break;
       default:
