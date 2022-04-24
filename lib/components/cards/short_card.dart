@@ -116,6 +116,7 @@ class _ShortCardState extends State<ShortCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CreatorInfo(
+                      isComment: false,
                       packData: widget.packData,
                     ),
                     const SizedBox(height: 5),

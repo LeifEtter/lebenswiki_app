@@ -53,7 +53,7 @@ class _DisplayPackState extends State<DisplayPack> {
               const SizedBox(height: 15),
               Padding(
                 padding: const EdgeInsets.only(left: 15.0),
-                child: CreatorInfo(packData: widget.packData),
+                child: CreatorInfo(packData: widget.packData, isComment: false),
               ),
               const SizedBox(height: 25),
               Container(

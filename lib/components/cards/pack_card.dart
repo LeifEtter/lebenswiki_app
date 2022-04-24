@@ -62,6 +62,7 @@ class _PackCardState extends State<PackCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CreatorInfo(
+                        isComment: false,
                         packData: widget.packData,
                       ),
                       const SizedBox(height: 5),

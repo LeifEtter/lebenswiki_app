@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/components/cards/comment_card.dart';
 import 'package:lebenswiki_app/components/cards/short_card.dart';
 import 'package:lebenswiki_app/data/enums.dart';
 
@@ -31,14 +32,20 @@ class _GetContentCommentsState extends State<GetContentComments> {
         var currentComment = widget.comments[index];
         return Column(
           children: [
-            ShortCard(
+            CommentCard(
+              packData: currentComment,
+              voteReload: widget.reload,
+              contentType: ContentType.comments,
+              menuCallback: widget.menuCallback,
+            ),
+            /*ShortCard(
               packData: currentComment,
               voteReload: widget.reload,
               contentType: ContentType.comments,
               commentExpand: () {},
               userId: widget.userId,
               menuCallback: widget.menuCallback,
-            ),
+            ),*/
             const Padding(
               padding: EdgeInsets.only(right: 20.0, left: 20.0),
               child: Divider(),

@@ -28,4 +28,11 @@ class LebenswikiShadows {
     blurRadius: 5,
     offset: const Offset(2, 5),
   );
+
+  final BoxShadow commentCardShadow = const BoxShadow(
+    color: Color.fromRGBO(99, 99, 99, 0.1),
+    blurRadius: 5,
+    spreadRadius: 1,
+    offset: Offset(0, 2),
+  );
 }

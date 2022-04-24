@@ -33,9 +33,7 @@ class _CommentCardState extends State<CommentCard> {
   int userId = 0;
   bool hasUpvoted = false;
   bool hasDownvoted = false;
-  bool reactionMenuOpen = false;
   bool hasReacted = false;
-  bool optionsMenuOpen = false;
 
   bool blockUser = false;
 
@@ -54,7 +52,7 @@ class _CommentCardState extends State<CommentCard> {
             padding: const EdgeInsets.only(top: 5, left: 10.0, right: 10.0),
             child: Container(
               decoration: BoxDecoration(boxShadow: [
-                LebenswikiShadows().cardShadow,
+                LebenswikiShadows().commentCardShadow,
               ]),
               child: Card(
                 shape: RoundedRectangleBorder(
@@ -75,28 +73,19 @@ class _CommentCardState extends State<CommentCard> {
                               children: [
                                 CreatorInfo(
                                   packData: widget.packData,
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  widget.packData["title"],
-                                  style: LebenswikiTextStyles.packTitle,
+                                  isComment: true,
                                 ),
                                 const SizedBox(height: 5),
                                 SizedBox(
                                   width: 270,
                                   child: Text(
-                                    widget.packData["content"],
+                                    widget.packData["commentResponse"],
                                     style: LebenswikiTextStyles.packDescription,
                                   ),
                                 ),
                                 const SizedBox(height: 20),
                                 Row(
                                   children: [
-                                    IconButton(
-                                      constraints: const BoxConstraints(),
-                                      onPressed: () {},
-                                      icon: const Icon(Icons.comment_outlined),
-                                    ),
                                     SizedBox(
                                       height: 30,
                                       width: 200,
@@ -116,34 +105,7 @@ class _CommentCardState extends State<CommentCard> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 5.0),
-                                  child: GestureDetector(
-                                    child: Image.asset(
-                                      isBookmarked(
-                                        snapshot.data,
-                                        widget.contentType,
-                                        widget.packData["bookmarks"],
-                                      )
-                                          ? "assets/icons/bookmark_filled.png"
-                                          : "assets/icons/bookmark.png",
-                                      width: 20.0,
-                                    ),
-                                    onTap: () {
-                                      isBookmarked(
-                                        snapshot.data,
-                                        widget.contentType,
-                                        widget.packData["bookmarks"],
-                                      )
-                                          ? unbookmarkShort(
-                                              widget.packData["id"])
-                                          : bookmarkShort(
-                                              widget.packData["id"]);
-                                      widget.voteReload();
-                                    },
-                                  ),
-                                ),
-                                VoteButtonStack(
+                                /*VoteButtonStack(
                                   userId: snapshot.data,
                                   currentVotes: getVoteCount(
                                     widget.packData["upVote"],
@@ -155,17 +117,13 @@ class _CommentCardState extends State<CommentCard> {
                                       snapshot.data, widget.packData["upVote"]),
                                   hasUpvoted: hasVoted(snapshot.data,
                                       widget.packData["downVote"]),
-                                ),
+                                ),*/
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 5.0),
                                   child: IconButton(
                                     padding: EdgeInsets.zero,
                                     constraints: const BoxConstraints(),
-                                    onPressed: () {
-                                      setState(() {
-                                        optionsMenuOpen = true;
-                                      });
-                                    },
+                                    onPressed: () {},
                                     icon: const Icon(Icons.more_horiz_outlined),
                                   ),
                                 ),
@@ -183,14 +141,6 @@ class _CommentCardState extends State<CommentCard> {
         }
       },
     );
-  }
-
-  void updateReaction(userId, reaction) async {
-    checkReaction(userId, widget.packData["reactions"])
-        ? print("Has already reacted")
-        : await addReaction(widget.packData["id"], reaction);
-    reactionMenuOpen = false;
-    widget.voteReload();
   }
 
   void voteCallback(isUpvote) {

@@ -74,7 +74,7 @@ class _HardcodePackCardState extends State<HardcodePackCard> {
                 ),
                 const Padding(
                   padding: EdgeInsets.only(left: 15.0, top: 10.0),
-                  child: CreatorInfo(packData: {
+                  child: CreatorInfo(isComment: false, packData: {
                     "creationDate": "19. April 2022T",
                     "creator": {
                       "profileImage":

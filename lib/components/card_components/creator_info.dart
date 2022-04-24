@@ -3,10 +3,12 @@ import 'package:lebenswiki_app/data/text_styles.dart';
 
 class CreatorInfo extends StatelessWidget {
   final Map packData;
+  final bool isComment;
 
   const CreatorInfo({
     Key? key,
     required this.packData,
+    required this.isComment,
   }) : super(key: key);
 
   @override
@@ -28,7 +30,7 @@ class CreatorInfo extends StatelessWidget {
         ),
         const SizedBox(width: 5.0),
         Text(
-          "Artikel von ${packData["creator"]["name"]} | $creationDate",
+          "${isComment ? "Kommentar" : "Artikel"} von ${packData["creator"]["name"]} | $creationDate",
           style: LebenswikiTextStyles.publisherInfo,
         ),
       ],
