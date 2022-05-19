@@ -7,6 +7,9 @@ enum ContentType {
   yourShorts,
   comments,
   hardcodePacks,
+  creatorPacks,
+  yourCreatorPacks,
+  draftCreatorPacks,
 }
 
 enum MenuType {

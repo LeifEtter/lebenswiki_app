@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/api_authentication.dart';
+import 'package:lebenswiki_app/components/create/views/your_creator_packs.dart';
 import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/data/loading.dart';
@@ -78,6 +79,11 @@ class _MenuBarState extends State<MenuBar> {
                 }),
                 _buildDrawerItem(
                     Icons.bookmark_outline, "Gespeichert", _routeBookmarks),
+                _buildDrawerItem(
+                  Icons.mode_edit_outline_outlined,
+                  "Deine Lernpacks",
+                  _routeYourCreatorPacks,
+                ),
                 _buildDrawerItem(Icons.mode_edit_outline_outlined,
                     "Deine Shorts", _routeYourShorts),
                 _buildDrawerItem(Icons.phone_outlined, "Kontakt/Feedback",
@@ -163,5 +169,13 @@ class _MenuBarState extends State<MenuBar> {
         builder: (context) => const DeveloperInfoView(),
       ),
     );
+  }
+
+  void _routeYourCreatorPacks() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const YourCreatorPacks(),
+        ));
   }
 }

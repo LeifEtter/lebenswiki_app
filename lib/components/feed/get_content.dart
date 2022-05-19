@@ -5,6 +5,7 @@ import 'package:lebenswiki_app/api/api_universal.dart';
 import 'package:lebenswiki_app/components/cards/pack_card.dart';
 import 'package:lebenswiki_app/components/cards/short_card_minimal.dart';
 import 'package:lebenswiki_app/components/cards/short_card_scaffold.dart';
+import 'package:lebenswiki_app/components/create/api/api_creator_pack.dart';
 import 'package:lebenswiki_app/data/example_data.dart';
 import 'package:lebenswiki_app/views/packs_new/hardcode_pack.dart';
 import 'package:lebenswiki_app/components/cards/hardcode_pack_card.dart';
@@ -183,6 +184,18 @@ class _GetContentState extends State<GetContent> {
       case ContentType.yourShorts:
         packFuture = getCreatorShorts;
         errorText = "Du hast noch keine Shorts veröffentlicht";
+        break;
+      case ContentType.yourCreatorPacks:
+        packFuture = getYourCreatorPacks;
+        errorText = "Du hast noch keine Lernpacks veröffentlicht";
+        break;
+      case ContentType.draftCreatorPacks:
+        packFuture = () {};
+        errorText = "Du hast noch keine Lernpacks entworfen";
+        break;
+      case ContentType.creatorPacks:
+        packFuture = getCreatorPacks;
+        errorText = "Wir haben keine Lernpacks für diese Kategorie gefunden";
         break;
       default:
         break;

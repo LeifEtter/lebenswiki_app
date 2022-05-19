@@ -18,10 +18,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 120,
+      height: 95,
       child: BottomNavigationBar(
         backgroundColor: Colors.white,
         elevation: 10.0,
+        selectedFontSize: 0,
         showSelectedLabels: false,
         selectedItemColor: Colors.blue,
         showUnselectedLabels: false,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/pack/1-template_page.dart';
+import 'package:lebenswiki_app/components/create/page_creation.dart';
+import 'package:lebenswiki_app/components/create/test_firebase.dart';
 
 class TestParent extends StatefulWidget {
   const TestParent({Key? key}) : super(key: key);
@@ -14,10 +15,7 @@ class _TestParentState extends State<TestParent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageTemplate(
-        pageData: pageData,
-        reload: _reload,
-      ),
+      body: FireBaseTest(),
     );
   }
 

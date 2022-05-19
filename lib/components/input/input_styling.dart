@@ -90,3 +90,17 @@ class _AuthInputBiographyState extends State<AuthInputBiography> {
     );
   }
 }
+
+class InputStylingCreator extends StatefulWidget {
+  const InputStylingCreator({Key? key}) : super(key: key);
+
+  @override
+  State<InputStylingCreator> createState() => _InputStylingCreatorState();
+}
+
+class _InputStylingCreatorState extends State<InputStylingCreator> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}

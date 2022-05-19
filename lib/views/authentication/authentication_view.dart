@@ -246,7 +246,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
   }
 
   void navigateFeed() {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => const Scaffold(

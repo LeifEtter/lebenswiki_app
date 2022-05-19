@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/components/create/reload_scaffold.dart';
 import 'package:lebenswiki_app/components/navigation/bottom_nav_bar.dart';
 import 'package:lebenswiki_app/components/navigation/main_appbar.dart';
 import 'package:lebenswiki_app/components/navigation/menu_bar.dart';
@@ -8,14 +9,21 @@ import 'package:lebenswiki_app/components/navigation/router.dart';
 import 'package:lebenswiki_app/data/routing_constants.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/views/authentication/authentication_view.dart';
+import 'package:lebenswiki_app/views/packs_new/hardcode_pack.dart';
 import 'package:lebenswiki_app/views/shorts/search_view.dart';
 import 'package:lebenswiki_app/views/packs_new/pack_view_new.dart';
 import 'package:lebenswiki_app/views/shorts/short_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lebenswiki_app/data/enums.dart';
+import 'package:flutter/services.dart';
+import 'package:lebenswiki_api_helper/lebenswiki_api_helper.dart' as api_helper;
 
 final tokenProvider = Provider((_) => 'Some token');
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
   runApp(
     const MyApp(),
   );
@@ -69,8 +77,8 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
           return const Scaffold(body: AuthenticationView());
         } else {
           return const NavBarWrapper();
-          //return const PackPageView();
-          //return const CreatePack();
+          //return const PackPageView([]);
+          //return const TestParent();
         }
       },
     );

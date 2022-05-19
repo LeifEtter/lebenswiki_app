@@ -1,0 +1,105 @@
+import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/components/feed/get_content.dart';
+import 'package:lebenswiki_app/components/navigation/top_nav.dart';
+import 'package:lebenswiki_app/data/enums.dart';
+
+class YourCreatorPacks extends StatefulWidget {
+  final int chosenTab;
+  const YourCreatorPacks({
+    Key? key,
+    this.chosenTab = 0,
+  }) : super(key: key);
+
+  @override
+  _YourCreatorPacksState createState() => _YourCreatorPacksState();
+}
+
+class _YourCreatorPacksState extends State<YourCreatorPacks>
+    with TickerProviderStateMixin {
+  int chosenTab = 0;
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.index = widget.chosenTab;
+    chosenTab = widget.chosenTab;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            const TopNav(pageName: "Deine Lernpacks", backName: "Menu"),
+            const SizedBox(height: 0),
+            SizedBox(
+              height: 50,
+              child: TabBar(
+                controller: _tabController,
+                tabs: const [
+                  Tab(
+                    child: Text(
+                      "Veröffentlichte",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 17.0,
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      "Entwürfe",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 17.0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20.0),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  Column(
+                    children: [
+                      GetContent(
+                        reload: reload,
+                        contentType: ContentType.yourShorts,
+                        menuCallback: (MenuType menuType, Map packData) {},
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      GetContent(
+                        reload: reload,
+                        contentType: ContentType.drafts,
+                        menuCallback: (MenuType menuType, Map packData) {},
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void toggleTab() {
+    chosenTab == 0 ? chosenTab = 1 : chosenTab = 0;
+    setState(() {});
+  }
+
+  void reload(newChosenTab) {
+    _tabController.index = newChosenTab;
+    setState(() {});
+  }
+}
