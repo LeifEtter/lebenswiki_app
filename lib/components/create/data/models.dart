@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
 
-enum Type {
+enum ItemType {
   title,
   list,
   quiz,
   image,
+  text,
 }
 
-class CreatorStyling {
+/*class CreatorStyling {
   final int? size;
   final Color? color;
   final FontWeight? weight;
@@ -18,18 +18,28 @@ class CreatorStyling {
     this.color,
     this.weight,
   });
+}*/
+
+class ItemInput {
+  String value;
+  TextEditingController? controller;
+
+  ItemInput({
+    required this.value,
+    this.controller,
+  });
 }
 
 class CreatorItem {
-  final Type type;
-  final String headContent;
-  final List? bodyContent;
+  final ItemType type;
+  final ItemInput headContent;
+  final List<ItemInput> bodyContent;
   //final List? styling;
 
   CreatorItem({
     required this.type,
     required this.headContent,
-    this.bodyContent,
+    required this.bodyContent,
     //this.styling,
   });
 
@@ -51,6 +61,15 @@ class CreatorPage {
   CreatorPage.fromSnapshot(AsyncSnapshot snapshot)
       : pageNumber = snapshot.data["pageNumber"],
         items = snapshot.data["items"];
+
+  CreatorPage.fromJson(Map json)
+      : pageNumber = json["pageNumber"],
+        items = json["items"];
+
+  Map<String, dynamic> toJson() => {
+        "pageNumber": pageNumber,
+        "items": items,
+      };
 }
 
 class CreatorPack {

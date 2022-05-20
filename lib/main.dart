@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/components/create/reload_scaffold.dart';
+import 'package:lebenswiki_app/components/create/views/your_creator_packs.dart';
 import 'package:lebenswiki_app/components/navigation/bottom_nav_bar.dart';
 import 'package:lebenswiki_app/components/navigation/main_appbar.dart';
 import 'package:lebenswiki_app/components/navigation/menu_bar.dart';
@@ -76,7 +76,8 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
         if (token.data.length == 0) {
           return const Scaffold(body: AuthenticationView());
         } else {
-          return const NavBarWrapper();
+          //return const NavBarWrapper();
+          return YourCreatorPacks();
           //return const PackPageView([]);
           //return const TestParent();
         }

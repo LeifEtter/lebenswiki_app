@@ -80,7 +80,7 @@ class _MenuBarState extends State<MenuBar> {
                 _buildDrawerItem(
                     Icons.bookmark_outline, "Gespeichert", _routeBookmarks),
                 _buildDrawerItem(
-                  Icons.mode_edit_outline_outlined,
+                  Icons.my_library_books_outlined,
                   "Deine Lernpacks",
                   _routeYourCreatorPacks,
                 ),

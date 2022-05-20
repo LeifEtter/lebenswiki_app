@@ -1,4 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
+import 'package:lebenswiki_app/components/create/data/models.dart';
+import 'package:lebenswiki_app/components/create/views/creator_overview.dart';
 import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
 import 'package:lebenswiki_app/data/enums.dart';
@@ -73,6 +78,19 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
                         contentType: ContentType.yourShorts,
                         menuCallback: (MenuType menuType, Map packData) {},
                       ),
+                      SizedBox(height: 30),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: LebenswikiBlueButton(
+                                  text: "Erstelle ein eigenes Lernpack",
+                                  callback: _routeCreator),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                   Column(
@@ -81,6 +99,19 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
                         reload: reload,
                         contentType: ContentType.drafts,
                         menuCallback: (MenuType menuType, Map packData) {},
+                      ),
+                      SizedBox(height: 30),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: LebenswikiBlueButton(
+                                  text: "Erstelle ein eigenes Lernpack",
+                                  callback: _routeCreator),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -101,5 +132,31 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
   void reload(newChosenTab) {
     _tabController.index = newChosenTab;
     setState(() {});
+  }
+
+  void _routeCreator() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: ((context) => CreatorOverview(
+                  pack: CreatorPack(
+                    title: "",
+                    description: "",
+                    pages: [
+                      _examplePage().toJson(),
+                    ],
+                  ),
+                ))));
+  }
+
+  CreatorPage _examplePage() {
+    return CreatorPage(pageNumber: 1, items: [
+      CreatorItem(
+          type: ItemType.list,
+          headContent: ItemInput(
+            value: "Example",
+          ),
+          bodyContent: []),
+    ]);
   }
 }

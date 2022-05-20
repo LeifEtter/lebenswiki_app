@@ -26,6 +26,7 @@ dependencies:
   lebenswiki_api_helper: 
     path: ../lebenswiki_api_helper
   json_annotation: ^4.4.0
+  expandable_page_view: ^1.0.14
 
 dev_dependencies:
   flutter_test:
@@ -35,7 +36,6 @@ dev_dependencies:
   flutter_lints: ^1.0.0
 
 flutter:
-
   uses-material-design: true
 
   assets:
