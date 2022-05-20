@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:lebenswiki_app/components/create/data/models.dart';
+import 'package:lebenswiki_app/components/create/styling/styling_edit.dart';
 import 'package:lebenswiki_app/testing/border.dart';
 
 class PageOverview extends StatefulWidget {
@@ -19,6 +20,7 @@ class PageOverview extends StatefulWidget {
 
 class _PageOverviewState extends State<PageOverview> {
   late CreatorPage page;
+  EditDecoration decoration = EditDecoration();
 
   @override
   void initState() {
@@ -29,20 +31,23 @@ class _PageOverviewState extends State<PageOverview> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 50),
-        _buildPage(),
-        buildAddButton(),
-        _buildSaveButton(),
-        TextButton(
-          child: const Text("Refresh"),
-          onPressed: () {
-            setState(() {});
-          },
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10),
+          _buildPage(),
+          buildAddButton(),
+          _buildSaveButton(),
+          TextButton(
+            child: const Text("Refresh"),
+            onPressed: () {
+              setState(() {});
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -52,7 +57,21 @@ class _PageOverviewState extends State<PageOverview> {
       shrinkWrap: true,
       itemCount: page.items.length,
       itemBuilder: (BuildContext context, int index) {
-        return _evalContentNew(page.items[index], index);
+        return Container(
+          child: Row(
+            children: [
+              Expanded(child: _evalContentNew(page.items[index], index)),
+              IconButton(
+                icon: Icon(Icons.delete),
+                color: Colors.red,
+                onPressed: () {
+                  page.items.removeAt(index);
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+        );
       },
     );
   }
@@ -93,8 +112,10 @@ class _PageOverviewState extends State<PageOverview> {
           ],
         );
       case ItemType.title:
-        return TextFormField(
-          controller: item.headContent.controller,
+        return decoration.title(
+          child: TextFormField(
+            controller: item.headContent.controller,
+          ),
         );
       case ItemType.image:
         return TextFormField(

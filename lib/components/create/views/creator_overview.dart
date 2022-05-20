@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/components/create/data/models.dart';
+import 'package:lebenswiki_app/components/create/styling/styling_edit.dart';
 import 'package:lebenswiki_app/components/create/views/page_overview.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
 import 'package:lebenswiki_app/data/colors.dart';
@@ -21,6 +22,7 @@ class CreatorOverview extends StatefulWidget {
 
 class _CreatorOverviewState extends State<CreatorOverview> {
   final PageController _pageController = PageController();
+  final EditDecoration decoration = EditDecoration();
   late CreatorPack pack;
   int _selectedPage = 0;
 
@@ -43,7 +45,7 @@ class _CreatorOverviewState extends State<CreatorOverview> {
               ],
             ),
             child: const Padding(
-              padding: EdgeInsets.only(top: 50.0, bottom: 20.0),
+              padding: EdgeInsets.only(top: 50.0, bottom: 0.0),
               child: TopNav(pageName: "Dein Pack", backName: "Pack Liste"),
             ),
           ),
@@ -68,12 +70,18 @@ class _CreatorOverviewState extends State<CreatorOverview> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 20),
                 ExpandablePageView(
                   controller: _pageController,
                   children: List.generate(widget.pack.pages.length, (index) {
-                    return PageOverview(
-                      page: CreatorPage.fromJson(widget.pack.pages[index]),
-                      reload: reload,
+                    return Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: decoration.page(
+                        child: PageOverview(
+                          page: CreatorPage.fromJson(widget.pack.pages[index]),
+                          reload: reload,
+                        ),
+                      ),
                     );
                   }),
                 ),
