@@ -131,7 +131,9 @@ class _EditorState extends State<Editor> {
     );
   }
 
-  void _saveCallback({page, index}) {}
+  void _saveCallback({page, index}) {
+    print("save");
+  }
 
   Widget _buildPageBar() {
     return ListView.builder(
