@@ -1,28 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/components/create/api/api_creator_pack.dart';
 import 'package:lebenswiki_app/components/create/data/models.dart';
 import 'package:lebenswiki_app/components/create/styling/styling_edit.dart';
-import 'package:lebenswiki_app/components/create/views/page_overview.dart';
+import 'package:lebenswiki_app/components/create/components/edit_page.dart';
+import 'package:lebenswiki_app/components/create/views/editor_settings.dart';
+import 'package:lebenswiki_app/components/create/views/viewer.dart';
+import 'package:lebenswiki_app/components/create/views/your_creator_packs.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
 import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
 import 'package:lebenswiki_app/testing/border.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 
-class CreatorOverview extends StatefulWidget {
+class Editor extends StatefulWidget {
   final CreatorPack pack;
 
-  const CreatorOverview({
+  const Editor({
     Key? key,
     required this.pack,
   }) : super(key: key);
 
   @override
-  _CreatorOverviewState createState() => _CreatorOverviewState();
+  _EditorState createState() => _EditorState();
 }
 
-class _CreatorOverviewState extends State<CreatorOverview> {
+class _EditorState extends State<Editor> {
   final PageController _pageController = PageController();
   final EditDecoration decoration = EditDecoration();
+  final List saveControllers = [];
   late CreatorPack pack;
   int _selectedPage = 0;
 
@@ -36,31 +41,62 @@ class _CreatorOverviewState extends State<CreatorOverview> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                LebenswikiShadows().fancyShadow,
-              ],
-            ),
-            child: const Padding(
-              padding: EdgeInsets.only(top: 50.0, bottom: 0.0),
-              child: TopNav(pageName: "Dein Pack", backName: "Pack Liste"),
-            ),
+          TopNavCustom(
+            pageName: "Seiten Übersicht",
+            backName: "Informationen",
+            nextName: "Speichern",
+            previousCallback: _backToSettings,
+            nextCallback: _goToYourPacks,
           ),
           Expanded(
             child: ListView(
+              padding: const EdgeInsets.only(top: 20),
               children: [
-                const Text(
-                  "Seiten",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.w500,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      /*Row(
+                        children: [
+                          _saveButton(),
+                          Text(
+                            "Speichern",
+                            style: _style2(),
+                          )
+                        ],
+                      ),*/
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CreatorPackViewer(pack: pack),
+                              ));
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 10.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15.0),
+                            boxShadow: [LebenswikiShadows().fancyShadow],
+                          ),
+                          child: Row(
+                            children: [
+                              Text("Vorschau", style: _style2()),
+                              const Icon(Icons.preview, size: 30),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 80),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -78,8 +114,10 @@ class _CreatorOverviewState extends State<CreatorOverview> {
                       padding: const EdgeInsets.all(20.0),
                       child: decoration.page(
                         child: PageOverview(
-                          page: CreatorPage.fromJson(widget.pack.pages[index]),
+                          page: widget.pack.pages[index],
                           reload: reload,
+                          saveCallback: _saveCallback,
+                          selfIndex: index,
                         ),
                       ),
                     );
@@ -92,6 +130,8 @@ class _CreatorOverviewState extends State<CreatorOverview> {
       ),
     );
   }
+
+  void _saveCallback({page, index}) {}
 
   Widget _buildPageBar() {
     return ListView.builder(
@@ -107,9 +147,8 @@ class _CreatorOverviewState extends State<CreatorOverview> {
                 _selectedPage = index;
                 index == pack.pages.length
                     ? {
-                        pack.pages.add(
-                            CreatorPage(pageNumber: index + 1, items: [])
-                                .toJson()),
+                        pack.pages
+                            .add(CreatorPage(pageNumber: index + 1, items: [])),
                         setState(() {
                           _selectedPage = index;
                           _pageController.animateToPage(
@@ -162,16 +201,6 @@ class _CreatorOverviewState extends State<CreatorOverview> {
     );
   }
 
-  Widget _pageScaffold(child) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Card(
-        elevation: 2.0,
-        child: child,
-      ),
-    );
-  }
-
   Widget _settingUpPage() {
     return Column(
       children: [
@@ -180,5 +209,51 @@ class _CreatorOverviewState extends State<CreatorOverview> {
         TextFormField(),
       ],
     );
+  }
+
+  TextStyle _style2() {
+    return const TextStyle(
+      fontSize: 20.0,
+      fontWeight: FontWeight.w500,
+    );
+  }
+
+  Widget _saveButton() {
+    return IconButton(
+      icon: const Icon(Icons.save, size: 30),
+      onPressed: () {
+        updateCreatorPack(pack: pack, id: pack.id);
+        setState(() {});
+      },
+    );
+  }
+
+  void _goToYourPacks() {
+    updateCreatorPack(pack: pack, id: pack.id);
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: ((context) => const YourCreatorPacks())));
+  }
+
+  void _backToSettings() {
+    Navigator.of(context).push(_backRoute());
+  }
+
+  Route _backRoute() {
+    return PageRouteBuilder(
+        pageBuilder: ((context, animation, secondaryAnimation) =>
+            EditorSettings(pack: pack)),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(-1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.ease;
+
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        });
   }
 }

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/api_shorts.dart';
 import 'package:lebenswiki_app/api/api_universal.dart';
 import 'package:lebenswiki_app/components/actions/modal_sheet.dart';
-import 'package:lebenswiki_app/data/example_data.dart';
-import 'package:lebenswiki_app/components/cards/hardcode_pack_card.dart';
 import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
 import 'package:lebenswiki_app/components/actions/report_dialog.dart';
 import 'package:lebenswiki_app/components/feed/get_content.dart';
@@ -40,14 +38,10 @@ class _PackViewNewState extends State<PackViewNew> {
                       snapshot.data,
                       _onTabbarChoose,
                     ),
-                    ListView(
-                      shrinkWrap: true,
-                      children: [
-                        HardcodePackCard(
-                          packData: ExampleData().packData,
-                          reload: reload,
-                        )
-                      ],
+                    GetContent(
+                      reload: reload,
+                      contentType: ContentType.creatorPacks,
+                      menuCallback: _menuCallback,
                     ),
                   ],
                 ),

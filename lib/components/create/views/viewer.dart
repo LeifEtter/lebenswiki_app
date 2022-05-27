@@ -1,50 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/components/create/data/models.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
-import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/helper/packs/evaluating_elements.dart';
+import 'package:lebenswiki_app/testing/border.dart';
 
-class PackPageView extends StatefulWidget {
-  final List packData;
+class CreatorPackViewer extends StatefulWidget {
+  final CreatorPack pack;
 
-  const PackPageView({
+  const CreatorPackViewer({
     Key? key,
-    required this.packData,
-  }) : super(
-          key: key,
-        );
+    required this.pack,
+  }) : super(key: key);
 
   @override
-  _PackPageViewState createState() => _PackPageViewState();
+  State<CreatorPackViewer> createState() => _CreatorPackViewerState();
 }
 
-class _PackPageViewState extends State<PackPageView> {
-  List<Widget> pageList = [];
+class _CreatorPackViewerState extends State<CreatorPackViewer> {
   int currentPage = 0;
+  late CreatorPack pack;
   late double progressBarWidth;
   late double indicatorSectionWidth;
 
   @override
   void initState() {
+    pack = widget.pack;
     super.initState();
-    for (List pageData in widget.packData) {
-      pageList.add(
-        _buildPage(pageData),
-      );
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     progressBarWidth = MediaQuery.of(context).size.width - 40;
-    indicatorSectionWidth = progressBarWidth / (pageList.length - 1);
+    indicatorSectionWidth = progressBarWidth / (pack.pages.length);
     return Scaffold(
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 50.0, bottom: 100.0),
-            child: TopNav(pageName: "Investieren", backName: "Packs"),
+          Padding(
+            padding: const EdgeInsets.only(top: 50.0, bottom: 10.0),
+            child: TopNav(pageName: widget.pack.title, backName: "Packs"),
           ),
+          const SizedBox(height: 50),
           Expanded(
             child: SizedBox(
               height: 500,
@@ -54,12 +49,13 @@ class _PackPageViewState extends State<PackPageView> {
                     currentPage = value;
                   });
                 },
-                children: pageList,
+                children: List.generate(pack.pages.length,
+                    (index) => _buildPage(pack.pages[index])),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 100.0, top: 100),
+            padding: const EdgeInsets.only(bottom: 50.0, top: 50),
             child: _buildProgressBar(),
           ),
         ],
@@ -67,38 +63,43 @@ class _PackPageViewState extends State<PackPageView> {
     );
   }
 
-  Widget _buildPage(List pageData) {
+  Widget _buildPage(CreatorPage pageData) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Card(
         color: Colors.white,
         elevation: 2.0,
-        child: Column(
+        child: ListView(
+          padding: const EdgeInsets.only(top: 0),
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
-                Padding(
-                  padding: EdgeInsets.only(top: 15.0, right: 15.0),
-                  child: Icon(
-                    Icons.bookmark,
-                    size: 40.0,
-                  ),
-                ),
-              ],
-            ),
+            _topRow(),
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               padding: const EdgeInsets.only(left: 20.0, right: 10.0, top: 5.0),
               shrinkWrap: true,
-              itemCount: pageData.length,
+              itemCount: pageData.items.length,
               itemBuilder: (BuildContext context, int index) {
-                return evalPageElement(pageData[index]);
+                return evalPageElement(pageData.items[index]);
               },
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _topRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: const [
+        Padding(
+          padding: EdgeInsets.only(top: 15.0, right: 15.0),
+          child: Icon(
+            Icons.bookmark,
+            size: 40.0,
+          ),
+        ),
+      ],
     );
   }
 
@@ -117,7 +118,8 @@ class _PackPageViewState extends State<PackPageView> {
               borderRadius: BorderRadius.circular(15.0),
               color: const Color.fromRGBO(115, 148, 192, 1),
             ),
-            width: indicatorSectionWidth * currentPage,
+            //Fix indicator section width
+            width: indicatorSectionWidth * (currentPage + 1),
             height: 10,
             duration: const Duration(milliseconds: 200),
           ),

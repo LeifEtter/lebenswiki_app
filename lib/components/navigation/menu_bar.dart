@@ -103,6 +103,14 @@ class _MenuBarState extends State<MenuBar> {
                   ),
                 ),
                 const Divider(),
+                Image.network(
+                    "https://i.ibb.co/74PBzW8/6207c565b83821547c42e94a-BMFSFJ-gefo-rdert-vom.jpg%22%20alt=%226207c565b83821547c42e94a-BMFSFJ-gefo-rdert-vom"),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 50.0),
+                  child: Image.network(
+                    "https://i.ibb.co/Bf24khm/jugendstrategie-logo-aktionsplan-1.png",
+                  ),
+                ),
               ],
             );
           }
@@ -176,6 +184,7 @@ class _MenuBarState extends State<MenuBar> {
         context,
         MaterialPageRoute(
           builder: (context) => const YourCreatorPacks(),
+          //builder: (context) => Container(),
         ));
   }
 }

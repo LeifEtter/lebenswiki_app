@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/components/create/views/feed.dart';
 import 'package:lebenswiki_app/components/create/views/your_creator_packs.dart';
 import 'package:lebenswiki_app/components/navigation/bottom_nav_bar.dart';
 import 'package:lebenswiki_app/components/navigation/main_appbar.dart';
@@ -9,9 +10,8 @@ import 'package:lebenswiki_app/components/navigation/router.dart';
 import 'package:lebenswiki_app/data/routing_constants.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/views/authentication/authentication_view.dart';
-import 'package:lebenswiki_app/views/packs_new/hardcode_pack.dart';
 import 'package:lebenswiki_app/views/shorts/search_view.dart';
-import 'package:lebenswiki_app/views/packs_new/pack_view_new.dart';
+import 'package:lebenswiki_app/components/create/views/feed.dart';
 import 'package:lebenswiki_app/views/shorts/short_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lebenswiki_app/data/enums.dart';
@@ -76,8 +76,8 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
         if (token.data.length == 0) {
           return const Scaffold(body: AuthenticationView());
         } else {
-          //return const NavBarWrapper();
-          return YourCreatorPacks();
+          return const NavBarWrapper();
+          //return YourCreatorPacks();
           //return const PackPageView([]);
           //return const TestParent();
         }
@@ -100,6 +100,7 @@ class NavBarWrapper extends StatefulWidget {
 
 class _NavBarWrapperState extends State<NavBarWrapper> {
   int _currentIndex = 0;
+  final PageController pageController = PageController();
 
   @override
   void initState() {
@@ -117,7 +118,7 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
       drawer: const MenuBar(
         profileData: {"profileName": "Ella Peters", "userName": "@ella"},
       ),
-      floatingActionButton: const AddButton(),
+      floatingActionButton: dialAddButton(context),
       backgroundColor: Colors.white,
       appBar: MainAppBar(
         searchRoute: _searchRoute,
@@ -126,12 +127,21 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
         onItemTapped: onItemTapped,
         currentIndex: _currentIndex,
       ),
-      body: _pages.elementAt(_currentIndex),
+      body: PageView(
+        controller: pageController,
+        children: _pages,
+        onPageChanged: (index) {
+          _currentIndex = index;
+          setState(() {});
+        },
+      ),
     );
   }
 
   void onItemTapped(int index) {
     setState(() {
+      pageController.animateToPage(index,
+          duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
       _currentIndex = index;
     });
   }

@@ -25,6 +25,22 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
             height: 20.0,
           ),
           Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              children: [
+                Image.network(
+                  "https://i.ibb.co/74PBzW8/6207c565b83821547c42e94a-BMFSFJ-gefo-rdert-vom.jpg%22%20alt=%226207c565b83821547c42e94a-BMFSFJ-gefo-rdert-vom",
+                  width: MediaQuery.of(context).size.width * 0.4,
+                ),
+                const SizedBox(width: 20),
+                Image.network(
+                  "https://i.ibb.co/Bf24khm/jugendstrategie-logo-aktionsplan-1.png",
+                  width: MediaQuery.of(context).size.width * 0.4,
+                ),
+              ],
+            ),
+          ),
+          Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

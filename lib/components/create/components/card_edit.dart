@@ -1,0 +1,167 @@
+import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/components/create/api/api_creator_pack.dart';
+import 'package:lebenswiki_app/components/create/data/models.dart';
+import 'package:lebenswiki_app/components/create/views/editor.dart';
+import 'package:lebenswiki_app/components/create/views/editor_settings.dart';
+import 'package:lebenswiki_app/components/create/views/viewer.dart';
+import 'package:lebenswiki_app/data/shadows.dart';
+import 'package:lebenswiki_app/data/text_styles.dart';
+
+class CreatorPackCardEdit extends StatefulWidget {
+  final CreatorPack pack;
+  final Function reload;
+
+  const CreatorPackCardEdit({
+    Key? key,
+    required this.pack,
+    required this.reload,
+  }) : super(key: key);
+
+  @override
+  State<CreatorPackCardEdit> createState() => _CreatorPackCardEditState();
+}
+
+class _CreatorPackCardEditState extends State<CreatorPackCardEdit> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding:
+          const EdgeInsets.only(top: 10, bottom: 10, left: 10.0, right: 10.0),
+      child: Container(
+        decoration: BoxDecoration(boxShadow: [
+          LebenswikiShadows().cardShadow,
+        ]),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          elevation: 0,
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => EditorSettings(pack: widget.pack)),
+              );
+            },
+            child: Column(
+              children: [
+                Stack(
+                  children: [
+                    widget.pack.titleImage != ""
+                        ? Container(
+                            height: 150,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                topRight: Radius.circular(10.0),
+                                topLeft: Radius.circular(10.0),
+                              ),
+                              image: DecorationImage(
+                                fit: BoxFit.fitWidth,
+                                image: NetworkImage(widget.pack.titleImage),
+                              ),
+                            ),
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                height: 150,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(10.0),
+                                    topLeft: Radius.circular(10.0),
+                                  ),
+                                ),
+                                child:
+                                    Center(child: Text("Füge ein bild hinzu")),
+                              ),
+                            ],
+                          ),
+                    Positioned.fill(
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: GestureDetector(
+                          onTap: () {
+                            publishPack(id: widget.pack.id);
+                            widget.reload();
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            child: Icon(Icons.publish),
+                            decoration: BoxDecoration(
+                              boxShadow: [LebenswikiShadows().fancyShadow],
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: GestureDetector(
+                          onTap: () {
+                            deletePack(id: widget.pack.id);
+                            widget.reload();
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            child: const Icon(Icons.delete),
+                            decoration: BoxDecoration(
+                              boxShadow: [LebenswikiShadows().fancyShadow],
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                widget.pack.titleImage == ""
+                    ? Divider(
+                        thickness: 2,
+                      )
+                    : Container(),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 20.0, top: 10.0, right: 20.0, bottom: 20.0),
+                  child: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /*CreatorInfo(
+                            isComment: false,
+                            packData: widget.packData,
+                          ),*/
+                          const SizedBox(height: 5),
+                          Text(
+                            widget.pack.title,
+                            style: LebenswikiTextStyles.packTitle,
+                          ),
+                          const SizedBox(height: 5),
+                          Container(
+                            width: 350,
+                            child: Text(
+                              widget.pack.description,
+                              style: LebenswikiTextStyles.packDescription,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -1,12 +1,16 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
+import 'package:lebenswiki_app/components/create/api/api_creator_pack.dart';
+import 'package:lebenswiki_app/components/create/data/initial_data.dart';
 import 'package:lebenswiki_app/components/create/data/models.dart';
-import 'package:lebenswiki_app/components/create/views/creator_overview.dart';
+import 'package:lebenswiki_app/components/create/views/editor.dart';
+import 'package:lebenswiki_app/components/create/views/editor_settings.dart';
 import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
+import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/enums.dart';
+import 'package:lebenswiki_app/data/shadows.dart';
+import 'package:lebenswiki_app/main.dart';
 
 class YourCreatorPacks extends StatefulWidget {
   final int chosenTab;
@@ -32,13 +36,18 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
     chosenTab = widget.chosenTab;
   }
 
+  void _home() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: ((context) => NavBarWrapper())));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
-            const TopNav(pageName: "Deine Lernpacks", backName: "Menu"),
+            const TopNavYour(pageName: "Deine Lernpacks", backName: "Menu"),
             const SizedBox(height: 0),
             SizedBox(
               height: 50,
@@ -75,44 +84,22 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
                     children: [
                       GetContent(
                         reload: reload,
-                        contentType: ContentType.yourShorts,
+                        contentType: ContentType.yourCreatorPacksPublished,
                         menuCallback: (MenuType menuType, Map packData) {},
                       ),
-                      SizedBox(height: 30),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: LebenswikiBlueButton(
-                                  text: "Erstelle ein eigenes Lernpack",
-                                  callback: _routeCreator),
-                            ),
-                          ],
-                        ),
-                      ),
+                      const SizedBox(height: 30),
+                      _erstelleLernpack(),
                     ],
                   ),
                   Column(
                     children: [
                       GetContent(
                         reload: reload,
-                        contentType: ContentType.drafts,
+                        contentType: ContentType.yourCreatorPacks,
                         menuCallback: (MenuType menuType, Map packData) {},
                       ),
-                      SizedBox(height: 30),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: LebenswikiBlueButton(
-                                  text: "Erstelle ein eigenes Lernpack",
-                                  callback: _routeCreator),
-                            ),
-                          ],
-                        ),
-                      ),
+                      const SizedBox(height: 30),
+                      _erstelleLernpack(),
                     ],
                   ),
                 ],
@@ -124,39 +111,55 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
     );
   }
 
+  Widget _erstelleLernpack() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+              color: LebenswikiColors.blue,
+              boxShadow: [LebenswikiShadows().fancyShadow]),
+          child: TextButton(
+            onPressed: () {
+              _routeCreator();
+            },
+            child: const Text(
+              "Erstelle dein eigenes Lernpack",
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   void toggleTab() {
     chosenTab == 0 ? chosenTab = 1 : chosenTab = 0;
     setState(() {});
   }
 
-  void reload(newChosenTab) {
-    _tabController.index = newChosenTab;
+  void reload() {
     setState(() {});
   }
 
   void _routeCreator() {
-    Navigator.push(
+    //Create Initial Pack
+    createCreatorPack(pack: initialPack()).then((id) {
+      CreatorPack packGive = initialPack();
+      packGive.id = id;
+      Navigator.push(
         context,
         MaterialPageRoute(
-            builder: ((context) => CreatorOverview(
-                  pack: CreatorPack(
-                    title: "",
-                    description: "",
-                    pages: [
-                      _examplePage().toJson(),
-                    ],
-                  ),
-                ))));
-  }
-
-  CreatorPage _examplePage() {
-    return CreatorPage(pageNumber: 1, items: [
-      CreatorItem(
-          type: ItemType.list,
-          headContent: ItemInput(
-            value: "Example",
-          ),
-          bodyContent: []),
-    ]);
+          builder: ((context) => EditorSettings(
+                pack: packGive,
+              )),
+        ),
+      );
+    });
   }
 }

@@ -28,6 +28,12 @@ class ItemInput {
     required this.value,
     this.controller,
   });
+
+  ItemInput.fromResponse(Map json) : value = json["value"];
+
+  Map<String, dynamic> toJson() => {
+        "value": value,
+      };
 }
 
 class CreatorItem {
@@ -43,10 +49,18 @@ class CreatorItem {
     //this.styling,
   });
 
-  CreatorItem.fromSnapshot(AsyncSnapshot snapshot)
-      : type = snapshot.data["type"],
-        headContent = snapshot.data["headContent"],
-        bodyContent = snapshot.data["bodyContent"];
+  Map<String, dynamic> toJson() => {
+        "type": type.toString(),
+        "headContent": headContent.toJson(),
+        "bodyContent": List<dynamic>.from(
+            bodyContent.map((ItemInput input) => input.toJson()))
+      };
+
+  CreatorItem.fromResponse(Map json)
+      : type = ItemType.values.firstWhere((e) => e.toString() == json["type"]),
+        headContent = ItemInput(value: json["headContent"]["value"]),
+        bodyContent = List<ItemInput>.from(
+            json["bodyContent"].map((input) => ItemInput.fromResponse(input)));
 }
 
 class CreatorPage {
@@ -58,39 +72,60 @@ class CreatorPage {
     required this.items,
   });
 
-  CreatorPage.fromSnapshot(AsyncSnapshot snapshot)
-      : pageNumber = snapshot.data["pageNumber"],
-        items = snapshot.data["items"];
-
-  CreatorPage.fromJson(Map json)
+  CreatorPage.fromResponse(Map json)
       : pageNumber = json["pageNumber"],
-        items = json["items"];
+        /*items = List<CreatorItem>.from(
+            json["items"].map((item) => CreatorItem.fromResponse(item)));*/
+        items = List<CreatorItem>.from(json["items"].map((item) {
+          return CreatorItem.fromResponse(item);
+        }));
 
   Map<String, dynamic> toJson() => {
         "pageNumber": pageNumber,
-        "items": items,
+        "items":
+            List<dynamic>.from(items.map((CreatorItem item) => item.toJson())),
       };
 }
 
 class CreatorPack {
-  final String title;
-  final String description;
-  final List pages;
+  int id;
+  String title;
+  String description;
+  String titleImage;
+  bool published;
+  Map creator;
+  final List<int> categories;
+  final List<CreatorPage> pages;
 
   CreatorPack({
+    this.id = 0,
+    this.creator = const {},
     required this.title,
     required this.description,
     required this.pages,
+    required this.categories,
+    required this.titleImage,
+    required this.published,
   });
 
   Map<String, dynamic> toJson() => {
         'title': title,
         'description': description,
-        'pages': pages,
+        'titleImage': titleImage,
+        'published': published,
+        'categories': [1],
+        'pages':
+            List<dynamic>.from(pages.map((CreatorPage page) => page.toJson()))
       };
 
-  CreatorPack.fromSnapshot(AsyncSnapshot snapshot)
-      : title = snapshot.data["title"],
-        description = snapshot.data["description"],
-        pages = snapshot.data["pages"];
+  CreatorPack.fromJson(Map json)
+      : title = json["title"],
+        creator = json["creatorPack"],
+        id = json["id"],
+        description = json["description"],
+        titleImage = json["titleImage"],
+        categories = [1],
+        published = json["published"],
+        pages = List<CreatorPage>.from(
+            json["pages"].map((page) => CreatorPage.fromResponse(page)));
 }

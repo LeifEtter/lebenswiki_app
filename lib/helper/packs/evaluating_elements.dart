@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/components/create/data/models.dart';
 
-Widget evalPageElement(element) {
-  switch (element["type"]) {
-    case "LIST":
+Widget evalPageElement(CreatorItem item) {
+  switch (item.type) {
+    case ItemType.list:
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            element["title"],
+            item.headContent.value,
             style: const TextStyle(
               fontSize: 15.0,
               fontWeight: FontWeight.w600,
@@ -16,42 +17,45 @@ Widget evalPageElement(element) {
           ListView.builder(
             padding: const EdgeInsets.only(left: 10.0, top: 5.0),
             shrinkWrap: true,
-            itemCount: element["listItems"].length,
+            itemCount: item.bodyContent.length,
             itemBuilder: (BuildContext context, int index) {
-              return buildListItem(element["listItems"][index]);
+              return buildListItem(item.bodyContent[index].value);
             },
           ),
           const SizedBox(height: 10),
         ],
       );
-    case "TITLE":
+    case ItemType.title:
       return Padding(
         padding: const EdgeInsets.only(bottom: 20.0),
         child: Text(
-          element["title"],
+          item.headContent.value,
           style: const TextStyle(
             fontSize: 25.0,
             fontWeight: FontWeight.w600,
           ),
         ),
       );
-    case "IMAGE":
+    case ItemType.image:
       return Padding(
-        padding: const EdgeInsets.only(top: 20.0),
-        child: Image.asset(
-          element["src"],
-          fit: BoxFit.fitHeight,
+        padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+        child: Image.network(
+          item.headContent.value,
+          fit: BoxFit.contain,
           height: 250,
         ),
       );
-    case "TEXT":
-      return Text(element["text"]);
+    case ItemType.text:
+      return Text(
+        item.headContent.value,
+        style: const TextStyle(fontSize: 18),
+      );
     default:
       return const Text("Widget couldn't be identified");
   }
 }
 
-Widget buildListItem(listItemData) {
+Widget buildListItem(value) {
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -65,7 +69,7 @@ Widget buildListItem(listItemData) {
       const SizedBox(width: 2.0),
       Expanded(
         child: Text(
-          listItemData,
+          value,
         ),
       ),
     ],

@@ -6,9 +6,10 @@ import 'package:lebenswiki_app/components/cards/pack_card.dart';
 import 'package:lebenswiki_app/components/cards/short_card_minimal.dart';
 import 'package:lebenswiki_app/components/cards/short_card_scaffold.dart';
 import 'package:lebenswiki_app/components/create/api/api_creator_pack.dart';
+import 'package:lebenswiki_app/components/create/components/card.dart';
+import 'package:lebenswiki_app/components/create/components/card_edit.dart';
+import 'package:lebenswiki_app/components/create/data/models.dart';
 import 'package:lebenswiki_app/data/example_data.dart';
-import 'package:lebenswiki_app/views/packs_new/hardcode_pack.dart';
-import 'package:lebenswiki_app/components/cards/hardcode_pack_card.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/enums.dart';
 
@@ -70,7 +71,7 @@ class _GetContentState extends State<GetContent> {
                   child: ListView.builder(
                     addAutomaticKeepAlives: true,
                     shrinkWrap: true,
-                    itemCount: snapshot.data![1].length,
+                    itemCount: snapshot.data[1].length,
                     itemBuilder: (context, index) {
                       var currentPack = snapshot.data[1][index];
                       switch (widget.contentType) {
@@ -108,9 +109,17 @@ class _GetContentState extends State<GetContent> {
                             packData: currentPack,
                             contentType: widget.contentType,
                           );
-                        case ContentType.hardcodePacks:
-                          return HardcodePackCard(
-                            packData: ExampleData().packData,
+                        case ContentType.creatorPacks:
+                          return CreatorPackCard(
+                              pack: CreatorPack.fromJson(currentPack));
+                        case ContentType.yourCreatorPacks:
+                          return CreatorPackCardEdit(
+                            pack: CreatorPack.fromJson(currentPack),
+                            reload: widget.reload,
+                          );
+                        case ContentType.yourCreatorPacksPublished:
+                          return CreatorPackCardEdit(
+                            pack: CreatorPack.fromJson(currentPack),
                             reload: widget.reload,
                           );
                         default:
@@ -192,6 +201,10 @@ class _GetContentState extends State<GetContent> {
       case ContentType.draftCreatorPacks:
         packFuture = () {};
         errorText = "Du hast noch keine Lernpacks entworfen";
+        break;
+      case ContentType.yourCreatorPacksPublished:
+        packFuture = getYourCreatorPacksPublished;
+        errorText = "Du hast noch keine Lernpacks veröffentlicht";
         break;
       case ContentType.creatorPacks:
         packFuture = getCreatorPacks;

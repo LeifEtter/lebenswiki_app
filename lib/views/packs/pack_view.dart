@@ -3,7 +3,6 @@ import 'package:lebenswiki_app/api/api_shorts.dart';
 import 'package:lebenswiki_app/api/api_universal.dart';
 import 'package:lebenswiki_app/components/actions/modal_sheet.dart';
 import 'package:lebenswiki_app/data/example_data.dart';
-import 'package:lebenswiki_app/components/cards/hardcode_pack_card.dart';
 import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
 import 'package:lebenswiki_app/components/actions/report_dialog.dart';
 import 'package:lebenswiki_app/components/filtering/tab_bar.dart';
@@ -11,7 +10,7 @@ import 'package:lebenswiki_app/data/enums.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/helper/is_loading.dart';
 
-class PackView extends StatefulWidget {
+/*class PackView extends StatefulWidget {
   const PackView({
     Key? key,
   }) : super(key: key);
@@ -207,4 +206,4 @@ class _PackViewState extends State<PackView> {
       Navigator.pop(context);
     });
   }
-}
+}*/

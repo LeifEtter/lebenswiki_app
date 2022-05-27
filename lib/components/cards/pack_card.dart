@@ -71,9 +71,11 @@ class _PackCardState extends State<PackCard> {
                         style: LebenswikiTextStyles.packTitle,
                       ),
                       const SizedBox(height: 5),
-                      Text(
-                        widget.packData["description"],
-                        style: LebenswikiTextStyles.packDescription,
+                      Flexible(
+                        child: Text(
+                          widget.packData["description"],
+                          style: LebenswikiTextStyles.packDescription,
+                        ),
                       ),
                     ],
                   ),

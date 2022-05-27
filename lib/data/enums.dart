@@ -10,6 +10,7 @@ enum ContentType {
   creatorPacks,
   yourCreatorPacks,
   draftCreatorPacks,
+  yourCreatorPacksPublished,
 }
 
 enum MenuType {

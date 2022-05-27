@@ -9,6 +9,7 @@ class LebenswikiColors {
   static const readTimeBackground = Color.fromRGBO(245, 245, 245, 0.8);
   static const searchBar = Color.fromRGBO(245, 245, 245, 1.0);
   static const labelColor = Color.fromRGBO(245, 245, 245, 1);
+  static const blue = Color.fromRGBO(115, 148, 192, 1);
 
   /// Fonts
   static const publisherInfoFont = Color.fromRGBO(80, 80, 80, 1.0);
