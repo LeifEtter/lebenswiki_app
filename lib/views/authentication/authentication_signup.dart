@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
+import 'package:lebenswiki_app/helper/authentication_functions.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
 

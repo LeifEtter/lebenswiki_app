@@ -8,7 +8,7 @@ import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/components/filtering/tab_bar.dart';
 import 'package:lebenswiki_app/data/enums.dart';
 import 'package:lebenswiki_app/data/loading.dart';
-import 'package:lebenswiki_app/helper/is_loading.dart';
+import 'package:lebenswiki_app/helper/future_handling.dart';
 
 class PackViewNew extends StatefulWidget {
   const PackViewNew({
@@ -40,7 +40,7 @@ class _PackViewNewState extends State<PackViewNew> {
                     ),
                     GetContent(
                       reload: reload,
-                      contentType: ContentType.creatorPacks,
+                      contentType: CardType.creatorPacks,
                       menuCallback: _menuCallback,
                     ),
                   ],

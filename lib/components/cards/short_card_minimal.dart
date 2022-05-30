@@ -5,7 +5,7 @@ import 'package:lebenswiki_app/data/text_styles.dart';
 
 class ShortCardMinimal extends StatefulWidget {
   final Map packData;
-  final ContentType contentType;
+  final CardType contentType;
   final Function reload;
 
   const ShortCardMinimal({
@@ -96,11 +96,10 @@ class _ShortCardMinimalState extends State<ShortCardMinimal> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Visibility(
-                  visible: widget.contentType == ContentType.drafts,
+                  visible: widget.contentType == CardType.drafts,
                   child: IconButton(
                     icon: Transform.rotate(
-                      angle:
-                          widget.contentType == ContentType.drafts ? 0 : 3.13,
+                      angle: widget.contentType == CardType.drafts ? 0 : 3.13,
                       child: const Icon(
                         Icons.publish,
                         size: 30.0,

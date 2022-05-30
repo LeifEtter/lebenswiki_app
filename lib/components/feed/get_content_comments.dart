@@ -34,7 +34,7 @@ class _GetContentCommentsState extends State<GetContentComments> {
             CommentCard(
               packData: currentComment,
               voteReload: widget.reload,
-              contentType: ContentType.comments,
+              contentType: CardType.comments,
               menuCallback: widget.menuCallback,
             ),
             /*ShortCard(

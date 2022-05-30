@@ -149,7 +149,7 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
   Route _searchRoute() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => const SearchView(
-        contentType: ContentType.shortsByCategory,
+        contentType: CardType.shortsByCategory,
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);

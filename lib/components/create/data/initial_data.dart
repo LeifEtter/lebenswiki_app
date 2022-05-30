@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/create/data/models.dart';
+import 'package:lebenswiki_app/models/creator_pack_model.dart';
 
 CreatorPack initialPack() {
   return CreatorPack(

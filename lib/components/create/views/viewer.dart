@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/create/data/models.dart';
+import 'package:lebenswiki_app/models/creator_pack_model.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
 import 'package:lebenswiki_app/helper/packs/evaluating_elements.dart';
 import 'package:lebenswiki_app/testing/border.dart';

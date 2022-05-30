@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:lebenswiki_app/components/create/data/models.dart';
+import 'package:lebenswiki_app/models/creator_pack_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 

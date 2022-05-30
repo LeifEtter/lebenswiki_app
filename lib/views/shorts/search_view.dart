@@ -4,10 +4,10 @@ import 'package:lebenswiki_app/api/api_shorts.dart';
 import 'package:lebenswiki_app/components/cards/short_card_scaffold.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/data/enums.dart';
-import 'package:lebenswiki_app/data/loading.dart';
+import 'package:lebenswiki_app/helper/future_handling.dart';
 
 class SearchView extends StatefulWidget {
-  final ContentType contentType;
+  final CardType contentType;
 
   const SearchView({
     Key? key,
@@ -23,16 +23,20 @@ class _SearchViewState extends State<SearchView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: widget.contentType == ContentType.shortsByCategory
+          future: widget.contentType == CardType.shortsByCategory
               ? getAllShorts("")
               : getAllPosts(""),
           builder: (context, AsyncSnapshot snapshot) {
-            if (!snapshot.hasData) {
-              return const Loading();
+            FutureHandling handler = FutureHandling();
+            
+            handler.isLoading(snapshot) ? handler.Loading() : null;
+            hanl.listIsEmpty(snapshot)
+
+
             } else if (snapshot.data[1].length == 0) {
               return Center(
                 child: Text(
-                    "Keine ${widget.contentType == ContentType.shortsByCategory ? "Shorts" : "Packs"} gefunden"),
+                    "Keine ${widget.contentType == CardType.shortsByCategory ? "Shorts" : "Packs"} gefunden"),
               );
             } else {
               return FilterView(
@@ -46,7 +50,7 @@ class _SearchViewState extends State<SearchView> {
 }
 
 class FilterView extends StatefulWidget {
-  final ContentType contentType;
+  final CardType contentType;
   final List packList;
 
   const FilterView({

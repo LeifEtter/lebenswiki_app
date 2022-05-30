@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/components/create/api/api_creator_pack.dart';
 import 'package:lebenswiki_app/components/create/data/initial_data.dart';
-import 'package:lebenswiki_app/components/create/data/models.dart';
+import 'package:lebenswiki_app/models/creator_pack_model.dart';
 import 'package:lebenswiki_app/components/create/views/editor.dart';
 import 'package:lebenswiki_app/components/create/views/editor_settings.dart';
 import 'package:lebenswiki_app/components/feed/get_content.dart';
@@ -84,7 +84,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
                     children: [
                       GetContent(
                         reload: reload,
-                        contentType: ContentType.yourCreatorPacksPublished,
+                        contentType: CardType.yourCreatorPacksPublished,
                         menuCallback: (MenuType menuType, Map packData) {},
                       ),
                       const SizedBox(height: 30),
@@ -95,7 +95,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
                     children: [
                       GetContent(
                         reload: reload,
-                        contentType: ContentType.yourCreatorPacks,
+                        contentType: CardType.yourCreatorPacks,
                         menuCallback: (MenuType menuType, Map packData) {},
                       ),
                       const SizedBox(height: 30),

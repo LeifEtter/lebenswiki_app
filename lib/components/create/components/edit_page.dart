@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:lebenswiki_app/components/create/data/models.dart';
+import 'package:lebenswiki_app/models/creator_pack_model.dart';
 import 'package:lebenswiki_app/components/create/styling/styling_edit.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
 import 'package:lebenswiki_app/testing/border.dart';

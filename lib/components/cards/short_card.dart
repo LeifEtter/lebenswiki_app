@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ShortCard extends StatefulWidget {
   final Map packData;
   final Function voteReload;
-  final ContentType contentType;
+  final CardType contentType;
   final int userId;
   final Function commentExpand;
   final Function(MenuType, Map) menuCallback;

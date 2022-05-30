@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/data/routing_constants.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
 import 'package:lebenswiki_app/main.dart';
 

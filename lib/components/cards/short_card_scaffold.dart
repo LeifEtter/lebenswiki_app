@@ -11,7 +11,7 @@ import 'package:lebenswiki_app/data/enums.dart';
 class ShortCardScaffold extends StatefulWidget {
   final Map packData;
   final Function voteReload;
-  final ContentType contentType;
+  final CardType contentType;
   final Function(MenuType, Map) menuCallback;
 
   const ShortCardScaffold({
@@ -62,7 +62,7 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                       commentExpand: _triggerComments,
                       menuCallback: widget.menuCallback,
                     ),
-                    widget.contentType == ContentType.shortsByCategory
+                    widget.contentType == CardType.shortsByCategory
                         ? Visibility(
                             visible: _commentsExpanded,
                             child: Column(

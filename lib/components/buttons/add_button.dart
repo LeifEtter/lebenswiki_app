@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:lebenswiki_app/components/create/api/api_creator_pack.dart';
 import 'package:lebenswiki_app/components/create/data/initial_data.dart';
-import 'package:lebenswiki_app/components/create/data/models.dart';
+import 'package:lebenswiki_app/models/creator_pack_model.dart';
 import 'package:lebenswiki_app/components/create/views/editor.dart';
 import 'package:lebenswiki_app/components/create/views/editor_settings.dart';
 import 'package:lebenswiki_app/data/colors.dart';

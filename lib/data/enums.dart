@@ -1,4 +1,4 @@
-enum ContentType {
+enum CardType {
   shortsByCategory,
   packsByCategory,
   shortBookmarks,

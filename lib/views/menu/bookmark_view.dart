@@ -28,7 +28,7 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
             const SizedBox(height: 30),
             GetContent(
               reload: reload,
-              contentType: ContentType.shortBookmarks,
+              contentType: CardType.shortBookmarks,
               menuCallback: (MenuType menuType, Map packData) {},
             ),
           ],
