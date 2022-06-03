@@ -1,0 +1,20 @@
+{
+    "id": 0,
+    "email": "",
+    "password": "",
+    "name": "",
+    "profileImage": "",
+    "biography": "",
+    "role": "",
+    "postsAsCreator": [],
+    "shortsAsCreator": [],
+    "packAsCreator": [],
+    "upVotesForShorts": [],
+    "downVotesForShorts": [],
+    "bookmarkForShorts": [],
+    "commentsAsUser": [],
+    "reportUser": [],
+    "blockerUser": [],
+    "blocked": [],
+    "feedbackUser": [] 
+}

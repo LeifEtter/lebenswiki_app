@@ -1,0 +1,18 @@
+{
+    "id": 0,
+    "commentReponse": "",
+    "creator": {},
+    "creatorId": 0,
+    "shortsAsComment": [],
+    "shortsCommentId": 0,
+    "postAsComment": [],
+    "postId": 0,
+    "parentComment": {},
+    "parentCommentId": 0,
+    "childComments": [],
+    "reportComment": [],
+    "reactions": {},
+    "softDelete": false,
+    "creationDate": "",
+    "updatedAt": ""
+}
