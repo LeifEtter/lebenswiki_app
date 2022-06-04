@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/api_authentication.dart';
 import 'package:lebenswiki_app/components/create/views/your_creator_packs.dart';
+import 'package:lebenswiki_app/data/image_repo.dart';
 import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/data/loading.dart';
@@ -103,13 +104,10 @@ class _MenuBarState extends State<MenuBar> {
                   ),
                 ),
                 const Divider(),
-                Image.network(
-                    "https://i.ibb.co/74PBzW8/6207c565b83821547c42e94a-BMFSFJ-gefo-rdert-vom.jpg%22%20alt=%226207c565b83821547c42e94a-BMFSFJ-gefo-rdert-vom"),
+                Image.network(ImageRepo().bmsLogo),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 50.0),
-                  child: Image.network(
-                    "https://i.ibb.co/Bf24khm/jugendstrategie-logo-aktionsplan-1.png",
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                  child: Image.network(ImageRepo().jugendStrategieLogo),
                 ),
               ],
             );
