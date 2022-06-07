@@ -1,8 +1,8 @@
-import 'package:lebenswiki_app/data/enums.dart';
+import 'package:lebenswiki_app/models/enums/enums.dart';
 
-bool isBookmarked(int userId, ContentType contentType, bookmarkData) {
-  if (contentType == ContentType.packBookmarks ||
-      contentType == ContentType.shortBookmarks) {
+bool isBookmarked(int userId, CardType cardType, bookmarkData) {
+  if (cardType == CardType.packBookmarks ||
+      cardType == CardType.shortBookmarks) {
     return true;
   }
   if (bookmarkData.length == 0) {

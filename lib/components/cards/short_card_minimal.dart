@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/api_shorts.dart';
-import 'package:lebenswiki_app/data/enums.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
+import 'package:lebenswiki_app/models/enums/enums.dart';
 
 class ShortCardMinimal extends StatefulWidget {
   final Map packData;
-  final ContentType contentType;
+  final CardType cardType;
   final Function reload;
 
   const ShortCardMinimal({
     Key? key,
     required this.packData,
-    required this.contentType,
+    required this.cardType,
     required this.reload,
   }) : super(key: key);
 
@@ -96,11 +96,10 @@ class _ShortCardMinimalState extends State<ShortCardMinimal> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Visibility(
-                  visible: widget.contentType == ContentType.drafts,
+                  visible: widget.cardType == CardType.drafts,
                   child: IconButton(
                     icon: Transform.rotate(
-                      angle:
-                          widget.contentType == ContentType.drafts ? 0 : 3.13,
+                      angle: widget.cardType == CardType.drafts ? 0 : 3.13,
                       child: const Icon(
                         Icons.publish,
                         size: 30.0,

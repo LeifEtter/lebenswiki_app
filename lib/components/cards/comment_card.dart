@@ -5,20 +5,20 @@ import 'package:lebenswiki_app/components/card_components/creator_info.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
-import 'package:lebenswiki_app/data/enums.dart';
+import 'package:lebenswiki_app/models/enums/enums.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CommentCard extends StatefulWidget {
   final Map packData;
   final Function voteReload;
-  final ContentType contentType;
+  final CardType cardType;
   final Function(MenuType menuType, Map packdata) menuCallback;
 
   const CommentCard({
     Key? key,
     required this.packData,
     required this.voteReload,
-    required this.contentType,
+    required this.cardType,
     required this.menuCallback,
   }) : super(key: key);
 

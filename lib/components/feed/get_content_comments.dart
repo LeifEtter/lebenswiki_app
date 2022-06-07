@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/components/cards/comment_card.dart';
-import 'package:lebenswiki_app/data/enums.dart';
+import 'package:lebenswiki_app/models/enums/enums.dart';
 
 class GetContentComments extends StatefulWidget {
   final Function reload;
@@ -34,13 +34,13 @@ class _GetContentCommentsState extends State<GetContentComments> {
             CommentCard(
               packData: currentComment,
               voteReload: widget.reload,
-              contentType: ContentType.comments,
+              cardType: CardType.comments,
               menuCallback: widget.menuCallback,
             ),
             /*ShortCard(
               packData: currentComment,
               voteReload: widget.reload,
-              contentType: ContentType.comments,
+              cardType: CardType.comments,
               commentExpand: () {},
               userId: widget.userId,
               menuCallback: widget.menuCallback,

@@ -5,20 +5,20 @@ import 'package:lebenswiki_app/components/feed/get_content_comments.dart';
 import 'package:lebenswiki_app/components/input/comment_input.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
+import 'package:lebenswiki_app/models/enums/enums.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:lebenswiki_app/data/enums.dart';
 
 class ShortCardScaffold extends StatefulWidget {
   final Map packData;
   final Function voteReload;
-  final ContentType contentType;
+  final CardType cardType;
   final Function(MenuType, Map) menuCallback;
 
   const ShortCardScaffold({
     Key? key,
     required this.packData,
     required this.voteReload,
-    required this.contentType,
+    required this.cardType,
     required this.menuCallback,
   }) : super(key: key);
 
@@ -57,12 +57,12 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                     ShortCard(
                       packData: widget.packData,
                       voteReload: widget.voteReload,
-                      contentType: widget.contentType,
+                      cardType: widget.cardType,
                       userId: snapshot.data,
                       commentExpand: _triggerComments,
                       menuCallback: widget.menuCallback,
                     ),
-                    widget.contentType == ContentType.shortsByCategory
+                    widget.cardType == CardType.shortsByCategory
                         ? Visibility(
                             visible: _commentsExpanded,
                             child: Column(

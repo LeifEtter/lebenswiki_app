@@ -6,13 +6,13 @@ import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
 import 'package:lebenswiki_app/helper/actions/vote_functions.dart';
 import 'package:lebenswiki_app/components/card_components/creator_info.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
-import 'package:lebenswiki_app/data/enums.dart';
+import 'package:lebenswiki_app/models/enums/enums.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ShortCard extends StatefulWidget {
   final Map packData;
   final Function voteReload;
-  final ContentType contentType;
+  final CardType cardType;
   final int userId;
   final Function commentExpand;
   final Function(MenuType, Map) menuCallback;
@@ -21,7 +21,7 @@ class ShortCard extends StatefulWidget {
     Key? key,
     required this.packData,
     required this.voteReload,
-    required this.contentType,
+    required this.cardType,
     required this.userId,
     required this.commentExpand,
     required this.menuCallback,
@@ -74,14 +74,14 @@ class _ShortCardState extends State<ShortCard> {
                 padding: const EdgeInsets.only(top: 5.0),
                 child: GestureDetector(
                   child: Image.asset(
-                    isBookmarked(widget.userId, widget.contentType,
+                    isBookmarked(widget.userId, widget.cardType,
                             widget.packData["bookmarks"])
                         ? "assets/icons/bookmark_filled.png"
                         : "assets/icons/bookmark.png",
                     width: 20.0,
                   ),
                   onTap: () {
-                    isBookmarked(widget.userId, widget.contentType,
+                    isBookmarked(widget.userId, widget.cardType,
                             widget.packData["bookmarks"])
                         ? unbookmarkShort(widget.packData["id"])
                         : bookmarkShort(widget.packData["id"]);

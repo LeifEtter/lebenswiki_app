@@ -3,15 +3,15 @@ import 'package:lebenswiki_app/api/api_posts.dart';
 import 'package:lebenswiki_app/api/api_shorts.dart';
 import 'package:lebenswiki_app/components/cards/short_card_scaffold.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
-import 'package:lebenswiki_app/data/enums.dart';
 import 'package:lebenswiki_app/data/loading.dart';
+import 'package:lebenswiki_app/models/enums/enums.dart';
 
 class SearchView extends StatefulWidget {
-  final ContentType contentType;
+  final CardType cardType;
 
   const SearchView({
     Key? key,
-    required this.contentType,
+    required this.cardType,
   }) : super(key: key);
 
   @override
@@ -23,7 +23,7 @@ class _SearchViewState extends State<SearchView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: widget.contentType == ContentType.shortsByCategory
+          future: widget.cardType == CardType.shortsByCategory
               ? getAllShorts("")
               : getAllPosts(""),
           builder: (context, AsyncSnapshot snapshot) {
@@ -32,12 +32,12 @@ class _SearchViewState extends State<SearchView> {
             } else if (snapshot.data[1].length == 0) {
               return Center(
                 child: Text(
-                    "Keine ${widget.contentType == ContentType.shortsByCategory ? "Shorts" : "Packs"} gefunden"),
+                    "Keine ${widget.cardType == CardType.shortsByCategory ? "Shorts" : "Packs"} gefunden"),
               );
             } else {
               return FilterView(
                 packList: snapshot.data[1],
-                contentType: widget.contentType,
+                cardType: widget.cardType,
               );
             }
           }),
@@ -46,12 +46,12 @@ class _SearchViewState extends State<SearchView> {
 }
 
 class FilterView extends StatefulWidget {
-  final ContentType contentType;
+  final CardType cardType;
   final List packList;
 
   const FilterView({
     Key? key,
-    required this.contentType,
+    required this.cardType,
     required this.packList,
   }) : super(key: key);
 
@@ -91,7 +91,7 @@ class _FilterViewState extends State<FilterView> {
                 return ShortCardScaffold(
                   packData: currentPack,
                   voteReload: () {},
-                  contentType: widget.contentType,
+                  cardType: widget.cardType,
                   menuCallback: (MenuType menuType, Map packData) {},
                 );
               },
