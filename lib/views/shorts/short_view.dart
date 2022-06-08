@@ -9,7 +9,7 @@ import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/components/filtering/tab_bar.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/helper/is_loading.dart';
-import 'package:lebenswiki_app/models/enums/enums.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 
 class ShortView extends StatefulWidget {
   const ShortView({
@@ -64,23 +64,26 @@ class _ShortViewState extends State<ShortView> {
     });
   }
 
-  void _menuCallback(MenuType menuType, Map packData) {
+  void _menuCallback({
+    required var contentData,
+    required MenuType menuType,
+  }) {
     switch (menuType) {
       case MenuType.moreShort:
-        showMoreMenu(packData);
+        showMoreMenu(contentData: contentData);
         break;
       case MenuType.reactShort:
-        showReactionMenu(packData, false);
+        showReactionMenu(contentData: contentData, isComment: false);
         break;
       case MenuType.reactShortComment:
-        showReactionMenu(packData, true);
+        showReactionMenu(contentData: contentData, isComment: true);
         break;
       default:
-      //print("Unknown menuType");
+        print("Unknown menuType");
     }
   }
 
-  void showMoreMenu(Map packData) {
+  void showMoreMenu({required var contentData}) {
     showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
@@ -97,7 +100,7 @@ class _ShortViewState extends State<ShortView> {
                 "Melden",
                 "Diesen Short melden",
                 () {
-                  _reportDialog(packData);
+                  _reportDialog(contentData: contentData);
                 },
               ),
               buildMenuItem(
@@ -120,7 +123,10 @@ class _ShortViewState extends State<ShortView> {
     );
   }
 
-  void showReactionMenu(Map packData, bool isComment) {
+  void showReactionMenu({
+    required var contentData,
+    required bool isComment,
+  }) {
     showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
@@ -154,8 +160,8 @@ class _ShortViewState extends State<ShortView> {
                     onTap: () async {
                       isComment
                           ? await addCommentReaction(
-                              packData["id"], currentReaction)
-                          : await addReaction(packData["id"], currentReaction);
+                              contentData.id, currentReaction)
+                          : await addReaction(contentData.id, currentReaction);
                       Navigator.pop(context);
                       reload();
                     },
@@ -174,7 +180,7 @@ class _ShortViewState extends State<ShortView> {
     );
   }
 
-  Future<void> _reportDialog(packData) async {
+  Future<void> _reportDialog({required var contentData}) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -185,7 +191,7 @@ class _ShortViewState extends State<ShortView> {
             top: MediaQuery.of(context).size.height * 0.21,
           ),
           child: ReportDialog(
-            packData: packData,
+            contentData: contentData,
             reportCallback: _reportCallback,
             chosenReason: chosenReason,
           ),
@@ -194,9 +200,13 @@ class _ShortViewState extends State<ShortView> {
     );
   }
 
-  void _reportCallback(String reason, bool blockUser, Map packData) {
-    blockUser ? blockUserAPI(packData["creator"]["id"], reason) : null;
-    reportShort(packData["id"], reason).whenComplete(() {
+  void _reportCallback({
+    required String reason,
+    required bool blockUser,
+    required var contentData,
+  }) {
+    blockUser ? blockUserAPI(contentData.creator.id, reason) : null;
+    reportShort(contentData.id, reason).whenComplete(() {
       reload();
       Navigator.pop(context);
       Navigator.pop(context);

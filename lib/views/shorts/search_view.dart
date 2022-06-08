@@ -4,7 +4,7 @@ import 'package:lebenswiki_app/api/api_shorts.dart';
 import 'package:lebenswiki_app/components/cards/short_card_scaffold.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/data/loading.dart';
-import 'package:lebenswiki_app/models/enums/enums.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 
 class SearchView extends StatefulWidget {
   final CardType cardType;
@@ -89,10 +89,10 @@ class _FilterViewState extends State<FilterView> {
                     ? widget.packList[index]
                     : _filteredPacks[index];
                 return ShortCardScaffold(
-                  packData: currentPack,
+                  short: currentPack,
                   voteReload: () {},
                   cardType: widget.cardType,
-                  menuCallback: (MenuType menuType, Map packData) {},
+                  menuCallback: () {},
                 );
               },
             ),

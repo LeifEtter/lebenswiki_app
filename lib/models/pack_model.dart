@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/models/enums/enums.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/pack_content_models.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 
 class Pack {
+  int id;
   String title;
   String description;
   String titleImage;
@@ -13,6 +14,7 @@ class Pack {
   final List<CreatorPage> pages;
 
   Pack({
+    this.id = 0,
     required this.creator,
     required this.title,
     required this.description,
@@ -23,6 +25,7 @@ class Pack {
   });
 
   Pack.initial({
+    this.id = 0,
     required this.creator,
     this.title = "",
     this.description = "",
@@ -44,7 +47,8 @@ class Pack {
       };
 
   Pack.fromJson(Map json)
-      : title = json["title"],
+      : id = json["id"],
+        title = json["title"],
         creator = json["creatorPack"],
         description = json["description"],
         titleImage = json["titleImage"],

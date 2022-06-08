@@ -12,6 +12,7 @@ String commentToJson(Comment data) => json.encode(data.toJson());
 
 class Comment {
   Comment({
+    this.id = 0,
     required this.content,
     required this.creator,
     this.creatorId,
@@ -29,6 +30,7 @@ class Comment {
     creatorId = creator.id;
   }
 
+  int id;
   String content;
   User creator;
   int? creatorId;
@@ -44,6 +46,7 @@ class Comment {
   DateTime? updatedAt;
 
   factory Comment.fromJson(Map<String, dynamic> json) => Comment(
+        id: json["id"],
         content: json["commentReponse"],
         creator: User.fromJson(json["creator"]),
         creatorId: json["creatorId"],

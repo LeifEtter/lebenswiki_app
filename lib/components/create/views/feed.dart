@@ -8,7 +8,7 @@ import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/components/filtering/tab_bar.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/helper/is_loading.dart';
-import 'package:lebenswiki_app/models/enums/enums.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 
 class PackViewNew extends StatefulWidget {
   const PackViewNew({
@@ -164,7 +164,7 @@ class _PackViewNewState extends State<PackViewNew> {
     );
   }
 
-  Future<void> _reportDialog(packData) async {
+  Future<void> _reportDialog(contentData) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -175,7 +175,7 @@ class _PackViewNewState extends State<PackViewNew> {
             top: MediaQuery.of(context).size.height * 0.21,
           ),
           child: ReportDialog(
-            packData: packData,
+            contentData: contentData,
             reportCallback: _reportCallback,
             chosenReason: chosenReason,
           ),
@@ -184,9 +184,13 @@ class _PackViewNewState extends State<PackViewNew> {
     );
   }
 
-  void _reportCallback(String reason, bool blockUser, Map packData) {
-    blockUser ? blockUserAPI(packData["creator"]["id"], reason) : null;
-    reportShort(packData["id"], reason).whenComplete(() {
+  void _reportCallback({
+    required String reason,
+    required bool blockUser,
+    required var contentData,
+  }) {
+    blockUser ? blockUserAPI(contentData.creator.id, reason) : null;
+    reportShort(contentData.id, reason).whenComplete(() {
       reload();
       Navigator.pop(context);
       Navigator.pop(context);

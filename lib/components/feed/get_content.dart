@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/api_shorts.dart';
 import 'package:lebenswiki_app/api/api_posts.dart';
 import 'package:lebenswiki_app/api/api_universal.dart';
-import 'package:lebenswiki_app/components/cards/pack_card.dart';
 import 'package:lebenswiki_app/components/cards/short_card_minimal.dart';
 import 'package:lebenswiki_app/components/cards/short_card_scaffold.dart';
 import 'package:lebenswiki_app/components/create/api/api_creator_pack.dart';
@@ -11,13 +10,13 @@ import 'package:lebenswiki_app/components/create/components/card_edit.dart';
 import 'package:lebenswiki_app/components/create/data/models.dart';
 import 'package:lebenswiki_app/data/example_data.dart';
 import 'package:lebenswiki_app/data/loading.dart';
-import 'package:lebenswiki_app/models/enums/enums.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 
 class GetContent extends StatefulWidget {
   final int category;
   final Function reload;
   final CardType cardType;
-  final Function(MenuType, Map) menuCallback;
+  final Function menuCallback;
 
   const GetContent({
     Key? key,
@@ -75,38 +74,30 @@ class _GetContentState extends State<GetContent> {
                     itemBuilder: (context, index) {
                       var currentPack = snapshot.data[1][index];
                       switch (widget.cardType) {
-                        case CardType.packsByCategory:
-                          return PackCard(
-                            packData: currentPack,
-                          );
                         case CardType.shortsByCategory:
                           return ShortCardScaffold(
-                            packData: currentPack,
+                            short: currentPack,
                             voteReload: widget.reload,
                             cardType: widget.cardType,
                             menuCallback: widget.menuCallback,
                           );
                         case CardType.shortBookmarks:
                           return ShortCardScaffold(
-                            packData: currentPack,
+                            short: currentPack,
                             voteReload: widget.reload,
                             cardType: widget.cardType,
                             menuCallback: widget.menuCallback,
                           );
-                        case CardType.packBookmarks:
-                          return PackCard(
-                            packData: currentPack,
-                          );
                         case CardType.drafts:
                           return ShortCardMinimal(
                             reload: widget.reload,
-                            packData: currentPack,
+                            short: currentPack,
                             cardType: widget.cardType,
                           );
                         case CardType.yourShorts:
                           return ShortCardMinimal(
                             reload: widget.reload,
-                            packData: currentPack,
+                            short: currentPack,
                             cardType: widget.cardType,
                           );
                         case CardType.creatorPacks:

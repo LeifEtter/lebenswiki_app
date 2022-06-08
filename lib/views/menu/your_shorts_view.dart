@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
-import 'package:lebenswiki_app/models/enums/enums.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 
 class YourShorts extends StatefulWidget {
   final int chosenTab;
@@ -70,7 +70,7 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
                       GetContent(
                         reload: reload,
                         cardType: CardType.yourShorts,
-                        menuCallback: (MenuType menuType, Map packData) {},
+                        menuCallback: () {},
                       ),
                     ],
                   ),
@@ -79,7 +79,7 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
                       GetContent(
                         reload: reload,
                         cardType: CardType.drafts,
-                        menuCallback: (MenuType menuType, Map packData) {},
+                        menuCallback: () {},
                       ),
                     ],
                   ),

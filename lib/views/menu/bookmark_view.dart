@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
-import 'package:lebenswiki_app/models/enums/enums.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 
 class BookmarkFeed extends StatefulWidget {
   final bool isShort;
@@ -29,7 +29,7 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
             GetContent(
               reload: reload,
               cardType: CardType.shortBookmarks,
-              menuCallback: (MenuType menuType, Map packData) {},
+              menuCallback: () {},
             ),
           ],
         ),

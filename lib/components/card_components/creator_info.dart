@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
+import 'package:lebenswiki_app/models/user_model.dart';
 
 class CreatorInfo extends StatelessWidget {
-  final Map packData;
+  final User user;
+  final DateTime creationDate;
   final bool isComment;
 
   const CreatorInfo({
     Key? key,
-    required this.packData,
+    required this.user,
+    required this.creationDate,
     required this.isComment,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var creationDateUnformatted = packData["creationDate"].split("T");
-    var creationDate = creationDateUnformatted[0];
     return Row(
       children: [
         Container(
@@ -23,14 +24,14 @@ class CreatorInfo extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             image: DecorationImage(
-              image: NetworkImage(packData["creator"]["profileImage"]),
+              image: NetworkImage(user.profileImage),
               fit: BoxFit.cover,
             ),
           ),
         ),
         const SizedBox(width: 5.0),
         Text(
-          "${isComment ? "Kommentar" : "Artikel"} von ${packData["creator"]["name"]} | $creationDate",
+          "${isComment ? "Kommentar" : "Artikel"} von ${user.name} | $creationDate",
           style: LebenswikiTextStyles.publisherInfo,
         ),
       ],

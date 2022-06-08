@@ -1,31 +1,64 @@
 import 'package:lebenswiki_app/api/api_shorts.dart';
+import 'package:lebenswiki_app/models/user_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-int getVoteCount(upvoteData, downvoteData) {
-  int upvotes = upvoteData.length;
-  int downvotes = downvoteData.length;
-  int totalVotes = upvotes - downvotes;
-  return totalVotes;
-}
+class VoteHelper {
+  int contentId;
+  List<User> upVoteData;
+  List<User> downVoteData;
+  late int? _userId;
 
-bool hasVoted(userId, voteData) {
-  for (var voteObject in voteData) {
-    if (voteObject["id"] == userId) return true;
+  late int totalVotes;
+  bool userHasUpVoted = false;
+  bool userHasDownVoted = false;
+
+  VoteHelper({
+    required this.contentId,
+    required this.upVoteData,
+    required this.downVoteData,
+  }) {
+    _initializeUserId();
+    _setTotalVotes();
+    _hasVoted(true);
+    _hasVoted(false);
   }
-  return false;
-}
 
-void vote(isUpvote, userId, reload, packId, upvoteData, downVoteData) async {
-  bool hasUpvoted = false, hasDownvoted = false;
-  hasUpvoted = hasVoted(userId, upvoteData);
-  hasDownvoted = hasVoted(userId, downVoteData);
-
-  if ((isUpvote && hasDownvoted) || (isUpvote && !hasUpvoted)) {
-    voteShort(packId, true);
-  } else if ((!isUpvote && hasUpvoted && !hasDownvoted) ||
-      (!isUpvote && !hasUpvoted && !hasDownvoted)) {
-    voteShort(packId, false);
-  } else {
-    isUpvote ? removeVote(packId, true) : removeVote(packId, false);
+  Future<void> _initializeUserId() async {
+    var prefs = await SharedPreferences.getInstance();
+    _userId = prefs.getInt("userId");
   }
-  reload();
+
+  void _setTotalVotes() {
+    totalVotes = upVoteData.length - downVoteData.length;
+  }
+
+  bool hasVoted(userId, voteData) {
+    for (var voteObject in voteData) {
+      if (voteObject["id"] == userId) return true;
+    }
+    return false;
+  }
+
+  void _hasVoted(bool isUpvote) {
+    for (User voter in isUpvote ? upVoteData : downVoteData) {
+      voter.id == _userId
+          ? {isUpvote ? userHasUpVoted = true : userHasDownVoted = true}
+          : null;
+    }
+  }
+
+  void vote({
+    required isUpvote,
+    required reload,
+  }) async {
+    if ((isUpvote && userHasDownVoted) || (isUpvote && !userHasUpVoted)) {
+      voteShort(contentId, true);
+    } else if ((!isUpvote && userHasUpVoted && !userHasDownVoted) ||
+        (!isUpvote && !userHasUpVoted && !userHasDownVoted)) {
+      voteShort(contentId, false);
+    } else {
+      isUpvote ? removeVote(contentId, true) : removeVote(contentId, false);
+    }
+    reload();
+  }
 }

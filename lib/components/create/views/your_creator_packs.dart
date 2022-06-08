@@ -10,7 +10,7 @@ import 'package:lebenswiki_app/components/navigation/top_nav.dart';
 import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
 import 'package:lebenswiki_app/main.dart';
-import 'package:lebenswiki_app/models/enums/enums.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 
 class YourCreatorPacks extends StatefulWidget {
   final int chosenTab;
@@ -85,7 +85,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
                       GetContent(
                         reload: reload,
                         cardType: CardType.yourCreatorPacksPublished,
-                        menuCallback: (MenuType menuType, Map packData) {},
+                        menuCallback: () {},
                       ),
                       const SizedBox(height: 30),
                       _erstelleLernpack(),
@@ -96,7 +96,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
                       GetContent(
                         reload: reload,
                         cardType: CardType.yourCreatorPacks,
-                        menuCallback: (MenuType menuType, Map packData) {},
+                        menuCallback: () {},
                       ),
                       const SizedBox(height: 30),
                       _erstelleLernpack(),

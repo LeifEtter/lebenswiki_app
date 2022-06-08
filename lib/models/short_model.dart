@@ -13,6 +13,7 @@ String shortToJson(Short data) => json.encode(data.toJson());
 
 class Short {
   Short({
+    this.id = 0,
     required this.title,
     required this.content,
     required this.creator,
@@ -26,14 +27,15 @@ class Short {
     this.comments = const [],
     this.reportShort = const [],
     this.reactions = const {},
-    this.creationDate,
     this.lastUpdated,
+    required this.creationDate,
   }) {
     creatorId = creator.id;
-    creationDate = DateTime.now();
+    //creationDate = DateTime.now();
     lastUpdated = DateTime.now();
   }
 
+  int id;
   String title;
   String content;
   User creator;
@@ -47,10 +49,11 @@ class Short {
   List<Comment> comments;
   List<Report> reportShort;
   Map reactions;
-  DateTime? creationDate;
+  DateTime creationDate;
   DateTime? lastUpdated;
 
   factory Short.fromJson(Map<String, dynamic> json) => Short(
+        id: json["id"],
         title: json["title"],
         content: json["content"],
         creator: User.fromJson(json["creator"]),
