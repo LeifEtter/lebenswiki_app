@@ -1,4 +1,12 @@
-enum ContentType {
+enum ItemType {
+  title,
+  list,
+  quiz,
+  image,
+  text,
+}
+
+enum CardType {
   shortsByCategory,
   packsByCategory,
   shortBookmarks,
@@ -18,4 +26,18 @@ enum MenuType {
   reactShortComment,
   moreShort,
   commentShort,
+}
+
+enum Reactions {
+  happy,
+  clap,
+  thumbsup,
+  heart,
+  laughing,
+  thinking,
+  money,
+  catheart,
+  extrareactionone,
+  extrareactiontwo,
+  extrareactionthree,
 }

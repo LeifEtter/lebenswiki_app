@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class ReportDialog extends StatefulWidget {
   final Function reportCallback;
   final String? chosenReason;
-  final Map packData;
+  final contentData;
 
   const ReportDialog({
     Key? key,
     required this.reportCallback,
     required this.chosenReason,
-    required this.packData,
+    required this.contentData,
   }) : super(key: key);
 
   @override
@@ -47,7 +47,7 @@ class _ReportDialogState extends State<ReportDialog> {
         TextButton(
           child: const Text("Melden"),
           onPressed: () {
-            widget.reportCallback(chosenReason, blockUser, widget.packData);
+            widget.reportCallback(chosenReason, blockUser, widget.contentData);
           },
         )
       ],

@@ -5,20 +5,21 @@ import 'package:lebenswiki_app/components/card_components/creator_info.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
-import 'package:lebenswiki_app/data/enums.dart';
+import 'package:lebenswiki_app/models/comment_model.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CommentCard extends StatefulWidget {
-  final Map packData;
+  final Comment comment;
   final Function voteReload;
-  final ContentType contentType;
-  final Function(MenuType menuType, Map packdata) menuCallback;
+  final CardType cardType;
+  final Function menuCallback;
 
   const CommentCard({
     Key? key,
-    required this.packData,
+    required this.comment,
     required this.voteReload,
-    required this.contentType,
+    required this.cardType,
     required this.menuCallback,
   }) : super(key: key);
 
@@ -28,17 +29,32 @@ class CommentCard extends StatefulWidget {
 
 class _CommentCardState extends State<CommentCard> {
   int userId = 0;
-  bool hasUpvoted = false;
-  bool hasDownvoted = false;
   bool hasReacted = false;
 
   bool blockUser = false;
 
   String? chosenReason = "Illegal unter der NetzDG";
 
+  late VoteHelper voteHelper;
+  late ReactionHelper reactionHelper;
+
+  @override
+  void initState() {
+    //!TODO Fix vote functionality
+    voteHelper = VoteHelper(
+      contentId: widget.comment.id,
+      upVoteData: const [],
+      downVoteData: const [],
+    );
+    reactionHelper = ReactionHelper(
+      reactionsForContent: widget.comment.reactions!,
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    convertReactions(widget.packData["reactions"]);
+    convertReactions(widget.comment.reactions);
     return FutureBuilder(
       future: getUserId(),
       builder: (context, AsyncSnapshot snapshot) {
@@ -69,14 +85,15 @@ class _CommentCardState extends State<CommentCard> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CreatorInfo(
-                                  packData: widget.packData,
+                                  user: widget.comment.creator,
+                                  creationDate: widget.comment.creationDate,
                                   isComment: true,
                                 ),
                                 const SizedBox(height: 5),
                                 SizedBox(
                                   width: 270,
                                   child: Text(
-                                    widget.packData["commentResponse"],
+                                    widget.comment.content,
                                     style: LebenswikiTextStyles.packDescription,
                                   ),
                                 ),
@@ -88,7 +105,8 @@ class _CommentCardState extends State<CommentCard> {
                                       width: 200,
                                       child: reactionBar(
                                         convertReactions(
-                                            widget.packData["reactions"]),
+                                          widget.comment.reactions,
+                                        ),
                                         widget.menuCallback,
                                         widget.packData,
                                         true,
@@ -142,14 +160,7 @@ class _CommentCardState extends State<CommentCard> {
   }
 
   void voteCallback(isUpvote) {
-    vote(
-      isUpvote,
-      userId,
-      widget.voteReload,
-      widget.packData["id"],
-      widget.packData["upVote"],
-      widget.packData["downVote"],
-    );
+    voteHelper.vote(isUpvote: isUpvote, reload: widget.voteReload);
   }
 
   Future<int?> getUserId() async {

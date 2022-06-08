@@ -3,19 +3,15 @@ import 'package:flutter/material.dart';
 class VoteButtonStack extends StatefulWidget {
   final int currentVotes;
   final Function changeVote;
-  final int id;
   final bool hasUpvoted;
   final bool hasDownvoted;
-  final int userId;
 
   const VoteButtonStack({
     Key? key,
     required this.currentVotes,
     required this.changeVote,
-    required this.id,
     required this.hasUpvoted,
     required this.hasDownvoted,
-    required this.userId,
   }) : super(key: key);
 
   @override

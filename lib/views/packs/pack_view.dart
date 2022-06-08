@@ -6,7 +6,6 @@ import 'package:lebenswiki_app/data/example_data.dart';
 import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
 import 'package:lebenswiki_app/components/actions/report_dialog.dart';
 import 'package:lebenswiki_app/components/filtering/tab_bar.dart';
-import 'package:lebenswiki_app/data/enums.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/helper/is_loading.dart';
 
@@ -43,7 +42,7 @@ class _PackViewState extends State<PackView> {
                           ? 99
                           : snapshot.data[_currentCategory - 1]["id"],
                       reload: reload,
-                      contentType: ContentType.hardcodePacks,
+                      cardType: CardType.hardcodePacks,
                       menuCallback: _menuCallback,
                     )*/
                     ListView(

@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/components/cards/comment_card.dart';
-import 'package:lebenswiki_app/data/enums.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 
 class GetContentComments extends StatefulWidget {
   final Function reload;
-  final int userId;
   final List comments;
-  final Function(MenuType, Map) menuCallback;
+  final Function menuCallback;
 
   const GetContentComments({
     Key? key,
     required this.reload,
-    required this.userId,
     required this.comments,
     required this.menuCallback,
   }) : super(key: key);
@@ -32,19 +30,11 @@ class _GetContentCommentsState extends State<GetContentComments> {
         return Column(
           children: [
             CommentCard(
-              packData: currentComment,
+              comment: currentComment,
               voteReload: widget.reload,
-              contentType: ContentType.comments,
+              cardType: CardType.comments,
               menuCallback: widget.menuCallback,
             ),
-            /*ShortCard(
-              packData: currentComment,
-              voteReload: widget.reload,
-              contentType: ContentType.comments,
-              commentExpand: () {},
-              userId: widget.userId,
-              menuCallback: widget.menuCallback,
-            ),*/
             const Padding(
               padding: EdgeInsets.only(right: 20.0, left: 20.0),
               child: Divider(),

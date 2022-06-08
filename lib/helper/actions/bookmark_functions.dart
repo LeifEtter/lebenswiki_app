@@ -1,18 +1,51 @@
-import 'package:lebenswiki_app/data/enums.dart';
+import 'package:lebenswiki_app/api/api_shorts.dart';
+import 'package:lebenswiki_app/models/enums.dart';
+import 'package:lebenswiki_app/models/user_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-bool isBookmarked(int userId, ContentType contentType, bookmarkData) {
-  if (contentType == ContentType.packBookmarks ||
-      contentType == ContentType.shortBookmarks) {
-    return true;
+class BookmarkHelper {
+  int contentId;
+  List<User> bookmarkedBy;
+  CardType cardType;
+
+  bool userHasBookmarked = false;
+  late int? userId;
+
+  BookmarkHelper({
+    required this.contentId,
+    required this.bookmarkedBy,
+    required this.cardType,
+  }) {
+    _initializeUserId();
+    _setUserHasBookmarked();
   }
-  if (bookmarkData.length == 0) {
-    return false;
-  } else {
-    for (var bookmarkObject in bookmarkData) {
-      if (bookmarkObject["id"] == userId) {
-        return true;
+
+  Future<void> _initializeUserId() async {
+    var prefs = await SharedPreferences.getInstance();
+    userId = prefs.getInt("userId");
+  }
+
+  void _setUserHasBookmarked() {
+    if (cardType == CardType.packBookmarks ||
+        cardType == CardType.shortBookmarks) {
+      userHasBookmarked = true;
+    }
+    if (bookmarkedBy.isEmpty) {
+      userHasBookmarked = false;
+    } else {
+      for (User bookmarker in bookmarkedBy) {
+        bookmarker.id == userId ? userHasBookmarked == true : null;
       }
     }
   }
-  return false;
+
+  void toggleBookmarkShort() {
+    if (userHasBookmarked) {
+      unbookmarkShort(contentId);
+      userHasBookmarked = false;
+    } else {
+      bookmarkShort(contentId);
+      userHasBookmarked = true;
+    }
+  }
 }

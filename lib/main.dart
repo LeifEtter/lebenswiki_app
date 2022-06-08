@@ -7,14 +7,14 @@ import 'package:lebenswiki_app/components/navigation/main_appbar.dart';
 import 'package:lebenswiki_app/components/navigation/menu_bar.dart';
 import 'package:lebenswiki_app/components/buttons/add_button.dart';
 import 'package:lebenswiki_app/components/navigation/router.dart';
-import 'package:lebenswiki_app/data/routing_constants.dart';
 import 'package:lebenswiki_app/data/loading.dart';
+import 'package:lebenswiki_app/data/routing_constants.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/views/authentication/authentication_view.dart';
 import 'package:lebenswiki_app/views/shorts/search_view.dart';
 import 'package:lebenswiki_app/components/create/views/feed.dart';
 import 'package:lebenswiki_app/views/shorts/short_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:lebenswiki_app/data/enums.dart';
 import 'package:flutter/services.dart';
 import 'package:lebenswiki_api_helper/lebenswiki_api_helper.dart' as api_helper;
 
@@ -149,7 +149,7 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
   Route _searchRoute() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => const SearchView(
-        contentType: ContentType.shortsByCategory,
+        cardType: CardType.shortsByCategory,
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);

@@ -5,20 +5,21 @@ import 'package:lebenswiki_app/components/feed/get_content_comments.dart';
 import 'package:lebenswiki_app/components/input/comment_input.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
+import 'package:lebenswiki_app/models/enums.dart';
+import 'package:lebenswiki_app/models/short_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:lebenswiki_app/data/enums.dart';
 
 class ShortCardScaffold extends StatefulWidget {
-  final Map packData;
+  final Short short;
   final Function voteReload;
-  final ContentType contentType;
-  final Function(MenuType, Map) menuCallback;
+  final CardType cardType;
+  final Function menuCallback;
 
   const ShortCardScaffold({
     Key? key,
-    required this.packData,
+    required this.short,
     required this.voteReload,
-    required this.contentType,
+    required this.cardType,
     required this.menuCallback,
   }) : super(key: key);
 
@@ -38,7 +39,7 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
       builder: (context, AsyncSnapshot snapshot) {
         if (!snapshot.hasData ||
             snapshot.data == null ||
-            widget.packData["bookmarks"] == null) {
+            widget.short.bookmarks.isEmpty) {
           return const Loading();
         } else {
           return Padding(
@@ -55,14 +56,14 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                 child: Column(
                   children: [
                     ShortCard(
-                      packData: widget.packData,
+                      short: widget.short,
                       voteReload: widget.voteReload,
-                      contentType: widget.contentType,
+                      cardType: widget.cardType,
                       userId: snapshot.data,
                       commentExpand: _triggerComments,
                       menuCallback: widget.menuCallback,
                     ),
-                    widget.contentType == ContentType.shortsByCategory
+                    widget.cardType == CardType.shortsByCategory
                         ? Visibility(
                             visible: _commentsExpanded,
                             child: Column(
@@ -93,7 +94,7 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                                       onPressed: () {
                                         createComment(
                                           _commentController.text.toString(),
-                                          widget.packData["id"],
+                                          widget.short.id,
                                         ).whenComplete(
                                             () => widget.voteReload());
                                         _commentController.text = "";
@@ -106,8 +107,7 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                                   padding: const EdgeInsets.only(left: 10.0),
                                   child: GetContentComments(
                                     reload: widget.voteReload,
-                                    userId: snapshot.data,
-                                    comments: widget.packData["comments"],
+                                    comments: widget.short.comments,
                                     menuCallback: widget.menuCallback,
                                   ),
                                 )

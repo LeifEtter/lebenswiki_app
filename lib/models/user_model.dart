@@ -1,6 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/models/comment_model.dart';
+import 'package:lebenswiki_app/models/report_model.dart';
+import 'package:lebenswiki_app/models/pack_model.dart';
 import 'dart:convert';
+
+import 'package:lebenswiki_app/models/short_model.dart';
+import 'package:lebenswiki_app/models/user_feedback_model.dart';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
 String userToJson(User data) => json.encode(data.toJson());
@@ -12,18 +18,17 @@ class User {
     required this.name,
     this.profileImage =
         "https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg",
-    this.biography = "",
-    this.postsAsCreator = const [],
+    this.biography = "The user hasn't written his biography yet...",
     this.shortsAsCreator = const [],
     this.packsAsCreator = const [],
-    this.upVotesForShorts = const [],
-    this.downVotesForShorts = const [],
-    this.bookmarkForShorts = const [],
+    this.upVotedShorts = const [],
+    this.downVotedShorts = const [],
+    this.bookmarkedShorts = const [],
     this.commentsAsUser = const [],
-    this.reportUser = const [],
+    this.reports = const [],
     this.blockerUser = const [],
     this.blocked = const [],
-    this.feedbackUser = const [],
+    this.feedback = const [],
   });
 
   int id;
@@ -31,17 +36,16 @@ class User {
   String name;
   String profileImage;
   String biography;
-  List<dynamic> postsAsCreator;
-  List<dynamic> shortsAsCreator;
-  List<dynamic> packsAsCreator;
-  List<dynamic> upVotesForShorts;
-  List<dynamic> downVotesForShorts;
-  List<dynamic> bookmarkForShorts;
-  List<dynamic> commentsAsUser;
-  List<dynamic> reportUser;
+  List<Short> shortsAsCreator;
+  List<Pack> packsAsCreator;
+  List<Short> upVotedShorts;
+  List<Short> downVotedShorts;
+  List<Short> bookmarkedShorts;
+  List<Comment> commentsAsUser;
+  List<Report> reports;
   List<dynamic> blockerUser;
   List<dynamic> blocked;
-  List<dynamic> feedbackUser;
+  List<UserFeedback> feedback;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],
@@ -49,24 +53,25 @@ class User {
         name: json["name"],
         profileImage: json["profileImage"],
         biography: json["biography"],
-        postsAsCreator:
-            List<dynamic>.from(json["postsAsCreator"].map((x) => x)),
-        shortsAsCreator:
-            List<dynamic>.from(json["shortsAsCreator"].map((x) => x)),
-        packsAsCreator:
-            List<dynamic>.from(json["packsAsCreator"].map((x) => x)),
-        upVotesForShorts:
-            List<dynamic>.from(json["upVotesForShorts"].map((x) => x)),
-        downVotesForShorts:
-            List<dynamic>.from(json["downVotesForShorts"].map((x) => x)),
-        bookmarkForShorts:
-            List<dynamic>.from(json["bookmarkForShorts"].map((x) => x)),
-        commentsAsUser:
-            List<dynamic>.from(json["commentsAsUser"].map((x) => x)),
-        reportUser: List<dynamic>.from(json["reportUser"].map((x) => x)),
-        blockerUser: List<dynamic>.from(json["blockerUser"].map((x) => x)),
-        blocked: List<dynamic>.from(json["blocked"].map((x) => x)),
-        feedbackUser: List<dynamic>.from(json["feedbackUser"].map((x) => x)),
+        packsAsCreator: List<Pack>.from(
+            json["postsAsCreator"].map((pack) => Pack.fromJson(pack))),
+        shortsAsCreator: List<Short>.from(
+            json["shortsAsCreator"].map((short) => Short.fromJson(short))),
+        upVotedShorts: List<Short>.from(
+            json["upVotesForShorts"].map((short) => Short.fromJson(short))),
+        downVotedShorts: List<Short>.from(
+            json["upVotesForShorts"].map((short) => Short.fromJson(short))),
+        bookmarkedShorts: List<Short>.from(
+            json["upVotesForShorts"].map((short) => Short.fromJson(short))),
+        commentsAsUser: List<Comment>.from(
+            json["commentsAsUser"].map((comment) => Comment.fromJson(comment))),
+        reports: List<Report>.from(
+            json["reportUser"].map((report) => Report.fromJson(report))),
+        blockerUser:
+            List<dynamic>.from(json["blockerUser"].map((x) => x)), //!Todo
+        blocked: List<dynamic>.from(json["blocked"].map((x) => x)), //!Todo
+        feedback: List<UserFeedback>.from(json["feedbackUser"]
+            .map((feedback) => UserFeedback.fromJson(feedback))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -75,18 +80,23 @@ class User {
         "name": name,
         "profileImage": profileImage,
         "biography": biography,
-        "postsAsCreator": List<dynamic>.from(postsAsCreator.map((x) => x)),
-        "shortsAsCreator": List<dynamic>.from(shortsAsCreator.map((x) => x)),
-        "packsAsCreator": List<dynamic>.from(packsAsCreator.map((x) => x)),
-        "upVotesForShorts": List<dynamic>.from(upVotesForShorts.map((x) => x)),
-        "downVotesForShorts":
-            List<dynamic>.from(downVotesForShorts.map((x) => x)),
-        "bookmarkForShorts":
-            List<dynamic>.from(bookmarkForShorts.map((x) => x)),
-        "commentsAsUser": List<dynamic>.from(commentsAsUser.map((x) => x)),
-        "reportUser": List<dynamic>.from(reportUser.map((x) => x)),
-        "blockerUser": List<dynamic>.from(blockerUser.map((x) => x)),
-        "blocked": List<dynamic>.from(blocked.map((x) => x)),
-        "feedbackUser": List<dynamic>.from(feedbackUser.map((x) => x)),
+        "packsAsCreator":
+            List<Pack>.from(packsAsCreator.map((Pack pack) => pack.toJson())),
+        "shortsAsCreator": List<Short>.from(
+            shortsAsCreator.map((Short short) => short.toJson())),
+        "upVotedShorts": List<dynamic>.from(
+            upVotedShorts.map((Short short) => short.toJson())),
+        "downVotedShorts": List<dynamic>.from(
+            downVotedShorts.map((Short short) => short.toJson())),
+        "bookmarkedShorts": List<Short>.from(
+            bookmarkedShorts.map((Short short) => short.toJson())),
+        "commentsAsUser": List<Comment>.from(
+            commentsAsUser.map((Comment comment) => comment.toJson())),
+        "reports":
+            List<Report>.from(reports.map((Report report) => report.toJson())),
+        "blockerUser": List<dynamic>.from(blockerUser.map((x) => x)), //!TODO
+        "blocked": List<dynamic>.from(blocked.map((x) => x)), //!TODO
+        "feedback": List<UserFeedback>.from(
+            feedback.map((UserFeedback feedback) => feedback.toJson())),
       };
 }
