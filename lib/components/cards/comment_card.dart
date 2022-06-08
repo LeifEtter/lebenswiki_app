@@ -54,7 +54,8 @@ class _CommentCardState extends State<CommentCard> {
 
   @override
   Widget build(BuildContext context) {
-    convertReactions(widget.comment.reactions);
+    //!TODO Repair Reaction Bar
+    //convertReactions(widget.comment.reactions);
     return FutureBuilder(
       future: getUserId(),
       builder: (context, AsyncSnapshot snapshot) {
@@ -98,7 +99,8 @@ class _CommentCardState extends State<CommentCard> {
                                   ),
                                 ),
                                 const SizedBox(height: 20),
-                                Row(
+                                //!TODO Repair Reaction Bar
+                                /*Row(
                                   children: [
                                     SizedBox(
                                       height: 30,
@@ -113,7 +115,7 @@ class _CommentCardState extends State<CommentCard> {
                                       ),
                                     ),
                                   ],
-                                )
+                                )*/
                               ],
                             ),
                           ),

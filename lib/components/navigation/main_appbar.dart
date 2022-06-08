@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
+import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Function searchRoute;
@@ -30,12 +31,12 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
-        /*TextButton(
+        TextButton(
           child: const Text("Logout"),
           onPressed: () {
             AuthenticationFunctions().logout(context);
           },
-        ),*/
+        ),
         IconButton(
           icon: Image.asset("assets/icons/profile_icon.png", width: 20.0),
           onPressed: () {

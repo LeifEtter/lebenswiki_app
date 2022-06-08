@@ -63,7 +63,8 @@ class _ShortCardState extends State<ShortCard> {
 
   @override
   Widget build(BuildContext context) {
-    convertReactions(widget.short.reactions);
+    //!TODO Repair Reaction Bar
+    //convertReactions(widget.short.reactions);
     double screenWidth = MediaQuery.of(context).size.width;
     return Stack(
       children: [
@@ -155,6 +156,8 @@ class _ShortCardState extends State<ShortCard> {
                           },
                           icon: const Icon(Icons.comment_outlined),
                         ),
+                        //!TODO Repair Reaction Bar
+                        /*
                         SizedBox(
                           height: 30,
                           width: 200,
@@ -164,7 +167,7 @@ class _ShortCardState extends State<ShortCard> {
                             widget.packData,
                             false,
                           ),
-                        ),
+                        ),*/
                       ],
                     )
                   ],

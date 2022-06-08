@@ -29,7 +29,8 @@ class ReactionHelper {
     userId = prefs.getInt("userId");
   }
 
-  void _setReactions() {
+  //!TODO Repair Reaction Bar
+  /*void _setReactions() {
     Map reactionMap = {
       "happy": 0,
       "catheart": 0,
@@ -51,7 +52,7 @@ class ReactionHelper {
         }
       }
     }
-  }
+  }*/
 }
 
 List allReactions = [
