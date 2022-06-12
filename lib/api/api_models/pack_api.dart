@@ -5,272 +5,264 @@ import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/api_models/result_model_api.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
+import 'package:lebenswiki_app/models/pack_model.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
-import 'package:lebenswiki_app/models/short_model.dart';
 
-class ShortApi extends BaseApi {
+class PackApi extends BaseApi {
   late ApiErrorHandler apiErrorHandler;
 
-  ShortApi() {
+  PackApi() {
     apiErrorHandler = ApiErrorHandler();
   }
 
-  Future<ResultModel> createShort(
-    String title,
-    List categories,
-    String content,
-  ) async {
-    Response res = await post(Uri.parse("$serverIp/shorts/create"),
-        headers: requestHeader(),
-        body: jsonEncode({
-          "title": title,
-          "categories": categories,
-          "content": content,
-        }));
+  Future<ResultModel> createPack({required Pack pack}) async {
+    Response res = await post(
+      Uri.parse("$serverIp/packs/create"),
+      headers: requestHeader(),
+      body: pack.toJson(),
+    );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.success,
-        message: "Short erfolgreich erstellt!",
+        message: "Lernpack erfolgreich erstellt!",
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
         type: ResultType.failure,
-        message: "Short konnte nicht erstellt werden",
+        message: "Das Lernpack konnte nicht erstellt werden",
       );
     }
   }
 
-  Future<ResultModel> deleteShort({required int id}) async {
+  Future<ResultModel> deletePack({required int id}) async {
     Response res = await delete(
-      Uri.parse("$serverIp/shorts/delete/$id"),
+      Uri.parse("$serverIp/packs/delete/$id"),
       headers: requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(type: ResultType.success, message: "Short gelöscht");
+      return ResultModel(
+          type: ResultType.success, message: "Lernpack gelöscht");
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
           type: ResultType.failure,
-          message: "Short konnte nicht gelöscht werden");
+          message: "Lernpack konnte nicht gelöscht werden");
     }
   }
 
-  Future<ResultModel> getAllShorts() async {
+  Future<ResultModel> getAllPacks() async {
     Response res = await get(
-      Uri.parse("$serverIp/shorts/"),
+      Uri.parse("$serverIp/packs/"),
       headers: requestHeader(),
     );
     Map resBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
-      List<Short> shorts =
-          resBody["shorts"].map((short) => Short.fromJson(short));
-      return ResultModel(
-        type: ResultType.shortList,
-        shorts: shorts,
+      List<Pack> packs = resBody["packs"].map(
+        (pack) => Pack.fromJson(pack),
       );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
-        type: ResultType.success,
-        shorts: [],
-        message: "Es wurden keine shorts gefunden",
-      );
-    }
-  }
-
-  Future<ResultModel> getShortsByCategory(
-      {required ContentCategory category}) async {
-    Response res = await get(
-      Uri.parse("$serverIp/shorts/${category.id}"),
-      headers: requestHeader(),
-    );
-    Map resBody = jsonDecode(res.body);
-    if (statusIsSuccess(res.statusCode)) {
-      List<Short> shorts =
-          resBody["category"]["shorts"].map((short) => Short.fromJson(short));
-      return ResultModel(
-        type: ResultType.shortList,
-        shorts: shorts,
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.success,
-        shorts: [],
-        message: "Es wurden keine shorts gefunden",
-      );
-    }
-  }
-
-  Future<ResultModel> getBookmarkedShorts() async {
-    Response res = await get(
-      Uri.parse("$serverIp/shorts/bookmarks"),
-      headers: requestHeader(),
-    );
-    Map resBody = jsonDecode(res.body);
-    if (statusIsSuccess(res.statusCode)) {
-      List<Short> shorts =
-          resBody["body"].map((short) => Short.fromJson(short));
-      return ResultModel(
-        type: ResultType.shortList,
-        shorts: shorts,
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.success,
-        shorts: [],
-        message: "Du hast keine Shorts gespeichert",
-      );
-    }
-  }
-
-  Future<ResultModel> getCreatorsDraftShorts() async {
-    Response res = await get(
-      Uri.parse("$serverIp/shorts/unpublished"),
-      headers: requestHeader(),
-    );
-    Map resBody = jsonDecode(res.body);
-    if (statusIsSuccess(res.statusCode)) {
-      List<Short> shorts =
-          resBody["body"].map((short) => Short.fromJson(short));
-      return ResultModel(
-        type: ResultType.shortList,
-        shorts: shorts,
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.success,
-        shorts: [],
-        message: "Du hast keine Shorts entworfen",
-      );
-    }
-  }
-
-  Future<ResultModel> getOwnPublishedShorts() =>
-      getCreatorsPublishedShorts(isOwn: true);
-  Future<ResultModel> getOthersPublishedShorts() =>
-      getCreatorsPublishedShorts(isOwn: false);
-
-  Future<ResultModel> getCreatorsPublishedShorts({required bool isOwn}) async {
-    Response res = await get(
-      Uri.parse("$serverIp/shorts/published"),
-      headers: requestHeader(),
-    );
-    Map resBody = jsonDecode(res.body);
-    if (statusIsSuccess(res.statusCode)) {
-      List<Short> shorts =
-          resBody["body"].map((short) => Short.fromJson(short));
-      return ResultModel(
-        type: ResultType.shortList,
-        shorts: shorts,
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.success,
-        shorts: [],
-        message:
-            "${isOwn ? "Du hast" : "Dieser Benutzer hat"} noch keine Shorts veröffentlicht",
-      );
-    }
-  }
-
-  Future<ResultModel> upvoteShort(id) => votingShort(isUpvote: true, id: id);
-  Future<ResultModel> downvoteShort(id) => votingShort(isUpvote: false, id: id);
-
-  Future<ResultModel> votingShort({
-    required bool isUpvote,
-    required int id,
-  }) async {
-    Response res = await put(
-      Uri.parse("$serverIp/shorts/${isUpvote ? "upvote" : "downvote"}/$id"),
-      headers: requestHeader(),
-    );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "Succesfully ${isUpvote ? "upvoted" : "downvoted"} Short",
+        type: ResultType.packList,
+        packs: packs,
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
         type: ResultType.failure,
-        message: "Couldn't ${isUpvote ? "upvote" : "downvote"} Short",
+        packs: [],
+        message: "Es wurden keine packs gefunden",
       );
     }
   }
 
-  Future<ResultModel> removeUpvoteShort(id) =>
-      removeVotingShort(isUpvote: true, id: id);
-  Future<ResultModel> removeDownvoteShort(id) =>
-      removeVotingShort(isUpvote: false, id: id);
+  Future<ResultModel> getPacksByCategory(
+      {required ContentCategory category}) async {
+    Response res = await get(
+      Uri.parse("$serverIp/packs/${category.id}"),
+      headers: requestHeader(),
+    );
+    Map resBody = jsonDecode(res.body);
+    if (statusIsSuccess(res.statusCode)) {
+      List<Pack> packs =
+          resBody["category"]["packs"].map((pack) => Pack.fromJson(pack));
+      return ResultModel(
+        type: ResultType.packList,
+        packs: packs,
+      );
+    } else {
+      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      return ResultModel(
+        type: ResultType.success,
+        packs: [],
+        message: "Es wurden keine Lernpacks gefunden",
+      );
+    }
+  }
 
-  Future<ResultModel> removeVotingShort({
+  Future<ResultModel> getBookmarkedPacks() async {
+    Response res = await get(
+      Uri.parse("$serverIp/packs/bookmarks"),
+      headers: requestHeader(),
+    );
+    Map resBody = jsonDecode(res.body);
+    if (statusIsSuccess(res.statusCode)) {
+      List<Pack> packs = resBody["body"].map((pack) => Pack.fromJson(pack));
+      return ResultModel(
+        type: ResultType.packList,
+        packs: packs,
+      );
+    } else {
+      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      return ResultModel(
+        type: ResultType.success,
+        packs: [],
+        message: "Du hast keine Lernpacks gespeichert",
+      );
+    }
+  }
+
+  Future<ResultModel> getCreatorsDraftPacks() async {
+    Response res = await get(
+      Uri.parse("$serverIp/packs/unpublished"),
+      headers: requestHeader(),
+    );
+    Map resBody = jsonDecode(res.body);
+    if (statusIsSuccess(res.statusCode)) {
+      List<Pack> packs = resBody["body"].map((pack) => Pack.fromJson(pack));
+      return ResultModel(
+        type: ResultType.packList,
+        packs: packs,
+      );
+    } else {
+      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      return ResultModel(
+        type: ResultType.success,
+        packs: [],
+        message: "Du hast keine packs entworfen",
+      );
+    }
+  }
+
+  Future<ResultModel> getOwnPublishedpacks() =>
+      getCreatorsPublishedpacks(isOwn: true);
+  Future<ResultModel> getOthersPublishedpacks() =>
+      getCreatorsPublishedpacks(isOwn: false);
+
+  Future<ResultModel> getCreatorsPublishedpacks({required bool isOwn}) async {
+    Response res = await get(
+      Uri.parse("$serverIp/packs/published"),
+      headers: requestHeader(),
+    );
+    Map resBody = jsonDecode(res.body);
+    if (statusIsSuccess(res.statusCode)) {
+      List<Pack> packs = resBody["body"].map((pack) => pack.fromJson(pack));
+      return ResultModel(
+        type: ResultType.packList,
+        packs: packs,
+      );
+    } else {
+      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      return ResultModel(
+        type: ResultType.success,
+        packs: [],
+        message:
+            "${isOwn ? "Du hast" : "Dieser Benutzer hat"} noch keine packs veröffentlicht",
+      );
+    }
+  }
+
+  Future<ResultModel> upvotePack(id) => votingPack(isUpvote: true, id: id);
+  Future<ResultModel> downvotePack(id) => votingPack(isUpvote: false, id: id);
+
+  Future<ResultModel> votingPack({
+    required bool isUpvote,
+    required int id,
+  }) async {
+    Response res = await put(
+      Uri.parse("$serverIp/packs/${isUpvote ? "upvote" : "downvote"}/$id"),
+      headers: requestHeader(),
+    );
+    if (statusIsSuccess(res.statusCode)) {
+      return ResultModel(
+        type: ResultType.success,
+        message: "Succesfully ${isUpvote ? "upvoted" : "downvoted"} pack",
+      );
+    } else {
+      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      return ResultModel(
+        type: ResultType.failure,
+        message: "Couldn't ${isUpvote ? "upvote" : "downvote"} pack",
+      );
+    }
+  }
+
+  Future<ResultModel> removeUpvotePack(id) =>
+      removeVotingPack(isUpvote: true, id: id);
+  Future<ResultModel> removeDownvotePack(id) =>
+      removeVotingPack(isUpvote: false, id: id);
+
+  Future<ResultModel> removeVotingPack({
     required bool isUpvote,
     required int id,
   }) async {
     Response res = await put(
       Uri.parse(
-          "$serverIp/shorts/${isUpvote ? "upvote" : "downvote"}/remove/$id"),
+          "$serverIp/packs/${isUpvote ? "upvote" : "downvote"}/remove/$id"),
       headers: requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.success,
         message:
-            "Succesfully removed ${isUpvote ? "upvoted" : "downvoted"} for Short",
+            "Succesfully removed ${isUpvote ? "upvoted" : "downvoted"} for pack",
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
         type: ResultType.failure,
-        message:
-            "Couldn't remove ${isUpvote ? "upvote" : "downvote"} for Short",
+        message: "Couldn't remove ${isUpvote ? "upvote" : "downvote"} for pack",
       );
     }
   }
 
-  Future<ResultModel> bookmarkShort(id) =>
-      bookmarkingShort(id: id, isUnbookmark: false);
-  Future<ResultModel> unbookmarkShort(id) =>
-      bookmarkingShort(id: id, isUnbookmark: true);
+  Future<ResultModel> bookmarkPack(id) =>
+      bookmarkingPack(id: id, isUnbookmark: false);
+  Future<ResultModel> unbookmarkPack(id) =>
+      bookmarkingPack(id: id, isUnbookmark: true);
 
-  Future<ResultModel> bookmarkingShort({
+  Future<ResultModel> bookmarkingPack({
     required int id,
     required bool isUnbookmark,
   }) async {
     Response res = await put(
       Uri.parse(
-          "$serverIp/shorts/${isUnbookmark ? "unbookmark" : "bookmark"}/$id"),
+          "$serverIp/packs/${isUnbookmark ? "unbookmark" : "bookmark"}/$id"),
       headers: requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.success,
         message:
-            "Short Erfolgreich ${isUnbookmark ? "von gespeicherten Shorts entfernt" : "gespeichert"}",
+            "pack Erfolgreich ${isUnbookmark ? "von gespeicherten packs entfernt" : "gespeichert"}",
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
           type: ResultType.failure,
           message:
-              "Konnte Short nicht ${isUnbookmark ? "von gespeicherten Shorts entfernen" : "speichern"}");
+              "Konnte pack nicht ${isUnbookmark ? "von gespeicherten packs entfernen" : "speichern"}");
     }
   }
 
-  Future<ResultModel> reactShort(id) => reactingShort(id: id, isRemove: false);
-  Future<ResultModel> unreactShort(id) => reactingShort(id: id, isRemove: true);
+  Future<ResultModel> reactPack(id) => reactingPack(id: id, isRemove: false);
+  Future<ResultModel> unreactPack(id) => reactingPack(id: id, isRemove: true);
 
-  Future<ResultModel> reactingShort({
+  Future<ResultModel> reactingPack({
     required int id,
     required bool isRemove,
   }) async {
     Response res = await put(
-      Uri.parse("$serverIp/shorts/reaction${isRemove ? "/remove" : ""}/$id"),
+      Uri.parse("$serverIp/packs/reaction${isRemove ? "/remove" : ""}/$id"),
       headers: requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
@@ -285,18 +277,17 @@ class ShortApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> publishShort(id) =>
-      publishingShort(id: id, isUnpublish: false);
-  Future<ResultModel> unpublishShort(id) =>
-      publishingShort(id: id, isUnpublish: true);
+  Future<ResultModel> publishPack(id) =>
+      publishingPack(id: id, isUnpublish: false);
+  Future<ResultModel> unpublishPack(id) =>
+      publishingPack(id: id, isUnpublish: true);
 
-  Future<ResultModel> publishingShort({
+  Future<ResultModel> publishingPack({
     required int id,
     required bool isUnpublish,
   }) async {
     Response res = await put(
-      Uri.parse(
-          "$serverIp/shorts/${isUnpublish ? "unpublish" : "publish"}/$id"),
+      Uri.parse("$serverIp/packs/${isUnpublish ? "unpublish" : "publish"}/$id"),
       headers: requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
@@ -311,11 +302,11 @@ class ShortApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> reportShort({
+  Future<ResultModel> reportPack({
     required Report report,
   }) async {
     Response res = await post(
-      Uri.parse("$serverIp/reports/create/short/${report.reportedContentId}"),
+      Uri.parse("$serverIp/reports/create/pack/${report.reportedContentId}"),
       headers: requestHeader(),
       body: jsonEncode({
         "reason": report.reason,
@@ -324,22 +315,22 @@ class ShortApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.success,
-        message: "Short wurde erfolgreich gemeldet",
+        message: "pack wurde erfolgreich gemeldet",
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
         type: ResultType.failure,
-        message: "Short konnte nicht gemeldet werden",
+        message: "pack konnte nicht gemeldet werden",
       );
     }
   }
 
-  Future<ResultModel> commentShort({
+  Future<ResultModel> commentPack({
     required int id,
     required String comment,
   }) async {
-    Response res = await post(Uri.parse("$serverIp/comments/create/shorts/$id"),
+    Response res = await post(Uri.parse("$serverIp/comments/create/packs/$id"),
         headers: requestHeader(), body: jsonEncode({"comment": comment}));
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
