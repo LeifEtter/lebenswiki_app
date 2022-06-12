@@ -45,7 +45,7 @@ class Short {
   List<User> upVote;
   List<User> downVote;
   List<User> bookmarks;
-  List<Category> categories;
+  List<ContentCategory> categories;
   List<Comment> comments;
   List<Report> reportShort;
   Map reactions;
@@ -66,8 +66,8 @@ class Short {
             json["downVote"].map((user) => User.fromJson(user))),
         bookmarks: List<User>.from(
             json["bookmarks"].map((user) => User.fromJson(user))),
-        categories: List<Category>.from(
-            json["categories"].map((category) => Category.fromJson(json))),
+        categories: List<ContentCategory>.from(json["categories"]
+            .map((category) => ContentCategory.fromJson(json))),
         comments: List<Comment>.from(
             json["comments"].map((comment) => Comment.fromJson(comment))),
         reportShort: List<Report>.from(
@@ -90,7 +90,7 @@ class Short {
         "bookmarks":
             List<dynamic>.from(bookmarks.map((User user) => user.toJson())),
         "categories": List<dynamic>.from(
-            categories.map((Category category) => category.toJson())),
+            categories.map((ContentCategory category) => category.toJson())),
         "comments":
             List<Map>.from(comments.map((Comment comment) => comment.toJson())),
         "reportShort": List<dynamic>.from(

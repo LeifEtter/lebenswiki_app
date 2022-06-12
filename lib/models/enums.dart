@@ -6,6 +6,16 @@ enum ItemType {
   text,
 }
 
+enum ResultType {
+  packList,
+  shortList,
+  pack,
+  short,
+  user,
+  failure,
+  success,
+}
+
 enum CardType {
   shortsByCategory,
   packsByCategory,

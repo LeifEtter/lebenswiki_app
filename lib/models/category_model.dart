@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:lebenswiki_app/models/pack_model.dart';
 import 'package:lebenswiki_app/models/short_model.dart';
 
-Category categoryFromJson(String str) => Category.fromJson(json.decode(str));
+ContentCategory categoryFromJson(String str) =>
+    ContentCategory.fromJson(json.decode(str));
 
-String categoryToJson(Category data) => json.encode(data.toJson());
+String categoryToJson(ContentCategory data) => json.encode(data.toJson());
 
-class Category {
-  Category({
+class ContentCategory {
+  ContentCategory({
     required this.id,
     required this.categoryName,
     this.shorts = const [],
@@ -20,7 +21,8 @@ class Category {
   List<Short> shorts;
   List<Pack> packs;
 
-  factory Category.fromJson(Map<String, dynamic> json) => Category(
+  factory ContentCategory.fromJson(Map<String, dynamic> json) =>
+      ContentCategory(
         id: json["id"],
         categoryName: json["categoryName"],
         shorts: List<Short>.from(

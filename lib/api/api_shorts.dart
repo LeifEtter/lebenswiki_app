@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:lebenswiki_app/models/short_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api_access.dart';
 
@@ -16,23 +17,6 @@ Future<Map<String, String>?> headerScaffold() async {
     "authorization": token,
   };
 }
-
-/*Future<String> createShort(
-    String title, List categories, String content) async {
-  var headerScaffoldTemplate = await headerScaffold();
-  var res = await http.post(
-    Uri.parse("$SERVER_IP/shorts/create"),
-    headers: headerScaffoldTemplate,
-    body: jsonEncode({
-      "title": title,
-      "categories": categories,
-      "content": content,
-    }),
-  );
-  switch (res.statusCode) {
-    case 200:
-  }
-}*/
 
 Future<String> createShort(
   String title,
@@ -64,23 +48,21 @@ Future<List> getAllShorts(String nullSafety) async {
   var res = await http.get(Uri.parse("$serverIp/shorts/"), headers: {
     "authorization": token,
   });
+  var responseData = jsonDecode(res.body);
   if (res.statusCode == 200) {
-    var responseData = jsonDecode(res.body);
-    var posts = responseData["body"];
-    var listWithPosts = [];
-    posts.forEach((pack) => listWithPosts);
-
-    return ["short", posts.toList()];
+    List shorts = responseData["body"];
+    shorts.map((short) => Short.fromJson(short));
+    return ["short", shorts];
   } else {
+    print(responseData);
     return ["short", []];
   }
 }
 
-Future<List> getDrafts(String nullSafety) async {
+Future<List> getDraftsShorts(String nullSafety) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res =
-      await http.get(Uri.parse("$serverIp/shorts/unpublished"), headers: {
+  var res = await http.get(Uri.parse("$serverIp/shorts/unpublished"), headers: {
     "authorization": token,
   });
   if (res.statusCode == 200) {
@@ -152,8 +134,8 @@ Future<String> unpublishShort(
 ) async {
   var prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  var res = await http
-      .put(Uri.parse("$serverIp/shorts/unpublish/$postId"), headers: {
+  var res =
+      await http.put(Uri.parse("$serverIp/shorts/unpublish/$postId"), headers: {
     "Content-type": "application/json",
     "authorization": token,
   });
