@@ -78,7 +78,7 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
                     children: [
                       GetContent(
                         reload: reload,
-                        cardType: CardType.drafts,
+                        cardType: CardType.shortDrafts,
                         menuCallback: () {},
                       ),
                     ],

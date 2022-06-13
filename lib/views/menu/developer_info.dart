@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_universal.dart';
+import 'package:lebenswiki_app/api/api_models/user_api.dart';
 import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
@@ -12,6 +12,7 @@ class DeveloperInfoView extends StatefulWidget {
 }
 
 class _DeveloperInfoViewState extends State<DeveloperInfoView> {
+  final UserApi userApi = UserApi();
   final TextEditingController _feedbackController = TextEditingController();
 
   @override
@@ -202,8 +203,9 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                             child: LebenswikiBlueButton(
                               text: "Feedback abschicken",
                               callback: () {
-                                createFeedback(
-                                    _feedbackController.text.toString());
+                                userApi.createFeedback(
+                                    feedback:
+                                        _feedbackController.text.toString());
                               },
                             ),
                           ),

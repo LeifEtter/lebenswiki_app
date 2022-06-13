@@ -144,11 +144,11 @@ class PackApi extends BaseApi {
   }
 
   Future<ResultModel> getOwnPublishedpacks() =>
-      getCreatorsPublishedpacks(isOwn: true);
+      _getCreatorsPublishedPacks(isOwn: true);
   Future<ResultModel> getOthersPublishedpacks() =>
-      getCreatorsPublishedpacks(isOwn: false);
+      _getCreatorsPublishedPacks(isOwn: false);
 
-  Future<ResultModel> getCreatorsPublishedpacks({required bool isOwn}) async {
+  Future<ResultModel> _getCreatorsPublishedPacks({required bool isOwn}) async {
     Response res = await get(
       Uri.parse("$serverIp/packs/published"),
       headers: requestHeader(),
@@ -171,10 +171,10 @@ class PackApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> upvotePack(id) => votingPack(isUpvote: true, id: id);
-  Future<ResultModel> downvotePack(id) => votingPack(isUpvote: false, id: id);
+  Future<ResultModel> upvotePack(id) => _votingPack(isUpvote: true, id: id);
+  Future<ResultModel> downvotePack(id) => _votingPack(isUpvote: false, id: id);
 
-  Future<ResultModel> votingPack({
+  Future<ResultModel> _votingPack({
     required bool isUpvote,
     required int id,
   }) async {
@@ -197,11 +197,11 @@ class PackApi extends BaseApi {
   }
 
   Future<ResultModel> removeUpvotePack(id) =>
-      removeVotingPack(isUpvote: true, id: id);
+      _removeVotingPack(isUpvote: true, id: id);
   Future<ResultModel> removeDownvotePack(id) =>
-      removeVotingPack(isUpvote: false, id: id);
+      _removeVotingPack(isUpvote: false, id: id);
 
-  Future<ResultModel> removeVotingPack({
+  Future<ResultModel> _removeVotingPack({
     required bool isUpvote,
     required int id,
   }) async {
@@ -226,11 +226,11 @@ class PackApi extends BaseApi {
   }
 
   Future<ResultModel> bookmarkPack(id) =>
-      bookmarkingPack(id: id, isUnbookmark: false);
+      _bookmarkingPack(id: id, isUnbookmark: false);
   Future<ResultModel> unbookmarkPack(id) =>
-      bookmarkingPack(id: id, isUnbookmark: true);
+      _bookmarkingPack(id: id, isUnbookmark: true);
 
-  Future<ResultModel> bookmarkingPack({
+  Future<ResultModel> _bookmarkingPack({
     required int id,
     required bool isUnbookmark,
   }) async {
@@ -254,10 +254,10 @@ class PackApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> reactPack(id) => reactingPack(id: id, isRemove: false);
-  Future<ResultModel> unreactPack(id) => reactingPack(id: id, isRemove: true);
+  Future<ResultModel> reactPack(id) => _reactingPack(id: id, isRemove: false);
+  Future<ResultModel> unreactPack(id) => _reactingPack(id: id, isRemove: true);
 
-  Future<ResultModel> reactingPack({
+  Future<ResultModel> _reactingPack({
     required int id,
     required bool isRemove,
   }) async {
@@ -278,11 +278,11 @@ class PackApi extends BaseApi {
   }
 
   Future<ResultModel> publishPack(id) =>
-      publishingPack(id: id, isUnpublish: false);
+      _publishingPack(id: id, isUnpublish: false);
   Future<ResultModel> unpublishPack(id) =>
-      publishingPack(id: id, isUnpublish: true);
+      _publishingPack(id: id, isUnpublish: true);
 
-  Future<ResultModel> publishingPack({
+  Future<ResultModel> _publishingPack({
     required int id,
     required bool isUnpublish,
   }) async {

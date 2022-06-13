@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_authentication.dart';
+import 'package:lebenswiki_app/api/api_models/result_model_api.dart';
+import 'package:lebenswiki_app/api/api_models/user_api.dart';
 import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/components/buttons/authentication_buttons.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
 import 'package:lebenswiki_app/main.dart';
+import 'package:lebenswiki_app/models/enums.dart';
+import 'package:lebenswiki_app/models/user_model.dart';
 
 class AuthenticationView extends StatefulWidget {
   const AuthenticationView({Key? key}) : super(key: key);
@@ -15,9 +18,10 @@ class AuthenticationView extends StatefulWidget {
 }
 
 class _AuthenticationViewState extends State<AuthenticationView> {
+  final UserApi userApi = UserApi();
   bool isAdminSignUp = false;
   bool isSignUp = false;
-  bool? _defaultProfilePic = false;
+  bool _defaultProfilePic = false;
   final GlobalKey<FormState> _authFormKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -111,7 +115,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
                       value: _defaultProfilePic,
                       onChanged: (value) {
                         setState(() {
-                          _defaultProfilePic = value;
+                          _defaultProfilePic = value!;
                           errorMap.forEach((k, v) {
                             errorMap[k] = "";
                           });
@@ -208,18 +212,18 @@ class _AuthenticationViewState extends State<AuthenticationView> {
   }
 
   void signUp() {
-    register(
-      _emailController.text.toString(),
-      _passwordController.text.toString(),
-      _nameController.text.toString(),
-      _biographyController.text.toString(),
-      _defaultProfilePic!
+    User user = User(
+      email: _emailController.text.toString(),
+      name: _nameController.text.toString(),
+      password: _passwordController.text.toString(),
+      biography: _biographyController.text.toString(),
+      profileImage: _defaultProfilePic
           ? "https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg"
           : _profileImageController.text.toString(),
-      isAdminSignUp == true ? true : false,
-    ).then((responseMap) {
-      if (responseMap["error"] != "") {
-        List errorList = convertError(responseMap["error"]);
+    );
+    userApi.register(user).then((ResultModel result) {
+      if (result.type == ResultType.failure) {
+        List errorList = convertError(result.message);
         errorMap[errorList[0]] = errorList[1];
         setState(() {});
       } else {
@@ -231,12 +235,14 @@ class _AuthenticationViewState extends State<AuthenticationView> {
   }
 
   void signIn() {
-    login(
-      _emailController.text.toString(),
-      _passwordController.text.toString(),
-    ).then((responseMap) {
-      if (responseMap["error"] != "") {
-        List errorList = convertError(responseMap["error"]);
+    userApi
+        .login(
+      email: _emailController.text.toString(),
+      password: _passwordController.text.toString(),
+    )
+        .then((ResultModel result) {
+      if (result.type == ResultType.failure) {
+        List errorList = convertError(result.message);
         errorMap[errorList[0]] = errorList[1];
         setState(() {});
       } else {

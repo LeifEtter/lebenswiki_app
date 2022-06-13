@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_authentication.dart';
+import 'package:lebenswiki_app/api/api_models/user_api.dart';
 import 'package:lebenswiki_app/components/create/views/your_creator_packs.dart';
 import 'package:lebenswiki_app/data/image_repo.dart';
 import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
@@ -25,6 +25,7 @@ class MenuBar extends StatefulWidget {
 }
 
 class _MenuBarState extends State<MenuBar> {
+  UserApi userApi = UserApi();
   String profileName = "Not logged in";
   String userName = "@";
 
@@ -41,7 +42,7 @@ class _MenuBarState extends State<MenuBar> {
     }
     return Drawer(
       child: FutureBuilder(
-        future: getUserData(),
+        future: userApi.getUserData(),
         builder: (context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
             return const Loading();

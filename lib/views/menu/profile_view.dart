@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_authentication.dart';
-import 'package:lebenswiki_app/api/api_universal.dart';
+import 'package:lebenswiki_app/api/api_models/result_model_api.dart';
+import 'package:lebenswiki_app/api/api_models/user_api.dart';
 import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/components/buttons/authentication_buttons.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
 import 'package:lebenswiki_app/data/loading.dart';
+import 'package:lebenswiki_app/models/enums.dart';
+import 'package:lebenswiki_app/models/user_model.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -15,6 +17,7 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
+  final UserApi userApi = UserApi();
   final TextEditingController _profileImageController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -24,22 +27,25 @@ class _ProfileViewState extends State<ProfileView> {
       TextEditingController();
   final TextEditingController _biographyController = TextEditingController();
 
+  late User user;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder(
-          future: getUserData(),
+          future: userApi.getUserData(),
           builder: (context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
               return const Loading();
             } else if (snapshot.data == null) {
               return const Text("Please log in");
             } else {
-              _profileImageController.text = snapshot.data["profileImage"];
-              _nameController.text = snapshot.data["name"];
-              _emailController.text = snapshot.data["email"];
-              _biographyController.text = snapshot.data["biography"];
+              User user = snapshot.data;
+              _profileImageController.text = user.profileImage;
+              _nameController.text = user.name;
+              _emailController.text = user.email;
+              _biographyController.text = user.biography;
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: ListView(
@@ -49,7 +55,7 @@ class _ProfileViewState extends State<ProfileView> {
                     CircleAvatar(
                       child: ClipOval(
                         child: Image.network(
-                          snapshot.data["profileImage"],
+                          user.profileImage,
                         ),
                       ),
                       radius: 45,
@@ -121,14 +127,7 @@ class _ProfileViewState extends State<ProfileView> {
                     AuthenticationButton(
                       text: "Änderungen Speichern",
                       color: Colors.blue,
-                      onPress: () {
-                        updateProfile(
-                          _emailController.text.toString(),
-                          _nameController.text.toString(),
-                          _biographyController.text.toString(),
-                          _profileImageController.text.toString(),
-                        );
-                      },
+                      onPress: () => update(),
                     ),
                     const SizedBox(height: 20),
                     const Divider(),
@@ -184,9 +183,7 @@ class _ProfileViewState extends State<ProfileView> {
                     AuthenticationButton(
                       text: "Passwort Speichern",
                       color: Colors.blue,
-                      onPress: () {
-                        changePassword();
-                      },
+                      onPress: () => changePassword(),
                     ),
                     const SizedBox(height: 20),
                   ],
@@ -242,31 +239,35 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   void update() {
-    updateProfile(
-      _emailController.text.toString(),
-      _nameController.text.toString(),
-      _biographyController.text.toString(),
-      _profileImageController.text.toString(),
-    ).then((responseMap) {
-      if (responseMap["error"] != "") {
-        List errorList = convertError(responseMap["error"]);
+    user.email = _emailController.text.toString();
+    user.name = _nameController.text.toString();
+    user.biography = _biographyController.text.toString();
+    user.profileImage = _profileImageController.text.toString();
+
+    userApi.updateProfile(user: user).then((ResultModel result) {
+      if (result.type == ResultType.success) {
+        List errorList = convertError(result.message);
         errorMap[errorList[0]] = errorList[1];
         setState(() {});
+      } else {
+        print("Show success message");
       }
     });
   }
 
   void changePassword() {
-    updatePassword(
-      _oldPasswordController.text.toString(),
-      _passwordController.text.toString(),
-    ).then((responseMap) {
-      if (responseMap["error"] != "") {
-        List errorList = convertError(responseMap["error"]);
+    userApi
+        .updatePassword(
+      oldpassword: _oldPasswordController.text.toString(),
+      password: _passwordController.text.toString(),
+    )
+        .then((ResultModel result) {
+      if (result.type == ResultType.success) {
+        List errorList = convertError(result.message);
         errorMap[errorList[0]] = errorList[1];
         setState(() {});
       } else {
-        //print("Password Updated");
+        print("Show Success message");
       }
     }).whenComplete(() {
       _oldPasswordController.text = "";

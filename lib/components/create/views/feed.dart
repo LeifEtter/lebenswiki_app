@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_shorts.dart';
-import 'package:lebenswiki_app/api/api_universal.dart';
+import 'package:lebenswiki_app/api/api_models/misc_api.dart';
 import 'package:lebenswiki_app/components/actions/modal_sheet.dart';
 import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
 import 'package:lebenswiki_app/components/actions/report_dialog.dart';
@@ -20,13 +19,14 @@ class PackViewNew extends StatefulWidget {
 }
 
 class _PackViewNewState extends State<PackViewNew> {
+  final MiscApi miscApi = MiscApi();
   int _currentCategory = 0;
   String? chosenReason = "Illegal unter der NetzDG";
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: getCategories(),
+      future: miscApi.getCategories(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         return isLoading(snapshot)
             ? const Loading()

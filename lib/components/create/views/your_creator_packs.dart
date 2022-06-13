@@ -38,7 +38,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
 
   void _home() {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: ((context) => NavBarWrapper())));
+        .push(MaterialPageRoute(builder: ((context) => const NavBarWrapper())));
   }
 
   @override
@@ -84,7 +84,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
                     children: [
                       GetContent(
                         reload: reload,
-                        cardType: CardType.yourCreatorPacksPublished,
+                        cardType: CardType.yourPacks,
                         menuCallback: () {},
                       ),
                       const SizedBox(height: 30),
@@ -95,7 +95,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
                     children: [
                       GetContent(
                         reload: reload,
-                        cardType: CardType.yourCreatorPacks,
+                        cardType: CardType.packDrafts,
                         menuCallback: () {},
                       ),
                       const SizedBox(height: 30),

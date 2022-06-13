@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lebenswiki_app/api/api_universal.dart';
+import 'package:lebenswiki_app/api/api_models/misc_api.dart';
 import 'package:lebenswiki_app/components/create/data/models.dart';
 import 'package:lebenswiki_app/components/create/views/editor.dart';
 import 'package:lebenswiki_app/components/create/views/your_creator_packs.dart';
@@ -28,6 +28,7 @@ class _EditorSettingsState extends State<EditorSettings> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController imageLinkController = TextEditingController();
+  final MiscApi miscApi = MiscApi();
   int _currentCategory = 0;
 
   @override
@@ -53,7 +54,7 @@ class _EditorSettingsState extends State<EditorSettings> {
             nextCallback: _nextPage,
           ),
           FutureBuilder(
-            future: getCategories(),
+            future: miscApi.getCategories(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (!snapshot.hasData) {
                 return Loading();

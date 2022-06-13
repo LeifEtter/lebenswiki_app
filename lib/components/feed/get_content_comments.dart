@@ -32,7 +32,7 @@ class _GetContentCommentsState extends State<GetContentComments> {
             CommentCard(
               comment: currentComment,
               voteReload: widget.reload,
-              cardType: CardType.comments,
+              cardType: CardType.shortComments,
               menuCallback: widget.menuCallback,
             ),
             const Padding(

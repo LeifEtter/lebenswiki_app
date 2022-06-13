@@ -35,11 +35,17 @@ class UserApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> login(User user) async {
+  Future<ResultModel> login({
+    required String email,
+    required String password,
+  }) async {
     Response res = await post(
       Uri.parse("$serverIp/users/register"),
       headers: requestHeader(),
-      body: jsonEncode(user),
+      body: jsonEncode({
+        email: email,
+        password: password,
+      }),
     );
     Map decodedBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {

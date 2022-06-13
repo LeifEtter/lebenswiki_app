@@ -9,6 +9,7 @@ enum ItemType {
 enum ResultType {
   packList,
   shortList,
+  categoryList,
   pack,
   short,
   user,
@@ -21,14 +22,12 @@ enum CardType {
   packsByCategory,
   shortBookmarks,
   packBookmarks,
-  drafts,
+  shortDrafts,
+  packDrafts,
   yourShorts,
-  comments,
-  hardcodePacks,
-  creatorPacks,
-  yourCreatorPacks,
-  draftCreatorPacks,
-  yourCreatorPacksPublished,
+  yourPacks,
+  shortComments,
+  packComments,
 }
 
 enum MenuType {

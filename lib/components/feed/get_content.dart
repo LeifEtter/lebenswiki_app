@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_shorts.dart';
-import 'package:lebenswiki_app/api/api_posts.dart';
-import 'package:lebenswiki_app/api/api_universal.dart';
+import 'package:lebenswiki_app/api/api_models/pack_api.dart';
+import 'package:lebenswiki_app/api/api_models/short_api.dart';
+import 'package:lebenswiki_app/api/api_models/user_api.dart';
 import 'package:lebenswiki_app/components/cards/short_card_minimal.dart';
 import 'package:lebenswiki_app/components/cards/short_card_scaffold.dart';
 import 'package:lebenswiki_app/components/create/api/api_creator_pack.dart';
@@ -31,6 +31,9 @@ class GetContent extends StatefulWidget {
 }
 
 class _GetContentState extends State<GetContent> {
+  final ShortApi shortApi = ShortApi();
+  final PackApi packApi = PackApi();
+  final UserApi userApi = UserApi();
   bool provideCategory = false;
   String errorText = "";
   late Function packFuture;
@@ -40,7 +43,7 @@ class _GetContentState extends State<GetContent> {
   Widget build(BuildContext context) {
     _updateParameters();
     return FutureBuilder(
-      future: getBlocked(),
+      future: userApi.getBlockedUsers(),
       builder: (context, AsyncSnapshot blockedList) {
         if (!blockedList.hasData) {
           return const Loading();
@@ -88,7 +91,7 @@ class _GetContentState extends State<GetContent> {
                             cardType: widget.cardType,
                             menuCallback: widget.menuCallback,
                           );
-                        case CardType.drafts:
+                        case CardType.shortDrafts:
                           return ShortCardMinimal(
                             reload: widget.reload,
                             short: currentPack,
@@ -100,15 +103,15 @@ class _GetContentState extends State<GetContent> {
                             short: currentPack,
                             cardType: widget.cardType,
                           );
-                        case CardType.creatorPacks:
+                        case CardType.packsByCategory:
                           return CreatorPackCard(
                               pack: CreatorPack.fromJson(currentPack));
-                        case CardType.yourCreatorPacks:
+                        case CardType.packDrafts:
                           return CreatorPackCardEdit(
                             pack: CreatorPack.fromJson(currentPack),
                             reload: widget.reload,
                           );
-                        case CardType.yourCreatorPacksPublished:
+                        case CardType.yourPacks:
                           return CreatorPackCardEdit(
                             pack: CreatorPack.fromJson(currentPack),
                             reload: widget.reload,
@@ -160,46 +163,42 @@ class _GetContentState extends State<GetContent> {
   void _updateParameters() {
     switch (widget.cardType) {
       case CardType.packsByCategory:
-        packFuture = widget.category == 99 ? getAllPosts : getPostsByCategory;
+        packFuture = widget.category == 99
+            ? packApi.getAllPacks
+            : packApi.getPacksByCategory;
         provideCategory = true;
         errorText = "Keine Packs für diese Kategorie gefunden";
         break;
       case CardType.shortsByCategory:
-        packFuture = widget.category == 99 ? getAllShorts : getShortsByCategory;
+        packFuture = widget.category == 99
+            ? shortApi.getAllShorts
+            : shortApi.getShortsByCategory;
         provideCategory = widget.category == 99 ? false : true;
         errorText = "Keine Shorts für diese Kategorie gefunden";
         break;
       case CardType.shortBookmarks:
-        packFuture = getBookmarkedShorts;
+        packFuture = shortApi.getBookmarkedShorts;
         errorText = "Du hast noch keine Shorts gespeichert";
         break;
       case CardType.packBookmarks:
-        packFuture = getBookmarkedShorts;
+        packFuture = packApi.getBookmarkedPacks;
         errorText = "Du hast noch keine Packs gespeichert";
         break;
-      case CardType.drafts:
-        packFuture = getDrafts;
+      case CardType.shortDrafts:
+        packFuture = shortApi.getCreatorsDraftShorts;
         errorText = "Du hast noch keine Shorts entworfen";
         break;
       case CardType.yourShorts:
-        packFuture = getCreatorShorts;
+        packFuture = shortApi.getOwnPublishedShorts;
         errorText = "Du hast noch keine Shorts veröffentlicht";
         break;
-      case CardType.yourCreatorPacks:
-        packFuture = getYourCreatorPacks;
+      case CardType.yourPacks:
+        packFuture = packApi.getOwnPublishedpacks;
         errorText = "Du hast noch keine Lernpacks veröffentlicht";
         break;
-      case CardType.draftCreatorPacks:
+      case CardType.packDrafts:
         packFuture = () {};
         errorText = "Du hast noch keine Lernpacks entworfen";
-        break;
-      case CardType.yourCreatorPacksPublished:
-        packFuture = getYourCreatorPacksPublished;
-        errorText = "Du hast noch keine Lernpacks veröffentlicht";
-        break;
-      case CardType.creatorPacks:
-        packFuture = getCreatorPacks;
-        errorText = "Wir haben keine Lernpacks für diese Kategorie gefunden";
         break;
       default:
         break;

@@ -150,11 +150,11 @@ class ShortApi extends BaseApi {
   }
 
   Future<ResultModel> getOwnPublishedShorts() =>
-      getCreatorsPublishedShorts(isOwn: true);
+      _getCreatorsPublishedShorts(isOwn: true);
   Future<ResultModel> getOthersPublishedShorts() =>
-      getCreatorsPublishedShorts(isOwn: false);
+      _getCreatorsPublishedShorts(isOwn: false);
 
-  Future<ResultModel> getCreatorsPublishedShorts({required bool isOwn}) async {
+  Future<ResultModel> _getCreatorsPublishedShorts({required bool isOwn}) async {
     Response res = await get(
       Uri.parse("$serverIp/shorts/published"),
       headers: requestHeader(),
@@ -178,10 +178,11 @@ class ShortApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> upvoteShort(id) => votingShort(isUpvote: true, id: id);
-  Future<ResultModel> downvoteShort(id) => votingShort(isUpvote: false, id: id);
+  Future<ResultModel> upvoteShort(id) => _votingShort(isUpvote: true, id: id);
+  Future<ResultModel> downvoteShort(id) =>
+      _votingShort(isUpvote: false, id: id);
 
-  Future<ResultModel> votingShort({
+  Future<ResultModel> _votingShort({
     required bool isUpvote,
     required int id,
   }) async {
@@ -204,11 +205,11 @@ class ShortApi extends BaseApi {
   }
 
   Future<ResultModel> removeUpvoteShort(id) =>
-      removeVotingShort(isUpvote: true, id: id);
+      _removeVotingShort(isUpvote: true, id: id);
   Future<ResultModel> removeDownvoteShort(id) =>
-      removeVotingShort(isUpvote: false, id: id);
+      _removeVotingShort(isUpvote: false, id: id);
 
-  Future<ResultModel> removeVotingShort({
+  Future<ResultModel> _removeVotingShort({
     required bool isUpvote,
     required int id,
   }) async {
@@ -234,11 +235,11 @@ class ShortApi extends BaseApi {
   }
 
   Future<ResultModel> bookmarkShort(id) =>
-      bookmarkingShort(id: id, isUnbookmark: false);
+      _bookmarkingShort(id: id, isUnbookmark: false);
   Future<ResultModel> unbookmarkShort(id) =>
-      bookmarkingShort(id: id, isUnbookmark: true);
+      _bookmarkingShort(id: id, isUnbookmark: true);
 
-  Future<ResultModel> bookmarkingShort({
+  Future<ResultModel> _bookmarkingShort({
     required int id,
     required bool isUnbookmark,
   }) async {
@@ -262,10 +263,11 @@ class ShortApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> reactShort(id) => reactingShort(id: id, isRemove: false);
-  Future<ResultModel> unreactShort(id) => reactingShort(id: id, isRemove: true);
+  Future<ResultModel> reactShort(id) => _reactingShort(id: id, isRemove: false);
+  Future<ResultModel> unreactShort(id) =>
+      _reactingShort(id: id, isRemove: true);
 
-  Future<ResultModel> reactingShort({
+  Future<ResultModel> _reactingShort({
     required int id,
     required bool isRemove,
   }) async {
@@ -286,11 +288,11 @@ class ShortApi extends BaseApi {
   }
 
   Future<ResultModel> publishShort(id) =>
-      publishingShort(id: id, isUnpublish: false);
+      _publishingShort(id: id, isUnpublish: false);
   Future<ResultModel> unpublishShort(id) =>
-      publishingShort(id: id, isUnpublish: true);
+      _publishingShort(id: id, isUnpublish: true);
 
-  Future<ResultModel> publishingShort({
+  Future<ResultModel> _publishingShort({
     required int id,
     required bool isUnpublish,
   }) async {

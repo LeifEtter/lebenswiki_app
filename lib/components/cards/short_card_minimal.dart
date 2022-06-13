@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_shorts.dart';
+import 'package:lebenswiki_app/api/api_models/result_model_api.dart';
+import 'package:lebenswiki_app/api/api_models/short_api.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/short_model.dart';
@@ -22,6 +23,13 @@ class ShortCardMinimal extends StatefulWidget {
 
 class _ShortCardMinimalState extends State<ShortCardMinimal> {
   bool _isExpanded = false;
+  late ShortApi shortApi;
+
+  @override
+  void initState() {
+    shortApi = ShortApi();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,8 +115,12 @@ class _ShortCardMinimalState extends State<ShortCardMinimal> {
                       ),
                     ),
                     onPressed: () {
-                      publishShort(widget.short.id)
-                          .whenComplete(() => widget.reload(0));
+                      shortApi
+                          .publishShort(widget.short.id)
+                          .then((ResultModel result) {
+                        print(result.message);
+                        widget.reload();
+                      });
                     },
                   ),
                 ),
@@ -118,8 +130,12 @@ class _ShortCardMinimalState extends State<ShortCardMinimal> {
                     size: 30.0,
                   ),
                   onPressed: () {
-                    removeShort(widget.short.id)
-                        .whenComplete(() => widget.reload(0));
+                    shortApi
+                        .deleteShort(id: widget.short.id)
+                        .then((ResultModel result) {
+                      print(result.message);
+                      widget.reload();
+                    });
                   },
                 ),
               ],
