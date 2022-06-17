@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_models/result_model_api.dart';
-import 'package:lebenswiki_app/api/api_models/short_api.dart';
-import 'package:lebenswiki_app/components/cards/short_card.dart';
+import 'package:lebenswiki_app/api/result_model_api.dart';
+import 'package:lebenswiki_app/api/short_api.dart';
+import 'package:lebenswiki_app/components/cards/short_cards/short_card.dart';
 import 'package:lebenswiki_app/components/feed/get_content_comments.dart';
 import 'package:lebenswiki_app/components/input/comment_input.dart';
 import 'package:lebenswiki_app/data/loading.dart';

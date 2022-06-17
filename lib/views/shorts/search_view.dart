@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_posts.dart';
-import 'package:lebenswiki_app/api/api_shorts.dart';
-import 'package:lebenswiki_app/components/cards/short_card_scaffold.dart';
+import 'package:lebenswiki_app/api/pack_api.dart';
+import 'package:lebenswiki_app/api/short_api.dart';
+import 'package:lebenswiki_app/components/cards/short_cards/short_card_scaffold.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/models/enums.dart';
@@ -19,20 +19,23 @@ class SearchView extends StatefulWidget {
 }
 
 class _SearchViewState extends State<SearchView> {
+  final ShortApi shortApi = ShortApi();
+  final PackApi packApi = PackApi();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
           future: widget.cardType == CardType.shortsByCategory
-              ? getAllShorts("")
-              : getAllPosts(""),
+              ? shortApi.getAllShorts()
+              : packApi.getAllPacks(),
           builder: (context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
               return const Loading();
             } else if (snapshot.data[1].length == 0) {
               return Center(
                 child: Text(
-                    "Keine ${widget.cardType == CardType.shortsByCategory ? "Shorts" : "Packs"} gefunden"),
+                    "Keine ${widget.cardType == CardType.shortsByCategory ? "Shorts" : "Lernacks"} gefunden"),
               );
             } else {
               return FilterView(

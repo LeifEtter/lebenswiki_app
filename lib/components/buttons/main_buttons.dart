@@ -1,66 +1,57 @@
 import 'package:flutter/material.dart';
 
-class LebenswikiBlueButton extends StatelessWidget {
-  final String text;
-  final Function callback;
-  final List categories;
-
-  const LebenswikiBlueButton({
-    Key? key,
-    required this.text,
-    required this.callback,
-    this.categories = const [],
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 43,
-      decoration: BoxDecoration(
-        color: const Color.fromRGBO(115, 148, 192, 1),
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      child: TextButton(
-        child: Text(
-          text,
-          style: const TextStyle(
-              fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14),
-        ),
-        onPressed: () {
-          categories.isNotEmpty ? callback(categories) : callback();
-        },
-      ),
-    );
-  }
+Widget lebenswikiBlueButtonNormal({
+  required String text,
+  required Function callback,
+  List categories = const [],
+}) {
+  return lebenswikiBlueButton(
+    backgroundColor: const Color.fromRGBO(115, 148, 192, 1),
+    textColor: Colors.transparent,
+    text: text,
+    callback: callback,
+    categories: categories,
+  );
 }
 
-class LebenswikiBlueButtonInverted extends StatelessWidget {
-  final String text;
-  final Function callback;
+Widget lebenswikiBlueButtonInverted({
+  required String text,
+  required Function callback,
+  List categories = const [],
+}) {
+  return lebenswikiBlueButton(
+    backgroundColor: Colors.transparent,
+    textColor: const Color.fromRGBO(115, 148, 192, 1),
+    text: text,
+    callback: callback,
+    categories: categories,
+  );
+}
 
-  const LebenswikiBlueButtonInverted({
-    Key? key,
-    required this.text,
-    required this.callback,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 43,
-      decoration: const BoxDecoration(
-        color: Colors.transparent,
+Widget lebenswikiBlueButton({
+  required Color backgroundColor,
+  required Color textColor,
+  required String text,
+  required Function callback,
+  List categories = const [],
+}) {
+  return Container(
+    height: 43,
+    decoration: BoxDecoration(
+      color: backgroundColor, //Color.fromRGBO(115, 148, 192, 1),
+      borderRadius: BorderRadius.circular(15.0),
+    ),
+    child: TextButton(
+      child: Text(
+        text,
+        style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: textColor,
+            fontSize: 14), //Colors.white
       ),
-      child: TextButton(
-        child: Text(
-          text,
-          style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Color.fromRGBO(115, 148, 192, 1),
-              fontSize: 14),
-        ),
-        onPressed: () => callback(),
-      ),
-    );
-  }
+      onPressed: () {
+        categories.isNotEmpty ? callback(categories) : callback();
+      },
+    ),
+  );
 }

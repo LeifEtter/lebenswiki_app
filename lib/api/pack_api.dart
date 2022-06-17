@@ -1,12 +1,13 @@
 import 'dart:convert';
-import 'package:lebenswiki_app/api/api_models/base_api.dart';
-import 'package:lebenswiki_app/api/api_models/error_handler.dart';
+import 'package:lebenswiki_app/api/base_api.dart';
+import 'package:lebenswiki_app/api/error_handler.dart';
 import 'package:http/http.dart';
-import 'package:lebenswiki_app/api/api_models/result_model_api.dart';
+import 'package:lebenswiki_app/api/result_model_api.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PackApi extends BaseApi {
   late ApiErrorHandler apiErrorHandler;
@@ -25,6 +26,7 @@ class PackApi extends BaseApi {
       return ResultModel(
         type: ResultType.success,
         message: "Lernpack erfolgreich erstellt!",
+        id: jsonDecode(res.body)["body"]["id"],
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
@@ -32,6 +34,29 @@ class PackApi extends BaseApi {
         type: ResultType.failure,
         message: "Das Lernpack konnte nicht erstellt werden",
       );
+    }
+  }
+
+  Future<ResultModel> updateCreatorPack({
+    required Pack pack,
+    required int id,
+  }) async {
+    Response res = await put(
+      Uri.parse("$serverIp/packs/update/$id"),
+      headers: {
+        "Content-type": "application/json",
+        "authorization": token,
+      },
+      body: jsonEncode(pack.toJson()),
+    );
+    if (statusIsSuccess(res.statusCode)) {
+      return ResultModel(
+          type: ResultType.success, message: "Lernpack Geändert");
+    } else {
+      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      return ResultModel(
+          type: ResultType.failure,
+          message: "Lernpack konnte nicht geändert Werden");
     }
   }
 
@@ -254,16 +279,19 @@ class PackApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> reactPack(id) => _reactingPack(id: id, isRemove: false);
+  Future<ResultModel> reactPack(id, reaction) =>
+      _reactingPack(id: id, isRemove: false, reaction: reaction);
   Future<ResultModel> unreactPack(id) => _reactingPack(id: id, isRemove: true);
 
   Future<ResultModel> _reactingPack({
     required int id,
     required bool isRemove,
+    String reaction = "",
   }) async {
     Response res = await put(
       Uri.parse("$serverIp/packs/reaction${isRemove ? "/remove" : ""}/$id"),
       headers: requestHeader(),
+      body: jsonEncode({"reaction": reaction}),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(

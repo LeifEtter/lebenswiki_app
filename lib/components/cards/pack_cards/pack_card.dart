@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/create/data/models.dart';
-import 'package:lebenswiki_app/components/create/views/editor.dart';
-import 'package:lebenswiki_app/components/create/views/viewer.dart';
+import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/views/packs/viewer.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
 
 class CreatorPackCard extends StatefulWidget {
-  final CreatorPack pack;
+  final Pack pack;
 
   const CreatorPackCard({
     Key? key,
@@ -37,15 +36,14 @@ class _CreatorPackCardState extends State<CreatorPackCard> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          CreatorPackViewer(pack: widget.pack)));
+                      builder: (context) => PackViewer(pack: widget.pack)));
             },
             child: Column(
               children: [
                 Container(
                   height: 150,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(10.0),
                       topLeft: Radius.circular(10.0),
                     ),
@@ -73,7 +71,7 @@ class _CreatorPackCardState extends State<CreatorPackCard> {
                             style: LebenswikiTextStyles.packTitle,
                           ),
                           const SizedBox(height: 5),
-                          Container(
+                          SizedBox(
                             width: 350,
                             child: Text(
                               widget.pack.description,

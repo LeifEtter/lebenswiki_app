@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_models/user_api.dart';
+import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
@@ -200,7 +200,7 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                       child: Row(
                         children: [
                           Expanded(
-                            child: LebenswikiBlueButton(
+                          child: lebenswikiBlueButtonNormal(
                               text: "Feedback abschicken",
                               callback: () {
                                 userApi.createFeedback(

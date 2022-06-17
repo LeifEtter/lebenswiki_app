@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:lebenswiki_app/api/api_models/base_api.dart';
-import 'package:lebenswiki_app/api/api_models/error_handler.dart';
+import 'package:lebenswiki_app/api/base_api.dart';
+import 'package:lebenswiki_app/api/error_handler.dart';
 import 'package:http/http.dart';
-import 'package:lebenswiki_app/api/api_models/result_model_api.dart';
+import 'package:lebenswiki_app/api/result_model_api.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
@@ -15,11 +15,11 @@ class ShortApi extends BaseApi {
     apiErrorHandler = ApiErrorHandler();
   }
 
-  Future<ResultModel> createShort(
-    String title,
-    List categories,
-    String content,
-  ) async {
+  Future<ResultModel> createShort({
+    required String title,
+    required List categories,
+    required String content,
+  }) async {
     Response res = await post(Uri.parse("$serverIp/shorts/create"),
         headers: requestHeader(),
         body: jsonEncode({

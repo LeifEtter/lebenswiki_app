@@ -1,10 +1,8 @@
 import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
-import 'package:lebenswiki_app/api/api_models/base_api.dart';
-import 'package:lebenswiki_app/api/api_models/error_handler.dart';
-import 'package:lebenswiki_app/api/api_models/result_model_api.dart';
+import 'package:lebenswiki_app/api/base_api.dart';
+import 'package:lebenswiki_app/api/error_handler.dart';
+import 'package:lebenswiki_app/api/result_model_api.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 

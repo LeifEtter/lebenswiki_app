@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_models/pack_api.dart';
-import 'package:lebenswiki_app/api/api_models/short_api.dart';
-import 'package:lebenswiki_app/api/api_models/user_api.dart';
-import 'package:lebenswiki_app/components/cards/short_card_minimal.dart';
-import 'package:lebenswiki_app/components/cards/short_card_scaffold.dart';
-import 'package:lebenswiki_app/components/create/api/api_creator_pack.dart';
-import 'package:lebenswiki_app/components/create/components/card.dart';
-import 'package:lebenswiki_app/components/create/components/card_edit.dart';
-import 'package:lebenswiki_app/components/create/data/models.dart';
-import 'package:lebenswiki_app/data/example_data.dart';
+import 'package:lebenswiki_app/api/pack_api.dart';
+import 'package:lebenswiki_app/api/short_api.dart';
+import 'package:lebenswiki_app/api/user_api.dart';
+import 'package:lebenswiki_app/components/cards/short_cards/short_card_minimal.dart';
+import 'package:lebenswiki_app/components/cards/short_cards/short_card_scaffold.dart';
+import 'package:lebenswiki_app/components/cards/pack_cards/pack_card.dart';
+import 'package:lebenswiki_app/components/cards/pack_cards/pack_card_edit.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/models/enums.dart';
+import 'package:lebenswiki_app/models/pack_model.dart';
 
 class GetContent extends StatefulWidget {
   final int category;
@@ -105,15 +103,15 @@ class _GetContentState extends State<GetContent> {
                           );
                         case CardType.packsByCategory:
                           return CreatorPackCard(
-                              pack: CreatorPack.fromJson(currentPack));
+                              pack: Pack.fromJson(currentPack));
                         case CardType.packDrafts:
                           return CreatorPackCardEdit(
-                            pack: CreatorPack.fromJson(currentPack),
+                            pack: Pack.fromJson(currentPack),
                             reload: widget.reload,
                           );
                         case CardType.yourPacks:
                           return CreatorPackCardEdit(
-                            pack: CreatorPack.fromJson(currentPack),
+                            pack: Pack.fromJson(currentPack),
                             reload: widget.reload,
                           );
                         default:

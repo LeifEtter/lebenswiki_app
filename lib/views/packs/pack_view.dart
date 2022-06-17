@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_shorts.dart';
-import 'package:lebenswiki_app/api/api_universal.dart';
 import 'package:lebenswiki_app/components/actions/modal_sheet.dart';
 import 'package:lebenswiki_app/data/example_data.dart';
 import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';

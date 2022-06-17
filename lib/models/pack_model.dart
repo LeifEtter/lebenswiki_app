@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/pack_content_models.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 
@@ -9,7 +7,7 @@ class Pack {
   String description;
   String titleImage;
   bool published;
-  User creator;
+  User? creator;
   final List<int> categories;
   final List<CreatorPage> pages;
 
@@ -26,7 +24,6 @@ class Pack {
 
   Pack.initial({
     this.id = 0,
-    required this.creator,
     this.title = "",
     this.description = "",
     this.pages = const [],

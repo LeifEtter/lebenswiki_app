@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:lebenswiki_app/components/create/api/api_creator_pack.dart';
-import 'package:lebenswiki_app/components/create/data/initial_data.dart';
-import 'package:lebenswiki_app/components/create/data/models.dart';
-import 'package:lebenswiki_app/components/create/views/editor.dart';
-import 'package:lebenswiki_app/components/create/views/editor_settings.dart';
+import 'package:lebenswiki_app/api/pack_api.dart';
+import 'package:lebenswiki_app/api/result_model_api.dart';
+import 'package:lebenswiki_app/components/cards/pack_cards/pack_card.dart';
+import 'package:lebenswiki_app/models/enums.dart';
+import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/views/editor/editor_settings.dart';
 import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
 import 'package:lebenswiki_app/views/shorts/create_short.dart';
@@ -66,17 +67,17 @@ Widget dialAddButton(context) {
         label: "Lernpack Erstellen",
         child: const Icon(Icons.comment),
         onTap: () async {
-          createCreatorPack(pack: initialPack()).then((id) {
-            CreatorPack packGive = initialPack();
-            packGive.id = id;
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: ((context) => EditorSettings(
-                      pack: packGive,
-                    )),
-              ),
-            );
+          Pack pack = Pack.initial();
+          PackApi().createPack(pack: pack).then((ResultModel result) {
+            if (result.type == ResultType.success) {
+              pack.id = result.id!;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditorSettings(pack: pack),
+                ),
+              );
+            }
           });
         },
       ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_models/misc_api.dart';
+import 'package:lebenswiki_app/api/misc_api.dart';
+import 'package:lebenswiki_app/api/pack_api.dart';
+import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/components/actions/modal_sheet.dart';
 import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
 import 'package:lebenswiki_app/components/actions/report_dialog.dart';
@@ -8,6 +10,7 @@ import 'package:lebenswiki_app/components/filtering/tab_bar.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/helper/is_loading.dart';
 import 'package:lebenswiki_app/models/enums.dart';
+import 'package:lebenswiki_app/models/report_model.dart';
 
 class PackViewNew extends StatefulWidget {
   const PackViewNew({
@@ -20,6 +23,8 @@ class PackViewNew extends StatefulWidget {
 
 class _PackViewNewState extends State<PackViewNew> {
   final MiscApi miscApi = MiscApi();
+  final PackApi packApi = PackApi();
+  final UserApi userApi = UserApi();
   int _currentCategory = 0;
   String? chosenReason = "Illegal unter der NetzDG";
 
@@ -40,7 +45,7 @@ class _PackViewNewState extends State<PackViewNew> {
                     ),
                     GetContent(
                       reload: reload,
-                      cardType: CardType.creatorPacks,
+                      cardType: CardType.packsByCategory,
                       menuCallback: _menuCallback,
                     ),
                   ],
@@ -145,7 +150,8 @@ class _PackViewNewState extends State<PackViewNew> {
                   var currentReactionLower = allReactions[index].toLowerCase();
                   return GestureDetector(
                     onTap: () async {
-                      await addReaction(packData["id"], currentReaction);
+                      await packApi.reactPack(
+                          packData["id"], currentReaction);
                       Navigator.pop(context);
                       reload();
                     },
@@ -189,8 +195,17 @@ class _PackViewNewState extends State<PackViewNew> {
     required bool blockUser,
     required var contentData,
   }) {
-    blockUser ? blockUserAPI(contentData.creator.id, reason) : null;
-    reportShort(contentData.id, reason).whenComplete(() {
+    blockUser
+        ? userApi.blockUser(id: contentData.creator.id, reason: reason)
+        : null;
+    packApi
+        .reportPack(
+            report: Report(
+      reason: reason,
+      reportedContentId: contentData.id,
+      creationDate: DateTime.now(),
+    ))
+        .whenComplete(() {
       reload();
       Navigator.pop(context);
       Navigator.pop(context);

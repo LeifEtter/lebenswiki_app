@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_models/result_model_api.dart';
-import 'package:lebenswiki_app/api/api_models/user_api.dart';
+import 'package:lebenswiki_app/api/result_model_api.dart';
+import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/components/buttons/authentication_buttons.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
@@ -129,9 +129,9 @@ class _AuthenticationViewState extends State<AuthenticationView> {
               Visibility(
                 visible: isSignUp ? true : false,
                 child: AuthInputStyling(
-                  isDeactivated: _defaultProfilePic!,
+                  isDeactivated: _defaultProfilePic,
                   child: TextFormField(
-                    enabled: !_defaultProfilePic!,
+                    enabled: _defaultProfilePic,
                     controller: _profileImageController,
                     decoration:
                         customInputDecoration("Profilbild", Icons.image),
@@ -195,7 +195,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
         ? "Bitte gültiges Password eingeben"
         : "";
 
-    if (!_defaultProfilePic! && isSignUp) {
+    if (!_defaultProfilePic && isSignUp) {
       errorMap["profileImage"] = _profileImageController.text.toString().isEmpty
           ? "Bitte gebe ein Profilbild an oder wähle das Standardprofilbild."
           : "";

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_models/result_model_api.dart';
-import 'package:lebenswiki_app/api/api_models/user_api.dart';
+import 'package:lebenswiki_app/api/result_model_api.dart';
+import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/components/buttons/authentication_buttons.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';

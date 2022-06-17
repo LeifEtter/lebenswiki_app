@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/components/cards/card_components/creator_info.dart';
 import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
 import 'package:lebenswiki_app/helper/actions/vote_functions.dart';
-import 'package:lebenswiki_app/components/card_components/creator_info.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';

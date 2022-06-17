@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:lebenswiki_app/models/block_model.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
@@ -17,6 +16,7 @@ class ResultModel {
   String? message;
   String? token;
   User? user;
+  int? id;
 
   ResultModel({
     required this.type,
@@ -29,5 +29,6 @@ class ResultModel {
     this.user,
     this.blocks,
     this.categories,
+    this.id,
   });
 }

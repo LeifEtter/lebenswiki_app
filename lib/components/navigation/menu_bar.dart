@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_models/user_api.dart';
-import 'package:lebenswiki_app/components/create/views/your_creator_packs.dart';
+import 'package:lebenswiki_app/api/user_api.dart';
+import 'package:lebenswiki_app/views/menu/your_creator_packs.dart';
 import 'package:lebenswiki_app/data/image_repo.dart';
 import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
@@ -97,7 +97,7 @@ class _MenuBarState extends State<MenuBar> {
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 25.0, right: 25.0, top: 15.0, bottom: 15.0),
-                  child: LebenswikiBlueButton(
+                  child: lebenswikiBlueButtonNormal(
                     callback: () {
                       Share.share('Hey, check die Lebenswiki App aus!');
                     },
