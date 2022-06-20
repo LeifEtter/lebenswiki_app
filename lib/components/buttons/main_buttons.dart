@@ -7,7 +7,7 @@ Widget lebenswikiBlueButtonNormal({
 }) {
   return lebenswikiBlueButton(
     backgroundColor: const Color.fromRGBO(115, 148, 192, 1),
-    textColor: Colors.transparent,
+    textColor: Colors.white,
     text: text,
     callback: callback,
     categories: categories,
@@ -41,17 +41,23 @@ Widget lebenswikiBlueButton({
       color: backgroundColor, //Color.fromRGBO(115, 148, 192, 1),
       borderRadius: BorderRadius.circular(15.0),
     ),
-    child: TextButton(
-      child: Text(
-        text,
-        style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: textColor,
-            fontSize: 14), //Colors.white
-      ),
-      onPressed: () {
-        categories.isNotEmpty ? callback(categories) : callback();
-      },
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextButton(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: textColor,
+              fontSize: 14,
+            ), //Colors.white
+          ),
+          onPressed: () {
+            categories.isNotEmpty ? callback(categories) : callback();
+          },
+        ),
+      ],
     ),
   );
 }

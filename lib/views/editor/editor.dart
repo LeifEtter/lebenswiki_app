@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/pack_api.dart';
 import 'package:lebenswiki_app/components/create/styling/styling_edit.dart';
-import 'package:lebenswiki_app/components/create/components/edit_page.dart';
+import 'package:lebenswiki_app/views/editor/edit_page.dart';
 import 'package:lebenswiki_app/models/pack_content_models.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
 import 'package:lebenswiki_app/views/editor/editor_settings.dart';

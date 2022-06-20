@@ -6,6 +6,8 @@ enum ItemType {
   text,
 }
 
+
+
 enum ResultType {
   packList,
   shortList,

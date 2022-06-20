@@ -16,15 +16,21 @@ class MiscApi extends BaseApi {
   Future<ResultModel> getCategories() async {
     Response res = await get(
       Uri.parse("$serverIp/categories"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     Map decodedBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
+      List<ContentCategory> categories = decodedBody["categories"]
+          .map<ContentCategory>(
+              (category) => ContentCategory.fromJson(category))
+          .toList();
+      categories.insert(0, ContentCategory.forNew());
+      //Sort categories
+      categories.sort((a, b) => a.id.compareTo(b.id));
       return ResultModel(
-          type: ResultType.categoryList,
-          categories: decodedBody["categories"].map(
-            (category) => ContentCategory.fromJson(category),
-          ));
+        type: ResultType.categoryList,
+        responseList: categories,
+      );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(

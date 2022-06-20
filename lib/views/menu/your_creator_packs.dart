@@ -150,7 +150,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
     Pack pack = Pack.initial();
     packApi.createPack(pack: pack).then((ResultModel result) {
       if (result.type == ResultType.success) {
-        pack.id = result.id!;
+        pack.id = result.responseItem;
         Navigator.push(
           context,
           MaterialPageRoute(

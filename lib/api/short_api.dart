@@ -21,7 +21,7 @@ class ShortApi extends BaseApi {
     required String content,
   }) async {
     Response res = await post(Uri.parse("$serverIp/shorts/create"),
-        headers: requestHeader(),
+        headers: await requestHeader(),
         body: jsonEncode({
           "title": title,
           "categories": categories,
@@ -44,7 +44,7 @@ class ShortApi extends BaseApi {
   Future<ResultModel> deleteShort({required int id}) async {
     Response res = await delete(
       Uri.parse("$serverIp/shorts/delete/$id"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(type: ResultType.success, message: "Short gelöscht");
@@ -56,10 +56,10 @@ class ShortApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> getAllShorts() async {
+  Future<ResultModel> getAllShorts({category}) async {
     Response res = await get(
       Uri.parse("$serverIp/shorts/"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     Map resBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
@@ -67,13 +67,13 @@ class ShortApi extends BaseApi {
           resBody["shorts"].map((short) => Short.fromJson(short));
       return ResultModel(
         type: ResultType.shortList,
-        shorts: shorts,
+        responseList: shorts,
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
         type: ResultType.success,
-        shorts: [],
+        responseList: [],
         message: "Es wurden keine shorts gefunden",
       );
     }
@@ -82,8 +82,8 @@ class ShortApi extends BaseApi {
   Future<ResultModel> getShortsByCategory(
       {required ContentCategory category}) async {
     Response res = await get(
-      Uri.parse("$serverIp/shorts/${category.id}"),
-      headers: requestHeader(),
+      Uri.parse("$serverIp/categories/shorts/${category.id}"),
+      headers: await requestHeader(),
     );
     Map resBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
@@ -91,13 +91,13 @@ class ShortApi extends BaseApi {
           resBody["category"]["shorts"].map((short) => Short.fromJson(short));
       return ResultModel(
         type: ResultType.shortList,
-        shorts: shorts,
+        responseList: shorts,
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
         type: ResultType.success,
-        shorts: [],
+        responseList: [],
         message: "Es wurden keine shorts gefunden",
       );
     }
@@ -106,7 +106,7 @@ class ShortApi extends BaseApi {
   Future<ResultModel> getBookmarkedShorts() async {
     Response res = await get(
       Uri.parse("$serverIp/shorts/bookmarks"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     Map resBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
@@ -114,13 +114,13 @@ class ShortApi extends BaseApi {
           resBody["body"].map((short) => Short.fromJson(short));
       return ResultModel(
         type: ResultType.shortList,
-        shorts: shorts,
+        responseList: shorts,
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
         type: ResultType.success,
-        shorts: [],
+        responseList: [],
         message: "Du hast keine Shorts gespeichert",
       );
     }
@@ -129,7 +129,7 @@ class ShortApi extends BaseApi {
   Future<ResultModel> getCreatorsDraftShorts() async {
     Response res = await get(
       Uri.parse("$serverIp/shorts/unpublished"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     Map resBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
@@ -137,13 +137,13 @@ class ShortApi extends BaseApi {
           resBody["body"].map((short) => Short.fromJson(short));
       return ResultModel(
         type: ResultType.shortList,
-        shorts: shorts,
+        responseList: shorts,
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
         type: ResultType.success,
-        shorts: [],
+        responseList: [],
         message: "Du hast keine Shorts entworfen",
       );
     }
@@ -157,7 +157,7 @@ class ShortApi extends BaseApi {
   Future<ResultModel> _getCreatorsPublishedShorts({required bool isOwn}) async {
     Response res = await get(
       Uri.parse("$serverIp/shorts/published"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     Map resBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
@@ -165,13 +165,13 @@ class ShortApi extends BaseApi {
           resBody["body"].map((short) => Short.fromJson(short));
       return ResultModel(
         type: ResultType.shortList,
-        shorts: shorts,
+        responseList: shorts,
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
         type: ResultType.success,
-        shorts: [],
+        responseList: [],
         message:
             "${isOwn ? "Du hast" : "Dieser Benutzer hat"} noch keine Shorts veröffentlicht",
       );
@@ -188,7 +188,7 @@ class ShortApi extends BaseApi {
   }) async {
     Response res = await put(
       Uri.parse("$serverIp/shorts/${isUpvote ? "upvote" : "downvote"}/$id"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
@@ -216,7 +216,7 @@ class ShortApi extends BaseApi {
     Response res = await put(
       Uri.parse(
           "$serverIp/shorts/${isUpvote ? "upvote" : "downvote"}/remove/$id"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
@@ -246,7 +246,7 @@ class ShortApi extends BaseApi {
     Response res = await put(
       Uri.parse(
           "$serverIp/shorts/${isUnbookmark ? "unbookmark" : "bookmark"}/$id"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
@@ -273,7 +273,7 @@ class ShortApi extends BaseApi {
   }) async {
     Response res = await put(
       Uri.parse("$serverIp/shorts/reaction${isRemove ? "/remove" : ""}/$id"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
@@ -299,7 +299,7 @@ class ShortApi extends BaseApi {
     Response res = await put(
       Uri.parse(
           "$serverIp/shorts/${isUnpublish ? "unpublish" : "publish"}/$id"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
@@ -318,7 +318,7 @@ class ShortApi extends BaseApi {
   }) async {
     Response res = await post(
       Uri.parse("$serverIp/reports/create/short/${report.reportedContentId}"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
       body: jsonEncode({
         "reason": report.reason,
       }),
@@ -342,7 +342,7 @@ class ShortApi extends BaseApi {
     required String comment,
   }) async {
     Response res = await post(Uri.parse("$serverIp/comments/create/shorts/$id"),
-        headers: requestHeader(), body: jsonEncode({"comment": comment}));
+        headers: await requestHeader(), body: jsonEncode({"comment": comment}));
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.success,
@@ -363,7 +363,7 @@ class ShortApi extends BaseApi {
   }) async {
     Response res = await post(
       Uri.parse("$serverIp/comments/reaction/$id"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
       body: jsonEncode({"reaction": reaction}),
     );
     if (statusIsSuccess(res.statusCode)) {

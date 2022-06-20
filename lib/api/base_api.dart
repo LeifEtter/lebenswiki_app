@@ -2,17 +2,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class BaseApi {
   final serverIp = 'https://api.lebenswiki.com/api/v1';
-  late int userId;
-  late String token;
 
-  BaseApi() {
-    _initializeData();
-  }
+  BaseApi() {}
 
-  Map<String, String> requestHeader() {
+  Future<Map<String, String>> requestHeader() async {
     return {
       "Content-type": "application/json",
-      "authorization": token,
+      "authorization": await getToken(),
     };
   }
 
@@ -23,10 +19,14 @@ class BaseApi {
       return false;
     }
   }
+}
 
-  void _initializeData() async {
-    var prefs = await SharedPreferences.getInstance();
-    token = prefs.getString("token") ?? "";
-    userId = prefs.getInt("userId") ?? 0;
-  }
+Future<String> getToken() async {
+  var prefs = await SharedPreferences.getInstance();
+  return prefs.getString("token") ?? "";
+}
+
+Future<int> getUserId() async {
+  var prefs = await SharedPreferences.getInstance();
+  return prefs.getInt("userId") ?? 0;
 }

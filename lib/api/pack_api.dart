@@ -7,7 +7,6 @@ import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PackApi extends BaseApi {
   late ApiErrorHandler apiErrorHandler;
@@ -19,14 +18,14 @@ class PackApi extends BaseApi {
   Future<ResultModel> createPack({required Pack pack}) async {
     Response res = await post(
       Uri.parse("$serverIp/packs/create"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
       body: pack.toJson(),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.success,
         message: "Lernpack erfolgreich erstellt!",
-        id: jsonDecode(res.body)["body"]["id"],
+        responseItem: jsonDecode(res.body)["body"]["id"],
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
@@ -43,10 +42,7 @@ class PackApi extends BaseApi {
   }) async {
     Response res = await put(
       Uri.parse("$serverIp/packs/update/$id"),
-      headers: {
-        "Content-type": "application/json",
-        "authorization": token,
-      },
+      headers: await requestHeader(),
       body: jsonEncode(pack.toJson()),
     );
     if (statusIsSuccess(res.statusCode)) {
@@ -63,7 +59,7 @@ class PackApi extends BaseApi {
   Future<ResultModel> deletePack({required int id}) async {
     Response res = await delete(
       Uri.parse("$serverIp/packs/delete/$id"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
@@ -76,25 +72,23 @@ class PackApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> getAllPacks() async {
+  Future<ResultModel> getAllPacks({category}) async {
     Response res = await get(
       Uri.parse("$serverIp/packs/"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     Map resBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
-      List<Pack> packs = resBody["packs"].map(
-        (pack) => Pack.fromJson(pack),
-      );
+      List packsJson = resBody["packs"];
       return ResultModel(
         type: ResultType.packList,
-        packs: packs,
+        responseList: packsJson.map((pack) => Pack.fromJson(pack)).toList(),
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
         type: ResultType.failure,
-        packs: [],
+        responseList: [],
         message: "Es wurden keine packs gefunden",
       );
     }
@@ -103,22 +97,26 @@ class PackApi extends BaseApi {
   Future<ResultModel> getPacksByCategory(
       {required ContentCategory category}) async {
     Response res = await get(
-      Uri.parse("$serverIp/packs/${category.id}"),
-      headers: requestHeader(),
+      Uri.parse("$serverIp/categories/packs/${category.id}"),
+      headers: await requestHeader(),
     );
     Map resBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
-      List<Pack> packs =
-          resBody["category"]["packs"].map((pack) => Pack.fromJson(pack));
+      print(resBody["packsByCategory"]);
+      List<Pack> packs = resBody["packsByCategory"]
+          .map((pack) => Pack.fromJson(pack))
+          .toList();
+      print("After");
       return ResultModel(
         type: ResultType.packList,
-        packs: packs,
+        responseList: packs,
       );
     } else {
+      print("Error");
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
-        type: ResultType.success,
-        packs: [],
+        type: ResultType.failure,
+        responseList: [],
         message: "Es wurden keine Lernpacks gefunden",
       );
     }
@@ -127,20 +125,20 @@ class PackApi extends BaseApi {
   Future<ResultModel> getBookmarkedPacks() async {
     Response res = await get(
       Uri.parse("$serverIp/packs/bookmarks"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     Map resBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
       List<Pack> packs = resBody["body"].map((pack) => Pack.fromJson(pack));
       return ResultModel(
         type: ResultType.packList,
-        packs: packs,
+        responseList: packs,
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
         type: ResultType.success,
-        packs: [],
+        responseList: [],
         message: "Du hast keine Lernpacks gespeichert",
       );
     }
@@ -149,20 +147,20 @@ class PackApi extends BaseApi {
   Future<ResultModel> getCreatorsDraftPacks() async {
     Response res = await get(
       Uri.parse("$serverIp/packs/unpublished"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     Map resBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
       List<Pack> packs = resBody["body"].map((pack) => Pack.fromJson(pack));
       return ResultModel(
         type: ResultType.packList,
-        packs: packs,
+        responseList: packs,
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
         type: ResultType.success,
-        packs: [],
+        responseList: [],
         message: "Du hast keine packs entworfen",
       );
     }
@@ -176,20 +174,20 @@ class PackApi extends BaseApi {
   Future<ResultModel> _getCreatorsPublishedPacks({required bool isOwn}) async {
     Response res = await get(
       Uri.parse("$serverIp/packs/published"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     Map resBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
       List<Pack> packs = resBody["body"].map((pack) => pack.fromJson(pack));
       return ResultModel(
         type: ResultType.packList,
-        packs: packs,
+        responseList: packs,
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
         type: ResultType.success,
-        packs: [],
+        responseList: [],
         message:
             "${isOwn ? "Du hast" : "Dieser Benutzer hat"} noch keine packs veröffentlicht",
       );
@@ -205,7 +203,7 @@ class PackApi extends BaseApi {
   }) async {
     Response res = await put(
       Uri.parse("$serverIp/packs/${isUpvote ? "upvote" : "downvote"}/$id"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
@@ -233,7 +231,7 @@ class PackApi extends BaseApi {
     Response res = await put(
       Uri.parse(
           "$serverIp/packs/${isUpvote ? "upvote" : "downvote"}/remove/$id"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
@@ -262,7 +260,7 @@ class PackApi extends BaseApi {
     Response res = await put(
       Uri.parse(
           "$serverIp/packs/${isUnbookmark ? "unbookmark" : "bookmark"}/$id"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
@@ -290,7 +288,7 @@ class PackApi extends BaseApi {
   }) async {
     Response res = await put(
       Uri.parse("$serverIp/packs/reaction${isRemove ? "/remove" : ""}/$id"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
       body: jsonEncode({"reaction": reaction}),
     );
     if (statusIsSuccess(res.statusCode)) {
@@ -316,7 +314,7 @@ class PackApi extends BaseApi {
   }) async {
     Response res = await put(
       Uri.parse("$serverIp/packs/${isUnpublish ? "unpublish" : "publish"}/$id"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
@@ -335,7 +333,7 @@ class PackApi extends BaseApi {
   }) async {
     Response res = await post(
       Uri.parse("$serverIp/reports/create/pack/${report.reportedContentId}"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
       body: jsonEncode({
         "reason": report.reason,
       }),
@@ -359,7 +357,7 @@ class PackApi extends BaseApi {
     required String comment,
   }) async {
     Response res = await post(Uri.parse("$serverIp/comments/create/packs/$id"),
-        headers: requestHeader(), body: jsonEncode({"comment": comment}));
+        headers: await requestHeader(), body: jsonEncode({"comment": comment}));
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.success,
@@ -380,7 +378,7 @@ class PackApi extends BaseApi {
   }) async {
     Response res = await post(
       Uri.parse("$serverIp/comments/reaction/$id"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
       body: jsonEncode({"reaction": reaction}),
     );
     if (statusIsSuccess(res.statusCode)) {

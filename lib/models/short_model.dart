@@ -96,7 +96,7 @@ class Short {
         "reportShort": List<dynamic>.from(
             reportShort.map((Report report) => report.toJson())),
         "reactions": reactions,
-        "creationDate": DateHelper().convertToString(creationDate!),
+        "creationDate": DateHelper().convertToString(creationDate),
         "lastUpdated": DateHelper().convertToString(lastUpdated!),
       };
 }

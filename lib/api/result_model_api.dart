@@ -7,28 +7,14 @@ import 'package:lebenswiki_app/models/user_model.dart';
 
 class ResultModel {
   ResultType type;
-  List<Short>? shorts;
-  List<Pack>? packs;
-  List<Block>? blocks;
-  List<ContentCategory>? categories;
-  Short? short;
-  Pack? pack;
+  List responseList;
+  var responseItem;
   String? message;
-  String? token;
-  User? user;
-  int? id;
 
   ResultModel({
     required this.type,
-    this.shorts,
-    this.packs,
-    this.short,
-    this.pack,
+    this.responseList = const [],
+    this.responseItem,
     this.message,
-    this.token,
-    this.user,
-    this.blocks,
-    this.categories,
-    this.id,
   });
 }

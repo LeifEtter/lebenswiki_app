@@ -18,7 +18,7 @@ class UserApi extends BaseApi {
   Future<ResultModel> register(User user) async {
     Response res = await post(
       Uri.parse("$serverIp/users/register"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
       body: jsonEncode(user),
     );
     if (statusIsSuccess(res.statusCode)) {
@@ -40,11 +40,11 @@ class UserApi extends BaseApi {
     required String password,
   }) async {
     Response res = await post(
-      Uri.parse("$serverIp/users/register"),
-      headers: requestHeader(),
+      Uri.parse("$serverIp/users/login"),
+      headers: await requestHeader(),
       body: jsonEncode({
-        email: email,
-        password: password,
+        "email": email,
+        "password": password,
       }),
     );
     Map decodedBody = jsonDecode(res.body);
@@ -52,7 +52,7 @@ class UserApi extends BaseApi {
       return ResultModel(
         type: ResultType.success,
         message: "Account erfolgreich erstellt",
-        token: decodedBody["token"],
+        responseItem: decodedBody["token"],
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
@@ -66,13 +66,13 @@ class UserApi extends BaseApi {
   Future<ResultModel> getUserData() async {
     Response res = await get(
       Uri.parse("$serverIp/users/profile"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     Map decodedBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.user,
-        user: User.fromJson(
+        responseItem: User.fromJson(
           decodedBody["body"],
         ),
       );
@@ -90,7 +90,7 @@ class UserApi extends BaseApi {
     required String password,
   }) async {
     Response res = await patch(Uri.parse("$serverIp/users/password/update"),
-        headers: requestHeader(),
+        headers: await requestHeader(),
         body: jsonEncode({
           "oldPassword": oldpassword,
           "newPassword": password,
@@ -112,7 +112,7 @@ class UserApi extends BaseApi {
   }) async {
     Response res = await patch(
       Uri.parse("$serverIp/users/profile/update"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
       body: user.toJson(),
     );
     if (statusIsSuccess(res.statusCode)) {
@@ -133,7 +133,7 @@ class UserApi extends BaseApi {
   }) async {
     Response res = await post(
       Uri.parse("$serverIp/blocks/create/$id"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
       body: jsonEncode({
         reason: reason,
       }),
@@ -153,20 +153,20 @@ class UserApi extends BaseApi {
   }
 
   Future<ResultModel> getBlockedUsers() async {
-    Response res = await post(
+    Response res = await get(
       Uri.parse("$serverIp/blocks/"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
     );
     List blocks = jsonDecode(res.body)["body"];
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.success,
-        blocks: blocks.map((e) => Block.fromJson(e)).toList(),
+        responseList: blocks.map((e) => Block.fromJson(e)).toList(),
       );
     } else {
       return ResultModel(
         type: ResultType.failure,
-        blocks: [],
+        responseList: [],
         message: "Du hast keine User blockiert",
       );
     }
@@ -177,7 +177,7 @@ class UserApi extends BaseApi {
   }) async {
     Response res = await post(
       Uri.parse("$serverIp/feedbacks/create"),
-      headers: requestHeader(),
+      headers: await requestHeader(),
       body: jsonEncode({
         "feedback": feedback,
       }),

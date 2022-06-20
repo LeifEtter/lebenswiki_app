@@ -9,6 +9,7 @@ import 'package:lebenswiki_app/data/text_styles.dart';
 import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationView extends StatefulWidget {
   const AuthenticationView({Key? key}) : super(key: key);
@@ -201,12 +202,10 @@ class _AuthenticationViewState extends State<AuthenticationView> {
           : "";
     }
 
-    //errorMap["profileImage"] = _profileImageController.text.toString().contains("");
-
     var isValidated = true;
-    errorMap.forEach((k, v) {
+    /*errorMap.forEach((k, v) {
       v != "" ? isValidated = false : 0;
-    });
+    });*/
 
     isValidated ? {isSignUp ? signUp() : signIn()} : setState(() {});
   }
@@ -234,18 +233,21 @@ class _AuthenticationViewState extends State<AuthenticationView> {
     });
   }
 
-  void signIn() {
+  void signIn() async {
     userApi
         .login(
       email: _emailController.text.toString(),
       password: _passwordController.text.toString(),
     )
-        .then((ResultModel result) {
+        .then((ResultModel result) async {
       if (result.type == ResultType.failure) {
         List errorList = convertError(result.message);
         errorMap[errorList[0]] = errorList[1];
         setState(() {});
       } else {
+        var prefs = await SharedPreferences.getInstance();
+        String token = result.responseItem;
+        prefs.setString("token", token);
         navigateFeed();
       }
     });
