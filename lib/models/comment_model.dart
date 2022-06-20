@@ -10,6 +10,7 @@ Comment commentFromJson(String str) => Comment.fromJson(json.decode(str));
 
 String commentToJson(Comment data) => json.encode(data.toJson());
 
+//TODO Repair Comments
 class Comment {
   Comment({
     this.id = 0,
@@ -40,15 +41,14 @@ class Comment {
   Comment? parentComment;
   List<Comment>? childComments;
   List<Report>? reports;
-  Map? reactions;
+  List? reactions;
   bool softDelete;
   DateTime creationDate;
   DateTime? updatedAt;
-
   factory Comment.fromJson(Map<String, dynamic> json) => Comment(
         id: json["id"],
         content: json["commentReponse"],
-        creator: User.fromJson(json["creator"]),
+        creator: User.forContent(json["creator"]),
         creatorId: json["creatorId"],
         parentId: json["parentId"],
         parentShort: json["parentShort"] ?? json["parentShort"],

@@ -26,7 +26,7 @@ class Short {
     required this.categories,
     this.comments = const [],
     this.reportShort = const [],
-    this.reactions = const {},
+    this.reactions = const [],
     this.lastUpdated,
     required this.creationDate,
   }) {
@@ -48,7 +48,7 @@ class Short {
   List<ContentCategory> categories;
   List<Comment> comments;
   List<Report> reportShort;
-  Map reactions;
+  List reactions;
   DateTime creationDate;
   DateTime? lastUpdated;
 
@@ -56,25 +56,24 @@ class Short {
         id: json["id"],
         title: json["title"],
         content: json["content"],
-        creator: User.fromJson(json["creator"]),
-        creatorId: json["creatorId"],
         published: json["published"],
         requestPublish: json["requestPublish"],
-        upVote:
-            List<User>.from(json["upVote"].map((user) => User.fromJson(user))),
-        downVote: List<User>.from(
-            json["downVote"].map((user) => User.fromJson(user))),
-        bookmarks: List<User>.from(
-            json["bookmarks"].map((user) => User.fromJson(user))),
-        categories: List<ContentCategory>.from(json["categories"]
-            .map((category) => ContentCategory.fromJson(json))),
+        creationDate: DateTime.parse(json["creationDate"]),
+        lastUpdated: DateTime.parse(json["lastUpdated"]),
+        upVote: List<User>.from(json["upVote"].map((user) => User.forId(user))),
+        downVote:
+            List<User>.from(json["downVote"].map((user) => User.forId(user))),
+        bookmarks:
+            List<User>.from(json["bookmarks"].map((user) => User.forId(user))),
         comments: List<Comment>.from(
             json["comments"].map((comment) => Comment.fromJson(comment))),
         reportShort: List<Report>.from(
-            json["reportShort"].map((report) => Report.fromJson(report))),
+            json["reportShort"].map((report) => Report.forContent(report))),
+        categories: List<ContentCategory>.from(json["categories"]
+            .map((category) => ContentCategory.forContent(category))),
         reactions: json["reactions"],
-        creationDate: DateTime.parse(json["creationDate"]),
-        lastUpdated: DateTime.parse(json["lastUpdated"]),
+        creatorId: json["creatorId"],
+        creator: User.forContent(json["creator"]),
       );
 
   Map<String, dynamic> toJson() => {

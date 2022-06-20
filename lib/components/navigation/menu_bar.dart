@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/api/result_model_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
+import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/views/menu/your_creator_packs.dart';
 import 'package:lebenswiki_app/data/image_repo.dart';
 import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
@@ -43,16 +45,13 @@ class _MenuBarState extends State<MenuBar> {
     return Drawer(
       child: FutureBuilder(
         future: userApi.getUserData(),
-        builder: (context, AsyncSnapshot snapshot) {
+        builder: (context, AsyncSnapshot<ResultModel> snapshot) {
           if (!snapshot.hasData) {
             return const Loading();
           } else if (snapshot.data == null) {
             return const Text("No Profile Data found");
           } else {
-            if (snapshot.data["profileImage"] == "something") {
-              snapshot.data["profileImage"] =
-                  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Pic160118_J%C3%B8rgen_Randers_%28face_only_-_for_free_use%29.jpg/1114px-Pic160118_J%C3%B8rgen_Randers_%28face_only_-_for_free_use%29.jpg";
-            }
+            User user = snapshot.data!.responseItem;
             return ListView(
               padding: const EdgeInsets.only(top: 35.0),
               children: [
@@ -63,7 +62,7 @@ class _MenuBarState extends State<MenuBar> {
                     children: [
                       CircleAvatar(
                         backgroundImage: NetworkImage(
-                          snapshot.data["profileImage"],
+                          user.profileImage,
                         ),
                         radius: 35,
                       ),
@@ -73,7 +72,7 @@ class _MenuBarState extends State<MenuBar> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 20.0, top: 15.0),
-                  child: Text(snapshot.data["name"],
+                  child: Text(user.name,
                       style: LebenswikiTextStyles.menuBar.menuProfileName),
                 ),
                 _buildDrawerItem(Icons.person_outline, "Profil", () {

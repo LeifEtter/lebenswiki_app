@@ -44,7 +44,7 @@ class _ProfileViewState extends State<ProfileView> {
               User user = snapshot.data;
               _profileImageController.text = user.profileImage;
               _nameController.text = user.name;
-              _emailController.text = user.email;
+              _emailController.text = user.email!;
               _biographyController.text = user.biography;
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),

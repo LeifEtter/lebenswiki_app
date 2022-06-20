@@ -68,11 +68,12 @@ class UserApi extends BaseApi {
       Uri.parse("$serverIp/users/profile"),
       headers: await requestHeader(),
     );
+    print(res.body);
     Map decodedBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.user,
-        responseItem: User.fromJson(
+        responseItem: User.forContent(
           decodedBody["body"],
         ),
       );

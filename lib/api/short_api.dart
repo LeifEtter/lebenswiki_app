@@ -63,11 +63,15 @@ class ShortApi extends BaseApi {
     );
     Map resBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
-      List<Short> shorts =
-          resBody["shorts"].map((short) => Short.fromJson(short));
+      List shortsJson = resBody["body"];
+      //print(shortsJson[8]["comments"][0]);
+      //print(Short.fromJson(shortsJson[8]));
+      /*shortsJson[0].forEach((key, value) {
+        print(key);
+      });*/
       return ResultModel(
         type: ResultType.shortList,
-        responseList: shorts,
+        responseList: shortsJson.map((short) => Short.fromJson(short)).toList(),
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));

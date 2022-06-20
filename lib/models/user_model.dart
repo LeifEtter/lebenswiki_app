@@ -12,28 +12,28 @@ User userFromJson(String str) => User.fromJson(json.decode(str));
 String userToJson(User data) => json.encode(data.toJson());
 
 class User {
-  User({
-    this.id = 0,
-    required this.email,
-    required this.name,
-    this.password,
-    this.profileImage =
-        "https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg",
-    this.biography = "The user hasn't written his biography yet...",
-    this.shortsAsCreator = const [],
-    this.packsAsCreator = const [],
-    this.upVotedShorts = const [],
-    this.downVotedShorts = const [],
-    this.bookmarkedShorts = const [],
-    this.commentsAsUser = const [],
-    this.reports = const [],
-    this.blockerUser = const [],
-    this.blocked = const [],
-    this.feedback = const [],
-  });
+  User(
+      {this.id = 0,
+      this.email,
+      required this.name,
+      this.password,
+      this.profileImage =
+          "https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg",
+      this.biography = "The user hasn't written his biography yet...",
+      this.shortsAsCreator = const [],
+      this.packsAsCreator = const [],
+      this.upVotedShorts = const [],
+      this.downVotedShorts = const [],
+      this.bookmarkedShorts = const [],
+      this.commentsAsUser = const [],
+      this.reports = const [],
+      this.blockerUser = const [],
+      this.blocked = const [],
+      this.feedback = const [],
+      this.role = "User"});
 
   int id;
-  String email;
+  String? email;
   String name;
   String profileImage;
   String biography;
@@ -48,6 +48,21 @@ class User {
   List<dynamic> blockerUser;
   List<dynamic> blocked;
   List<UserFeedback> feedback;
+  String role;
+
+  factory User.forContent(Map<String, dynamic> json) => User(
+        id: json["id"],
+        name: json["name"],
+        profileImage: json["profileImage"],
+        role: json["role"],
+      );
+
+  factory User.forId(Map<String, dynamic> json) => User(
+        id: json["id"],
+        name: "Doesnt Matter",
+        profileImage: "Doesnt Matter",
+        role: "Doesnt Matter",
+      );
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],

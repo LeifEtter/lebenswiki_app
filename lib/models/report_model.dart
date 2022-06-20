@@ -15,7 +15,7 @@ class Report {
     required this.reason,
     this.reporter,
     this.userId,
-    required this.reportedContentId,
+    this.reportedContentId,
     this.reportedShort,
     this.reportedPack,
     this.reportedComment,
@@ -27,11 +27,18 @@ class Report {
   String reason;
   User? reporter;
   int? userId;
-  int reportedContentId;
+  int? reportedContentId;
   Short? reportedShort;
   Pack? reportedPack;
   Comment? reportedComment;
   DateTime creationDate;
+
+  factory Report.forContent(Map<String, dynamic> json) => Report(
+        reason: json["reason"],
+        userId: json["userId"],
+        reporter: User.forContent(json["reporter"]),
+        creationDate: DateTime.parse(json["creationDate"]),
+      );
 
   factory Report.fromJson(Map<String, dynamic> json) => Report(
         reason: json["reason"],

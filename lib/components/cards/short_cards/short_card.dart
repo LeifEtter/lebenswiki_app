@@ -125,11 +125,11 @@ class _ShortCardState extends State<ShortCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CreatorInfo(
+                    /*CreatorInfo(
                       isComment: false,
                       creationDate: widget.short.creationDate,
                       user: widget.short.creator,
-                    ),
+                    ),*/
                     const SizedBox(height: 5),
                     SizedBox(
                       width: screenWidth * 0.7,
