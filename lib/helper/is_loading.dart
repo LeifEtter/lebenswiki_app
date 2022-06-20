@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 bool isLoading(AsyncSnapshot snapshot) {
-  if (!snapshot.hasData || snapshot.data == null) {
+  if (snapshot.data == null) {
     return true;
   } else {
     return false;

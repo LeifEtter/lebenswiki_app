@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_comments.dart';
-import 'package:lebenswiki_app/components/cards/short_card.dart';
+import 'package:lebenswiki_app/api/result_model_api.dart';
+import 'package:lebenswiki_app/api/short_api.dart';
+import 'package:lebenswiki_app/components/cards/short_cards/short_card.dart';
 import 'package:lebenswiki_app/components/feed/get_content_comments.dart';
 import 'package:lebenswiki_app/components/input/comment_input.dart';
 import 'package:lebenswiki_app/data/loading.dart';
@@ -31,6 +32,8 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
     with AutomaticKeepAliveClientMixin {
   bool _commentsExpanded = false;
   final TextEditingController _commentController = TextEditingController();
+
+  ShortApi shortApi = ShortApi();
 
   @override
   Widget build(BuildContext context) {
@@ -92,12 +95,16 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                                         size: 30.0,
                                       ),
                                       onPressed: () {
-                                        createComment(
-                                          _commentController.text.toString(),
-                                          widget.short.id,
-                                        ).whenComplete(
-                                            () => widget.voteReload());
-                                        _commentController.text = "";
+                                        shortApi
+                                            .commentShort(
+                                                comment:
+                                                    _commentController.text,
+                                                id: widget.short.id)
+                                            .then((ResultModel result) {
+                                          print(result.message);
+                                          _commentController.text = "";
+                                          widget.voteReload();
+                                        });
                                       },
                                     )
                                   ],

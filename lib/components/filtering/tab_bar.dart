@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
+import 'package:lebenswiki_app/models/category_model.dart';
 
-Widget buildTabBar(List categories, Function chooseCallback) {
+Widget buildTabBar({
+  required List<ContentCategory> categories,
+  required Function callback,
+}) {
   return SizedBox(
     height: 55,
     child: TabBar(
@@ -15,25 +19,18 @@ Widget buildTabBar(List categories, Function chooseCallback) {
       unselectedLabelColor: LebenswikiColors.categoryLabelColorUnselected,
       isScrollable: true,
       onTap: (value) {
-        chooseCallback(value);
+        callback(value);
       },
       tabs: generateTabs(categories),
     ),
   );
 }
 
-List<Widget> generateTabs(categories) {
+List<Widget> generateTabs(List<ContentCategory> categories) {
   List<Widget> categoryTabs = [];
-  Tab newCategory = Tab(
-    child: Text(
-      "Neu",
-      style: LebenswikiTextStyles.categoryBar.categoryButtonInactive,
-    ),
-  );
-  categoryTabs.add(newCategory);
   for (var category in categories) {
     Widget tab = Tab(
-      child: Text(category["categoryName"],
+      child: Text(category.categoryName,
           style: LebenswikiTextStyles.categoryBar.categoryButtonInactive),
     );
     categoryTabs.add(tab);

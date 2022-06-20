@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/create/api/api_creator_pack.dart';
-import 'package:lebenswiki_app/components/create/data/models.dart';
+import 'package:lebenswiki_app/api/pack_api.dart';
 import 'package:lebenswiki_app/components/create/styling/styling_edit.dart';
-import 'package:lebenswiki_app/components/create/components/edit_page.dart';
-import 'package:lebenswiki_app/components/create/views/editor_settings.dart';
-import 'package:lebenswiki_app/components/create/views/viewer.dart';
-import 'package:lebenswiki_app/components/create/views/your_creator_packs.dart';
+import 'package:lebenswiki_app/views/editor/edit_page.dart';
+import 'package:lebenswiki_app/models/pack_content_models.dart';
+import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/views/editor/editor_settings.dart';
+import 'package:lebenswiki_app/views/packs/viewer.dart';
+import 'package:lebenswiki_app/views/menu/your_creator_packs.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
-import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
-import 'package:lebenswiki_app/testing/border.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 
 class Editor extends StatefulWidget {
-  final CreatorPack pack;
+  final Pack pack;
 
   const Editor({
     Key? key,
@@ -25,10 +24,11 @@ class Editor extends StatefulWidget {
 }
 
 class _EditorState extends State<Editor> {
+  final PackApi packApi = PackApi();
   final PageController _pageController = PageController();
   final EditDecoration decoration = EditDecoration();
   final List saveControllers = [];
-  late CreatorPack pack;
+  late Pack pack;
   int _selectedPage = 0;
 
   @override
@@ -73,8 +73,7 @@ class _EditorState extends State<Editor> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    CreatorPackViewer(pack: pack),
+                                builder: (context) => PackViewer(pack: pack),
                               ));
                         },
                         child: Container(
@@ -224,14 +223,14 @@ class _EditorState extends State<Editor> {
     return IconButton(
       icon: const Icon(Icons.save, size: 30),
       onPressed: () {
-        updateCreatorPack(pack: pack, id: pack.id);
+        packApi.updateCreatorPack(pack: pack, id: pack.id);
         setState(() {});
       },
     );
   }
 
   void _goToYourPacks() {
-    updateCreatorPack(pack: pack, id: pack.id);
+    packApi.updateCreatorPack(pack: pack, id: pack.id);
     Navigator.of(context).push(
         MaterialPageRoute(builder: ((context) => const YourCreatorPacks())));
   }

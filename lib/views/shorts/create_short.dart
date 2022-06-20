@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_authentication.dart';
-import 'package:lebenswiki_app/api/api_shorts.dart';
-import 'package:lebenswiki_app/api/api_universal.dart';
+import 'package:lebenswiki_app/api/misc_api.dart';
+import 'package:lebenswiki_app/api/short_api.dart';
+import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/loading.dart';
@@ -18,17 +18,20 @@ class CreateShort extends StatefulWidget {
 }
 
 class _CreateShortState extends State<CreateShort> {
+  final UserApi userApi = UserApi();
+  final MiscApi miscApi = MiscApi();
+  final ShortApi shortApi = ShortApi();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   int _currentCategory = 0;
 
   @override
   Widget build(BuildContext context) {
-    getCategories();
+    miscApi.getCategories();
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder(
-          future: getCategories(),
+          future: miscApi.getCategories(),
           builder: (context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
               return const Loading();
@@ -67,7 +70,7 @@ class _CreateShortState extends State<CreateShort> {
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 5.0),
                                   child: FutureBuilder(
-                                    future: getUserData(),
+                                    future: userApi.getUserData(),
                                     builder: (context, AsyncSnapshot snapshot) {
                                       if (!snapshot.hasData) {
                                         return const Loading();
@@ -100,18 +103,15 @@ class _CreateShortState extends State<CreateShort> {
                           alignment: Alignment.bottomRight,
                           child: SizedBox(
                             width: 150,
-                            child: Row(
-                              children: [
-                                LebenswikiBlueButtonInverted(
-                                    text: "Entwürfe",
-                                    callback: navigateToDrafts),
-                                LebenswikiBlueButton(
-                                  text: "Post",
-                                  callback: createCallback,
-                                  categories: snapshot.data,
-                                ),
-                              ],
-                            ),
+                            child: Row(children: [
+                              lebenswikiBlueButtonInverted(
+                                  text: "Entwürfe", callback: navigateToDrafts),
+                              lebenswikiBlueButtonNormal(
+                                text: "Post",
+                                callback: createCallback,
+                                categories: snapshot.data,
+                              ),
+                            ]),
                           ),
                         ),
                       )
@@ -152,20 +152,22 @@ class _CreateShortState extends State<CreateShort> {
   }
 
   void createCallback(categories) {
-    createShort(
-      _titleController.text.toString(),
-      [categories[_currentCategory]["id"]],
-      _contentController.text.toString(),
-    ).then(
-      (_) => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const YourShorts(
-            chosenTab: 1,
+    shortApi
+        .createShort(
+          categories: [categories][_currentCategory]["id"],
+          content: _contentController.text.toString(),
+          title: _titleController.text.toString(),
+        )
+        .then(
+          (_) => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const YourShorts(
+                chosenTab: 1,
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        );
   }
 
   Widget _buildTabBar(List categories) {

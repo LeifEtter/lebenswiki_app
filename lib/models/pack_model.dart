@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/pack_content_models.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 
@@ -9,24 +7,26 @@ class Pack {
   String description;
   String titleImage;
   bool published;
-  User creator;
-  final List<int> categories;
+  //User? creator;
+  int creatorId;
+  final List categories;
   final List<CreatorPage> pages;
 
   Pack({
     this.id = 0,
-    required this.creator,
+    //required this.creator,
     required this.title,
     required this.description,
     required this.pages,
     required this.categories,
     required this.titleImage,
     this.published = false,
+    required this.creatorId,
   });
 
   Pack.initial({
     this.id = 0,
-    required this.creator,
+    this.creatorId = 0,
     this.title = "",
     this.description = "",
     this.pages = const [],
@@ -49,7 +49,7 @@ class Pack {
   Pack.fromJson(Map json)
       : id = json["id"],
         title = json["title"],
-        creator = json["creatorPack"],
+        creatorId = json["creatorId"],
         description = json["description"],
         titleImage = json["titleImage"],
         categories = json["categories"],

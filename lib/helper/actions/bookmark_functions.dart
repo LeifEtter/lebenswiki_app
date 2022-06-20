@@ -1,4 +1,4 @@
-import 'package:lebenswiki_app/api/api_shorts.dart';
+import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +10,7 @@ class BookmarkHelper {
 
   bool userHasBookmarked = false;
   late int? userId;
+  final ShortApi shortApi = ShortApi();
 
   BookmarkHelper({
     required this.contentId,
@@ -41,10 +42,10 @@ class BookmarkHelper {
 
   void toggleBookmarkShort() {
     if (userHasBookmarked) {
-      unbookmarkShort(contentId);
+      shortApi.unbookmarkShort(contentId);
       userHasBookmarked = false;
     } else {
-      bookmarkShort(contentId);
+      shortApi.bookmarkShort(contentId);
       userHasBookmarked = true;
     }
   }

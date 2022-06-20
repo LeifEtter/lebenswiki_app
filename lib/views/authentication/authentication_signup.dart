@@ -3,14 +3,14 @@ import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
 
-class OnboardingView extends StatefulWidget {
-  const OnboardingView({Key? key}) : super(key: key);
+class OnboardingViewOld extends StatefulWidget {
+  const OnboardingViewOld({Key? key}) : super(key: key);
 
   @override
-  _OnboardingViewState createState() => _OnboardingViewState();
+  _OnboardingViewOldState createState() => _OnboardingViewOldState();
 }
 
-class _OnboardingViewState extends State<OnboardingView> {
+class _OnboardingViewOldState extends State<OnboardingViewOld> {
   final GlobalKey<FormState> _authFormKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();

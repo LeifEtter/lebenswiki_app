@@ -11,6 +11,7 @@ import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/helper/is_loading.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
+import 'package:lebenswiki_app/models/pack_model.dart';
 
 class GetContent extends StatefulWidget {
   final ContentCategory? category;
@@ -34,19 +35,12 @@ class _GetContentState extends State<GetContent> {
   final ShortApi shortApi = ShortApi();
   final PackApi packApi = PackApi();
   final UserApi userApi = UserApi();
-  late bool provideCategory;
+  bool provideCategory = false;
   String errorText = "";
   late Function packFuture;
   late Widget card;
 
-  @override
-  void initState() {
-    if (widget.cardType == CardType.packsByCategory ||
-        widget.cardType == CardType.shortsByCategory) {
-      provideCategory = true;
-    }
-    super.initState();
-  }
+  late var contentList;
 
   @override
   Widget build(BuildContext context) {
@@ -70,28 +64,28 @@ class _GetContentState extends State<GetContent> {
               if (responseList.isEmpty) {
                 return Text(response.message!);
               }
-              widget.category!.id == 0
+              widget.category!.id == 99
                   ? responseList = _sortPacks(responseList)
                   : null;
-              //responseList = _filterBlocked(responseList, blockedList.data);
+              responseList = _filterBlocked(responseList, blockedList.data);
               return Expanded(
                 child: ListView.builder(
                   addAutomaticKeepAlives: true,
                   shrinkWrap: true,
                   itemCount: responseList.length,
                   itemBuilder: (context, index) {
-                    var currentContent = responseList[index];
+                    var currentPack = responseList[index];
                     switch (widget.cardType) {
                       case CardType.shortsByCategory:
                         return ShortCardScaffold(
-                          short: currentContent,
+                          short: currentPack,
                           voteReload: widget.reload,
                           cardType: widget.cardType,
                           menuCallback: widget.menuCallback,
                         );
                       case CardType.shortBookmarks:
                         return ShortCardScaffold(
-                          short: currentContent,
+                          short: currentPack,
                           voteReload: widget.reload,
                           cardType: widget.cardType,
                           menuCallback: widget.menuCallback,
@@ -99,25 +93,26 @@ class _GetContentState extends State<GetContent> {
                       case CardType.shortDrafts:
                         return ShortCardMinimal(
                           reload: widget.reload,
-                          short: currentContent,
+                          short: currentPack,
                           cardType: widget.cardType,
                         );
                       case CardType.yourShorts:
                         return ShortCardMinimal(
                           reload: widget.reload,
-                          short: currentContent,
+                          short: currentPack,
                           cardType: widget.cardType,
                         );
                       case CardType.packsByCategory:
-                        return CreatorPackCard(pack: currentContent);
+                        return CreatorPackCard(
+                            pack: Pack.fromJson(currentPack));
                       case CardType.packDrafts:
                         return CreatorPackCardEdit(
-                          pack: currentContent,
+                          pack: Pack.fromJson(currentPack),
                           reload: widget.reload,
                         );
                       case CardType.yourPacks:
                         return CreatorPackCardEdit(
-                          pack: currentContent,
+                          pack: Pack.fromJson(currentPack),
                           reload: widget.reload,
                         );
                       default:
@@ -145,7 +140,7 @@ class _GetContentState extends State<GetContent> {
   }
 
   List _filterBlocked(packList, blockedList) {
-    List filteredPackList = [];
+    List<Map> filteredPackList = [];
     bool canAdd = true;
 
     for (Map pack in packList) {
@@ -166,14 +161,14 @@ class _GetContentState extends State<GetContent> {
   void _updateParameters() {
     switch (widget.cardType) {
       case CardType.packsByCategory:
-        packFuture = widget.category!.id == 0
+        packFuture = widget.category == 99
             ? packApi.getAllPacks
             : packApi.getPacksByCategory;
         provideCategory = true;
         errorText = "Keine Packs für diese Kategorie gefunden";
         break;
       case CardType.shortsByCategory:
-        packFuture = widget.category!.id == 0
+        packFuture = widget.category!.id == 99
             ? shortApi.getAllShorts
             : shortApi.getShortsByCategory;
         provideCategory = widget.category!.id == 99 ? false : true;
@@ -207,4 +202,6 @@ class _GetContentState extends State<GetContent> {
         break;
     }
   }
+
+  void _filterContent() {}
 }

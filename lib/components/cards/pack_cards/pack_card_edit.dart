@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/create/api/api_creator_pack.dart';
-import 'package:lebenswiki_app/components/create/data/models.dart';
-import 'package:lebenswiki_app/components/create/views/editor.dart';
-import 'package:lebenswiki_app/components/create/views/editor_settings.dart';
-import 'package:lebenswiki_app/components/create/views/viewer.dart';
+import 'package:lebenswiki_app/api/pack_api.dart';
+import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/views/editor/editor_settings.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
 
 class CreatorPackCardEdit extends StatefulWidget {
-  final CreatorPack pack;
+  final Pack pack;
   final Function reload;
 
   const CreatorPackCardEdit({
@@ -22,6 +20,8 @@ class CreatorPackCardEdit extends StatefulWidget {
 }
 
 class _CreatorPackCardEditState extends State<CreatorPackCardEdit> {
+  PackApi packApi = PackApi();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -67,14 +67,14 @@ class _CreatorPackCardEditState extends State<CreatorPackCardEdit> {
                             children: [
                               Container(
                                 height: 150,
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.only(
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
                                     topRight: Radius.circular(10.0),
                                     topLeft: Radius.circular(10.0),
                                   ),
                                 ),
-                                child:
-                                    Center(child: Text("Füge ein bild hinzu")),
+                                child: const Center(
+                                    child: Text("Füge ein bild hinzu")),
                               ),
                             ],
                           ),
@@ -83,13 +83,13 @@ class _CreatorPackCardEditState extends State<CreatorPackCardEdit> {
                         alignment: Alignment.topRight,
                         child: GestureDetector(
                           onTap: () {
-                            publishPack(id: widget.pack.id);
+                            packApi.publishPack(widget.pack.id);
                             widget.reload();
                           },
                           child: Container(
                             width: 50,
                             height: 50,
-                            child: Icon(Icons.publish),
+                            child: const Icon(Icons.publish),
                             decoration: BoxDecoration(
                               boxShadow: [LebenswikiShadows().fancyShadow],
                               color: Colors.white,
@@ -104,7 +104,7 @@ class _CreatorPackCardEditState extends State<CreatorPackCardEdit> {
                         alignment: Alignment.topLeft,
                         child: GestureDetector(
                           onTap: () {
-                            deletePack(id: widget.pack.id);
+                            packApi.deletePack(id: widget.pack.id);
                             widget.reload();
                           },
                           child: Container(
@@ -123,7 +123,7 @@ class _CreatorPackCardEditState extends State<CreatorPackCardEdit> {
                   ],
                 ),
                 widget.pack.titleImage == ""
-                    ? Divider(
+                    ? const Divider(
                         thickness: 2,
                       )
                     : Container(),
@@ -145,7 +145,7 @@ class _CreatorPackCardEditState extends State<CreatorPackCardEdit> {
                             style: LebenswikiTextStyles.packTitle,
                           ),
                           const SizedBox(height: 5),
-                          Container(
+                          SizedBox(
                             width: 350,
                             child: Text(
                               widget.pack.description,

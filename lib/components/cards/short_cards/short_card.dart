@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_shorts.dart';
+import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/components/buttons/vote_button.dart';
+import 'package:lebenswiki_app/components/cards/card_components/creator_info.dart';
 import 'package:lebenswiki_app/helper/actions/bookmark_functions.dart';
 import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
 import 'package:lebenswiki_app/helper/actions/vote_functions.dart';
-import 'package:lebenswiki_app/components/card_components/creator_info.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/short_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ShortCard extends StatefulWidget {
   final Short short;
@@ -37,6 +36,7 @@ class _ShortCardState extends State<ShortCard> {
   bool hasReacted = false;
   bool optionsMenuOpen = false;
   bool blockUser = false;
+  ShortApi shortApi = ShortApi();
 
   late VoteHelper voteHelper;
   late BookmarkHelper bookmarkHelper;

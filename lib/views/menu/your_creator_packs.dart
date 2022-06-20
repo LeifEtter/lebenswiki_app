@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
-import 'package:lebenswiki_app/components/create/api/api_creator_pack.dart';
-import 'package:lebenswiki_app/components/create/data/initial_data.dart';
-import 'package:lebenswiki_app/components/create/data/models.dart';
-import 'package:lebenswiki_app/components/create/views/editor.dart';
-import 'package:lebenswiki_app/components/create/views/editor_settings.dart';
+import 'package:lebenswiki_app/api/pack_api.dart';
+import 'package:lebenswiki_app/api/result_model_api.dart';
+import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/views/editor/editor_settings.dart';
 import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
 import 'package:lebenswiki_app/data/colors.dart';
@@ -25,6 +23,7 @@ class YourCreatorPacks extends StatefulWidget {
 
 class _YourCreatorPacksState extends State<YourCreatorPacks>
     with TickerProviderStateMixin {
+  final PackApi packApi = PackApi();
   int chosenTab = 0;
   late TabController _tabController;
 
@@ -38,7 +37,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
 
   void _home() {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: ((context) => NavBarWrapper())));
+        .push(MaterialPageRoute(builder: ((context) => const NavBarWrapper())));
   }
 
   @override
@@ -84,7 +83,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
                     children: [
                       GetContent(
                         reload: reload,
-                        cardType: CardType.yourCreatorPacksPublished,
+                        cardType: CardType.yourPacks,
                         menuCallback: () {},
                       ),
                       const SizedBox(height: 30),
@@ -95,7 +94,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
                     children: [
                       GetContent(
                         reload: reload,
-                        cardType: CardType.yourCreatorPacks,
+                        cardType: CardType.packDrafts,
                         menuCallback: () {},
                       ),
                       const SizedBox(height: 30),
@@ -123,7 +122,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
               boxShadow: [LebenswikiShadows().fancyShadow]),
           child: TextButton(
             onPressed: () {
-              _routeCreator();
+              _routeCreatePack();
             },
             child: const Text(
               "Erstelle dein eigenes Lernpack",
@@ -147,19 +146,18 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
     setState(() {});
   }
 
-  void _routeCreator() {
-    //Create Initial Pack
-    createCreatorPack(pack: initialPack()).then((id) {
-      CreatorPack packGive = initialPack();
-      packGive.id = id;
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: ((context) => EditorSettings(
-                pack: packGive,
-              )),
-        ),
-      );
+  void _routeCreatePack() {
+    Pack pack = Pack.initial();
+    packApi.createPack(pack: pack).then((ResultModel result) {
+      if (result.type == ResultType.success) {
+        pack.id = result.responseItem;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EditorSettings(pack: pack),
+          ),
+        );
+      }
     });
   }
 }

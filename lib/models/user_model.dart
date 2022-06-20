@@ -16,6 +16,7 @@ class User {
     this.id = 0,
     required this.email,
     required this.name,
+    this.password,
     this.profileImage =
         "https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg",
     this.biography = "The user hasn't written his biography yet...",
@@ -36,6 +37,7 @@ class User {
   String name;
   String profileImage;
   String biography;
+  String? password;
   List<Short> shortsAsCreator;
   List<Pack> packsAsCreator;
   List<Short> upVotedShorts;
@@ -75,12 +77,12 @@ class User {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
         "email": email,
         "name": name,
+        "password": password ?? "",
         "profileImage": profileImage,
         "biography": biography,
-        "packsAsCreator":
+        /*"packsAsCreator":
             List<Pack>.from(packsAsCreator.map((Pack pack) => pack.toJson())),
         "shortsAsCreator": List<Short>.from(
             shortsAsCreator.map((Short short) => short.toJson())),
@@ -97,6 +99,6 @@ class User {
         "blockerUser": List<dynamic>.from(blockerUser.map((x) => x)), //!TODO
         "blocked": List<dynamic>.from(blocked.map((x) => x)), //!TODO
         "feedback": List<UserFeedback>.from(
-            feedback.map((UserFeedback feedback) => feedback.toJson())),
+            feedback.map((UserFeedback feedback) => feedback.toJson())),*/
       };
 }

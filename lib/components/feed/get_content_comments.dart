@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/cards/comment_card.dart';
+import 'package:lebenswiki_app/components/cards/comment_cards/comment_card.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 
 class GetContentComments extends StatefulWidget {
@@ -32,7 +32,7 @@ class _GetContentCommentsState extends State<GetContentComments> {
             CommentCard(
               comment: currentComment,
               voteReload: widget.reload,
-              cardType: CardType.comments,
+              cardType: CardType.shortComments,
               menuCallback: widget.menuCallback,
             ),
             const Padding(

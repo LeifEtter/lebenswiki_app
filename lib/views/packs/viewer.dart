@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/create/data/models.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
 import 'package:lebenswiki_app/helper/packs/evaluating_elements.dart';
-import 'package:lebenswiki_app/testing/border.dart';
+import 'package:lebenswiki_app/models/pack_content_models.dart';
+import 'package:lebenswiki_app/models/pack_model.dart';
 
-class CreatorPackViewer extends StatefulWidget {
-  final CreatorPack pack;
+class PackViewer extends StatefulWidget {
+  final Pack pack;
 
-  const CreatorPackViewer({
+  const PackViewer({
     Key? key,
     required this.pack,
   }) : super(key: key);
 
   @override
-  State<CreatorPackViewer> createState() => _CreatorPackViewerState();
+  State<PackViewer> createState() => _PackViewerState();
 }
 
-class _CreatorPackViewerState extends State<CreatorPackViewer> {
+class _PackViewerState extends State<PackViewer> {
   int currentPage = 0;
-  late CreatorPack pack;
+  late Pack pack;
   late double progressBarWidth;
   late double indicatorSectionWidth;
 

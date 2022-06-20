@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/create/data/models.dart';
+import 'package:lebenswiki_app/models/enums.dart';
+import 'package:lebenswiki_app/models/pack_content_models.dart';
 
 Widget evalPageElement(CreatorItem item) {
   switch (item.type) {

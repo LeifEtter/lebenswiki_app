@@ -1,4 +1,4 @@
-import 'package:lebenswiki_app/api/api_shorts.dart';
+import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,6 +11,7 @@ class VoteHelper {
   late int totalVotes;
   bool userHasUpVoted = false;
   bool userHasDownVoted = false;
+  final ShortApi shortApi = ShortApi();
 
   VoteHelper({
     required this.contentId,
@@ -52,12 +53,14 @@ class VoteHelper {
     required reload,
   }) async {
     if ((isUpvote && userHasDownVoted) || (isUpvote && !userHasUpVoted)) {
-      voteShort(contentId, true);
+      shortApi.upvoteShort(contentId);
     } else if ((!isUpvote && userHasUpVoted && !userHasDownVoted) ||
         (!isUpvote && !userHasUpVoted && !userHasDownVoted)) {
-      voteShort(contentId, false);
+      shortApi.downvoteShort(contentId);
     } else {
-      isUpvote ? removeVote(contentId, true) : removeVote(contentId, false);
+      isUpvote
+          ? shortApi.removeUpvoteShort(contentId)
+          : shortApi.removeDownvoteShort(contentId);
     }
     reload();
   }

@@ -13,7 +13,7 @@ String reportToJson(Report data) => json.encode(data.toJson());
 class Report {
   Report({
     required this.reason,
-    required this.reporter,
+    this.reporter,
     this.userId,
     required this.reportedContentId,
     this.reportedShort,
@@ -21,11 +21,11 @@ class Report {
     this.reportedComment,
     required this.creationDate,
   }) {
-    userId = reporter.id;
+    userId = reporter?.id;
   }
 
   String reason;
-  User reporter;
+  User? reporter;
   int? userId;
   int reportedContentId;
   Short? reportedShort;
@@ -49,7 +49,6 @@ class Report {
 
   Map<String, dynamic> toJson() => {
         "reason": reason,
-        "reporter": reporter.toJson(),
         "userId": userId,
         "reportedContentId": reportedContentId,
         "reportedShort": reportedShort ?? reportedShort!.toJson(),

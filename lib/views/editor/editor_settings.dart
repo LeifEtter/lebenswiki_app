@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:lebenswiki_app/api/api_universal.dart';
-import 'package:lebenswiki_app/components/create/data/models.dart';
-import 'package:lebenswiki_app/components/create/views/editor.dart';
-import 'package:lebenswiki_app/components/create/views/your_creator_packs.dart';
+import 'package:lebenswiki_app/api/misc_api.dart';
+import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/views/editor/editor.dart';
+import 'package:lebenswiki_app/views/menu/your_creator_packs.dart';
 import 'package:lebenswiki_app/components/navigation/top_nav.dart';
 import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
-import 'package:lebenswiki_app/testing/border.dart';
 
 class EditorSettings extends StatefulWidget {
-  final CreatorPack pack;
+  final Pack pack;
 
   const EditorSettings({
     Key? key,
@@ -24,10 +22,11 @@ class EditorSettings extends StatefulWidget {
 }
 
 class _EditorSettingsState extends State<EditorSettings> {
-  late CreatorPack pack;
+  late Pack pack;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController imageLinkController = TextEditingController();
+  final MiscApi miscApi = MiscApi();
   int _currentCategory = 0;
 
   @override
@@ -53,7 +52,7 @@ class _EditorSettingsState extends State<EditorSettings> {
             nextCallback: _nextPage,
           ),
           FutureBuilder(
-            future: getCategories(),
+            future: miscApi.getCategories(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (!snapshot.hasData) {
                 return Loading();

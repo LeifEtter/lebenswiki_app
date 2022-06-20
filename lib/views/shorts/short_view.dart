@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_comments.dart';
-import 'package:lebenswiki_app/api/api_shorts.dart';
-import 'package:lebenswiki_app/api/api_universal.dart';
+import 'package:lebenswiki_app/api/misc_api.dart';
+import 'package:lebenswiki_app/api/short_api.dart';
+import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/components/actions/modal_sheet.dart';
 import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
 import 'package:lebenswiki_app/components/actions/report_dialog.dart';
@@ -9,7 +9,9 @@ import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/components/filtering/tab_bar.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/helper/is_loading.dart';
+import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
+import 'package:lebenswiki_app/models/report_model.dart';
 
 class ShortView extends StatefulWidget {
   const ShortView({
@@ -21,35 +23,40 @@ class ShortView extends StatefulWidget {
 }
 
 class _ShortViewState extends State<ShortView> {
+  ShortApi shortApi = ShortApi();
+  MiscApi miscApi = MiscApi();
+  UserApi userApi = UserApi();
   int _currentCategory = 0;
   String? chosenReason = "Illegal unter der NetzDG";
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: getCategories(),
+      future: miscApi.getCategories(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        return isLoading(snapshot)
-            ? const Loading()
-            : DefaultTabController(
-                length: snapshot.data.length + 1,
-                child: Column(
-                  children: [
-                    buildTabBar(
-                      snapshot.data,
-                      _onTabbarChoose,
-                    ),
-                    GetContent(
-                      category: _currentCategory == 0
-                          ? 99
-                          : snapshot.data[_currentCategory - 1]["id"],
-                      reload: reload,
-                      cardType: CardType.shortsByCategory,
-                      menuCallback: _menuCallback,
-                    )
-                  ],
-                ),
-              );
+        if (isLoading(snapshot)) {
+          return const Loading();
+        }
+        List<ContentCategory> categories = snapshot.data!.categories!;
+        return DefaultTabController(
+          length: snapshot.data.length + 1,
+          child: Column(
+            children: [
+              buildTabBar(
+                categories: categories,
+                callback: _onTabbarChoose,
+              ),
+              GetContent(
+                category: _currentCategory == 0
+                    ? 99
+                    : snapshot.data[_currentCategory - 1]["id"],
+                reload: reload,
+                cardType: CardType.shortsByCategory,
+                menuCallback: _menuCallback,
+              )
+            ],
+          ),
+        );
       },
     );
   }
@@ -158,12 +165,17 @@ class _ShortViewState extends State<ShortView> {
                   var currentReactionLower = allReactions[index].toLowerCase();
                   return GestureDetector(
                     onTap: () async {
+                      /*isComment ? {
+                        
+                      } : {
+
+                      };
                       isComment
                           ? await addCommentReaction(
                               contentData.id, currentReaction)
                           : await addReaction(contentData.id, currentReaction);
                       Navigator.pop(context);
-                      reload();
+                      reload();*/
                     },
                     child: Image.asset(
                       "assets/emojis/$currentReactionLower.png",
@@ -205,8 +217,16 @@ class _ShortViewState extends State<ShortView> {
     required bool blockUser,
     required var contentData,
   }) {
-    blockUser ? blockUserAPI(contentData.creator.id, reason) : null;
-    reportShort(contentData.id, reason).whenComplete(() {
+    blockUser
+        ? userApi.blockUser(id: contentData.creator.id, reason: reason)
+        : null;
+    shortApi
+        .reportShort(
+            report: Report(
+                reason: reason,
+                reportedContentId: contentData.id,
+                creationDate: DateTime.now()))
+        .whenComplete(() {
       reload();
       Navigator.pop(context);
       Navigator.pop(context);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/api_shorts.dart';
+import 'package:lebenswiki_app/api/result_model_api.dart';
+import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/short_model.dart';
@@ -22,6 +23,13 @@ class ShortCardMinimal extends StatefulWidget {
 
 class _ShortCardMinimalState extends State<ShortCardMinimal> {
   bool _isExpanded = false;
+  late ShortApi shortApi;
+
+  @override
+  void initState() {
+    shortApi = ShortApi();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,18 +105,22 @@ class _ShortCardMinimalState extends State<ShortCardMinimal> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Visibility(
-                  visible: widget.cardType == CardType.drafts,
+                  visible: widget.cardType == CardType.shortDrafts,
                   child: IconButton(
                     icon: Transform.rotate(
-                      angle: widget.cardType == CardType.drafts ? 0 : 3.13,
+                      angle: widget.cardType == CardType.shortDrafts ? 0 : 3.13,
                       child: const Icon(
                         Icons.publish,
                         size: 30.0,
                       ),
                     ),
                     onPressed: () {
-                      publishShort(widget.short.id)
-                          .whenComplete(() => widget.reload(0));
+                      shortApi
+                          .publishShort(widget.short.id)
+                          .then((ResultModel result) {
+                        print(result.message);
+                        widget.reload();
+                      });
                     },
                   ),
                 ),
@@ -118,8 +130,12 @@ class _ShortCardMinimalState extends State<ShortCardMinimal> {
                     size: 30.0,
                   ),
                   onPressed: () {
-                    removeShort(widget.short.id)
-                        .whenComplete(() => widget.reload(0));
+                    shortApi
+                        .deleteShort(id: widget.short.id)
+                        .then((ResultModel result) {
+                      print(result.message);
+                      widget.reload();
+                    });
                   },
                 ),
               ],
