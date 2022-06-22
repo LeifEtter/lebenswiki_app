@@ -114,9 +114,7 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
       const ShortView(),
     ];
     return Scaffold(
-      drawer: const MenuBar(
-        profileData: {"profileName": "Ella Peters", "userName": "@ella"},
-      ),
+      drawer: const MenuBar(),
       floatingActionButton: dialAddButton(context),
       backgroundColor: Colors.white,
       appBar: MainAppBar(
