@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/custom_safe_area.dart';
 import 'package:lebenswiki_app/data/shadows.dart';
-import 'package:lebenswiki_app/testing/border.dart';
 
 class OnboardingView extends StatefulWidget {
   const OnboardingView({Key? key}) : super(key: key);
@@ -207,7 +205,7 @@ class _OnboardingViewState extends State<OnboardingView> {
             "Was interessiert dich?",
             style: title(),
           ),
-          SizedBox(height: 50),
+          const SizedBox(height: 50),
           clickableInfoCard(
             invertFunction: () {
               lernpacksActive = !lernpacksActive;
@@ -219,7 +217,7 @@ class _OnboardingViewState extends State<OnboardingView> {
             description:
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et",
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           clickableInfoCard(
             invertFunction: () {
               communityActive = !communityActive;
@@ -231,7 +229,7 @@ class _OnboardingViewState extends State<OnboardingView> {
             description:
                 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et",
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           clickableInfoCard(
             invertFunction: () {
               visionActive = !visionActive;
@@ -273,7 +271,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                         top: 60, left: 20, right: 20, bottom: 20),
                     child: Text(
                       description,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 17.0,
                       ),
                     ),

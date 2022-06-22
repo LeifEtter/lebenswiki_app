@@ -27,7 +27,7 @@ class _EditorSettingsState extends State<EditorSettings> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController imageLinkController = TextEditingController();
   final MiscApi miscApi = MiscApi();
-  int _currentCategory = 0;
+  int currentCategory = 0;
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class _EditorSettingsState extends State<EditorSettings> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
-        padding: EdgeInsets.only(top: 0),
+        padding: const EdgeInsets.only(top: 0),
         children: [
           TopNavCustom(
             pageName: "Informationen",
@@ -55,7 +55,7 @@ class _EditorSettingsState extends State<EditorSettings> {
             future: miscApi.getCategories(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (!snapshot.hasData) {
-                return Loading();
+                return const Loading();
               }
               return DefaultTabController(
                 length: snapshot.data.length,
@@ -184,7 +184,7 @@ class _EditorSettingsState extends State<EditorSettings> {
         isScrollable: true,
         onTap: (value) {
           setState(() {
-            _currentCategory = value;
+            currentCategory = value;
           });
         },
         tabs: generateTabs(categories),

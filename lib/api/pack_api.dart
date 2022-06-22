@@ -102,12 +102,9 @@ class PackApi extends BaseApi {
     );
     Map resBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
-      print(resBody["packsByCategory"]);
-      print(Pack.fromJson(resBody["packsByCategory"][0]));
       List<Pack> packs = resBody["packsByCategory"]
           .map((pack) => Pack.fromJson(pack))
           .toList();
-      print("After");
       return ResultModel(
         type: ResultType.packList,
         responseList: packs,

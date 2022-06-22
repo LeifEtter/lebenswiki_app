@@ -84,8 +84,8 @@ class _ShortViewState extends State<ShortView> {
       case MenuType.reactShortComment:
         showReactionMenu(contentData: contentData, isComment: true);
         break;
-      default:
-        print("Unknown menuType");
+      case MenuType.commentShort:
+        break;
     }
   }
 

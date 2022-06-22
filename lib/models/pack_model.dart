@@ -1,5 +1,4 @@
 import 'package:lebenswiki_app/models/pack_content_models.dart';
-import 'package:lebenswiki_app/models/user_model.dart';
 
 class Pack {
   int id;

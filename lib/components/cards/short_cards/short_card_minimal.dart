@@ -133,7 +133,6 @@ class _ShortCardMinimalState extends State<ShortCardMinimal> {
                     shortApi
                         .deleteShort(id: widget.short.id)
                         .then((ResultModel result) {
-                      print(result.message);
                       widget.reload();
                     });
                   },
