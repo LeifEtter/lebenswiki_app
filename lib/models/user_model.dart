@@ -1,5 +1,4 @@
-import 'dart:math';
-import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/data/image_repo.dart';
 import 'package:lebenswiki_app/models/comment_model.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
@@ -14,11 +13,10 @@ String userToJson(User data) => json.encode(data.toJson());
 class User {
   User({
     this.id = 0,
-    required this.email,
+    this.email,
     required this.name,
     this.password,
-    this.profileImage =
-        "https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg",
+    this.profileImage = ImageRepo.standardProfileImage,
     this.biography = "The user hasn't written his biography yet...",
     this.shortsAsCreator = const [],
     this.packsAsCreator = const [],
@@ -30,10 +28,11 @@ class User {
     this.blockerUser = const [],
     this.blocked = const [],
     this.feedback = const [],
+    this.role = "User",
   });
 
   int id;
-  String email;
+  String? email;
   String name;
   String profileImage;
   String biography;
@@ -48,6 +47,22 @@ class User {
   List<dynamic> blockerUser;
   List<dynamic> blocked;
   List<UserFeedback> feedback;
+  String role;
+
+  factory User.forContent(Map<String, dynamic> json) => User(
+        id: json["id"],
+        name: json["name"],
+        profileImage: json["profileImage"],
+        role: json["role"],
+        email: json["email"],
+      );
+
+  factory User.forId(Map<String, dynamic> json) => User(
+        id: json["id"],
+        name: "Doesnt Matter",
+        profileImage: "Doesnt Matter",
+        role: "Doesnt Matter",
+      );
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],

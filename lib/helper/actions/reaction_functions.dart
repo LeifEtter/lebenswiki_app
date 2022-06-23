@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ReactionHelper {
   late int? userId;
-  Map reactionsForContent;
+  List reactionsForContent;
   late bool userHasReacted;
 
   late Map _reactionMap;
@@ -17,11 +17,12 @@ class ReactionHelper {
   }
 
   void _setUserHasReacted() {
-    if (reactionsForContent.containsKey(userId)) {
-      userHasReacted = true;
-    } else {
-      userHasReacted = false;
-    }
+    userHasReacted = false;
+    reactionsForContent.forEach((reaction) {
+      if (reaction.containsValue(userId)) {
+        userHasReacted = true;
+      }
+    });
   }
 
   Future<void> _initializeUserId() async {

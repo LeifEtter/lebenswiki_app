@@ -34,7 +34,7 @@ class _GetContentState extends State<GetContent> {
   final ShortApi shortApi = ShortApi();
   final PackApi packApi = PackApi();
   final UserApi userApi = UserApi();
-  late bool provideCategory;
+  late bool provideCategory = false;
   String errorText = "";
   late Function packFuture;
   late Widget card;
@@ -70,9 +70,6 @@ class _GetContentState extends State<GetContent> {
               if (responseList.isEmpty) {
                 return Text(response.message!);
               }
-              widget.category!.id == 0
-                  ? responseList = _sortPacks(responseList)
-                  : null;
               //responseList = _filterBlocked(responseList, blockedList.data);
               return Expanded(
                 child: ListView.builder(
@@ -109,7 +106,10 @@ class _GetContentState extends State<GetContent> {
                           cardType: widget.cardType,
                         );
                       case CardType.packsByCategory:
-                        return CreatorPackCard(pack: currentContent);
+                        return CreatorPackCard(
+                          pack: currentContent,
+                          reload: widget.reload,
+                        );
                       case CardType.packDrafts:
                         return CreatorPackCardEdit(
                           pack: currentContent,
@@ -133,34 +133,6 @@ class _GetContentState extends State<GetContent> {
         }
       },
     );
-  }
-
-  List _sortPacks(packList) {
-    packList.sort((a, b) {
-      return DateTime.parse(a["creationDate"])
-          .compareTo(DateTime.parse(b["creationDate"]));
-    });
-    packList = List.from(packList.reversed);
-    return packList;
-  }
-
-  List _filterBlocked(packList, blockedList) {
-    List filteredPackList = [];
-    bool canAdd = true;
-
-    for (Map pack in packList) {
-      canAdd = true;
-      for (Map report in blockedList) {
-        for (Map blocked in report["blocked"]) {
-          if (blocked["id"] == pack["creatorId"]) {
-            canAdd = false;
-            break;
-          }
-        }
-      }
-      canAdd ? filteredPackList.add(pack) : null;
-    }
-    return filteredPackList;
   }
 
   void _updateParameters() {

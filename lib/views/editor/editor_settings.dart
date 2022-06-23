@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/misc_api.dart';
+import 'package:lebenswiki_app/api/result_model_api.dart';
+import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
 import 'package:lebenswiki_app/views/editor/editor.dart';
 import 'package:lebenswiki_app/views/menu/your_creator_packs.dart';
@@ -27,7 +29,7 @@ class _EditorSettingsState extends State<EditorSettings> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController imageLinkController = TextEditingController();
   final MiscApi miscApi = MiscApi();
-  int _currentCategory = 0;
+  int currentCategory = 0;
 
   @override
   void initState() {
@@ -42,7 +44,7 @@ class _EditorSettingsState extends State<EditorSettings> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
-        padding: EdgeInsets.only(top: 0),
+        padding: const EdgeInsets.only(top: 0),
         children: [
           TopNavCustom(
             pageName: "Informationen",
@@ -53,12 +55,15 @@ class _EditorSettingsState extends State<EditorSettings> {
           ),
           FutureBuilder(
             future: miscApi.getCategories(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
+            builder:
+                (BuildContext context, AsyncSnapshot<ResultModel> snapshot) {
               if (!snapshot.hasData) {
-                return Loading();
+                return const Loading();
               }
+              List<ContentCategory> categories =
+                  List.from(snapshot.data!.responseList);
               return DefaultTabController(
-                length: snapshot.data.length,
+                length: categories.length,
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
@@ -70,7 +75,7 @@ class _EditorSettingsState extends State<EditorSettings> {
                         style: _labelStyle(),
                       ),
                       const SizedBox(height: 20.0),
-                      _buildTabBar(snapshot.data),
+                      _buildTabBar(categories),
                       const SizedBox(height: 20),
                       Text("Titel", style: _labelStyle()),
                       const SizedBox(height: 20),
@@ -170,7 +175,7 @@ class _EditorSettingsState extends State<EditorSettings> {
     Navigator.push(context, _backRoute());
   }
 
-  Widget _buildTabBar(List categories) {
+  Widget _buildTabBar(List<ContentCategory> categories) {
     return SizedBox(
       height: 55,
       child: TabBar(
@@ -184,7 +189,7 @@ class _EditorSettingsState extends State<EditorSettings> {
         isScrollable: true,
         onTap: (value) {
           setState(() {
-            _currentCategory = value;
+            currentCategory = value;
           });
         },
         tabs: generateTabs(categories),
@@ -192,11 +197,11 @@ class _EditorSettingsState extends State<EditorSettings> {
     );
   }
 
-  List<Widget> generateTabs(categories) {
+  List<Widget> generateTabs(List<ContentCategory> categories) {
     List<Widget> categoryTabs = [];
     for (var category in categories) {
       Widget tab = Tab(
-        child: Text(category["categoryName"],
+        child: Text(category.categoryName,
             style: LebenswikiTextStyles.categoryBar.categoryButtonInactive),
       );
       categoryTabs.add(tab);

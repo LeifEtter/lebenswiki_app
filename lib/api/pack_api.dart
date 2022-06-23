@@ -19,8 +19,9 @@ class PackApi extends BaseApi {
     Response res = await post(
       Uri.parse("$serverIp/packs/create"),
       headers: await requestHeader(),
-      body: pack.toJson(),
+      body: jsonEncode(pack.toJson()),
     );
+    print(res.body);
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.success,
@@ -102,17 +103,14 @@ class PackApi extends BaseApi {
     );
     Map resBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
-      print(resBody["packsByCategory"]);
       List<Pack> packs = resBody["packsByCategory"]
           .map((pack) => Pack.fromJson(pack))
           .toList();
-      print("After");
       return ResultModel(
         type: ResultType.packList,
         responseList: packs,
       );
     } else {
-      print("Error");
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
         type: ResultType.failure,

@@ -41,7 +41,7 @@ class _PageOverviewState extends State<PageOverview> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -86,20 +86,18 @@ class _PageOverviewState extends State<PageOverview> {
       shrinkWrap: true,
       itemCount: page.items.length,
       itemBuilder: (BuildContext context, int index) {
-        return Container(
-          child: Row(
-            children: [
-              Expanded(child: _evalContentNew(page.items[index], index)),
-              IconButton(
-                icon: const Icon(Icons.delete),
-                color: Colors.red,
-                onPressed: () {
-                  page.items.removeAt(index);
-                  setState(() {});
-                },
-              ),
-            ],
-          ),
+        return Row(
+          children: [
+            Expanded(child: _evalContentNew(page.items[index], index)),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              color: Colors.red,
+              onPressed: () {
+                page.items.removeAt(index);
+                setState(() {});
+              },
+            ),
+          ],
         );
       },
     );

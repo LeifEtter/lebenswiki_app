@@ -9,7 +9,6 @@ import 'package:lebenswiki_app/components/actions/report_dialog.dart';
 import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/components/filtering/tab_bar.dart';
 import 'package:lebenswiki_app/data/loading.dart';
-import 'package:lebenswiki_app/helper/is_loading.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
@@ -81,8 +80,10 @@ class _PackViewState extends State<PackView> {
       case MenuType.reactShort:
         showReactionMenu(packData);
         break;
-      default:
-      //print("Unknown menuType");
+      case MenuType.commentShort:
+        break;
+      case MenuType.reactShortComment:
+        break;
     }
   }
 

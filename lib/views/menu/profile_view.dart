@@ -9,6 +9,7 @@ import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 
+//TODO show popups for succesfull changing
 class ProfileView extends StatefulWidget {
   const ProfileView({Key? key}) : super(key: key);
 
@@ -35,16 +36,16 @@ class _ProfileViewState extends State<ProfileView> {
       body: SafeArea(
         child: FutureBuilder(
           future: userApi.getUserData(),
-          builder: (context, AsyncSnapshot snapshot) {
+          builder: (context, AsyncSnapshot<ResultModel> snapshot) {
             if (!snapshot.hasData) {
               return const Loading();
             } else if (snapshot.data == null) {
               return const Text("Please log in");
             } else {
-              User user = snapshot.data;
+              User user = snapshot.data!.responseItem;
               _profileImageController.text = user.profileImage;
               _nameController.text = user.name;
-              _emailController.text = user.email;
+              _emailController.text = user.email!;
               _biographyController.text = user.biography;
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -249,9 +250,7 @@ class _ProfileViewState extends State<ProfileView> {
         List errorList = convertError(result.message);
         errorMap[errorList[0]] = errorList[1];
         setState(() {});
-      } else {
-        print("Show success message");
-      }
+      } else {}
     });
   }
 
@@ -266,9 +265,7 @@ class _ProfileViewState extends State<ProfileView> {
         List errorList = convertError(result.message);
         errorMap[errorList[0]] = errorList[1];
         setState(() {});
-      } else {
-        print("Show Success message");
-      }
+      } else {}
     }).whenComplete(() {
       _oldPasswordController.text = "";
       _passwordController.text = "";

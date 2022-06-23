@@ -91,7 +91,7 @@ class TopNavYour extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => NavBarWrapper(),
+                      builder: (context) => const NavBarWrapper(),
                     ));
               },
               child: Row(

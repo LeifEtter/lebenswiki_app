@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:intl/intl.dart';
 import 'package:lebenswiki_app/helper/date_helper.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 

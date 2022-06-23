@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/features/onboarding/views/onboarding_view.dart';
-import 'package:lebenswiki_app/views/authentication/authentication_signup.dart';
 import 'package:lebenswiki_app/views/packs/feed.dart';
 import 'package:lebenswiki_app/components/navigation/bottom_nav_bar.dart';
 import 'package:lebenswiki_app/components/navigation/main_appbar.dart';
@@ -116,9 +114,7 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
       const ShortView(),
     ];
     return Scaffold(
-      drawer: const MenuBar(
-        profileData: {"profileName": "Ella Peters", "userName": "@ella"},
-      ),
+      drawer: const MenuBar(),
       floatingActionButton: dialAddButton(context),
       backgroundColor: Colors.white,
       appBar: MainAppBar(

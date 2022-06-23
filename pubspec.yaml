@@ -1,7 +1,7 @@
 name: lebenswiki_app
 description: A new Flutter project.
 
-publish_to: 'none' 
+publish_to: "none"
 version: 1.0.3
 
 environment:
@@ -23,10 +23,11 @@ dependencies:
   share_plus: ^4.0.4
   hive: ^2.1.0
   flutter_speed_dial: ^5.1.0
-  lebenswiki_api_helper: 
+  lebenswiki_api_helper:
     path: ../lebenswiki_api_helper
   json_annotation: ^4.4.0
   expandable_page_view: ^1.0.14
+  email_validator: ^2.0.1
 
 dev_dependencies:
   flutter_test:

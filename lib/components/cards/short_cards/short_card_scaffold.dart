@@ -101,7 +101,6 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                                                     _commentController.text,
                                                 id: widget.short.id)
                                             .then((ResultModel result) {
-                                          print(result.message);
                                           _commentController.text = "";
                                           widget.voteReload();
                                         });

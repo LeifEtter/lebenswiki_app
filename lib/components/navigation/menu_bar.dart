@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/api/result_model_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
+import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/views/menu/your_creator_packs.dart';
 import 'package:lebenswiki_app/data/image_repo.dart';
 import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
@@ -13,12 +15,7 @@ import 'package:lebenswiki_app/views/menu/your_shorts_view.dart';
 import 'package:share_plus/share_plus.dart';
 
 class MenuBar extends StatefulWidget {
-  final Map profileData;
-
-  const MenuBar({
-    Key? key,
-    required this.profileData,
-  }) : super(key: key);
+  const MenuBar({Key? key}) : super(key: key);
 
   @override
   _MenuBarState createState() => _MenuBarState();
@@ -26,8 +23,6 @@ class MenuBar extends StatefulWidget {
 
 class _MenuBarState extends State<MenuBar> {
   UserApi userApi = UserApi();
-  String profileName = "Not logged in";
-  String userName = "@";
 
   @override
   void initState() {
@@ -36,23 +31,16 @@ class _MenuBarState extends State<MenuBar> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.profileData.isNotEmpty) {
-      profileName = widget.profileData["profileName"];
-      userName = widget.profileData["userName"];
-    }
     return Drawer(
       child: FutureBuilder(
         future: userApi.getUserData(),
-        builder: (context, AsyncSnapshot snapshot) {
+        builder: (context, AsyncSnapshot<ResultModel> snapshot) {
           if (!snapshot.hasData) {
             return const Loading();
           } else if (snapshot.data == null) {
             return const Text("No Profile Data found");
           } else {
-            if (snapshot.data["profileImage"] == "something") {
-              snapshot.data["profileImage"] =
-                  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Pic160118_J%C3%B8rgen_Randers_%28face_only_-_for_free_use%29.jpg/1114px-Pic160118_J%C3%B8rgen_Randers_%28face_only_-_for_free_use%29.jpg";
-            }
+            User user = snapshot.data!.responseItem;
             return ListView(
               padding: const EdgeInsets.only(top: 35.0),
               children: [
@@ -63,7 +51,7 @@ class _MenuBarState extends State<MenuBar> {
                     children: [
                       CircleAvatar(
                         backgroundImage: NetworkImage(
-                          snapshot.data["profileImage"],
+                          user.profileImage,
                         ),
                         radius: 35,
                       ),
@@ -73,26 +61,41 @@ class _MenuBarState extends State<MenuBar> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 20.0, top: 15.0),
-                  child: Text(snapshot.data["name"],
+                  child: Text(user.name,
                       style: LebenswikiTextStyles.menuBar.menuProfileName),
                 ),
-                _buildDrawerItem(Icons.person_outline, "Profil", () {
-                  _routeProfilePage();
-                }),
-                _buildDrawerItem(
-                    Icons.bookmark_outline, "Gespeichert", _routeBookmarks),
-                _buildDrawerItem(
-                  Icons.my_library_books_outlined,
-                  "Deine Lernpacks",
-                  _routeYourCreatorPacks,
+                _buildNavigationDrawerItem(
+                  icon: Icons.person_outline,
+                  text: "Profil",
+                  destination: const ProfileView(),
                 ),
-                _buildDrawerItem(Icons.mode_edit_outline_outlined,
-                    "Deine Shorts", _routeYourShorts),
-                _buildDrawerItem(Icons.phone_outlined, "Kontakt/Feedback",
-                    _routeDeveloperContact),
-                _buildDrawerItem(Icons.logout, "Ausloggen", () {
-                  AuthenticationFunctions().logout(context);
-                }),
+                _buildNavigationDrawerItem(
+                    icon: Icons.bookmark_outline,
+                    text: "Gespeichert",
+                    destination: const BookmarkFeed(
+                      isShort: true,
+                      isSearching: false,
+                    )),
+                _buildNavigationDrawerItem(
+                  icon: Icons.bookmark_outline,
+                  text: "Deine Lernpacks",
+                  destination: const YourCreatorPacks(),
+                ),
+                _buildNavigationDrawerItem(
+                  icon: Icons.mode_edit_outline_outlined,
+                  text: "Deine Shorts",
+                  destination: const YourShorts(),
+                ),
+                _buildNavigationDrawerItem(
+                  icon: Icons.phone_outlined,
+                  text: "Kontakt/Feedback",
+                  destination: const DeveloperInfoView(),
+                ),
+                _buildDrawerItem(
+                  icon: Icons.logout,
+                  text: "Ausloggen",
+                  callback: () => AuthenticationFunctions().logout(context),
+                ),
                 const Divider(),
                 Padding(
                   padding: const EdgeInsets.only(
@@ -105,10 +108,10 @@ class _MenuBarState extends State<MenuBar> {
                   ),
                 ),
                 const Divider(),
-                Image.network(ImageRepo().bmsLogo),
+                Image.network(ImageRepo.bmsLogo),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                  child: Image.network(ImageRepo().jugendStrategieLogo),
+                  child: Image.network(ImageRepo.jugendStrategieLogo),
                 ),
               ],
             );
@@ -118,9 +121,24 @@ class _MenuBarState extends State<MenuBar> {
     );
   }
 
-  Widget _buildDrawerItem(icon, text, action) {
+  Widget _buildNavigationDrawerItem({
+    required IconData icon,
+    required String text,
+    required Widget destination,
+  }) =>
+      _buildDrawerItem(
+          icon: icon,
+          text: text,
+          callback: () => Navigator.push(
+              context, MaterialPageRoute(builder: (context) => destination)));
+
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String text,
+    required Function callback,
+  }) {
     return GestureDetector(
-      onTap: () => action(),
+      onTap: () => callback(),
       child: Padding(
         padding: const EdgeInsets.only(left: 10.0, top: 10.0),
         child: Row(
@@ -137,53 +155,5 @@ class _MenuBarState extends State<MenuBar> {
         ),
       ),
     );
-  }
-
-  void _routeProfilePage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const ProfileView(),
-      ),
-    );
-  }
-
-  void _routeBookmarks() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const BookmarkFeed(
-          isShort: true,
-          isSearching: false,
-        ),
-      ),
-    );
-  }
-
-  void _routeYourShorts() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const YourShorts(),
-      ),
-    );
-  }
-
-  void _routeDeveloperContact() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const DeveloperInfoView(),
-      ),
-    );
-  }
-
-  void _routeYourCreatorPacks() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const YourCreatorPacks(),
-          //builder: (context) => Container(),
-        ));
   }
 }

@@ -21,15 +21,27 @@ class ContentCategory {
   //List<Short> shorts;
   //List<Pack> packs;
 
-  factory ContentCategory.fromJson(Map<String, dynamic> json) =>
-      ContentCategory(
-        id: json["id"],
-        categoryName: json["categoryName"],
-        //shorts: List<Short>.from(
-        // json["shorts"].map((short) => Short.fromJson(short))),
-        //packs:
-        // List<Pack>.from(json["packs"].map((pack) => Pack.fromJson(pack))),
-      );
+  factory ContentCategory.fromJson(Map<String, dynamic> json) {
+    return ContentCategory(
+      id: json["id"],
+      categoryName: json["categoryName"],
+      //shorts: List<Short>.from(
+      // json["shorts"].map((short) => Short.fromJson(short))),
+      //packs:
+      // List<Pack>.from(json["packs"].map((pack) => Pack.fromJson(pack))),
+    );
+  }
+
+  factory ContentCategory.forContent(Map<String, dynamic> json) {
+    return ContentCategory(
+      id: json["id"],
+      categoryName: json["categoryName"],
+      //shorts: List<Short>.from(
+      // json["shorts"].map((short) => Short.fromJson(short))),
+      //packs:
+      // List<Pack>.from(json["packs"].map((pack) => Pack.fromJson(pack))),
+    );
+  }
 
   factory ContentCategory.forNew() =>
       ContentCategory(id: 0, categoryName: "Neu");

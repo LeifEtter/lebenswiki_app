@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class BaseApi {
   final serverIp = 'https://api.lebenswiki.com/api/v1';
 
-  BaseApi() {}
+  BaseApi();
 
   Future<Map<String, String>> requestHeader() async {
     return {

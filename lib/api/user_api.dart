@@ -72,7 +72,7 @@ class UserApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.user,
-        responseItem: User.fromJson(
+        responseItem: User.forContent(
           decodedBody["body"],
         ),
       );

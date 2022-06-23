@@ -118,7 +118,6 @@ class _ShortCardMinimalState extends State<ShortCardMinimal> {
                       shortApi
                           .publishShort(widget.short.id)
                           .then((ResultModel result) {
-                        print(result.message);
                         widget.reload();
                       });
                     },
@@ -133,7 +132,6 @@ class _ShortCardMinimalState extends State<ShortCardMinimal> {
                     shortApi
                         .deleteShort(id: widget.short.id)
                         .then((ResultModel result) {
-                      print(result.message);
                       widget.reload();
                     });
                   },

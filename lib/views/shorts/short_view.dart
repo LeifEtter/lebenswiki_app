@@ -28,6 +28,7 @@ class _ShortViewState extends State<ShortView> {
   UserApi userApi = UserApi();
   int _currentCategory = 0;
   String? chosenReason = "Illegal unter der NetzDG";
+  late List<ContentCategory> categories;
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +38,9 @@ class _ShortViewState extends State<ShortView> {
         if (isLoading(snapshot)) {
           return const Loading();
         }
-        List<ContentCategory> categories = snapshot.data!.categories!;
+        categories = List<ContentCategory>.from(snapshot.data!.responseList);
         return DefaultTabController(
-          length: snapshot.data.length + 1,
+          length: categories.length,
           child: Column(
             children: [
               buildTabBar(
@@ -47,9 +48,7 @@ class _ShortViewState extends State<ShortView> {
                 callback: _onTabbarChoose,
               ),
               GetContent(
-                category: _currentCategory == 0
-                    ? 99
-                    : snapshot.data[_currentCategory - 1]["id"],
+                category: categories[_currentCategory],
                 reload: reload,
                 cardType: CardType.shortsByCategory,
                 menuCallback: _menuCallback,
@@ -85,8 +84,8 @@ class _ShortViewState extends State<ShortView> {
       case MenuType.reactShortComment:
         showReactionMenu(contentData: contentData, isComment: true);
         break;
-      default:
-        print("Unknown menuType");
+      case MenuType.commentShort:
+        break;
     }
   }
 
