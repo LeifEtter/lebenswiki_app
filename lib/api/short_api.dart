@@ -56,6 +56,7 @@ class ShortApi extends BaseApi {
     }
   }
 
+  //TODO fix comments
   Future<ResultModel> getAllShorts({category}) async {
     Response res = await get(
       Uri.parse("$serverIp/shorts/"),
@@ -64,11 +65,6 @@ class ShortApi extends BaseApi {
     Map resBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
       List shortsJson = resBody["body"];
-      //print(shortsJson[8]["comments"][0]);
-      //print(Short.fromJson(shortsJson[8]));
-      /*shortsJson[0].forEach((key, value) {
-        print(key);
-      });*/
       return ResultModel(
         type: ResultType.shortList,
         responseList: shortsJson.map((short) => Short.fromJson(short)).toList(),

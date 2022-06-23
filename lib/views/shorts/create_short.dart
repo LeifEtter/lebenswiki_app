@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/misc_api.dart';
+import 'package:lebenswiki_app/api/result_model_api.dart';
 import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
+import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/views/menu/your_shorts_view.dart';
 
 class CreateShort extends StatefulWidget {
@@ -32,12 +34,14 @@ class _CreateShortState extends State<CreateShort> {
       body: SafeArea(
         child: FutureBuilder(
           future: miscApi.getCategories(),
-          builder: (context, AsyncSnapshot snapshot) {
+          builder: (context, AsyncSnapshot<ResultModel> snapshot) {
             if (!snapshot.hasData) {
               return const Loading();
             } else {
+              List<ContentCategory> categories =
+                  List.from(snapshot.data!.responseList);
               return DefaultTabController(
-                length: snapshot.data.length,
+                length: categories.length,
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Stack(
@@ -50,7 +54,7 @@ class _CreateShortState extends State<CreateShort> {
                               CloseButton(),
                             ],
                           ),
-                          _buildTabBar(snapshot.data),
+                          _buildTabBar(categories),
                           Padding(
                             padding: const EdgeInsets.only(left: 25.0),
                             child: TextField(
@@ -109,7 +113,7 @@ class _CreateShortState extends State<CreateShort> {
                               lebenswikiBlueButtonNormal(
                                 text: "Post",
                                 callback: createCallback,
-                                categories: snapshot.data,
+                                categories: categories,
                               ),
                             ]),
                           ),

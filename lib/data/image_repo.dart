@@ -1,7 +1,8 @@
-
 class ImageRepo {
-  String get bmsLogo =>
+  static const String standardProfileImage =
+      "https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg";
+  static const String bmsLogo =
       "https://i.ibb.co/74PBzW8/6207c565b83821547c42e94a-BMFSFJ-gefo-rdert-vom.jpg%22%20alt=%226207c565b83821547c42e94a-BMFSFJ-gefo-rdert-vom";
-  String get jugendStrategieLogo =>
+  static const String jugendStrategieLogo =
       "https://i.ibb.co/74PBzW8/6207c565b83821547c42e94a-BMFSFJ-gefo-rdert-vom.jpg%22%20alt=%226207c565b83821547c42e94a-BMFSFJ-gefo-rdert-vom";
 }

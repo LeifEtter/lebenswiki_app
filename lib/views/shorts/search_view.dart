@@ -151,6 +151,6 @@ class _FilterViewState extends State<FilterView> {
   }
 
   void upvote(id) {
-    //print("Upvoting through search!");
+    //TODO implement upvoting through search
   }
 }

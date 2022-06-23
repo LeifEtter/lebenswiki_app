@@ -10,6 +10,7 @@ class Pack {
   int creatorId;
   final List categories;
   final List<CreatorPage> pages;
+  late DateTime creationDate;
 
   Pack({
     this.id = 0,
@@ -21,7 +22,9 @@ class Pack {
     required this.titleImage,
     this.published = false,
     required this.creatorId,
-  });
+  }) {
+    creationDate = DateTime.now();
+  }
 
   Pack.initial({
     this.id = 0,
@@ -53,6 +56,7 @@ class Pack {
         titleImage = json["titleImage"],
         categories = json["categories"],
         published = json["published"],
+        creationDate = DateTime.parse(json["creationDate"]),
         pages = List<CreatorPage>.from(
             json["pages"].map((page) => CreatorPage.fromResponse(page)));
 }

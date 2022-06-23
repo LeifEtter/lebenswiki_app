@@ -108,10 +108,10 @@ class _MenuBarState extends State<MenuBar> {
                   ),
                 ),
                 const Divider(),
-                Image.network(ImageRepo().bmsLogo),
+                Image.network(ImageRepo.bmsLogo),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                  child: Image.network(ImageRepo().jugendStrategieLogo),
+                  child: Image.network(ImageRepo.jugendStrategieLogo),
                 ),
               ],
             );

@@ -131,7 +131,7 @@ class _EditorState extends State<Editor> {
   }
 
   void _saveCallback({page, index}) {
-    print("save");
+    //TODO Implement Saving
   }
 
   Widget _buildPageBar() {
@@ -199,16 +199,6 @@ class _EditorState extends State<Editor> {
               )
             : const Icon(Icons.add, size: 20.0),
       ),
-    );
-  }
-
-  Widget _settingUpPage() {
-    return Column(
-      children: [
-        const Text("Beschreibe Dein Pack"),
-        const Text("Gib deinem Pack ein interessanten Titel"),
-        TextFormField(),
-      ],
     );
   }
 

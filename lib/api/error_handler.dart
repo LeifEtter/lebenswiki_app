@@ -4,7 +4,7 @@ class ApiErrorHandler {
   String handleAndLog({
     required Map reponseData,
   }) {
-    print(reponseData);
+    print("API Error: $reponseData");
     return "Error";
   }
 }

@@ -6,10 +6,12 @@ import 'package:lebenswiki_app/data/text_styles.dart';
 
 class CreatorPackCard extends StatefulWidget {
   final Pack pack;
+  final Function reload;
 
   const CreatorPackCard({
     Key? key,
     required this.pack,
+    required this.reload,
   }) : super(key: key);
 
   @override

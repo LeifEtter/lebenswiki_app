@@ -1,3 +1,4 @@
+import 'package:lebenswiki_app/data/image_repo.dart';
 import 'package:lebenswiki_app/models/comment_model.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
@@ -10,25 +11,25 @@ User userFromJson(String str) => User.fromJson(json.decode(str));
 String userToJson(User data) => json.encode(data.toJson());
 
 class User {
-  User(
-      {this.id = 0,
-      this.email,
-      required this.name,
-      this.password,
-      this.profileImage =
-          "https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg",
-      this.biography = "The user hasn't written his biography yet...",
-      this.shortsAsCreator = const [],
-      this.packsAsCreator = const [],
-      this.upVotedShorts = const [],
-      this.downVotedShorts = const [],
-      this.bookmarkedShorts = const [],
-      this.commentsAsUser = const [],
-      this.reports = const [],
-      this.blockerUser = const [],
-      this.blocked = const [],
-      this.feedback = const [],
-      this.role = "User"});
+  User({
+    this.id = 0,
+    this.email,
+    required this.name,
+    this.password,
+    this.profileImage = ImageRepo.standardProfileImage,
+    this.biography = "The user hasn't written his biography yet...",
+    this.shortsAsCreator = const [],
+    this.packsAsCreator = const [],
+    this.upVotedShorts = const [],
+    this.downVotedShorts = const [],
+    this.bookmarkedShorts = const [],
+    this.commentsAsUser = const [],
+    this.reports = const [],
+    this.blockerUser = const [],
+    this.blocked = const [],
+    this.feedback = const [],
+    this.role = "User",
+  });
 
   int id;
   String? email;
@@ -53,6 +54,7 @@ class User {
         name: json["name"],
         profileImage: json["profileImage"],
         role: json["role"],
+        email: json["email"],
       );
 
   factory User.forId(Map<String, dynamic> json) => User(

@@ -80,8 +80,10 @@ class _PackViewState extends State<PackView> {
       case MenuType.reactShort:
         showReactionMenu(packData);
         break;
-      default:
-      //print("Unknown menuType");
+      case MenuType.commentShort:
+        break;
+      case MenuType.reactShortComment:
+        break;
     }
   }
 
