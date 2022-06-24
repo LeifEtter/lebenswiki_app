@@ -213,14 +213,14 @@ class _EditorState extends State<Editor> {
     return IconButton(
       icon: const Icon(Icons.save, size: 30),
       onPressed: () {
-        packApi.updateCreatorPack(pack: pack, id: pack.id);
+        packApi.updatePack(pack: pack, id: pack.id);
         setState(() {});
       },
     );
   }
 
   void _goToYourPacks() {
-    packApi.updateCreatorPack(pack: pack, id: pack.id);
+    packApi.updatePack(pack: pack, id: pack.id);
     Navigator.of(context).push(
         MaterialPageRoute(builder: ((context) => const YourCreatorPacks())));
   }

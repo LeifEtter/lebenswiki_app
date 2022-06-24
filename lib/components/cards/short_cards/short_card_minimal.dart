@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/result_model_api.dart';
+import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
 import 'package:lebenswiki_app/models/enums.dart';

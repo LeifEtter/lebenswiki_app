@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/api/result_model_api.dart';
+import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/components/buttons/authentication_buttons.dart';

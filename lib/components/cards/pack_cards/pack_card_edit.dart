@@ -104,7 +104,7 @@ class _CreatorPackCardEditState extends State<CreatorPackCardEdit> {
                         alignment: Alignment.topLeft,
                         child: GestureDetector(
                           onTap: () {
-                            packApi.deletePack(id: widget.pack.id);
+                            packApi.deletePack(widget.pack.id);
                             widget.reload();
                           },
                           child: Container(

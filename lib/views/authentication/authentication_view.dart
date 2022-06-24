@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/api/result_model_api.dart';
+import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/data/image_repo.dart';
 import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
@@ -253,7 +253,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
         setState(() {});
       } else {
         userApi.getUserData();
-        ref.read(userProvider.notifier).setUser(user);
+        //ref.read(userProvider.notifier).setUser(user);
         var prefs = await SharedPreferences.getInstance();
         String token = result.responseItem;
         prefs.setString("token", token);

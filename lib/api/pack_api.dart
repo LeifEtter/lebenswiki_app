@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:lebenswiki_app/api/base_api.dart';
-import 'package:lebenswiki_app/api/error_handler.dart';
+import 'package:lebenswiki_app/api/general/base_api.dart';
+import 'package:lebenswiki_app/api/general/error_handler.dart';
 import 'package:http/http.dart';
-import 'package:lebenswiki_app/api/result_model_api.dart';
+import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
@@ -34,26 +34,6 @@ class PackApi extends BaseApi {
         type: ResultType.failure,
         message: "Das Lernpack konnte nicht erstellt werden",
       );
-    }
-  }
-
-  Future<ResultModel> updateCreatorPack({
-    required Pack pack,
-    required int id,
-  }) async {
-    Response res = await put(
-      Uri.parse("$serverIp/packs/update/$id"),
-      headers: await requestHeader(),
-      body: jsonEncode(pack.toJson()),
-    );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-          type: ResultType.success, message: "Lernpack Geändert");
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-          type: ResultType.failure,
-          message: "Lernpack konnte nicht geändert Werden");
     }
   }
 
@@ -153,6 +133,7 @@ class PackApi extends BaseApi {
     required String url,
     required String successMessage,
     required String errorMessage,
+    Pack? pack,
   }) async {
     await put(
       Uri.parse("$serverIp/$url"),
@@ -201,30 +182,51 @@ class PackApi extends BaseApi {
     );
   }
 
-  Future<ResultModel> reactPack(id, reaction) =>
-      _reactingPack(id: id, isRemove: false, reaction: reaction);
-  Future<ResultModel> unreactPack(id) => _reactingPack(id: id, isRemove: true);
+  Future<ResultModel> reactPack(id, reaction) => updatePackData(
+      url: "packs/reaction/$id",
+      successMessage: "Successfully added Reaction",
+      errorMessage: "Couldn't Add Reaction",
+      requestBody: {"reaction": reaction});
 
-  Future<ResultModel> _reactingPack({
-    required int id,
-    required bool isRemove,
-    String reaction = "",
+  Future<ResultModel> unReactPack(id, reaction) => updatePackData(
+      url: "packs/reaction/remove/$id",
+      successMessage: "Successfully Removed Reaction",
+      errorMessage: "Couldn't Remove Reaction",
+      requestBody: {"reaction": reaction});
+
+  Future<ResultModel> updatePack({required int id, required Pack pack}) =>
+      updatePackData(
+          url: "packs/update/$id",
+          successMessage: "Pack updated Successfully",
+          errorMessage: "Pack couldn't be updated",
+          requestBody: pack.toJson());
+
+  Future<ResultModel> updatePackData({
+    required String url,
+    required String successMessage,
+    required String errorMessage,
+    required Map requestBody,
   }) async {
-    Response res = await put(
-      Uri.parse("$serverIp/packs/reaction${isRemove ? "/remove" : ""}/$id"),
+    await put(
+      Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
-      body: jsonEncode({"reaction": reaction}),
+      body: jsonEncode(requestBody),
+    ).then((Response res) {
+      if (statusIsSuccess(res.statusCode)) {
+        return ResultModel(
+          type: ResultType.success,
+          message: successMessage,
+        );
+      } else {
+        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      }
+    }).catchError((error) {
+      apiErrorHandler.handleAndLog(reponseData: error);
+    });
+    return ResultModel(
+      type: ResultType.failure,
+      message: errorMessage,
     );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "Reagiert",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-          type: ResultType.failure, message: "Konnte nicht reagieren");
-    }
   }
 
   Future<ResultModel> reportPack({
@@ -247,49 +249,6 @@ class PackApi extends BaseApi {
       return ResultModel(
         type: ResultType.failure,
         message: "pack konnte nicht gemeldet werden",
-      );
-    }
-  }
-
-  Future<ResultModel> commentPack({
-    required int id,
-    required String comment,
-  }) async {
-    Response res = await post(Uri.parse("$serverIp/comments/create/packs/$id"),
-        headers: await requestHeader(), body: jsonEncode({"comment": comment}));
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "Erfolgreich Kommentiert",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message: "Kommentar konnte nicht erstellt werden",
-      );
-    }
-  }
-
-  Future<ResultModel> addCommentReaction({
-    required int id,
-    required String reaction,
-  }) async {
-    Response res = await post(
-      Uri.parse("$serverIp/comments/reaction/$id"),
-      headers: await requestHeader(),
-      body: jsonEncode({"reaction": reaction}),
-    );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "Reagiert",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message: "Konnte nicht reagieren",
       );
     }
   }

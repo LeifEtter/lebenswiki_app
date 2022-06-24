@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/pack_api.dart';
-import 'package:lebenswiki_app/api/result_model_api.dart';
+import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/components/cards/pack_cards/pack_card.dart';
 import 'package:lebenswiki_app/components/cards/pack_cards/pack_card_edit.dart';

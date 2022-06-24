@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/misc_api.dart';
 import 'package:lebenswiki_app/api/pack_api.dart';
-import 'package:lebenswiki_app/api/result_model_api.dart';
+import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/components/actions/modal_sheet.dart';
 import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
