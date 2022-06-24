@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/result_model_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
+import 'package:lebenswiki_app/data/image_repo.dart';
 import 'package:lebenswiki_app/helper/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/components/buttons/authentication_buttons.dart';
 import 'package:lebenswiki_app/components/input/input_styling.dart';
@@ -9,6 +11,7 @@ import 'package:lebenswiki_app/data/text_styles.dart';
 import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
+import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationView extends StatefulWidget {
@@ -140,15 +143,19 @@ class _AuthenticationViewState extends State<AuthenticationView> {
                 ),
               ),
               errorHint("profileImage"),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: AuthenticationButton(
-                  text: isSignUp ? "Registrieren" : "Einloggen",
-                  color: LebenswikiColors.createPackButton,
-                  onPress: () {
-                    validation();
-                  },
-                ),
+              Consumer(
+                builder: (context, WidgetRef ref, child) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: AuthenticationButton(
+                      text: isSignUp ? "Registrieren" : "Einloggen",
+                      color: LebenswikiColors.createPackButton,
+                      onPress: () {
+                        validation(ref);
+                      },
+                    ),
+                  );
+                },
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 10, bottom: 30),
@@ -181,7 +188,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
     );
   }
 
-  void validation() {
+  void validation(WidgetRef ref) {
     if (isSignUp) {
       errorMap["name"] =
           _nameController.text.toString().isEmpty ? "Bitte Namen eingeben" : "";
@@ -207,7 +214,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
       v != "" ? isValidated = false : 0;
     });*/
 
-    isValidated ? {isSignUp ? signUp() : signIn()} : setState(() {});
+    isValidated ? {isSignUp ? signUp() : signIn(ref)} : setState(() {});
   }
 
   void signUp() {
@@ -217,7 +224,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
       password: _passwordController.text.toString(),
       biography: _biographyController.text.toString(),
       profileImage: _defaultProfilePic
-          ? "https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg"
+          ? ImageRepo.standardProfileImage
           : _profileImageController.text.toString(),
     );
     userApi.register(user).then((ResultModel result) {
@@ -233,7 +240,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
     });
   }
 
-  void signIn() async {
+  void signIn(WidgetRef ref) async {
     userApi
         .login(
       email: _emailController.text.toString(),
@@ -245,6 +252,8 @@ class _AuthenticationViewState extends State<AuthenticationView> {
         errorMap[errorList[0]] = errorList[1];
         setState(() {});
       } else {
+        userApi.getUserData();
+        ref.read(userProvider.notifier).setUser(user);
         var prefs = await SharedPreferences.getInstance();
         String token = result.responseItem;
         prefs.setString("token", token);

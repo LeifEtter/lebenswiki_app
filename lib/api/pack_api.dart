@@ -73,123 +73,51 @@ class PackApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> getAllPacks({category}) async {
-    Response res = await get(
-      Uri.parse("$serverIp/packs/"),
-      headers: await requestHeader(),
-    );
-    Map resBody = jsonDecode(res.body);
-    if (statusIsSuccess(res.statusCode)) {
-      List packsJson = resBody["packs"];
-      return ResultModel(
-        type: ResultType.packList,
-        responseList: packsJson.map((pack) => Pack.fromJson(pack)).toList(),
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        responseList: [],
-        message: "Es wurden keine packs gefunden",
-      );
-    }
-  }
+  Future<ResultModel> getPacksByCategory({required ContentCategory category}) =>
+      getPacks(
+          url: "categories/packs/${category.id}",
+          errorMessage: "Es wurden keine Lernpacks gefunden");
 
-  Future<ResultModel> getPacksByCategory(
-      {required ContentCategory category}) async {
-    Response res = await get(
-      Uri.parse("$serverIp/categories/packs/${category.id}"),
-      headers: await requestHeader(),
-    );
-    Map resBody = jsonDecode(res.body);
-    if (statusIsSuccess(res.statusCode)) {
-      List<Pack> packs = resBody["packsByCategory"]
-          .map((pack) => Pack.fromJson(pack))
-          .toList();
-      return ResultModel(
-        type: ResultType.packList,
-        responseList: packs,
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        responseList: [],
-        message: "Es wurden keine Lernpacks gefunden",
-      );
-    }
-  }
+  Future<ResultModel> getOwnPublishedpacks() => getPacks(
+      url: "packs/published",
+      errorMessage: "Du hast noch keine packs veröffentlicht");
 
-  Future<ResultModel> getBookmarkedPacks() async {
-    Response res = await get(
-      Uri.parse("$serverIp/packs/bookmarks"),
-      headers: await requestHeader(),
-    );
-    Map resBody = jsonDecode(res.body);
-    if (statusIsSuccess(res.statusCode)) {
-      List<Pack> packs = resBody["body"].map((pack) => Pack.fromJson(pack));
-      return ResultModel(
-        type: ResultType.packList,
-        responseList: packs,
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.success,
-        responseList: [],
-        message: "Du hast keine Lernpacks gespeichert",
-      );
-    }
-  }
+  Future<ResultModel> getOthersPublishedpacks() => getPacks(
+      url: "packs/published",
+      errorMessage: "Dieser Benutzer hat noch keine packs veröffentlicht");
 
-  Future<ResultModel> getCreatorsDraftPacks() async {
-    Response res = await get(
-      Uri.parse("$serverIp/packs/unpublished"),
-      headers: await requestHeader(),
-    );
-    Map resBody = jsonDecode(res.body);
-    if (statusIsSuccess(res.statusCode)) {
-      List<Pack> packs = resBody["body"].map((pack) => Pack.fromJson(pack));
-      return ResultModel(
-        type: ResultType.packList,
-        responseList: packs,
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.success,
-        responseList: [],
-        message: "Du hast keine packs entworfen",
-      );
-    }
-  }
+  Future<ResultModel> getAllPacks() => getPacks(
+      url: "packs/", errorMessage: "Es wurden keine Lernpacks gefunden");
 
-  Future<ResultModel> getOwnPublishedpacks() =>
-      _getCreatorsPublishedPacks(isOwn: true);
-  Future<ResultModel> getOthersPublishedpacks() =>
-      _getCreatorsPublishedPacks(isOwn: false);
+  Future<ResultModel> getBookmarkedPacks() => getPacks(
+      url: "packs/bookmarks",
+      errorMessage: "Du hast keine Lernpacks gespeichert");
 
-  Future<ResultModel> _getCreatorsPublishedPacks({required bool isOwn}) async {
-    Response res = await get(
-      Uri.parse("$serverIp/packs/published"),
+  Future<ResultModel> getCreatorsDraftPacks() => getPacks(
+      url: "packs/unpublished", errorMessage: "Du hast keine packs entworfen");
+
+  Future<ResultModel> getPacks({url, errorMessage}) async {
+    await get(
+      Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
+    ).then((res) {
+      Map body = jsonDecode(res.body);
+      if (statusIsSuccess(res)) {
+        List<Pack> packs = body["body"].map((pack) => Pack.fromJson(pack));
+        return ResultModel(
+          type: ResultType.packList,
+          responseList: packs,
+        );
+      } else {
+        apiErrorHandler.handleAndLog(reponseData: body);
+      }
+    }).catchError((error) {
+      apiErrorHandler.handleAndLog(reponseData: error);
+    });
+    return ResultModel(
+      type: ResultType.failure,
+      message: errorMessage,
     );
-    Map resBody = jsonDecode(res.body);
-    if (statusIsSuccess(res.statusCode)) {
-      List<Pack> packs = resBody["body"].map((pack) => pack.fromJson(pack));
-      return ResultModel(
-        type: ResultType.packList,
-        responseList: packs,
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.success,
-        responseList: [],
-        message:
-            "${isOwn ? "Du hast" : "Dieser Benutzer hat"} noch keine packs veröffentlicht",
-      );
-    }
   }
 
   Future<ResultModel> upvotePack(id) => _votingPack(isUpvote: true, id: id);

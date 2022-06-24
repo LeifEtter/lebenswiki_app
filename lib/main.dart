@@ -15,14 +15,26 @@ import 'package:lebenswiki_app/views/shorts/short_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 
-final tokenProvider = Provider((_) => 'Some token');
+final tokenProvider = StateNotifierProvider((ref) => Token(token: "adasdas"));
+
+final tokenProviderNew = FutureProvider(((ref) {
+  
+}));
+
+class Token extends StateNotifier<String> {
+  String token;
+  String get getToken => token;
+
+  Token({required this.token}) : super("");
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   runApp(
-    const MyApp(),
+    const ProviderScope(child: MyApp()),
   );
 }
 
