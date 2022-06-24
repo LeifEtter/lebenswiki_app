@@ -313,30 +313,6 @@ class ShortApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> reportShort({
-    required Report report,
-  }) async {
-    Response res = await post(
-      Uri.parse("$serverIp/reports/create/short/${report.reportedContentId}"),
-      headers: await requestHeader(),
-      body: jsonEncode({
-        "reason": report.reason,
-      }),
-    );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "Short wurde erfolgreich gemeldet",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message: "Short konnte nicht gemeldet werden",
-      );
-    }
-  }
-
   Future<ResultModel> commentShort({
     required int id,
     required String comment,

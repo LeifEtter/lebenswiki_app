@@ -6,7 +6,6 @@ import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
-import 'package:lebenswiki_app/models/report_model.dart';
 
 class PackApi extends BaseApi {
   late ApiErrorHandler apiErrorHandler;
@@ -227,29 +226,5 @@ class PackApi extends BaseApi {
       type: ResultType.failure,
       message: errorMessage,
     );
-  }
-
-  Future<ResultModel> reportPack({
-    required Report report,
-  }) async {
-    Response res = await post(
-      Uri.parse("$serverIp/reports/create/pack/${report.reportedContentId}"),
-      headers: await requestHeader(),
-      body: jsonEncode({
-        "reason": report.reason,
-      }),
-    );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "pack wurde erfolgreich gemeldet",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message: "pack konnte nicht gemeldet werden",
-      );
-    }
   }
 }
