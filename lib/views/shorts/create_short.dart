@@ -8,6 +8,7 @@ import 'package:lebenswiki_app/data/colors.dart';
 import 'package:lebenswiki_app/data/loading.dart';
 import 'package:lebenswiki_app/data/text_styles.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
+import 'package:lebenswiki_app/models/short_model.dart';
 import 'package:lebenswiki_app/views/menu/your_shorts_view.dart';
 
 class CreateShort extends StatefulWidget {
@@ -155,7 +156,9 @@ class _CreateShortState extends State<CreateShort> {
     );
   }
 
+  //TODO Fix Short creation
   void createCallback(categories) {
+    /*
     shortApi
         .createShort(
           categories: [categories][_currentCategory]["id"],
@@ -171,7 +174,7 @@ class _CreateShortState extends State<CreateShort> {
               ),
             ),
           ),
-        );
+        );*/
   }
 
   Widget _buildTabBar(List categories) {

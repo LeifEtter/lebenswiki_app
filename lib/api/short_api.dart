@@ -15,344 +15,208 @@ class ShortApi extends BaseApi {
     apiErrorHandler = ApiErrorHandler();
   }
 
-  Future<ResultModel> createShort({
-    required String title,
-    required List categories,
-    required String content,
-  }) async {
-    Response res = await post(Uri.parse("$serverIp/shorts/create"),
-        headers: await requestHeader(),
-        body: jsonEncode({
-          "title": title,
-          "categories": categories,
-          "content": content,
-        }));
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "Short erfolgreich erstellt!",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message: "Short konnte nicht erstellt werden",
-      );
-    }
+  Future<ResultModel> createShort({required Short short}) async {
+    await post(
+      Uri.parse("$serverIp/packs/create"),
+      headers: await requestHeader(),
+      body: jsonEncode({
+        "title": short.title,
+        "categories": short.categories,
+        "content": short.content,
+      }),
+    ).then((Response res) {
+      if (statusIsSuccess(res.statusCode)) {
+        return ResultModel(
+          type: ResultType.success,
+          message: "Short Erfolgreich Erstellt",
+        );
+      } else {
+        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      }
+    }).catchError((error) {
+      apiErrorHandler.handleAndLog(reponseData: error);
+    });
+    return ResultModel(
+      type: ResultType.failure,
+      message: "Short konnte nicht erstellt werden",
+    );
   }
 
   Future<ResultModel> deleteShort({required int id}) async {
-    Response res = await delete(
+    await delete(
       Uri.parse("$serverIp/shorts/delete/$id"),
       headers: await requestHeader(),
+    ).then((Response res) {
+      if (statusIsSuccess(res.statusCode)) {
+        return ResultModel(
+          type: ResultType.success,
+          message: "Short Erfolgreich Gelöscht",
+        );
+      } else {
+        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      }
+    }).catchError((error) {
+      apiErrorHandler.handleAndLog(reponseData: error);
+    });
+    return ResultModel(
+      type: ResultType.failure,
+      message: "Short konnte nicht gelöscht werden",
     );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(type: ResultType.success, message: "Short gelöscht");
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-          type: ResultType.failure,
-          message: "Short konnte nicht gelöscht werden");
-    }
-  }
-
-  //TODO fix comments
-  Future<ResultModel> getAllShorts({category}) async {
-    Response res = await get(
-      Uri.parse("$serverIp/shorts/"),
-      headers: await requestHeader(),
-    );
-    Map resBody = jsonDecode(res.body);
-    if (statusIsSuccess(res.statusCode)) {
-      List shortsJson = resBody["body"];
-      return ResultModel(
-        type: ResultType.shortList,
-        responseList: shortsJson.map((short) => Short.fromJson(short)).toList(),
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.success,
-        responseList: [],
-        message: "Es wurden keine shorts gefunden",
-      );
-    }
   }
 
   Future<ResultModel> getShortsByCategory(
-      {required ContentCategory category}) async {
-    Response res = await get(
-      Uri.parse("$serverIp/categories/shorts/${category.id}"),
+          {required ContentCategory category}) =>
+      _getShorts(
+          url: "categories/shorts/${category.id}",
+          errorMessage: "Es wurden keine shorts gefunden");
+
+  Future<ResultModel> getOwnPublishedShorts() => _getShorts(
+      url: "shorts/published",
+      errorMessage: "Du hast noch keine shorts veröffentlicht");
+
+  Future<ResultModel> getOthersPublishedShorts() => _getShorts(
+      url: "shorts/published",
+      errorMessage: "Dieser Benutzer hat noch keine shorts veröffentlicht");
+
+  Future<ResultModel> getAllShorts() => _getShorts(
+      url: "shorts/", errorMessage: "Es wurden keine shorts gefunden");
+
+  Future<ResultModel> getBookmarkedShorts() => _getShorts(
+      url: "shorts/bookmarks",
+      errorMessage: "Du hast keine shorts gespeichert");
+
+  Future<ResultModel> getCreatorsDraftShorts() => _getShorts(
+      url: "shorts/unpublished",
+      errorMessage: "Du hast keine shorts entworfen");
+
+  Future<ResultModel> _getShorts({url, errorMessage}) async {
+    await get(
+      Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
+    ).then((res) {
+      Map body = jsonDecode(res.body);
+      if (statusIsSuccess(res)) {
+        List<Short> packs = body["body"].map((pack) => Short.fromJson(pack));
+        return ResultModel(
+          type: ResultType.packList,
+          responseList: packs,
+        );
+      } else {
+        apiErrorHandler.handleAndLog(reponseData: body);
+      }
+    }).catchError((error) {
+      apiErrorHandler.handleAndLog(reponseData: error);
+    });
+    return ResultModel(
+      type: ResultType.failure,
+      message: errorMessage,
     );
-    Map resBody = jsonDecode(res.body);
-    if (statusIsSuccess(res.statusCode)) {
-      List<Short> shorts =
-          resBody["category"]["shorts"].map((short) => Short.fromJson(short));
-      return ResultModel(
-        type: ResultType.shortList,
-        responseList: shorts,
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.success,
-        responseList: [],
-        message: "Es wurden keine shorts gefunden",
-      );
-    }
   }
 
-  Future<ResultModel> getBookmarkedShorts() async {
-    Response res = await get(
-      Uri.parse("$serverIp/shorts/bookmarks"),
-      headers: await requestHeader(),
-    );
-    Map resBody = jsonDecode(res.body);
-    if (statusIsSuccess(res.statusCode)) {
-      List<Short> shorts =
-          resBody["body"].map((short) => Short.fromJson(short));
-      return ResultModel(
-        type: ResultType.shortList,
-        responseList: shorts,
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.success,
-        responseList: [],
-        message: "Du hast keine Shorts gespeichert",
-      );
-    }
-  }
+  Future<ResultModel> upvoteShort(id) => _interactShort(
+      url: "packs/upvote/$id",
+      successMessage: "Successfully Upvoted Short",
+      errorMessage: "Couldn't Upvote Short");
 
-  Future<ResultModel> getCreatorsDraftShorts() async {
-    Response res = await get(
-      Uri.parse("$serverIp/shorts/unpublished"),
-      headers: await requestHeader(),
-    );
-    Map resBody = jsonDecode(res.body);
-    if (statusIsSuccess(res.statusCode)) {
-      List<Short> shorts =
-          resBody["body"].map((short) => Short.fromJson(short));
-      return ResultModel(
-        type: ResultType.shortList,
-        responseList: shorts,
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.success,
-        responseList: [],
-        message: "Du hast keine Shorts entworfen",
-      );
-    }
-  }
+  Future<ResultModel> downvoteShort(id) => _interactShort(
+      url: "packs/downvote/$id",
+      successMessage: "Successfully Downvoted Short",
+      errorMessage: "Couldn't Downvote Short");
 
-  Future<ResultModel> getOwnPublishedShorts() =>
-      _getCreatorsPublishedShorts(isOwn: true);
-  Future<ResultModel> getOthersPublishedShorts() =>
-      _getCreatorsPublishedShorts(isOwn: false);
+  Future<ResultModel> removeUpvoteShort(id) => _interactShort(
+      url: "packs/upvote/remove/$id",
+      successMessage: "Successfully Removed Upvote from Short",
+      errorMessage: "Couldn't Remove Upvote Short");
 
-  Future<ResultModel> _getCreatorsPublishedShorts({required bool isOwn}) async {
-    Response res = await get(
-      Uri.parse("$serverIp/shorts/published"),
-      headers: await requestHeader(),
-    );
-    Map resBody = jsonDecode(res.body);
-    if (statusIsSuccess(res.statusCode)) {
-      List<Short> shorts =
-          resBody["body"].map((short) => Short.fromJson(short));
-      return ResultModel(
-        type: ResultType.shortList,
-        responseList: shorts,
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.success,
-        responseList: [],
-        message:
-            "${isOwn ? "Du hast" : "Dieser Benutzer hat"} noch keine Shorts veröffentlicht",
-      );
-    }
-  }
+  Future<ResultModel> removeDownvoteShort(id) => _interactShort(
+      url: "packs/downvote/remove/$id",
+      successMessage: "Successfully Removed Downvote Short",
+      errorMessage: "Couldn't Remove Downvote Short");
 
-  Future<ResultModel> upvoteShort(id) => _votingShort(isUpvote: true, id: id);
-  Future<ResultModel> downvoteShort(id) =>
-      _votingShort(isUpvote: false, id: id);
+  Future<ResultModel> bookmarkShort(id) => _interactShort(
+      url: "packs/bookmark/$id",
+      successMessage: "Successfully Bookmarked Short",
+      errorMessage: "Couldn't bookmark Short");
 
-  Future<ResultModel> _votingShort({
-    required bool isUpvote,
-    required int id,
+  Future<ResultModel> unbookmarkShort(id) => _interactShort(
+      url: "packs/unbookmark/$id",
+      successMessage: "Successfully Removed Short from Bookmarks",
+      errorMessage: "Couldn't remove Short from bookmarks");
+
+  Future<ResultModel> publishShort(id) => _interactShort(
+      url: "packs/publish/$id",
+      successMessage: "Successfully Published Short",
+      errorMessage: "Coldn't publish Short");
+
+  Future<ResultModel> unpublishShort(id) => _interactShort(
+      url: "packs/unpublish/$id",
+      successMessage: "Successfully Unpublished Short",
+      errorMessage: "Coldn't Unpublish Short");
+
+  Future<ResultModel> _interactShort({
+    required String url,
+    required String successMessage,
+    required String errorMessage,
   }) async {
-    Response res = await put(
-      Uri.parse("$serverIp/shorts/${isUpvote ? "upvote" : "downvote"}/$id"),
+    await put(
+      Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
+    ).then((Response res) {
+      if (statusIsSuccess(res.statusCode)) {
+        return ResultModel(
+          type: ResultType.success,
+          message: successMessage,
+        );
+      } else {
+        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      }
+    }).catchError((error) {
+      apiErrorHandler.handleAndLog(reponseData: error);
+    });
+    return ResultModel(
+      type: ResultType.failure,
+      message: errorMessage,
     );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "Succesfully ${isUpvote ? "upvoted" : "downvoted"} Short",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message: "Couldn't ${isUpvote ? "upvote" : "downvote"} Short",
-      );
-    }
   }
 
-  Future<ResultModel> removeUpvoteShort(id) =>
-      _removeVotingShort(isUpvote: true, id: id);
-  Future<ResultModel> removeDownvoteShort(id) =>
-      _removeVotingShort(isUpvote: false, id: id);
+  Future<ResultModel> reactShort(id, reaction) => _updateShortData(
+      url: "packs/reaction/$id",
+      successMessage: "Successfully added Reaction",
+      errorMessage: "Couldn't Add Reaction",
+      requestBody: {"reaction": reaction});
 
-  Future<ResultModel> _removeVotingShort({
-    required bool isUpvote,
-    required int id,
+  Future<ResultModel> unReactShort(id, reaction) => _updateShortData(
+      url: "packs/reaction/remove/$id",
+      successMessage: "Successfully Removed Reaction",
+      errorMessage: "Couldn't Remove Reaction",
+      requestBody: {"reaction": reaction});
+
+  //TODO Implement Update Short
+  Future<ResultModel> _updateShortData({
+    required String url,
+    required String successMessage,
+    required String errorMessage,
+    required Map requestBody,
   }) async {
-    Response res = await put(
-      Uri.parse(
-          "$serverIp/shorts/${isUpvote ? "upvote" : "downvote"}/remove/$id"),
+    await put(
+      Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
+      body: jsonEncode(requestBody),
+    ).then((Response res) {
+      if (statusIsSuccess(res.statusCode)) {
+        return ResultModel(
+          type: ResultType.success,
+          message: successMessage,
+        );
+      } else {
+        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      }
+    }).catchError((error) {
+      apiErrorHandler.handleAndLog(reponseData: error);
+    });
+    return ResultModel(
+      type: ResultType.failure,
+      message: errorMessage,
     );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message:
-            "Succesfully removed ${isUpvote ? "upvoted" : "downvoted"} for Short",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message:
-            "Couldn't remove ${isUpvote ? "upvote" : "downvote"} for Short",
-      );
-    }
-  }
-
-  Future<ResultModel> bookmarkShort(id) =>
-      _bookmarkingShort(id: id, isUnbookmark: false);
-  Future<ResultModel> unbookmarkShort(id) =>
-      _bookmarkingShort(id: id, isUnbookmark: true);
-
-  Future<ResultModel> _bookmarkingShort({
-    required int id,
-    required bool isUnbookmark,
-  }) async {
-    Response res = await put(
-      Uri.parse(
-          "$serverIp/shorts/${isUnbookmark ? "unbookmark" : "bookmark"}/$id"),
-      headers: await requestHeader(),
-    );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message:
-            "Short Erfolgreich ${isUnbookmark ? "von gespeicherten Shorts entfernt" : "gespeichert"}",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-          type: ResultType.failure,
-          message:
-              "Konnte Short nicht ${isUnbookmark ? "von gespeicherten Shorts entfernen" : "speichern"}");
-    }
-  }
-
-  Future<ResultModel> reactShort(id) => _reactingShort(id: id, isRemove: false);
-  Future<ResultModel> unreactShort(id) =>
-      _reactingShort(id: id, isRemove: true);
-
-  Future<ResultModel> _reactingShort({
-    required int id,
-    required bool isRemove,
-  }) async {
-    Response res = await put(
-      Uri.parse("$serverIp/shorts/reaction${isRemove ? "/remove" : ""}/$id"),
-      headers: await requestHeader(),
-    );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "Reagiert",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-          type: ResultType.failure, message: "Konnte nicht reagieren");
-    }
-  }
-
-  Future<ResultModel> publishShort(id) =>
-      _publishingShort(id: id, isUnpublish: false);
-  Future<ResultModel> unpublishShort(id) =>
-      _publishingShort(id: id, isUnpublish: true);
-
-  Future<ResultModel> _publishingShort({
-    required int id,
-    required bool isUnpublish,
-  }) async {
-    Response res = await put(
-      Uri.parse(
-          "$serverIp/shorts/${isUnpublish ? "unpublish" : "publish"}/$id"),
-      headers: await requestHeader(),
-    );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "Reagiert",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-          type: ResultType.failure, message: "Konnte nicht reagieren");
-    }
-  }
-
-  Future<ResultModel> commentShort({
-    required int id,
-    required String comment,
-  }) async {
-    Response res = await post(Uri.parse("$serverIp/comments/create/shorts/$id"),
-        headers: await requestHeader(), body: jsonEncode({"comment": comment}));
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "Erfolgreich Kommentiert",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message: "Kommentar konnte nicht erstellt werden",
-      );
-    }
-  }
-
-  Future<ResultModel> addCommentReaction({
-    required int id,
-    required String reaction,
-  }) async {
-    Response res = await post(
-      Uri.parse("$serverIp/comments/reaction/$id"),
-      headers: await requestHeader(),
-      body: jsonEncode({"reaction": reaction}),
-    );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "Reagiert",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message: "Konnte nicht reagieren",
-      );
-    }
   }
 }

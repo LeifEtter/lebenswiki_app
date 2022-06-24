@@ -83,56 +83,55 @@ class PackApi extends BaseApi {
     );
   }
 
-  Future<ResultModel> upvotePack(id) => interactPack(
+  Future<ResultModel> upvotePack(id) => _interactPack(
       url: "packs/upvote/$id",
       successMessage: "Successfully Upvoted Pack",
       errorMessage: "Couldn't Upvote Pack");
 
-  Future<ResultModel> downvotePack(id) => interactPack(
+  Future<ResultModel> downvotePack(id) => _interactPack(
       url: "packs/downvote/$id",
       successMessage: "Successfully Downvoted Pack",
       errorMessage: "Couldn't Downvote Pack");
 
-  Future<ResultModel> removeUpvotePack(id) => interactPack(
+  Future<ResultModel> removeUpvotePack(id) => _interactPack(
       url: "packs/upvote/remove/$id",
       successMessage: "Successfully Removed Upvote from Pack",
       errorMessage: "Couldn't Remove Upvote Pack");
 
-  Future<ResultModel> removeDownvotePack(id) => interactPack(
+  Future<ResultModel> removeDownvotePack(id) => _interactPack(
       url: "packs/downvote/remove/$id",
       successMessage: "Successfully Removed Downvote Pack",
       errorMessage: "Couldn't Remove Downvote Pack");
 
-  Future<ResultModel> bookmarkPack(id) => interactPack(
+  Future<ResultModel> bookmarkPack(id) => _interactPack(
       url: "packs/bookmark/$id",
       successMessage: "Successfully Bookmarked Pack",
       errorMessage: "Couldn't bookmark Pack");
 
-  Future<ResultModel> unbookmarkPack(id) => interactPack(
+  Future<ResultModel> unbookmarkPack(id) => _interactPack(
       url: "packs/unbookmark/$id",
       successMessage: "Successfully Removed Pack from Bookmarks",
       errorMessage: "Couldn't remove Pack from bookmarks");
 
-  Future<ResultModel> publishPack(id) => interactPack(
+  Future<ResultModel> publishPack(id) => _interactPack(
       url: "packs/publish/$id",
       successMessage: "Successfully Published Pack",
       errorMessage: "Coldn't publish Pack");
 
-  Future<ResultModel> unpublishPack(id) => interactPack(
+  Future<ResultModel> unpublishPack(id) => _interactPack(
       url: "packs/unpublish/$id",
       successMessage: "Successfully Unpublished Pack",
       errorMessage: "Coldn't Unpublish Pack");
 
-  Future<ResultModel> deletePack(id) => interactPackDelete(
+  Future<ResultModel> deletePack(id) => _interactPackDelete(
       url: "packs/delete/$id",
       successMessage: "Pack successfully deleted",
       errorMessage: "Couldn't delete Pack");
 
-  Future<ResultModel> interactPack({
+  Future<ResultModel> _interactPack({
     required String url,
     required String successMessage,
     required String errorMessage,
-    Pack? pack,
   }) async {
     await put(
       Uri.parse("$serverIp/$url"),
@@ -155,7 +154,7 @@ class PackApi extends BaseApi {
     );
   }
 
-  Future<ResultModel> interactPackDelete({
+  Future<ResultModel> _interactPackDelete({
     required String url,
     required String successMessage,
     required String errorMessage,
@@ -181,26 +180,26 @@ class PackApi extends BaseApi {
     );
   }
 
-  Future<ResultModel> reactPack(id, reaction) => updatePackData(
+  Future<ResultModel> reactPack(id, reaction) => _updatePackData(
       url: "packs/reaction/$id",
       successMessage: "Successfully added Reaction",
       errorMessage: "Couldn't Add Reaction",
       requestBody: {"reaction": reaction});
 
-  Future<ResultModel> unReactPack(id, reaction) => updatePackData(
+  Future<ResultModel> unReactPack(id, reaction) => _updatePackData(
       url: "packs/reaction/remove/$id",
       successMessage: "Successfully Removed Reaction",
       errorMessage: "Couldn't Remove Reaction",
       requestBody: {"reaction": reaction});
 
   Future<ResultModel> updatePack({required int id, required Pack pack}) =>
-      updatePackData(
+      _updatePackData(
           url: "packs/update/$id",
           successMessage: "Pack updated Successfully",
           errorMessage: "Pack couldn't be updated",
           requestBody: pack.toJson());
 
-  Future<ResultModel> updatePackData({
+  Future<ResultModel> _updatePackData({
     required String url,
     required String successMessage,
     required String errorMessage,

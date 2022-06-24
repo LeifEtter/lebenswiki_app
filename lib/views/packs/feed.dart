@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/misc_api.dart';
 import 'package:lebenswiki_app/api/pack_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/api/report_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/components/actions/modal_sheet.dart';
 import 'package:lebenswiki_app/helper/actions/reaction_functions.dart';
@@ -26,6 +27,7 @@ class _PackViewState extends State<PackView> {
   final MiscApi miscApi = MiscApi();
   final PackApi packApi = PackApi();
   final UserApi userApi = UserApi();
+  final ReportApi reportApi = ReportApi();
   int currentCategory = 0;
   String? chosenReason = "Illegal unter der NetzDG";
 
@@ -206,7 +208,7 @@ class _PackViewState extends State<PackView> {
     blockUser
         ? userApi.blockUser(id: contentData.creator.id, reason: reason)
         : null;
-    packApi
+    reportApi
         .reportPack(
             report: Report(
       reason: reason,

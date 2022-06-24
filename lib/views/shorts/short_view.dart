@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/misc_api.dart';
+import 'package:lebenswiki_app/api/report_api.dart';
 import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/components/actions/modal_sheet.dart';
@@ -26,6 +27,7 @@ class _ShortViewState extends State<ShortView> {
   ShortApi shortApi = ShortApi();
   MiscApi miscApi = MiscApi();
   UserApi userApi = UserApi();
+  ReportApi reportApi = ReportApi();
   int _currentCategory = 0;
   String? chosenReason = "Illegal unter der NetzDG";
   late List<ContentCategory> categories;
@@ -219,7 +221,7 @@ class _ShortViewState extends State<ShortView> {
     blockUser
         ? userApi.blockUser(id: contentData.creator.id, reason: reason)
         : null;
-    shortApi
+    reportApi
         .reportShort(
             report: Report(
                 reason: reason,

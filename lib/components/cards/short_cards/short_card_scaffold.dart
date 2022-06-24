@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/api/comment_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/components/cards/short_cards/short_card.dart';
@@ -34,6 +35,7 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
   final TextEditingController _commentController = TextEditingController();
 
   ShortApi shortApi = ShortApi();
+  CommentApi commentApi = CommentApi();
 
   @override
   Widget build(BuildContext context) {
@@ -95,8 +97,8 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                                         size: 30.0,
                                       ),
                                       onPressed: () {
-                                        shortApi
-                                            .commentShort(
+                                        commentApi
+                                            .createCommentShort(
                                                 comment:
                                                     _commentController.text,
                                                 id: widget.short.id)
