@@ -1,4 +1,4 @@
-import 'package:lebenswiki_app/data/image_repo.dart';
+import 'package:lebenswiki_app/repos/image_repo.dart';
 import 'package:lebenswiki_app/models/comment_model.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';

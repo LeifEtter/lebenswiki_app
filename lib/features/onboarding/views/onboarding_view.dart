@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/data/colors.dart';
-import 'package:lebenswiki_app/data/custom_safe_area.dart';
-import 'package:lebenswiki_app/data/shadows.dart';
+import 'package:lebenswiki_app/features/styling/colors.dart';
+import 'package:lebenswiki_app/features/common/components/custom_safe_area.dart';
+import 'package:lebenswiki_app/features/styling/shadows.dart';
 
 class OnboardingView extends StatefulWidget {
   const OnboardingView({Key? key}) : super(key: key);

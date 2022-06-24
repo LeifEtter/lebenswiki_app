@@ -3,14 +3,16 @@ import 'package:lebenswiki_app/api/pack_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
-import 'package:lebenswiki_app/components/cards/short_cards/short_card_minimal.dart';
-import 'package:lebenswiki_app/components/cards/short_cards/short_card_scaffold.dart';
-import 'package:lebenswiki_app/components/cards/pack_cards/pack_card.dart';
-import 'package:lebenswiki_app/components/cards/pack_cards/pack_card_edit.dart';
-import 'package:lebenswiki_app/data/loading.dart';
-import 'package:lebenswiki_app/helper/is_loading.dart';
+import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
+import 'package:lebenswiki_app/features/shorts/components/short_card_minimal.dart';
+import 'package:lebenswiki_app/features/shorts/components/short_card_scaffold.dart';
+import 'package:lebenswiki_app/features/packs/components/pack_card.dart';
+import 'package:lebenswiki_app/features/packs/components/pack_card_edit.dart';
+import 'package:lebenswiki_app/features/common/components/loading.dart';
+import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
+import 'package:lebenswiki_app/models/short_model.dart';
 
 class GetContent extends StatefulWidget {
   final ContentCategory? category;
@@ -43,7 +45,7 @@ class _GetContentState extends State<GetContent> {
   void initState() {
     if (widget.cardType == CardType.packsByCategory ||
         widget.cardType == CardType.shortsByCategory) {
-      provideCategory = true;
+      widget.category!.categoryName == "Neu" ? provideCategory = false : null;
     }
     super.initState();
   }
@@ -174,6 +176,102 @@ class _GetContentState extends State<GetContent> {
       case CardType.packDrafts:
         packFuture = () {};
         errorText = "Du hast noch keine Lernpacks entworfen";
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+class GetShorts extends StatefulWidget {
+  final ContentCategory? category;
+  final Function reload;
+  final CardType cardType;
+  final Function menuCallback;
+
+  const GetShorts({
+    Key? key,
+    this.category,
+    required this.reload,
+    required this.cardType,
+    required this.menuCallback,
+  }) : super(key: key);
+
+  @override
+  _GetShortsState createState() => _GetShortsState();
+}
+
+class _GetShortsState extends State<GetShorts> {
+  final ShortApi shortApi = ShortApi();
+  final UserApi userApi = UserApi();
+  bool provideCategory = false;
+  late Function packFuture;
+  late Function(Short, Function) returnCard;
+
+  @override
+  Widget build(BuildContext context) {
+    _updateParameters();
+    return FutureBuilder(
+      future: userApi.getBlockedUsers(),
+      builder: (context, AsyncSnapshot blockedList) {
+        if (!blockedList.hasData) {
+          return const Loading();
+        } else {
+          return FutureBuilder(
+            future: provideCategory
+                ? packFuture(category: widget.category)
+                : packFuture(),
+            builder: (context, AsyncSnapshot<ResultModel> snapshot) {
+              if (isLoading(snapshot)) {
+                return const Loading();
+              }
+              ResultModel response = snapshot.data!;
+              List responseList = response.responseList;
+              if (responseList.isEmpty) {
+                return Text(response.message!);
+              }
+              //responseList = _filterBlocked(responseList, blockedList.data);
+              return Expanded(
+                child: ListView.builder(
+                  addAutomaticKeepAlives: true,
+                  shrinkWrap: true,
+                  itemCount: responseList.length,
+                  itemBuilder: (context, index) {
+                    Short short = responseList[index];
+                    return returnCard(short, widget.reload);
+                  },
+                ),
+              );
+            },
+          );
+        }
+      },
+    );
+  }
+
+  void _updateParameters() {
+    switch (widget.cardType) {
+      case CardType.shortsByCategory:
+        provideCategory = true;
+        packFuture = widget.category!.categoryName == "Neu"
+            ? shortApi.getAllShorts
+            : shortApi.getShortsByCategory;
+        returnCard = (short, reload) => ShortCard(short: short, reload: reload);
+        break;
+      case CardType.packBookmarks:
+        packFuture = shortApi.getBookmarkedShorts;
+        returnCard = returnCard =
+            (pack, reload) => CreatorPackCardEdit(pack: pack, reload: reload);
+        break;
+      case CardType.yourPacks:
+        packFuture = packApi.getOwnPublishedpacks;
+        returnCard = returnCard =
+            (pack, reload) => CreatorPackCardEdit(pack: pack, reload: reload);
+        break;
+      case CardType.packDrafts:
+        packFuture = () {};
+        returnCard = returnCard =
+            (pack, reload) => CreatorPackCardEdit(pack: pack, reload: reload);
         break;
       default:
         break;
