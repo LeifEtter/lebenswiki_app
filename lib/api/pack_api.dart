@@ -57,22 +57,6 @@ class PackApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> deletePack({required int id}) async {
-    Response res = await delete(
-      Uri.parse("$serverIp/packs/delete/$id"),
-      headers: await requestHeader(),
-    );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-          type: ResultType.success, message: "Lernpack gelöscht");
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-          type: ResultType.failure,
-          message: "Lernpack konnte nicht gelöscht werden");
-    }
-  }
-
   Future<ResultModel> getPacksByCategory({required ContentCategory category}) =>
       getPacks(
           url: "categories/packs/${category.id}",
@@ -120,87 +104,101 @@ class PackApi extends BaseApi {
     );
   }
 
-  Future<ResultModel> upvotePack(id) => _votingPack(isUpvote: true, id: id);
-  Future<ResultModel> downvotePack(id) => _votingPack(isUpvote: false, id: id);
+  Future<ResultModel> upvotePack(id) => interactPack(
+      url: "packs/upvote/$id",
+      successMessage: "Successfully Upvoted Pack",
+      errorMessage: "Couldn't Upvote Pack");
 
-  Future<ResultModel> _votingPack({
-    required bool isUpvote,
-    required int id,
+  Future<ResultModel> downvotePack(id) => interactPack(
+      url: "packs/downvote/$id",
+      successMessage: "Successfully Downvoted Pack",
+      errorMessage: "Couldn't Downvote Pack");
+
+  Future<ResultModel> removeUpvotePack(id) => interactPack(
+      url: "packs/upvote/remove/$id",
+      successMessage: "Successfully Removed Upvote from Pack",
+      errorMessage: "Couldn't Remove Upvote Pack");
+
+  Future<ResultModel> removeDownvotePack(id) => interactPack(
+      url: "packs/downvote/remove/$id",
+      successMessage: "Successfully Removed Downvote Pack",
+      errorMessage: "Couldn't Remove Downvote Pack");
+
+  Future<ResultModel> bookmarkPack(id) => interactPack(
+      url: "packs/bookmark/$id",
+      successMessage: "Successfully Bookmarked Pack",
+      errorMessage: "Couldn't bookmark Pack");
+
+  Future<ResultModel> unbookmarkPack(id) => interactPack(
+      url: "packs/unbookmark/$id",
+      successMessage: "Successfully Removed Pack from Bookmarks",
+      errorMessage: "Couldn't remove Pack from bookmarks");
+
+  Future<ResultModel> publishPack(id) => interactPack(
+      url: "packs/publish/$id",
+      successMessage: "Successfully Published Pack",
+      errorMessage: "Coldn't publish Pack");
+
+  Future<ResultModel> unpublishPack(id) => interactPack(
+      url: "packs/unpublish/$id",
+      successMessage: "Successfully Unpublished Pack",
+      errorMessage: "Coldn't Unpublish Pack");
+
+  Future<ResultModel> deletePack(id) => interactPackDelete(
+      url: "packs/delete/$id",
+      successMessage: "Pack successfully deleted",
+      errorMessage: "Couldn't delete Pack");
+
+  Future<ResultModel> interactPack({
+    required String url,
+    required String successMessage,
+    required String errorMessage,
   }) async {
-    Response res = await put(
-      Uri.parse("$serverIp/packs/${isUpvote ? "upvote" : "downvote"}/$id"),
+    await put(
+      Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
+    ).then((Response res) {
+      if (statusIsSuccess(res.statusCode)) {
+        return ResultModel(
+          type: ResultType.success,
+          message: successMessage,
+        );
+      } else {
+        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      }
+    }).catchError((error) {
+      apiErrorHandler.handleAndLog(reponseData: error);
+    });
+    return ResultModel(
+      type: ResultType.failure,
+      message: errorMessage,
     );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "Succesfully ${isUpvote ? "upvoted" : "downvoted"} pack",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message: "Couldn't ${isUpvote ? "upvote" : "downvote"} pack",
-      );
-    }
   }
 
-  Future<ResultModel> removeUpvotePack(id) =>
-      _removeVotingPack(isUpvote: true, id: id);
-  Future<ResultModel> removeDownvotePack(id) =>
-      _removeVotingPack(isUpvote: false, id: id);
-
-  Future<ResultModel> _removeVotingPack({
-    required bool isUpvote,
-    required int id,
+  Future<ResultModel> interactPackDelete({
+    required String url,
+    required String successMessage,
+    required String errorMessage,
   }) async {
-    Response res = await put(
-      Uri.parse(
-          "$serverIp/packs/${isUpvote ? "upvote" : "downvote"}/remove/$id"),
+    await delete(
+      Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
+    ).then((Response res) {
+      if (statusIsSuccess(res.statusCode)) {
+        return ResultModel(
+          type: ResultType.success,
+          message: successMessage,
+        );
+      } else {
+        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      }
+    }).catchError((error) {
+      apiErrorHandler.handleAndLog(reponseData: error);
+    });
+    return ResultModel(
+      type: ResultType.failure,
+      message: errorMessage,
     );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message:
-            "Succesfully removed ${isUpvote ? "upvoted" : "downvoted"} for pack",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message: "Couldn't remove ${isUpvote ? "upvote" : "downvote"} for pack",
-      );
-    }
-  }
-
-  Future<ResultModel> bookmarkPack(id) =>
-      _bookmarkingPack(id: id, isUnbookmark: false);
-  Future<ResultModel> unbookmarkPack(id) =>
-      _bookmarkingPack(id: id, isUnbookmark: true);
-
-  Future<ResultModel> _bookmarkingPack({
-    required int id,
-    required bool isUnbookmark,
-  }) async {
-    Response res = await put(
-      Uri.parse(
-          "$serverIp/packs/${isUnbookmark ? "unbookmark" : "bookmark"}/$id"),
-      headers: await requestHeader(),
-    );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message:
-            "pack Erfolgreich ${isUnbookmark ? "von gespeicherten packs entfernt" : "gespeichert"}",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-          type: ResultType.failure,
-          message:
-              "Konnte pack nicht ${isUnbookmark ? "von gespeicherten packs entfernen" : "speichern"}");
-    }
   }
 
   Future<ResultModel> reactPack(id, reaction) =>
@@ -216,31 +214,6 @@ class PackApi extends BaseApi {
       Uri.parse("$serverIp/packs/reaction${isRemove ? "/remove" : ""}/$id"),
       headers: await requestHeader(),
       body: jsonEncode({"reaction": reaction}),
-    );
-    if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "Reagiert",
-      );
-    } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-          type: ResultType.failure, message: "Konnte nicht reagieren");
-    }
-  }
-
-  Future<ResultModel> publishPack(id) =>
-      _publishingPack(id: id, isUnpublish: false);
-  Future<ResultModel> unpublishPack(id) =>
-      _publishingPack(id: id, isUnpublish: true);
-
-  Future<ResultModel> _publishingPack({
-    required int id,
-    required bool isUnpublish,
-  }) async {
-    Response res = await put(
-      Uri.parse("$serverIp/packs/${isUnpublish ? "unpublish" : "publish"}/$id"),
-      headers: await requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
