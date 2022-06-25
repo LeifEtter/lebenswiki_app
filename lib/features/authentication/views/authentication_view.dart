@@ -272,4 +272,9 @@ class _AuthenticationViewState extends State<AuthenticationView> {
       ),
     );
   }
+
+  void setProviders(WidgetRef ref, User user, int userId) {
+    ref.read(userProvider.notifier).user = user;
+    ref.read(userIdProvider.notifier).userId = userId;
+  }
 }

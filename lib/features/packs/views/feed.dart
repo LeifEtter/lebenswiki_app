@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/misc_api.dart';
 import 'package:lebenswiki_app/api/pack_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
@@ -13,6 +14,7 @@ import 'package:lebenswiki_app/features/packs/helper/get_packs.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
+import 'package:lebenswiki_app/providers/providers.dart';
 
 class PackView extends StatefulWidget {
   const PackView({
@@ -42,23 +44,6 @@ class _PackViewState extends State<PackView> {
           return const Loading();
         } else {
           categories = List<ContentCategory>.from(snapshot.data!.responseList);
-          return DefaultTabController(
-            length: categories.length,
-            child: Column(
-              children: [
-                buildTabBar(
-                  categories: categories,
-                  callback: _onTabbarChoose,
-                ),
-                GetPacks(
-                  reload: reload,
-                  cardType: CardType.packsByCategory,
-                  menuCallback: _menuCallback,
-                  category: categories[currentCategory],
-                ),
-              ],
-            ),
-          );
         }
       },
     );
@@ -220,5 +205,37 @@ class _PackViewState extends State<PackView> {
       Navigator.pop(context);
       Navigator.pop(context);
     });
+  }
+}
+
+class PackFeed extends ConsumerStatefulWidget {
+  const PackFeed({Key? key}) : super(key: key);
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _PackFeedState();
+}
+
+class _PackFeedState extends ConsumerState<PackFeed> {
+  @override
+  Widget build(BuildContext context) {
+    final List<ContentCategory> categories =
+        ref.read(categoryProvider).categories!;
+    return DefaultTabController(
+      length: categories.length,
+      child: Column(
+        children: [
+          buildTabBar(
+            categories: categories,
+            callback: _onTabbarChoose,
+          ),
+          GetPacks(
+            reload: reload,
+            cardType: CardType.packsByCategory,
+            menuCallback: _menuCallback,
+            category: categories[currentCategory],
+          ),
+        ],
+      ),
+    );
   }
 }
