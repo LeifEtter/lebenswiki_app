@@ -7,9 +7,9 @@ import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/action_menu/components/modal_sheet.dart';
 import 'package:lebenswiki_app/features/common/helpers/reaction_functions.dart';
 import 'package:lebenswiki_app/features/action_menu/components/report_dialog.dart';
-import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/features/categories/components/tab_bar.dart';
 import 'package:lebenswiki_app/features/common/components/loading.dart';
+import 'package:lebenswiki_app/features/packs/helper/get_packs.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
@@ -50,7 +50,7 @@ class _PackViewState extends State<PackView> {
                   categories: categories,
                   callback: _onTabbarChoose,
                 ),
-                GetContent(
+                GetPacks(
                   reload: reload,
                   cardType: CardType.packsByCategory,
                   menuCallback: _menuCallback,

@@ -95,7 +95,7 @@ class _ShortCardState extends State<ShortCard> {
                   ),
                   onTap: () {
                     bookmarkHelper.toggleBookmarkShort();
-                    widget.voteReload();
+                    widget.reload();
                   },
                 ),
               )),
@@ -181,6 +181,6 @@ class _ShortCardState extends State<ShortCard> {
   }
 
   void voteCallback(isUpvote) {
-    voteHelper.vote(isUpvote: isUpvote, reload: widget.voteReload);
+    voteHelper.vote(isUpvote: isUpvote, reload: widget.reload);
   }
 }

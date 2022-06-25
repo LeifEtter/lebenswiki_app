@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/features/common/components/top_nav.dart';
+import 'package:lebenswiki_app/features/shorts/helper/get_shorts.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 
 class YourShorts extends StatefulWidget {
@@ -67,7 +67,7 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
                 children: [
                   Column(
                     children: [
-                      GetContent(
+                      GetShorts(
                         reload: reload,
                         cardType: CardType.yourShorts,
                         menuCallback: () {},
@@ -76,7 +76,7 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
                   ),
                   Column(
                     children: [
-                      GetContent(
+                      GetShorts(
                         reload: reload,
                         cardType: CardType.shortDrafts,
                         menuCallback: () {},

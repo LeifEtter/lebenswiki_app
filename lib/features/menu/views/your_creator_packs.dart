@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/pack_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/features/packs/helper/get_packs.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
 import 'package:lebenswiki_app/features/pack_creation/views/editor_settings.dart';
-import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/features/common/components/top_nav.dart';
 import 'package:lebenswiki_app/features/styling/colors.dart';
 import 'package:lebenswiki_app/features/styling/shadows.dart';
@@ -81,7 +81,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
                 children: [
                   Column(
                     children: [
-                      GetContent(
+                      GetPacks(
                         reload: reload,
                         cardType: CardType.yourPacks,
                         menuCallback: () {},
@@ -92,7 +92,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
                   ),
                   Column(
                     children: [
-                      GetContent(
+                      GetPacks(
                         reload: reload,
                         cardType: CardType.packDrafts,
                         menuCallback: () {},

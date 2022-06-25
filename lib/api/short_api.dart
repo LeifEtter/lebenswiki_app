@@ -70,6 +70,9 @@ class ShortApi extends BaseApi {
           url: "categories/shorts/${category.id}",
           errorMessage: "Es wurden keine shorts gefunden");
 
+  Future<ResultModel> getAllShorts() => _getShorts(
+      url: "shorts/", errorMessage: "Es wurden keine shorts gefunden");
+
   Future<ResultModel> getOwnPublishedShorts() => _getShorts(
       url: "shorts/published",
       errorMessage: "Du hast noch keine shorts veröffentlicht");
@@ -77,9 +80,6 @@ class ShortApi extends BaseApi {
   Future<ResultModel> getOthersPublishedShorts() => _getShorts(
       url: "shorts/published",
       errorMessage: "Dieser Benutzer hat noch keine shorts veröffentlicht");
-
-  Future<ResultModel> getAllShorts() => _getShorts(
-      url: "shorts/", errorMessage: "Es wurden keine shorts gefunden");
 
   Future<ResultModel> getBookmarkedShorts() => _getShorts(
       url: "shorts/bookmarks",

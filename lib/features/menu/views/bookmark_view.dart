@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/features/common/components/top_nav.dart';
+import 'package:lebenswiki_app/features/shorts/helper/get_shorts.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 
 class BookmarkFeed extends StatefulWidget {
@@ -26,7 +26,7 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
           children: [
             const TopNav(pageName: "Gespeichert", backName: "Menu"),
             const SizedBox(height: 30),
-            GetContent(
+            GetShorts(
               reload: reload,
               cardType: CardType.shortBookmarks,
               menuCallback: () {},

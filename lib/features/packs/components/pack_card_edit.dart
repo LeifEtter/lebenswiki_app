@@ -5,21 +5,21 @@ import 'package:lebenswiki_app/features/pack_creation/views/editor_settings.dart
 import 'package:lebenswiki_app/features/styling/shadows.dart';
 import 'package:lebenswiki_app/features/styling/text_styles.dart';
 
-class CreatorPackCardEdit extends StatefulWidget {
+class PackCardEdit extends StatefulWidget {
   final Pack pack;
   final Function reload;
 
-  const CreatorPackCardEdit({
+  const PackCardEdit({
     Key? key,
     required this.pack,
     required this.reload,
   }) : super(key: key);
 
   @override
-  State<CreatorPackCardEdit> createState() => _CreatorPackCardEditState();
+  State<PackCardEdit> createState() => _PackCardEditState();
 }
 
-class _CreatorPackCardEditState extends State<CreatorPackCardEdit> {
+class _PackCardEditState extends State<PackCardEdit> {
   PackApi packApi = PackApi();
 
   @override

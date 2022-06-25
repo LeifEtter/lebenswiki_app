@@ -6,10 +6,10 @@ import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/action_menu/components/modal_sheet.dart';
 import 'package:lebenswiki_app/features/common/helpers/reaction_functions.dart';
 import 'package:lebenswiki_app/features/action_menu/components/report_dialog.dart';
-import 'package:lebenswiki_app/components/feed/get_content.dart';
 import 'package:lebenswiki_app/features/categories/components/tab_bar.dart';
 import 'package:lebenswiki_app/features/common/components/loading.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
+import 'package:lebenswiki_app/features/shorts/helper/get_shorts.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
@@ -49,7 +49,7 @@ class _ShortViewState extends State<ShortView> {
                 categories: categories,
                 callback: _onTabbarChoose,
               ),
-              GetContent(
+              GetShorts(
                 category: categories[_currentCategory],
                 reload: reload,
                 cardType: CardType.shortsByCategory,

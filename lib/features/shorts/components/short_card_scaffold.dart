@@ -3,7 +3,7 @@ import 'package:lebenswiki_app/api/comment_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
-import 'package:lebenswiki_app/components/feed/get_content_comments.dart';
+import 'package:lebenswiki_app/features/comments/helper/get_comments.dart';
 import 'package:lebenswiki_app/features/styling/comment_input.dart';
 import 'package:lebenswiki_app/features/common/components/loading.dart';
 import 'package:lebenswiki_app/features/styling/shadows.dart';
@@ -13,14 +13,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ShortCardScaffold extends StatefulWidget {
   final Short short;
-  final Function voteReload;
+  final Function reload;
   final CardType cardType;
   final Function menuCallback;
 
   const ShortCardScaffold({
     Key? key,
     required this.short,
-    required this.voteReload,
+    required this.reload,
     required this.cardType,
     required this.menuCallback,
   }) : super(key: key);
@@ -62,7 +62,7 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                   children: [
                     ShortCard(
                       short: widget.short,
-                      voteReload: widget.voteReload,
+                      reload: widget.reload,
                       cardType: widget.cardType,
                       userId: snapshot.data,
                       commentExpand: _triggerComments,
@@ -104,7 +104,7 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                                                 id: widget.short.id)
                                             .then((ResultModel result) {
                                           _commentController.text = "";
-                                          widget.voteReload();
+                                          widget.reload();
                                         });
                                       },
                                     )
@@ -114,7 +114,7 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10.0),
                                   child: GetContentComments(
-                                    reload: widget.voteReload,
+                                    reload: widget.reload,
                                     comments: widget.short.comments,
                                     menuCallback: widget.menuCallback,
                                   ),

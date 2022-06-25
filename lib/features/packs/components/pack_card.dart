@@ -4,21 +4,21 @@ import 'package:lebenswiki_app/features/packs/views/viewer.dart';
 import 'package:lebenswiki_app/features/styling/shadows.dart';
 import 'package:lebenswiki_app/features/styling/text_styles.dart';
 
-class CreatorPackCard extends StatefulWidget {
+class PackCard extends StatefulWidget {
   final Pack pack;
   final Function reload;
 
-  const CreatorPackCard({
+  const PackCard({
     Key? key,
     required this.pack,
     required this.reload,
   }) : super(key: key);
 
   @override
-  State<CreatorPackCard> createState() => _CreatorPackCardState();
+  State<PackCard> createState() => _PackCardState();
 }
 
-class _CreatorPackCardState extends State<CreatorPackCard> {
+class _PackCardState extends State<PackCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(

@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/pack_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
-import 'package:lebenswiki_app/features/packs/components/pack_card.dart';
-import 'package:lebenswiki_app/features/packs/components/pack_card_edit.dart';
-import 'package:lebenswiki_app/features/common/components/loading.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
+import 'package:lebenswiki_app/features/common/components/loading.dart';
+import 'package:lebenswiki_app/features/shorts/components/short_card_minimal.dart';
+import 'package:lebenswiki_app/features/shorts/components/short_card_scaffold.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
-import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/models/short_model.dart';
 
-class GetPacks extends StatefulWidget {
+class GetShorts extends StatefulWidget {
   final ContentCategory? category;
   final Function reload;
   final CardType cardType;
   final Function menuCallback;
 
-  const GetPacks({
+  const GetShorts({
     Key? key,
     this.category,
     required this.reload,
@@ -25,15 +25,15 @@ class GetPacks extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _GetPacksState createState() => _GetPacksState();
+  _GetShortsState createState() => _GetShortsState();
 }
 
-class _GetPacksState extends State<GetPacks> {
-  final PackApi packApi = PackApi();
+class _GetShortsState extends State<GetShorts> {
+  final ShortApi shortApi = ShortApi();
   final UserApi userApi = UserApi();
   bool provideCategory = false;
   late Function packFuture;
-  late Function(Pack, Function) returnCard;
+  late Function(Short, Function) returnCard;
 
   @override
   Widget build(BuildContext context) {
@@ -64,8 +64,8 @@ class _GetPacksState extends State<GetPacks> {
                   shrinkWrap: true,
                   itemCount: responseList.length,
                   itemBuilder: (context, index) {
-                    Pack pack = responseList[index];
-                    return returnCard(pack, widget.reload);
+                    Short short = responseList[index];
+                    return returnCard(short, widget.reload);
                   },
                 ),
               );
@@ -78,27 +78,43 @@ class _GetPacksState extends State<GetPacks> {
 
   void _updateParameters() {
     switch (widget.cardType) {
-      case CardType.packsByCategory:
-        provideCategory = true;
-        packFuture = widget.category!.categoryName == "Neu"
-            ? packApi.getAllPacks
-            : packApi.getPacksByCategory;
-        returnCard = (pack, reload) => PackCard(pack: pack, reload: reload);
+      case CardType.shortsByCategory:
+        if (widget.category!.categoryName == "Neu") {
+          provideCategory = false;
+          packFuture = shortApi.getAllShorts;
+        } else {
+          provideCategory = true;
+          packFuture = shortApi.getShortsByCategory;
+        }
+        returnCard = (short, reload) => ShortCardScaffold(
+            short: short,
+            reload: reload,
+            menuCallback: widget.menuCallback,
+            cardType: widget.cardType);
         break;
-      case CardType.packBookmarks:
-        packFuture = packApi.getBookmarkedPacks;
-        returnCard = returnCard =
-            (pack, reload) => PackCardEdit(pack: pack, reload: reload);
+      case CardType.shortBookmarks:
+        packFuture = shortApi.getBookmarkedShorts;
+        returnCard = returnCard = (short, reload) => ShortCardMinimal(
+              short: short,
+              reload: reload,
+              cardType: widget.cardType,
+            );
         break;
-      case CardType.yourPacks:
-        packFuture = packApi.getOwnPublishedpacks;
-        returnCard = returnCard =
-            (pack, reload) => PackCardEdit(pack: pack, reload: reload);
+      case CardType.yourShorts:
+        packFuture = shortApi.getOwnPublishedShorts;
+        returnCard = returnCard = (short, reload) => ShortCardMinimal(
+              short: short,
+              reload: reload,
+              cardType: widget.cardType,
+            );
         break;
-      case CardType.packDrafts:
-        packFuture = () {};
-        returnCard = returnCard =
-            (pack, reload) => PackCardEdit(pack: pack, reload: reload);
+      case CardType.shortDrafts:
+        packFuture = shortApi.getCreatorsDraftShorts;
+        returnCard = returnCard = (short, reload) => ShortCardMinimal(
+              short: short,
+              reload: reload,
+              cardType: widget.cardType,
+            );
         break;
       default:
         break;

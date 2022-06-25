@@ -93,7 +93,7 @@ class _FilterViewState extends State<FilterView> {
                     : _filteredPacks[index];
                 return ShortCardScaffold(
                   short: currentPack,
-                  voteReload: () {},
+                  reload: () {},
                   cardType: widget.cardType,
                   menuCallback: () {},
                 );
