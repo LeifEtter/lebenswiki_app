@@ -1,119 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/models/enums.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+//Generates a Helper Object for a specific Pack, Short or Comment
+//The Helper is able to convert reactions to a readable reaction Map
 class ReactionHelper {
-  late int? userId;
-  List reactionsForContent;
+  int userId;
+  List<Map> reactionsResponse;
+  //List structure
+  //  [ { id: 0, reaction: "" } ]
+
+  //Reaction Notes:
+  // * When sending reaction only send reaction string
+  // * Receiving will be the list mentioned
+  // * id refers to the user that has reacted
+
   late bool userHasReacted;
 
+  //Will hold formatted usable reactions
   late Map _reactionMap;
 
   ReactionHelper({
-    required this.reactionsForContent,
+    required this.userId,
+    required this.reactionsResponse,
   }) {
-    _initializeUserId();
-    _setUserHasReacted();
+    _generateReactionMap();
+    _fillReactionMapAndDetectUserReaction();
   }
 
-  void _setUserHasReacted() {
-    userHasReacted = false;
-    reactionsForContent.forEach((reaction) {
-      if (reaction.containsValue(userId)) {
-        userHasReacted = true;
-      }
-    });
-  }
-
-  Future<void> _initializeUserId() async {
-    var prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt("userId");
-  }
-
-  //!TODO Repair Reaction Bar
-  /*void _setReactions() {
-    Map reactionMap = {
-      "happy": 0,
-      "catheart": 0,
-      "clap": 0,
-      "heart": 0,
-      "money": 0,
-      "laughing": 0,
-      "thumbsup": 0,
-      "thinking": 0,
-    };
-    
-    reactionsForContent.forEach((key, value) {
-      reactionMap[key]
-    });
-    if (reactionData != null) {
-      for (var reaction in reactionData) {
-        if (reaction.containsKey("reaction")) {
-          reactionMap[reaction["reaction"].toString().toLowerCase()] += 1;
-        }
-      }
+  void _generateReactionMap() {
+    Map result = {};
+    for (var value in Reactions.values) {
+      result[value.name] = 0;
     }
-  }*/
-}
+  }
 
-List allReactions = [
-  "happy",
-  "catheart",
-  "clap",
-  "heart",
-  "money",
-  "laughing",
-  "thumbsup",
-  "thinking"
-];
+  void _fillReactionMapAndDetectUserReaction() {
+    for (Map reactionData in reactionsResponse) {
+      if (reactionData.containsValue(userId)) userHasReacted = true;
+      String reactionName = reactionData["reaction"];
+      _reactionMap[reactionName.toLowerCase()] += 1;
+    }
+  }
 
-Widget reactionBar({
-  required Map reactionMap,
-  required Function menuCallback,
-  required var contentData,
-  required bool isComment,
-}) {
-  return ListView.builder(
-    shrinkWrap: true,
-    scrollDirection: Axis.horizontal,
-    itemCount: reactionMap.length + 1,
-    itemBuilder: (context, i) {
-      //Return add Reactoin symbol
-      if (i == reactionMap.length) {
-        return Padding(
-          padding: const EdgeInsets.only(left: 10.0, bottom: 5.0),
-          child: GestureDetector(
-            child: Image.asset("assets/emojis/add_reaction.png"),
-            onTap: () {
-              menuCallback(
-                isComment ? MenuType.reactShortComment : MenuType.reactShort,
-                contentData,
-              );
-            },
-          ),
-        );
-      } else {
-        //Show Reaction with amount
-        String reaction = reactionMap.keys.elementAt(i);
-        int amount = reactionMap.values.elementAt(i);
-
-        if (amount != 0) {
+  Widget reactionBar({
+    required Function menuCallback,
+  }) {
+    return ListView.builder(
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      itemCount: _reactionMap.length + 1,
+      itemBuilder: (BuildContext context, int i) {
+        //Return add Reactoin symbol
+        if (i == _reactionMap.length) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2.0),
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: () {},
-                  child: Image.asset("assets/emojis/$reaction.png"),
-                ),
-                Text(amount.toString()),
-              ],
+            padding: const EdgeInsets.only(left: 10.0, bottom: 5.0),
+            child: GestureDetector(
+              child: Image.asset("assets/emojis/add_reaction.png"),
+              onTap: () => menuCallback(),
             ),
           );
         } else {
-          return Container();
+          //Show Reaction with amount
+          String reaction = _reactionMap.keys.elementAt(i);
+          int amount = _reactionMap.values.elementAt(i);
+
+          if (amount != 0) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2.0),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {},
+                    child: Image.asset("assets/emojis/$reaction.png"),
+                  ),
+                  Text(amount.toString()),
+                ],
+              ),
+            );
+          } else {
+            return Container();
+          }
         }
-      }
-    },
-  );
+      },
+    );
+  }
 }

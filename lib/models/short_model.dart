@@ -48,7 +48,7 @@ class Short {
   List<ContentCategory> categories;
   List<Comment> comments;
   List<Report> reportShort;
-  List reactions;
+  List<Map> reactions;
   DateTime creationDate;
   DateTime? lastUpdated;
 

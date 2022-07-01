@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/vote_button.dart';
 import 'package:lebenswiki_app/features/packs/components/creator_info.dart';
@@ -8,8 +9,9 @@ import 'package:lebenswiki_app/features/common/helpers/vote_functions.dart';
 import 'package:lebenswiki_app/features/styling/text_styles.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/short_model.dart';
+import 'package:lebenswiki_app/providers/providers.dart';
 
-class ShortCard extends StatefulWidget {
+class ShortCard extends ConsumerStatefulWidget {
   final Short short;
   final Function reload;
   final CardType cardType;
@@ -28,16 +30,17 @@ class ShortCard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<ShortCard> createState() => _ShortCardState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ShortCardState();
 }
 
-class _ShortCardState extends State<ShortCard> {
+class _ShortCardState extends ConsumerState<ShortCard> {
   bool reactionMenuOpen = false;
   bool hasReacted = false;
   bool optionsMenuOpen = false;
   bool blockUser = false;
   ShortApi shortApi = ShortApi();
 
+  late int userId;
   late VoteHelper voteHelper;
   late BookmarkHelper bookmarkHelper;
   late ReactionHelper reactionHelper;
@@ -46,18 +49,22 @@ class _ShortCardState extends State<ShortCard> {
 
   @override
   void initState() {
+    userId = ref.watch(userIdProvider).userId ?? 0;
     voteHelper = VoteHelper(
-      contentId: widget.short.id,
       upVoteData: widget.short.upVote,
       downVoteData: widget.short.downVote,
+      reloadCallBack: widget.reload,
+      userId: userId,
     );
     bookmarkHelper = BookmarkHelper(
       contentId: widget.short.id,
       bookmarkedBy: widget.short.bookmarks,
       cardType: widget.cardType,
     );
-    reactionHelper =
-        ReactionHelper(reactionsForContent: widget.short.reactions);
+    reactionHelper = ReactionHelper(
+      reactionsResponse: widget.short.reactions,
+      userId: userId,
+    );
     super.initState();
   }
 
@@ -74,7 +81,7 @@ class _ShortCardState extends State<ShortCard> {
               alignment: Alignment.centerRight,
               child: VoteButtonStack(
                 currentVotes: voteHelper.totalVotes,
-                changeVote: voteCallback,
+                changeVote: _voteCallback,
                 hasDownvoted: voteHelper.userHasDownVoted,
                 hasUpvoted: voteHelper.userHasUpVoted,
               )),
@@ -94,7 +101,12 @@ class _ShortCardState extends State<ShortCard> {
                     width: 20.0,
                   ),
                   onTap: () {
-                    bookmarkHelper.toggleBookmarkShort();
+                    bookmarkHelper.toggleBookmarkShort(
+                      bookmarkCallback: () =>
+                          shortApi.bookmarkShort(widget.short.id),
+                      unbookmarkCallback: () =>
+                          shortApi.unbookmarkShort(widget.short.id),
+                    );
                     widget.reload();
                   },
                 ),
@@ -125,11 +137,11 @@ class _ShortCardState extends State<ShortCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /*CreatorInfo(
+                    CreatorInfo(
                       isComment: false,
                       creationDate: widget.short.creationDate,
                       user: widget.short.creator,
-                    ),*/
+                    ),
                     const SizedBox(height: 5),
                     SizedBox(
                       width: screenWidth * 0.7,
@@ -156,18 +168,13 @@ class _ShortCardState extends State<ShortCard> {
                           },
                           icon: const Icon(Icons.comment_outlined),
                         ),
-                        //!TODO Repair Reaction Bar
-                        /*
+                        //TODO implement menu callback
                         SizedBox(
                           height: 30,
                           width: 200,
-                          child: reactionBar(
-                            convertReactions(widget.short.reactions),
-                            widget.menuCallback,
-                            widget.packData,
-                            false,
-                          ),
-                        ),*/
+                          child: reactionHelper.reactionBar(
+                              menuCallback: widget.menuCallback),
+                        ),
                       ],
                     )
                   ],
@@ -180,7 +187,21 @@ class _ShortCardState extends State<ShortCard> {
     );
   }
 
-  void voteCallback(isUpvote) {
-    voteHelper.vote(isUpvote: isUpvote, reload: widget.reload);
+  void _voteCallback(bool isUpvote) {
+    VoteType voteType = voteHelper.getVoteType(isUpvote: isUpvote);
+    switch (voteType) {
+      case VoteType.upvote:
+        shortApi.upvoteShort(widget.short.id);
+        break;
+      case VoteType.downvote:
+        shortApi.downvoteShort(widget.short.id);
+        break;
+      case VoteType.removeUpvote:
+        shortApi.removeUpvoteShort(widget.short.id);
+        break;
+      case VoteType.removeDownvote:
+        shortApi.removeDownvoteShort(widget.short.id);
+        break;
+    }
   }
 }

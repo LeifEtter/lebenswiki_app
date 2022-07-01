@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/api/token/token_handler.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/repos/image_repo.dart';
 import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
@@ -254,14 +255,19 @@ class _AuthenticationViewState extends State<AuthenticationView> {
         errorMap[errorList[0]] = errorList[1];
         setState(() {});
       } else {
-        userApi.getUserData();
-        //ref.read(userProvider.notifier).setUser(user);
-        var prefs = await SharedPreferences.getInstance();
-        String token = result.responseItem;
-        prefs.setString("token", token);
+        ResultModel userRequestResult = await userApi.getUserData();
+        User user = userRequestResult.responseItem;
+        setProviders(ref, result.responseItem, user);
+        TokenHandler().set(result.responseItem);
         navigateFeed();
       }
     });
+  }
+
+  void setProviders(WidgetRef ref, String token, User user) {
+    ref.read(tokenProvider).token = token;
+    ref.read(userProvider).user = user;
+    ref.read(userIdProvider).userId = user.id;
   }
 
   void navigateFeed() {
@@ -273,10 +279,5 @@ class _AuthenticationViewState extends State<AuthenticationView> {
         ),
       ),
     );
-  }
-
-  void setProviders(WidgetRef ref, User user, int userId) {
-    ref.read(userProvider.notifier).user = user;
-    ref.read(userIdProvider.notifier).userId = userId;
   }
 }

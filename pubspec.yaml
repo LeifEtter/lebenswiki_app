@@ -20,6 +20,7 @@ dependencies:
   share_plus: ^4.0.4
   flutter_speed_dial: ^5.1.0
   expandable_page_view: ^1.0.14
+  flutter_secure_storage: ^5.0.2
 
 dev_dependencies:
   flutter_test:

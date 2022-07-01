@@ -1,4 +1,4 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lebenswiki_app/api/token/token_handler.dart';
 
 class BaseApi {
   final serverIp = 'https://api.lebenswiki.com/api/v1';
@@ -8,7 +8,7 @@ class BaseApi {
   Future<Map<String, String>> requestHeader() async {
     return {
       "Content-type": "application/json",
-      "authorization": await getToken(),
+      "authorization": await TokenHandler().get(),
     };
   }
 
@@ -19,14 +19,4 @@ class BaseApi {
       return false;
     }
   }
-}
-
-Future<String> getToken() async {
-  var prefs = await SharedPreferences.getInstance();
-  return prefs.getString("token") ?? "";
-}
-
-Future<int> getUserId() async {
-  var prefs = await SharedPreferences.getInstance();
-  return prefs.getInt("userId") ?? 0;
 }

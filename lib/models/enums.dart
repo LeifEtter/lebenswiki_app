@@ -6,8 +6,6 @@ enum ItemType {
   text,
 }
 
-
-
 enum ResultType {
   packList,
   shortList,
@@ -51,4 +49,11 @@ enum Reactions {
   extrareactionone,
   extrareactiontwo,
   extrareactionthree,
+}
+
+enum VoteType {
+  upvote,
+  downvote,
+  removeUpvote,
+  removeDownvote,
 }

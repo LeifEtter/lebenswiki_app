@@ -1,67 +1,49 @@
-import 'package:lebenswiki_app/api/short_api.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class VoteHelper {
-  int contentId;
+  int userId;
   List<User> upVoteData;
   List<User> downVoteData;
-  late int? _userId;
+  Function reloadCallBack;
 
+  late bool userHasUpVoted;
+  late bool userHasDownVoted;
   late int totalVotes;
-  bool userHasUpVoted = false;
-  bool userHasDownVoted = false;
-  final ShortApi shortApi = ShortApi();
 
   VoteHelper({
-    required this.contentId,
-    required this.upVoteData,
-    required this.downVoteData,
+    required this.userId,
+    this.upVoteData = const [],
+    this.downVoteData = const [],
+    required this.reloadCallBack,
   }) {
-    _initializeUserId();
     _setTotalVotes();
-    _hasVoted(true);
-    _hasVoted(false);
-  }
-
-  Future<void> _initializeUserId() async {
-    var prefs = await SharedPreferences.getInstance();
-    _userId = prefs.getInt("userId");
+    _setHasUpvoted();
+    _setHasDownvoted();
   }
 
   void _setTotalVotes() {
     totalVotes = upVoteData.length - downVoteData.length;
   }
 
-  bool hasVoted(userId, voteData) {
-    for (var voteObject in voteData) {
-      if (voteObject["id"] == userId) return true;
-    }
-    return false;
-  }
-
-  void _hasVoted(bool isUpvote) {
+  void _setHasUpvoted() => _setHasVoted(true);
+  void _setHasDownvoted() => _setHasVoted(false);
+  void _setHasVoted(bool isUpvote) {
     for (User voter in isUpvote ? upVoteData : downVoteData) {
-      voter.id == _userId
+      voter.id == userId
           ? {isUpvote ? userHasUpVoted = true : userHasDownVoted = true}
           : null;
     }
   }
 
-  void vote({
-    required isUpvote,
-    required reload,
-  }) async {
+  VoteType getVoteType({required bool isUpvote}) {
     if ((isUpvote && userHasDownVoted) || (isUpvote && !userHasUpVoted)) {
-      shortApi.upvoteShort(contentId);
+      return VoteType.upvote;
     } else if ((!isUpvote && userHasUpVoted && !userHasDownVoted) ||
         (!isUpvote && !userHasUpVoted && !userHasDownVoted)) {
-      shortApi.downvoteShort(contentId);
+      return VoteType.downvote;
     } else {
-      isUpvote
-          ? shortApi.removeUpvoteShort(contentId)
-          : shortApi.removeDownvoteShort(contentId);
+      return isUpvote ? VoteType.removeUpvote : VoteType.removeDownvote;
     }
-    reload();
   }
 }

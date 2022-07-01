@@ -17,13 +17,7 @@ class BookmarkHelper {
     required this.bookmarkedBy,
     required this.cardType,
   }) {
-    _initializeUserId();
     _setUserHasBookmarked();
-  }
-
-  Future<void> _initializeUserId() async {
-    var prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt("userId");
   }
 
   void _setUserHasBookmarked() {
@@ -40,12 +34,17 @@ class BookmarkHelper {
     }
   }
 
-  void toggleBookmarkShort() {
+  void toggleBookmarkShort({
+    required Function bookmarkCallback,
+    required Function unbookmarkCallback,
+  }) {
     if (userHasBookmarked) {
-      shortApi.unbookmarkShort(contentId);
+      //shortApi.unbookmarkShort(contentId);
+      bookmarkCallback();
       userHasBookmarked = false;
     } else {
-      shortApi.bookmarkShort(contentId);
+      //shortApi.bookmarkShort(contentId);
+      unbookmarkCallback();
       userHasBookmarked = true;
     }
   }
