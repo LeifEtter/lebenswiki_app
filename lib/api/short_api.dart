@@ -5,9 +5,9 @@ import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
-import 'package:lebenswiki_app/models/report_model.dart';
 import 'package:lebenswiki_app/models/short_model.dart';
 
+//TODO Implement extracting error message with "error" property
 class ShortApi extends BaseApi {
   late ApiErrorHandler apiErrorHandler;
 
@@ -17,7 +17,7 @@ class ShortApi extends BaseApi {
 
   Future<ResultModel> createShort({required Short short}) async {
     await post(
-      Uri.parse("$serverIp/packs/create"),
+      Uri.parse("$serverIp/shorts/create"),
       headers: await requestHeader(),
       body: jsonEncode({
         "title": short.title,
@@ -77,6 +77,7 @@ class ShortApi extends BaseApi {
       url: "shorts/published",
       errorMessage: "Du hast noch keine shorts veröffentlicht");
 
+  //TODO implement correct root
   Future<ResultModel> getOthersPublishedShorts() => _getShorts(
       url: "shorts/published",
       errorMessage: "Dieser Benutzer hat noch keine shorts veröffentlicht");
@@ -96,10 +97,11 @@ class ShortApi extends BaseApi {
     ).then((res) {
       Map body = jsonDecode(res.body);
       if (statusIsSuccess(res)) {
-        List<Short> packs = body["body"].map((pack) => Short.fromJson(pack));
+        List<Short> shorts =
+            body["shorts"].map((short) => Short.fromJson(short));
         return ResultModel(
-          type: ResultType.packList,
-          responseList: packs,
+          type: ResultType.shortList,
+          responseList: shorts,
         );
       } else {
         apiErrorHandler.handleAndLog(reponseData: body);
@@ -114,42 +116,42 @@ class ShortApi extends BaseApi {
   }
 
   Future<ResultModel> upvoteShort(id) => _interactShort(
-      url: "packs/upvote/$id",
+      url: "shorts/upvote/$id",
       successMessage: "Successfully Upvoted Short",
       errorMessage: "Couldn't Upvote Short");
 
   Future<ResultModel> downvoteShort(id) => _interactShort(
-      url: "packs/downvote/$id",
+      url: "shorts/downvote/$id",
       successMessage: "Successfully Downvoted Short",
       errorMessage: "Couldn't Downvote Short");
 
   Future<ResultModel> removeUpvoteShort(id) => _interactShort(
-      url: "packs/upvote/remove/$id",
+      url: "shorts/upvote/remove/$id",
       successMessage: "Successfully Removed Upvote from Short",
       errorMessage: "Couldn't Remove Upvote Short");
 
   Future<ResultModel> removeDownvoteShort(id) => _interactShort(
-      url: "packs/downvote/remove/$id",
+      url: "shorts/downvote/remove/$id",
       successMessage: "Successfully Removed Downvote Short",
       errorMessage: "Couldn't Remove Downvote Short");
 
   Future<ResultModel> bookmarkShort(id) => _interactShort(
-      url: "packs/bookmark/$id",
+      url: "shorts/bookmark/$id",
       successMessage: "Successfully Bookmarked Short",
       errorMessage: "Couldn't bookmark Short");
 
   Future<ResultModel> unbookmarkShort(id) => _interactShort(
-      url: "packs/unbookmark/$id",
+      url: "shorts/unbookmark/$id",
       successMessage: "Successfully Removed Short from Bookmarks",
       errorMessage: "Couldn't remove Short from bookmarks");
 
   Future<ResultModel> publishShort(id) => _interactShort(
-      url: "packs/publish/$id",
+      url: "shorts/publish/$id",
       successMessage: "Successfully Published Short",
       errorMessage: "Coldn't publish Short");
 
   Future<ResultModel> unpublishShort(id) => _interactShort(
-      url: "packs/unpublish/$id",
+      url: "shorts/unpublish/$id",
       successMessage: "Successfully Unpublished Short",
       errorMessage: "Coldn't Unpublish Short");
 
@@ -180,13 +182,13 @@ class ShortApi extends BaseApi {
   }
 
   Future<ResultModel> reactShort(id, reaction) => _updateShortData(
-      url: "packs/reaction/$id",
+      url: "shorts/reaction/$id",
       successMessage: "Successfully added Reaction",
       errorMessage: "Couldn't Add Reaction",
       requestBody: {"reaction": reaction});
 
   Future<ResultModel> unReactShort(id, reaction) => _updateShortData(
-      url: "packs/reaction/remove/$id",
+      url: "shorts/reaction/remove/$id",
       successMessage: "Successfully Removed Reaction",
       errorMessage: "Couldn't Remove Reaction",
       requestBody: {"reaction": reaction});

@@ -50,123 +50,125 @@ class _AuthenticationViewState extends State<AuthenticationView> {
   Widget build(BuildContext context) {
     MediaQueryData queryData;
     queryData = MediaQuery.of(context);
-    return SizedBox(
-      child: Padding(
-        padding: EdgeInsets.only(
-            top: queryData.size.height / (isSignUp ? 12 : 6),
-            left: 30,
-            right: 30.0),
-        child: Form(
-          key: _authFormKey,
-          child: ListView(
-            children: [
-              Center(
-                child: Text(
-                  isSignUp ? "Registrieren" : "Login",
-                  style: LebenswikiTextStyles
-                      .authenticationContent.authenticationTitle,
+    return Scaffold(
+      body: SizedBox(
+        child: Padding(
+          padding: EdgeInsets.only(
+              top: queryData.size.height / (isSignUp ? 12 : 6),
+              left: 30,
+              right: 30.0),
+          child: Form(
+            key: _authFormKey,
+            child: ListView(
+              children: [
+                Center(
+                  child: Text(
+                    isSignUp ? "Registrieren" : "Login",
+                    style: LebenswikiTextStyles
+                        .authenticationContent.authenticationTitle,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 30.0),
-              Visibility(
-                visible: isSignUp,
-                child: AuthInputStyling(
+                const SizedBox(height: 30.0),
+                Visibility(
+                  visible: isSignUp,
+                  child: AuthInputStyling(
+                    child: TextFormField(
+                      controller: _nameController,
+                      decoration: customInputDecoration(
+                          "Vorname Nachname", Icons.person),
+                    ),
+                  ),
+                ),
+                errorHint("name"),
+                const SizedBox(height: 5),
+                AuthInputStyling(
                   child: TextFormField(
-                    controller: _nameController,
+                    controller: _emailController,
                     decoration:
-                        customInputDecoration("Vorname Nachname", Icons.person),
+                        customInputDecoration("Email", Icons.local_post_office),
                   ),
                 ),
-              ),
-              errorHint("name"),
-              const SizedBox(height: 5),
-              AuthInputStyling(
-                child: TextFormField(
-                  controller: _emailController,
-                  decoration:
-                      customInputDecoration("Email", Icons.local_post_office),
-                ),
-              ),
-              errorHint("email"),
-              const SizedBox(height: 5),
-              AuthInputStyling(
-                child: TextFormField(
-                  obscureText: true,
-                  controller: _passwordController,
-                  decoration: customInputDecoration("Passwort", Icons.lock),
-                ),
-              ),
-              errorHint("password"),
-              Visibility(
-                visible: isSignUp ? true : false,
-                child: AuthInputBiography(
+                errorHint("email"),
+                const SizedBox(height: 5),
+                AuthInputStyling(
                   child: TextFormField(
-                    controller: _biographyController,
-                    obscureText: false,
-                    decoration: customInputDecoration(
-                        "Erzähl uns was über dich", Icons.note_alt_rounded),
-                    minLines: 2,
-                    maxLines: 5,
+                    obscureText: true,
+                    controller: _passwordController,
+                    decoration: customInputDecoration("Passwort", Icons.lock),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Visibility(
-                visible: isSignUp,
-                child: Row(
-                  children: [
-                    Checkbox(
-                      value: _defaultProfilePic,
-                      onChanged: (value) {
-                        setState(() {
-                          _defaultProfilePic = value!;
-                          errorMap.forEach((k, v) {
-                            errorMap[k] = "";
+                errorHint("password"),
+                Visibility(
+                  visible: isSignUp ? true : false,
+                  child: AuthInputBiography(
+                    child: TextFormField(
+                      controller: _biographyController,
+                      obscureText: false,
+                      decoration: customInputDecoration(
+                          "Erzähl uns was über dich", Icons.note_alt_rounded),
+                      minLines: 2,
+                      maxLines: 5,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Visibility(
+                  visible: isSignUp,
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: _defaultProfilePic,
+                        onChanged: (value) {
+                          setState(() {
+                            _defaultProfilePic = value!;
+                            errorMap.forEach((k, v) {
+                              errorMap[k] = "";
+                            });
                           });
-                        });
-                      },
-                    ),
-                    const Text("Das Standardprofilbild verwenden")
-                  ],
-                ),
-              ),
-              Visibility(
-                visible: isSignUp ? true : false,
-                child: AuthInputStyling(
-                  isDeactivated: _defaultProfilePic,
-                  child: TextFormField(
-                    enabled: _defaultProfilePic,
-                    controller: _profileImageController,
-                    decoration:
-                        customInputDecoration("Profilbild", Icons.image),
+                        },
+                      ),
+                      const Text("Das Standardprofilbild verwenden")
+                    ],
                   ),
                 ),
-              ),
-              errorHint("profileImage"),
-              Consumer(
-                builder: (context, WidgetRef ref, child) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: AuthenticationButton(
-                      text: isSignUp ? "Registrieren" : "Einloggen",
-                      color: LebenswikiColors.createPackButton,
-                      onPress: () {
-                        validation(ref);
-                      },
+                Visibility(
+                  visible: isSignUp ? true : false,
+                  child: AuthInputStyling(
+                    isDeactivated: _defaultProfilePic,
+                    child: TextFormField(
+                      enabled: _defaultProfilePic,
+                      controller: _profileImageController,
+                      decoration:
+                          customInputDecoration("Profilbild", Icons.image),
                     ),
-                  );
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 30),
-                child: TextButton(
-                  child: Text(isSignUp
-                      ? "Du hast schon ein Account?"
-                      : "Du bist noch nicht registriert?"),
-                  onPressed: () => toggleSignIn(),
+                  ),
                 ),
-              ),
-            ],
+                errorHint("profileImage"),
+                Consumer(
+                  builder: (context, WidgetRef ref, child) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: AuthenticationButton(
+                        text: isSignUp ? "Registrieren" : "Einloggen",
+                        color: LebenswikiColors.createPackButton,
+                        onPress: () {
+                          validation(ref);
+                        },
+                      ),
+                    );
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 30),
+                  child: TextButton(
+                    child: Text(isSignUp
+                        ? "Du hast schon ein Account?"
+                        : "Du bist noch nicht registriert?"),
+                    onPressed: () => toggleSignIn(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -3,6 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 
+class TokenNotifier extends ChangeNotifier {
+  String token = "";
+}
+
+final tokenProvider =
+    ChangeNotifierProvider<TokenNotifier>(((ref) => TokenNotifier()));
+
 class UserNotifier extends ChangeNotifier {
   User? user;
 }

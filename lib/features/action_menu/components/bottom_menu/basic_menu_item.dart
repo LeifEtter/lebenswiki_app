@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget buildMenuItem(
+Widget basicMenuItem(
     IconData icon, String title, String description, Function menuAction) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 10.0),

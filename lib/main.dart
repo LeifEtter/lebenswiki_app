@@ -1,38 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/features/packs/views/feed.dart';
+import 'package:lebenswiki_app/features/packs/views/pack_feed.dart';
 import 'package:lebenswiki_app/features/common/components/bottom_nav_bar.dart';
 import 'package:lebenswiki_app/features/common/components/main_appbar.dart';
 import 'package:lebenswiki_app/features/menu/components/menu_bar.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/add_button.dart';
 import 'package:lebenswiki_app/features/routing/router.dart';
-import 'package:lebenswiki_app/features/common/components/loading.dart';
 import 'package:lebenswiki_app/features/routing/routing_constants.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/authentication/views/authentication_view.dart';
 import 'package:lebenswiki_app/features/shorts/views/search_view.dart';
-import 'package:lebenswiki_app/features/shorts/views/short_view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lebenswiki_app/features/shorts/views/short_feed.dart';
+import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:flutter/services.dart';
-
-final tokenProvider = StateNotifierProvider((ref) => Token(token: "adasdas"));
-
-final tokenProviderNew = FutureProvider(((ref) {
-  
-}));
-
-class Token extends StateNotifier<String> {
-  String token;
-  String get getToken => token;
-
-  Token({required this.token}) : super("");
-}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-
   runApp(
     const ProviderScope(child: MyApp()),
   );
@@ -41,7 +26,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -56,44 +40,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class AuthenticationWrapper extends StatefulWidget {
-  const AuthenticationWrapper({Key? key}) : super(key: key);
+class AuthWrapper extends ConsumerWidget {
+  const AuthWrapper({Key? key}) : super(key: key);
 
   @override
-  _AuthenticationWrapperState createState() => _AuthenticationWrapperState();
-}
-
-class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
-  Future<List> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey('token')) {
-      return [];
-    } else {
-      String? token = prefs.getString("token");
-      return [token];
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getToken(),
-      builder: (context, AsyncSnapshot token) {
-        if (!token.hasData) {
-          return const Loading();
-        }
-        //return OnboardingView();
-        if (token.data.length == 0) {
-          return const Scaffold(body: AuthenticationView());
-        } else {
-          return const NavBarWrapper();
-          //return YourCreatorPacks();
-          //return const PackPageView([]);
-          //return const TestParent();
-
-        }
-      },
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String token = ref.read(tokenProvider).token;
+    return token.isEmpty ? const AuthenticationView() : const NavBarWrapper();
   }
 }
 
@@ -122,8 +75,8 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> _pages = <Widget>[
-      const PackView(),
-      const ShortView(),
+      const PackFeed(),
+      const ShortFeed(),
     ];
     return Scaffold(
       drawer: const MenuBar(),
@@ -139,21 +92,19 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
       body: PageView(
         controller: pageController,
         children: _pages,
-        onPageChanged: (index) {
+        onPageChanged: (index) => setState(() {
           _currentIndex = index;
-          setState(() {});
-        },
+        }),
       ),
     );
   }
 
-  void onItemTapped(int index) {
-    setState(() {
-      pageController.animateToPage(index,
-          duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
-      _currentIndex = index;
-    });
-  }
+  void onItemTapped(int index) => setState(() {
+        pageController.animateToPage(index,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut);
+        _currentIndex = index;
+      });
 
   Route _searchRoute() {
     return PageRouteBuilder(

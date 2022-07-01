@@ -7,7 +7,7 @@ class AuthenticationFunctions {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.clear();
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const AuthenticationWrapper(),
+      builder: (context) => const AuthWrapper(),
     ));
   }
 }

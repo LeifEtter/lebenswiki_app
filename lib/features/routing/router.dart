@@ -8,7 +8,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case authenticationWrapperRoute:
       return PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            const AuthenticationWrapper(),
+            const AuthWrapper(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(0.0, 1.0);
           const end = Offset.zero;
@@ -24,9 +24,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         },
       );
     case authenticationViewRoute:
-      return MaterialPageRoute(builder: (context) => const AuthenticationView());
+      return MaterialPageRoute(
+          builder: (context) => const AuthenticationView());
     default:
-      return MaterialPageRoute(builder: (context) => const AuthenticationWrapper());
+      return MaterialPageRoute(builder: (context) => const AuthWrapper());
   }
 
   //return MaterialPageRoute(builder: (context) => AuthenticationWrapper());
