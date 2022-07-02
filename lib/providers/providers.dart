@@ -26,8 +26,16 @@ final userIdProvider =
     ChangeNotifierProvider<UserIdNotifier>((ref) => UserIdNotifier());
 
 class CategoryProvider extends ChangeNotifier {
-  List<ContentCategory>? categories;
+  List<ContentCategory> categories = [];
 }
 
 final categoryProvider =
     ChangeNotifierProvider<CategoryProvider>(((ref) => CategoryProvider()));
+
+//TODO actually set blocked List
+class BlockedListNotifier extends ChangeNotifier {
+  List<User> blockedList = [];
+}
+
+final blockedListProvider =
+    ChangeNotifierProvider(((ref) => BlockedListNotifier()));

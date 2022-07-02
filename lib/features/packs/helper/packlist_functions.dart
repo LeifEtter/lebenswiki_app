@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
 
 class PackListFunctions {

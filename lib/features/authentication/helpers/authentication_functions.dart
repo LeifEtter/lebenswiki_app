@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/api/token/token_handler.dart';
 import 'package:lebenswiki_app/main.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationFunctions {
   void logout(context) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.clear();
+    TokenHandler().delete();
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => const AuthWrapper(),
     ));

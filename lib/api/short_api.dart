@@ -64,11 +64,13 @@ class ShortApi extends BaseApi {
     );
   }
 
-  Future<ResultModel> getShortsByCategory(
-          {required ContentCategory category}) =>
-      _getShorts(
-          url: "categories/shorts/${category.id}",
-          errorMessage: "Es wurden keine shorts gefunden");
+  Future<ResultModel> getShortsByCategory({required ContentCategory category}) {
+    return category.categoryName != "Neu"
+        ? _getShorts(
+            url: "categories/shorts/${category.id}",
+            errorMessage: "Es wurden keine shorts gefunden")
+        : getAllShorts();
+  }
 
   Future<ResultModel> getAllShorts() => _getShorts(
       url: "shorts/", errorMessage: "Es wurden keine shorts gefunden");

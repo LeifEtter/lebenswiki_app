@@ -13,7 +13,6 @@ import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationView extends StatefulWidget {
   const AuthenticationView({Key? key}) : super(key: key);

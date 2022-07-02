@@ -20,7 +20,6 @@ class PackApi extends BaseApi {
       headers: await requestHeader(),
       body: jsonEncode(pack.toJson()),
     );
-    print(res.body);
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.success,
@@ -36,10 +35,13 @@ class PackApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> getPacksByCategory({required ContentCategory category}) =>
-      getPacks(
-          url: "categories/packs/${category.id}",
-          errorMessage: "Es wurden keine Lernpacks gefunden");
+  Future<ResultModel> getPacksByCategory({required ContentCategory category}) {
+    return category.categoryName != "Neu"
+        ? getPacks(
+            url: "categories/packs/${category.id}",
+            errorMessage: "Es wurden keine Lernpacks gefunden")
+        : getAllPacks();
+  }
 
   Future<ResultModel> getOwnPublishedpacks() => getPacks(
       url: "packs/published",

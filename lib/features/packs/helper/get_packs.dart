@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/pack_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
-import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/packs/components/pack_card.dart';
-import 'package:lebenswiki_app/features/packs/components/pack_card_edit.dart';
-import 'package:lebenswiki_app/features/common/components/loading.dart';
+import 'package:lebenswiki_app/features/packs/components/pack_card_editable.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/models/user_model.dart';
+import 'package:lebenswiki_app/providers/providers.dart';
 
-class GetPacks extends StatefulWidget {
+class GetPacks extends ConsumerStatefulWidget {
   final ContentCategory? category;
   final Function reload;
   final CardType cardType;
@@ -25,53 +26,45 @@ class GetPacks extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _GetPacksState createState() => _GetPacksState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _GetPacksState();
 }
 
-class _GetPacksState extends State<GetPacks> {
+class _GetPacksState extends ConsumerState<GetPacks> {
   final PackApi packApi = PackApi();
-  final UserApi userApi = UserApi();
   bool provideCategory = false;
   late Function packFuture;
   late Function(Pack, Function) returnCard;
 
   @override
   Widget build(BuildContext context) {
+    //TODO fix blockedList
+    final List<User> blockedList = ref.watch(blockedListProvider).blockedList;
     _updateParameters();
     return FutureBuilder(
-      future: userApi.getBlockedUsers(),
-      builder: (context, AsyncSnapshot blockedList) {
-        if (!blockedList.hasData) {
-          return const Loading();
-        } else {
-          return FutureBuilder(
-            future: provideCategory
-                ? packFuture(category: widget.category)
-                : packFuture(),
-            builder: (context, AsyncSnapshot<ResultModel> snapshot) {
-              if (isLoading(snapshot)) {
-                return const Loading();
-              }
-              ResultModel response = snapshot.data!;
-              List responseList = response.responseList;
-              if (responseList.isEmpty) {
-                return Text(response.message!);
-              }
-              //responseList = _filterBlocked(responseList, blockedList.data);
-              return Expanded(
-                child: ListView.builder(
-                  addAutomaticKeepAlives: true,
-                  shrinkWrap: true,
-                  itemCount: responseList.length,
-                  itemBuilder: (context, index) {
-                    Pack pack = responseList[index];
-                    return returnCard(pack, widget.reload);
-                  },
-                ),
-              );
-            },
-          );
+      future: provideCategory
+          ? packFuture(category: widget.category)
+          : packFuture(),
+      builder: (context, AsyncSnapshot<ResultModel> snapshot) {
+        if (LoadingHelper.isLoading(snapshot)) {
+          return LoadingHelper.loadingIndicator();
         }
+        ResultModel response = snapshot.data!;
+        List responseList = response.responseList;
+        if (responseList.isEmpty) {
+          return Text(response.message!);
+        }
+        //responseList = _filterBlocked(responseList, blockedList.data);
+        return Expanded(
+          child: ListView.builder(
+            addAutomaticKeepAlives: true,
+            shrinkWrap: true,
+            itemCount: responseList.length,
+            itemBuilder: (context, index) {
+              Pack pack = responseList[index];
+              return returnCard(pack, widget.reload);
+            },
+          ),
+        );
       },
     );
   }
@@ -80,9 +73,7 @@ class _GetPacksState extends State<GetPacks> {
     switch (widget.cardType) {
       case CardType.packsByCategory:
         provideCategory = true;
-        packFuture = widget.category!.categoryName == "Neu"
-            ? packApi.getAllPacks
-            : packApi.getPacksByCategory;
+        packFuture = packApi.getPacksByCategory;
         returnCard = (pack, reload) => PackCard(pack: pack, reload: reload);
         break;
       case CardType.packBookmarks:

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_feed.dart';
-import 'package:lebenswiki_app/features/common/components/bottom_nav_bar.dart';
-import 'package:lebenswiki_app/features/common/components/main_appbar.dart';
+import 'package:lebenswiki_app/features/common/components/nav/bottom_nav_bar.dart';
+import 'package:lebenswiki_app/features/common/components/nav/main_appbar.dart';
 import 'package:lebenswiki_app/features/menu/components/menu_bar.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/add_button.dart';
 import 'package:lebenswiki_app/features/routing/router.dart';
 import 'package:lebenswiki_app/features/routing/routing_constants.dart';
-import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/authentication/views/authentication_view.dart';
-import 'package:lebenswiki_app/features/shorts/views/search_view.dart';
 import 'package:lebenswiki_app/features/shorts/views/short_feed.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:flutter/services.dart';
@@ -82,8 +80,8 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
       drawer: const MenuBar(),
       floatingActionButton: dialAddButton(context),
       backgroundColor: Colors.white,
-      appBar: MainAppBar(
-        searchRoute: _searchRoute,
+      appBar: const MainAppBar(
+        //searchRoute: _searchRoute,
       ),
       bottomNavigationBar: BottomNavBar(
         onItemTapped: onItemTapped,
@@ -106,7 +104,8 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
         _currentIndex = index;
       });
 
-  Route _searchRoute() {
+  //TODO implement search route
+  /*Route _searchRoute() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => const SearchView(
         cardType: CardType.shortsByCategory,
@@ -125,5 +124,5 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
         );
       },
     );
-  }
+  }*/
 }

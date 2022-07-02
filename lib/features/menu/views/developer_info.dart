@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/features/styling/input_styling.dart';
-import 'package:lebenswiki_app/features/common/components/top_nav.dart';
+import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 
 class DeveloperInfoView extends StatefulWidget {
   const DeveloperInfoView({Key? key}) : super(key: key);

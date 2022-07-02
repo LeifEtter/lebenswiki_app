@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/pack_api.dart';
 import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card_scaffold.dart';
@@ -153,4 +153,4 @@ class _FilterViewState extends State<FilterView> {
   void upvote(id) {
     //TODO implement upvoting through search
   }
-}
+}*/

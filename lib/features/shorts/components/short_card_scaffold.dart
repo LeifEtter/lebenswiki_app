@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/comment_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
 import 'package:lebenswiki_app/features/comments/helper/get_comments.dart';
 import 'package:lebenswiki_app/features/styling/comment_input.dart';
-import 'package:lebenswiki_app/features/common/components/loading.dart';
 import 'package:lebenswiki_app/features/styling/shadows.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/short_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lebenswiki_app/providers/providers.dart';
 
-class ShortCardScaffold extends StatefulWidget {
+class ShortCardScaffold extends ConsumerStatefulWidget {
   final Short short;
   final Function reload;
   final CardType cardType;
@@ -26,10 +26,11 @@ class ShortCardScaffold extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ShortCardScaffoldState createState() => _ShortCardScaffoldState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _ShortCardScaffoldState();
 }
 
-class _ShortCardScaffoldState extends State<ShortCardScaffold>
+class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold>
     with AutomaticKeepAliveClientMixin {
   bool _commentsExpanded = false;
   final TextEditingController _commentController = TextEditingController();
@@ -39,104 +40,87 @@ class _ShortCardScaffoldState extends State<ShortCardScaffold>
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getUserId(),
-      builder: (context, AsyncSnapshot snapshot) {
-        if (!snapshot.hasData ||
-            snapshot.data == null ||
-            widget.short.bookmarks.isEmpty) {
-          return const Loading();
-        } else {
-          return Padding(
-            padding: const EdgeInsets.only(top: 5, left: 10.0, right: 10.0),
-            child: Container(
-              decoration: BoxDecoration(boxShadow: [
-                LebenswikiShadows().cardShadow,
-              ]),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                elevation: 0,
-                child: Column(
-                  children: [
-                    ShortCard(
-                      short: widget.short,
-                      reload: widget.reload,
-                      cardType: widget.cardType,
-                      userId: snapshot.data,
-                      commentExpand: _triggerComments,
-                      menuCallback: widget.menuCallback,
-                    ),
-                    widget.cardType == CardType.shortsByCategory
-                        ? Visibility(
-                            visible: _commentsExpanded,
-                            child: Column(
-                              children: [
-                                const Divider(),
-                                Row(
-                                  children: [
-                                    const SizedBox(width: 10.0),
-                                    Expanded(
-                                      child: CommentInput(
-                                        child: TextField(
-                                          maxLines: null,
-                                          controller: _commentController,
-                                          decoration: const InputDecoration(
-                                            contentPadding:
-                                                EdgeInsets.all(12.0),
-                                            border: InputBorder.none,
-                                            isDense: true,
-                                          ),
-                                        ),
-                                      ),
+    super.build(context);
+    final int userId = ref.watch(userIdProvider).userId!;
+    return Padding(
+      padding: const EdgeInsets.only(top: 5, left: 10.0, right: 10.0),
+      child: Container(
+        decoration: BoxDecoration(boxShadow: [
+          LebenswikiShadows().cardShadow,
+        ]),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          elevation: 0,
+          child: Column(
+            children: [
+              ShortCard(
+                short: widget.short,
+                reload: widget.reload,
+                cardType: widget.cardType,
+                userId: userId,
+                commentExpand: _triggerComments,
+                menuCallback: widget.menuCallback,
+              ),
+              widget.cardType == CardType.shortsByCategory
+                  ? Visibility(
+                      visible: _commentsExpanded,
+                      child: Column(
+                        children: [
+                          const Divider(),
+                          Row(
+                            children: [
+                              const SizedBox(width: 10.0),
+                              Expanded(
+                                child: CommentInput(
+                                  child: TextField(
+                                    maxLines: null,
+                                    controller: _commentController,
+                                    decoration: const InputDecoration(
+                                      contentPadding: EdgeInsets.all(12.0),
+                                      border: InputBorder.none,
+                                      isDense: true,
                                     ),
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.add,
-                                        size: 30.0,
-                                      ),
-                                      onPressed: () {
-                                        commentApi
-                                            .createCommentShort(
-                                                comment:
-                                                    _commentController.text,
-                                                id: widget.short.id)
-                                            .then((ResultModel result) {
-                                          _commentController.text = "";
-                                          widget.reload();
-                                        });
-                                      },
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 10.0),
-                                  child: GetContentComments(
-                                    reload: widget.reload,
-                                    comments: widget.short.comments,
-                                    menuCallback: widget.menuCallback,
                                   ),
-                                )
-                              ],
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.add,
+                                  size: 30.0,
+                                ),
+                                onPressed: () {
+                                  commentApi
+                                      .createCommentShort(
+                                          comment: _commentController.text,
+                                          id: widget.short.id)
+                                      .then((ResultModel result) {
+                                    _commentController.text = "";
+                                    widget.reload();
+                                  });
+                                },
+                              )
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10.0),
+                            child: GetContentComments(
+                              reload: widget.reload,
+                              comments: widget.short.comments,
+                              menuCallback: widget.menuCallback,
                             ),
                           )
-                        : Container(),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }
-      },
+                        ],
+                      ),
+                    )
+                  : Container(),
+            ],
+          ),
+        ),
+      ),
     );
-  }
-
-  Future<int?> getUserId() async {
-    var prefs = await SharedPreferences.getInstance();
-    int? userId = prefs.getInt("userId");
-    return userId;
   }
 
   void _triggerComments() {

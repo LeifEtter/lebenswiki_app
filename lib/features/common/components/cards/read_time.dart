@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-Widget readTime() => Container(
-      child: const Text(
-        "4 MIN LESEZEIT",
-        style: TextStyle(
+Widget readTime(int readTime) => Container(
+      child: Text(
+        "$readTime MIN LESEZEIT",
+        style: const TextStyle(
           fontWeight: FontWeight.w500,
         ),
       ),

@@ -31,7 +31,7 @@ class _ShortFeedState extends ConsumerState<ShortFeed> {
   @override
   Widget build(BuildContext context) {
     final List<ContentCategory> categories =
-        ref.read(categoryProvider).categories!;
+        ref.read(categoryProvider).categories;
     return DefaultTabController(
       length: categories.length,
       child: Column(

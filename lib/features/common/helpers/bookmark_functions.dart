@@ -1,7 +1,6 @@
 import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class BookmarkHelper {
   int contentId;

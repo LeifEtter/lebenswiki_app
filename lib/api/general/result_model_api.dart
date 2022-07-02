@@ -1,5 +1,6 @@
 import 'package:lebenswiki_app/models/enums.dart';
 
+//TODO refactor response model to be more specific
 class ResultModel {
   ResultType type;
   List responseList;

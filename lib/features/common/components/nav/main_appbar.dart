@@ -3,11 +3,11 @@ import 'package:lebenswiki_app/features/styling/text_styles.dart';
 import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final Function searchRoute;
+  //final Function searchRoute;
 
   const MainAppBar({
     Key? key,
-    required this.searchRoute,
+    //required this.searchRoute,
   }) : super(key: key);
 
   @override
@@ -45,7 +45,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         IconButton(
           onPressed: () {
-            Navigator.of(context).push(searchRoute());
+            // Navigator.of(context).push(searchRoute());
           },
           icon: Image.asset("assets/icons/search.png", width: 28),
         )

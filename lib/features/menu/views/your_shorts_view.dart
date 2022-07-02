@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/features/common/components/top_nav.dart';
+import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 import 'package:lebenswiki_app/features/shorts/helper/get_shorts.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 

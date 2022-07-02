@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/comment_api.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/vote_button.dart';
-import 'package:lebenswiki_app/features/packs/components/creator_info.dart';
+import 'package:lebenswiki_app/features/common/components/cards/creator_info.dart';
 import 'package:lebenswiki_app/features/common/helpers/reaction_functions.dart';
 import 'package:lebenswiki_app/features/common/helpers/vote_functions.dart';
 import 'package:lebenswiki_app/features/styling/text_styles.dart';
