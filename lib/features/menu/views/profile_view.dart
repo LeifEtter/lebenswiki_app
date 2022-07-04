@@ -11,6 +11,7 @@ import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
 //TODO show popups for succesfull changing
+//TODO implement proper validation
 class ProfileView extends ConsumerStatefulWidget {
   const ProfileView({Key? key}) : super(key: key);
 
@@ -38,7 +39,8 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
     _nameController.text = user.name;
     _emailController.text = user.email!;
     _biographyController.text = user.biography;
-    return Scaffold(
+    return Container();
+    /*return Scaffold(
         body: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: ListView(
@@ -181,9 +183,9 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
           const SizedBox(height: 20),
         ],
       ),
-    ));
+    ));*/
   }
-
+  /*
   void validationProfile() {
     errorMap["name"] =
         _nameController.text.toString().isEmpty ? "Bitte Namen eingeben" : "";
@@ -258,5 +260,5 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
       _passwordController.text = "";
       _repeatPasswordController.text = "";
     });
-  }
+  }*/
 }

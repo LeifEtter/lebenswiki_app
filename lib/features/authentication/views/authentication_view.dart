@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/token/token_handler.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
+import 'package:lebenswiki_app/features/authentication/components/custom_form_field.dart';
+import 'package:lebenswiki_app/features/authentication/providers/auth_providers.dart';
 import 'package:lebenswiki_app/repos/image_repo.dart';
 import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/authentication_buttons.dart';
@@ -14,15 +17,17 @@ import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
-class AuthenticationView extends StatefulWidget {
+class AuthenticationView extends ConsumerStatefulWidget {
   const AuthenticationView({Key? key}) : super(key: key);
 
   @override
-  _AuthenticationViewState createState() => _AuthenticationViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _AuthenticationViewState();
 }
 
-class _AuthenticationViewState extends State<AuthenticationView> {
+class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
   final UserApi userApi = UserApi();
+  late FormNotifier _formProvider;
   bool isAdminSignUp = false;
   bool isSignUp = false;
   bool _defaultProfilePic = false;
@@ -33,13 +38,13 @@ class _AuthenticationViewState extends State<AuthenticationView> {
   final TextEditingController _biographyController = TextEditingController();
   final TextEditingController _profileImageController = TextEditingController();
 
-  void toggleSignIn() {
+  /*void toggleSignIn() {
     isSignUp ? isSignUp = false : isSignUp = true;
     errorMap.forEach((k, v) {
       errorMap[k] = "";
     });
     setState(() {});
-  }
+  }*/
 
   void toggleAdminSignup() {
     isAdminSignUp ? isAdminSignUp = false : isAdminSignUp = true;
@@ -50,6 +55,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
   Widget build(BuildContext context) {
     MediaQueryData queryData;
     queryData = MediaQuery.of(context);
+    _formProvider = ref.watch(formProvider);
     return Scaffold(
       body: SizedBox(
         child: Padding(
@@ -72,14 +78,19 @@ class _AuthenticationViewState extends State<AuthenticationView> {
                 Visibility(
                   visible: isSignUp,
                   child: AuthInputStyling(
-                    child: TextFormField(
-                      controller: _nameController,
-                      decoration: customInputDecoration(
-                          "Vorname Nachname", Icons.person),
+                    child: CustomInputField(
+                      hintText: "Vorname Nachname",
+                      errorText: _formProvider.name.error,
+                      iconData: Icons.person,
+                      onChanged: _formProvider.validateName,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r"[a-zA-Z]+|\s"),
+                        )
+                      ],
                     ),
                   ),
                 ),
-                errorHint("name"),
                 const SizedBox(height: 5),
                 AuthInputStyling(
                   child: TextFormField(
@@ -88,7 +99,6 @@ class _AuthenticationViewState extends State<AuthenticationView> {
                         customInputDecoration("Email", Icons.local_post_office),
                   ),
                 ),
-                errorHint("email"),
                 const SizedBox(height: 5),
                 AuthInputStyling(
                   child: TextFormField(
@@ -97,7 +107,6 @@ class _AuthenticationViewState extends State<AuthenticationView> {
                     decoration: customInputDecoration("Passwort", Icons.lock),
                   ),
                 ),
-                errorHint("password"),
                 Visibility(
                   visible: isSignUp ? true : false,
                   child: AuthInputBiography(
@@ -121,9 +130,6 @@ class _AuthenticationViewState extends State<AuthenticationView> {
                         onChanged: (value) {
                           setState(() {
                             _defaultProfilePic = value!;
-                            errorMap.forEach((k, v) {
-                              errorMap[k] = "";
-                            });
                           });
                         },
                       ),
@@ -143,7 +149,6 @@ class _AuthenticationViewState extends State<AuthenticationView> {
                     ),
                   ),
                 ),
-                errorHint("profileImage"),
                 Consumer(
                   builder: (context, WidgetRef ref, child) {
                     return Padding(
@@ -152,7 +157,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
                         text: isSignUp ? "Registrieren" : "Einloggen",
                         color: LebenswikiColors.createPackButton,
                         onPress: () {
-                          validation(ref);
+                          //validation(ref);
                         },
                       ),
                     );
@@ -161,11 +166,11 @@ class _AuthenticationViewState extends State<AuthenticationView> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 30),
                   child: TextButton(
-                    child: Text(isSignUp
-                        ? "Du hast schon ein Account?"
-                        : "Du bist noch nicht registriert?"),
-                    onPressed: () => toggleSignIn(),
-                  ),
+                      child: Text(isSignUp
+                          ? "Du hast schon ein Account?"
+                          : "Du bist noch nicht registriert?"),
+                      onPressed: () => {} //toggleSignIn(),
+                      ),
                 ),
               ],
             ),
@@ -190,7 +195,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
     );
   }
 
-  void validation(WidgetRef ref) {
+  /*void validation(WidgetRef ref) {
     if (isSignUp) {
       errorMap["name"] =
           _nameController.text.toString().isEmpty ? "Bitte Namen eingeben" : "";
@@ -217,7 +222,7 @@ class _AuthenticationViewState extends State<AuthenticationView> {
     });*/
 
     isValidated ? {isSignUp ? signUp() : signIn(ref)} : setState(() {});
-  }
+  }*/
 
   void signUp() {
     User user = User(
@@ -231,8 +236,8 @@ class _AuthenticationViewState extends State<AuthenticationView> {
     );
     userApi.register(user).then((ResultModel result) {
       if (result.type == ResultType.failure) {
-        List errorList = convertError(result.message);
-        errorMap[errorList[0]] = errorList[1];
+        //List errorList = convertError(result.message);
+        //errorMap[errorList[0]] = errorList[1];
         setState(() {});
       } else {
         setState(() {
@@ -250,8 +255,8 @@ class _AuthenticationViewState extends State<AuthenticationView> {
     )
         .then((ResultModel result) async {
       if (result.type == ResultType.failure) {
-        List errorList = convertError(result.message);
-        errorMap[errorList[0]] = errorList[1];
+        //List errorList = convertError(result.message);
+        //errorMap[errorList[0]] = errorList[1];
         setState(() {});
       } else {
         ResultModel userRequestResult = await userApi.getUserData();

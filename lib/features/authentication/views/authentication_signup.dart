@@ -60,7 +60,6 @@ class _OnboardingViewOldState extends State<OnboardingViewOld> {
                                   "Vorname Nachname", Icons.person),
                             ),
                           ),
-                          errorHint("name"),
                           const SizedBox(height: 10),
                           AuthInputStyling(
                             child: TextFormField(
@@ -69,7 +68,6 @@ class _OnboardingViewOldState extends State<OnboardingViewOld> {
                                   "Email", Icons.local_post_office),
                             ),
                           ),
-                          errorHint("email"),
                           const SizedBox(height: 10),
                           AuthInputStyling(
                             child: TextFormField(
@@ -78,7 +76,6 @@ class _OnboardingViewOldState extends State<OnboardingViewOld> {
                                   customInputDecoration("Passwort", Icons.lock),
                             ),
                           ),
-                          errorHint("password"),
                         ],
                       ),
                     ),

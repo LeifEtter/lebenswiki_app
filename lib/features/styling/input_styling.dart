@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/features/authentication/components/custom_form_field.dart';
 
 class AuthInputStyling extends StatefulWidget {
   final Color fillColor;
@@ -13,7 +14,7 @@ class AuthInputStyling extends StatefulWidget {
     this.isDeactivated = false,
   }) : super(key: key);
 
-  final TextFormField child;
+  final CustomInputField child;
 
   @override
   State<AuthInputStyling> createState() => _AuthInputStylingState();
