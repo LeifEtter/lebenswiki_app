@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/main_buttons.dart';
-import 'package:lebenswiki_app/features/styling/input_styling.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 
 class DeveloperInfoView extends StatefulWidget {
@@ -179,7 +178,8 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    Padding(
+                    //TODO Finish feedback form
+                    /*Padding(
                       padding: const EdgeInsets.only(
                           left: 30.0, right: 30.0, top: 25.0),
                       child: AuthInputBiography(
@@ -193,14 +193,14 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                           maxLines: 10,
                         ),
                       ),
-                    ),
+                    ),*/
                     const SizedBox(height: 10.0),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30.0),
                       child: Row(
                         children: [
                           Expanded(
-                          child: lebenswikiBlueButtonNormal(
+                            child: lebenswikiBlueButtonNormal(
                               text: "Feedback abschicken",
                               callback: () {
                                 userApi.createFeedback(

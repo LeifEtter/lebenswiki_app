@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
 import 'package:lebenswiki_app/features/styling/input_styling.dart';
 import 'package:lebenswiki_app/features/styling/text_styles.dart';
@@ -12,18 +12,7 @@ class OnboardingViewOld extends StatefulWidget {
 
 class _OnboardingViewOldState extends State<OnboardingViewOld> {
   final GlobalKey<FormState> _authFormKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _biographyController = TextEditingController();
-  //final TextEditingController _profileImageController = TextEditingController();
   final PageController _pageController = PageController();
-  Map errorMap = {
-    "name": "",
-    "email": "",
-    "password": "",
-    "biography": "",
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -148,4 +137,4 @@ class _OnboardingViewOldState extends State<OnboardingViewOld> {
       ),
     );
   }
-}
+}*/

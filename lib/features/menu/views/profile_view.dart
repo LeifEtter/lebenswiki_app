@@ -4,7 +4,6 @@ import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/authentication_buttons.dart';
-import 'package:lebenswiki_app/features/styling/input_styling.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
@@ -21,16 +20,13 @@ class ProfileView extends ConsumerStatefulWidget {
 
 class _ProfileViewState extends ConsumerState<ProfileView> {
   final UserApi userApi = UserApi();
-  final TextEditingController _profileImageController = TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _oldPasswordController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _repeatPasswordController =
-      TextEditingController();
-  final TextEditingController _biographyController = TextEditingController();
-
   late User user;
+
+  @override
+  void initState() {
+    super.initState();
+    //TODO set initial values for textfields
+  }
 
   @override
   Widget build(BuildContext context) {

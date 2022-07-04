@@ -7,9 +7,7 @@ import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/authentication/components/custom_form_field.dart';
 import 'package:lebenswiki_app/features/authentication/providers/auth_providers.dart';
 import 'package:lebenswiki_app/repos/image_repo.dart';
-import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/authentication_buttons.dart';
-import 'package:lebenswiki_app/features/styling/input_styling.dart';
 import 'package:lebenswiki_app/features/styling/colors.dart';
 import 'package:lebenswiki_app/features/styling/text_styles.dart';
 import 'package:lebenswiki_app/main.dart';
@@ -32,37 +30,26 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
   bool isSignUp = false;
   bool _defaultProfilePic = false;
   final GlobalKey<FormState> _authFormKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _biographyController = TextEditingController();
-  final TextEditingController _profileImageController = TextEditingController();
 
-  /*void toggleSignIn() {
-    isSignUp ? isSignUp = false : isSignUp = true;
-    errorMap.forEach((k, v) {
-      errorMap[k] = "";
-    });
-    setState(() {});
-  }*/
+  void toggleSignIn() => setState(() {
+        isSignUp = !isSignUp;
+      });
 
-  void toggleAdminSignup() {
-    isAdminSignUp ? isAdminSignUp = false : isAdminSignUp = true;
-    setState(() {});
-  }
+  void toggleAdminSignup() => setState(() {
+        isAdminSignUp = !isAdminSignUp;
+      });
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData queryData;
-    queryData = MediaQuery.of(context);
+    MediaQueryData queryData = MediaQuery.of(context);
+    double scHeight = queryData.size.height;
     _formProvider = ref.watch(formProvider);
+
     return Scaffold(
       body: SizedBox(
         child: Padding(
           padding: EdgeInsets.only(
-              top: queryData.size.height / (isSignUp ? 12 : 6),
-              left: 30,
-              right: 30.0),
+              top: scHeight / (isSignUp ? 12 : 6), left: 30, right: 30.0),
           child: Form(
             key: _authFormKey,
             child: ListView(
@@ -75,78 +62,74 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                   ),
                 ),
                 const SizedBox(height: 30.0),
-                Visibility(
-                  visible: isSignUp,
-                  child: AuthInputStyling(
-                    child: CustomInputField(
-                      hintText: "Vorname Nachname",
-                      errorText: _formProvider.name.error,
-                      iconData: Icons.person,
-                      onChanged: _formProvider.validateName,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                          RegExp(r"[a-zA-Z]+|\s"),
-                        )
-                      ],
-                    ),
-                  ),
+                CustomInputField(
+                  paddingTop: 5,
+                  hintText: "Vorname Nachname",
+                  errorText: _formProvider.name.error,
+                  iconData: Icons.person,
+                  onChanged: _formProvider.validateName,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                      RegExp(r"[a-zA-Z]+|\s"),
+                    )
+                  ],
                 ),
-                const SizedBox(height: 5),
-                AuthInputStyling(
-                  child: TextFormField(
-                    controller: _emailController,
-                    decoration:
-                        customInputDecoration("Email", Icons.local_post_office),
-                  ),
-                ),
-                const SizedBox(height: 5),
-                AuthInputStyling(
-                  child: TextFormField(
-                    obscureText: true,
-                    controller: _passwordController,
-                    decoration: customInputDecoration("Passwort", Icons.lock),
-                  ),
+                CustomInputField(
+                  paddingTop: 5,
+                  hintText: "Email Adresse",
+                  onChanged: _formProvider.validateEmail,
+                  errorText: _formProvider.email.error,
+                  iconData: Icons.local_post_office,
                 ),
                 Visibility(
                   visible: isSignUp ? true : false,
-                  child: AuthInputBiography(
-                    child: TextFormField(
-                      controller: _biographyController,
-                      obscureText: false,
-                      decoration: customInputDecoration(
-                          "Erzähl uns was über dich", Icons.note_alt_rounded),
-                      minLines: 2,
-                      maxLines: 5,
-                    ),
+                  child: CustomInputField(
+                    hintText: "Biography",
+                    onChanged: _formProvider.validateBiography,
+                    errorText: _formProvider.biography.error,
+                    iconData: Icons.note_alt_rounded,
                   ),
                 ),
-                const SizedBox(height: 10),
+                CustomInputField(
+                  paddingTop: 5,
+                  hintText: "Passwort",
+                  onChanged: _formProvider.validatePassword,
+                  errorText: _formProvider.password.error,
+                  iconData: Icons.key,
+                  isPassword: true,
+                ),
+                Visibility(
+                  visible: isSignUp,
+                  child: CustomInputField(
+                    paddingTop: 5,
+                    hintText: "Passwort Wiederholen",
+                    onChanged: _formProvider.validateRepeatPassword,
+                    errorText: _formProvider.repeatPassword.error,
+                    iconData: Icons.key,
+                    isPassword: true,
+                  ),
+                ),
                 Visibility(
                   visible: isSignUp,
                   child: Row(
                     children: [
                       Checkbox(
-                        value: _defaultProfilePic,
-                        onChanged: (value) {
-                          setState(() {
-                            _defaultProfilePic = value!;
-                          });
-                        },
-                      ),
+                          value: _defaultProfilePic,
+                          onChanged: (value) => setState(() {
+                                _defaultProfilePic = value!;
+                              })),
                       const Text("Das Standardprofilbild verwenden")
                     ],
                   ),
                 ),
                 Visibility(
                   visible: isSignUp ? true : false,
-                  child: AuthInputStyling(
-                    isDeactivated: _defaultProfilePic,
-                    child: TextFormField(
-                      enabled: _defaultProfilePic,
-                      controller: _profileImageController,
-                      decoration:
-                          customInputDecoration("Profilbild", Icons.image),
-                    ),
+                  child: CustomInputField(
+                    paddingTop: 5,
+                    hintText: "Profilbild",
+                    errorText: _formProvider.profileImage.error,
+                    onChanged: _formProvider.validateProfileImage,
+                    iconData: Icons.image,
                   ),
                 ),
                 Consumer(
@@ -157,7 +140,12 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                         text: isSignUp ? "Registrieren" : "Einloggen",
                         color: LebenswikiColors.createPackButton,
                         onPress: () {
-                          //validation(ref);
+                          if (isSignUp && _formProvider.validateForRegister) {
+                            signUp();
+                          } else if (!isSignUp &&
+                              _formProvider.validateForLogin) {
+                            signIn(ref);
+                          }
                         },
                       ),
                     );
@@ -166,11 +154,13 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 30),
                   child: TextButton(
-                      child: Text(isSignUp
+                    child: Text(
+                      isSignUp
                           ? "Du hast schon ein Account?"
-                          : "Du bist noch nicht registriert?"),
-                      onPressed: () => {} //toggleSignIn(),
-                      ),
+                          : "Du bist noch nicht registriert?",
+                    ),
+                    onPressed: () => toggleSignIn(),
+                  ),
                 ),
               ],
             ),
@@ -195,49 +185,19 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
     );
   }
 
-  /*void validation(WidgetRef ref) {
-    if (isSignUp) {
-      errorMap["name"] =
-          _nameController.text.toString().isEmpty ? "Bitte Namen eingeben" : "";
-      errorMap["biography"] = _biographyController.text.toString().isEmpty
-          ? "Bitte Biography ausfüllen"
-          : "";
-    }
-    errorMap["email"] = _emailController.text.toString().isEmpty
-        ? "Bitte Email Adresse eingeben"
-        : "";
-    errorMap["password"] = _passwordController.text.toString().isEmpty
-        ? "Bitte gültiges Password eingeben"
-        : "";
-
-    if (!_defaultProfilePic && isSignUp) {
-      errorMap["profileImage"] = _profileImageController.text.toString().isEmpty
-          ? "Bitte gebe ein Profilbild an oder wähle das Standardprofilbild."
-          : "";
-    }
-
-    var isValidated = true;
-    /*errorMap.forEach((k, v) {
-      v != "" ? isValidated = false : 0;
-    });*/
-
-    isValidated ? {isSignUp ? signUp() : signIn(ref)} : setState(() {});
-  }*/
-
+  //TODO encrypt password
   void signUp() {
     User user = User(
-      email: _emailController.text.toString(),
-      name: _nameController.text.toString(),
-      password: _passwordController.text.toString(),
-      biography: _biographyController.text.toString(),
-      profileImage: _defaultProfilePic
-          ? ImageRepo.standardProfileImage
-          : _profileImageController.text.toString(),
+      email: _formProvider.email.value,
+      name: _formProvider.name.value ?? "",
+      password: _formProvider.password.value,
+      biography: _formProvider.biography.value ?? "",
+      profileImage:
+          _formProvider.profileImage.value ?? ImageRepo.standardProfileImage,
     );
+
     userApi.register(user).then((ResultModel result) {
       if (result.type == ResultType.failure) {
-        //List errorList = convertError(result.message);
-        //errorMap[errorList[0]] = errorList[1];
         setState(() {});
       } else {
         setState(() {
@@ -247,16 +207,14 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
     });
   }
 
+  //TODO encrypt password
   void signIn(WidgetRef ref) async {
     userApi
         .login(
-      email: _emailController.text.toString(),
-      password: _passwordController.text.toString(),
-    )
+            email: _formProvider.email.value ?? "",
+            password: _formProvider.password.value ?? "")
         .then((ResultModel result) async {
       if (result.type == ResultType.failure) {
-        //List errorList = convertError(result.message);
-        //errorMap[errorList[0]] = errorList[1];
         setState(() {});
       } else {
         ResultModel userRequestResult = await userApi.getUserData();
