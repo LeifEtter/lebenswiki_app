@@ -1,35 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/views/packs/feed.dart';
-import 'package:lebenswiki_app/components/navigation/bottom_nav_bar.dart';
-import 'package:lebenswiki_app/components/navigation/main_appbar.dart';
-import 'package:lebenswiki_app/components/navigation/menu_bar.dart';
-import 'package:lebenswiki_app/components/buttons/add_button.dart';
-import 'package:lebenswiki_app/components/navigation/router.dart';
-import 'package:lebenswiki_app/data/loading.dart';
-import 'package:lebenswiki_app/data/routing_constants.dart';
-import 'package:lebenswiki_app/models/enums.dart';
-import 'package:lebenswiki_app/views/authentication/authentication_view.dart';
-import 'package:lebenswiki_app/views/shorts/search_view.dart';
-import 'package:lebenswiki_app/views/shorts/short_view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lebenswiki_app/features/packs/views/pack_feed.dart';
+import 'package:lebenswiki_app/features/common/components/nav/bottom_nav_bar.dart';
+import 'package:lebenswiki_app/features/common/components/nav/main_appbar.dart';
+import 'package:lebenswiki_app/features/menu/components/menu_bar.dart';
+import 'package:lebenswiki_app/features/common/components/buttons/add_button.dart';
+import 'package:lebenswiki_app/features/routing/router.dart';
+import 'package:lebenswiki_app/features/routing/routing_constants.dart';
+import 'package:lebenswiki_app/features/authentication/views/authentication_view.dart';
+import 'package:lebenswiki_app/features/shorts/views/short_feed.dart';
+import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:flutter/services.dart';
 
-final tokenProvider = Provider((_) => 'Some token');
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-
   runApp(
-    const MyApp(),
+    const ProviderScope(child: MyApp()),
   );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -44,44 +38,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class AuthenticationWrapper extends StatefulWidget {
-  const AuthenticationWrapper({Key? key}) : super(key: key);
+class AuthWrapper extends ConsumerWidget {
+  const AuthWrapper({Key? key}) : super(key: key);
 
   @override
-  _AuthenticationWrapperState createState() => _AuthenticationWrapperState();
-}
-
-class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
-  Future<List> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey('token')) {
-      return [];
-    } else {
-      String? token = prefs.getString("token");
-      return [token];
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getToken(),
-      builder: (context, AsyncSnapshot token) {
-        if (!token.hasData) {
-          return const Loading();
-        }
-        //return OnboardingView();
-        if (token.data.length == 0) {
-          return const Scaffold(body: AuthenticationView());
-        } else {
-          return const NavBarWrapper();
-          //return YourCreatorPacks();
-          //return const PackPageView([]);
-          //return const TestParent();
-
-        }
-      },
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String token = ref.read(tokenProvider).token;
+    return token.isEmpty ? const AuthenticationView() : const NavBarWrapper();
   }
 }
 
@@ -110,15 +73,15 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> _pages = <Widget>[
-      const PackView(),
-      const ShortView(),
+      const PackFeed(),
+      const ShortFeed(),
     ];
     return Scaffold(
       drawer: const MenuBar(),
       floatingActionButton: dialAddButton(context),
       backgroundColor: Colors.white,
-      appBar: MainAppBar(
-        searchRoute: _searchRoute,
+      appBar: const MainAppBar(
+        //searchRoute: _searchRoute,
       ),
       bottomNavigationBar: BottomNavBar(
         onItemTapped: onItemTapped,
@@ -127,23 +90,22 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
       body: PageView(
         controller: pageController,
         children: _pages,
-        onPageChanged: (index) {
+        onPageChanged: (index) => setState(() {
           _currentIndex = index;
-          setState(() {});
-        },
+        }),
       ),
     );
   }
 
-  void onItemTapped(int index) {
-    setState(() {
-      pageController.animateToPage(index,
-          duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
-      _currentIndex = index;
-    });
-  }
+  void onItemTapped(int index) => setState(() {
+        pageController.animateToPage(index,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut);
+        _currentIndex = index;
+      });
 
-  Route _searchRoute() {
+  //TODO implement search route
+  /*Route _searchRoute() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => const SearchView(
         cardType: CardType.shortsByCategory,
@@ -162,5 +124,5 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
         );
       },
     );
-  }
+  }*/
 }

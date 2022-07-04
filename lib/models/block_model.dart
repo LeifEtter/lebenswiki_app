@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:lebenswiki_app/helper/date_helper.dart';
+import 'package:lebenswiki_app/features/common/helpers/date_helper.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 
 Block blockFromJson(String str) => Block.fromJson(json.decode(str));

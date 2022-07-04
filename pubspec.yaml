@@ -15,25 +15,17 @@ dependencies:
   http: ^0.13.4
   shared_preferences: ^2.0.12
   flutter_emoji: ^2.4.0
-  flutter_riverpod: ^1.0.3
+  flutter_riverpod: ^1.0.4
   intl: ^0.17.0
-  flutter_email_sender: ^5.1.0
-  quill_markdown: ^0.1.0
-  flutter_markdown: ^0.6.9+1
   share_plus: ^4.0.4
-  hive: ^2.1.0
   flutter_speed_dial: ^5.1.0
-  lebenswiki_api_helper:
-    path: ../lebenswiki_api_helper
-  json_annotation: ^4.4.0
   expandable_page_view: ^1.0.14
-  email_validator: ^2.0.1
+  flutter_secure_storage: ^5.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.0.0
-  json_serializable: ^6.0.0
   flutter_lints: ^1.0.0
 
 flutter:

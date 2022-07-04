@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:lebenswiki_app/helper/date_helper.dart';
+import 'package:lebenswiki_app/features/common/helpers/date_helper.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
 import 'package:lebenswiki_app/models/short_model.dart';
@@ -23,7 +23,7 @@ class Comment {
     this.parentComment,
     this.childComments,
     this.reports,
-    this.reactions,
+    this.reactions = const [],
     this.softDelete = false,
     required this.creationDate,
     this.updatedAt,
@@ -41,7 +41,7 @@ class Comment {
   Comment? parentComment;
   List<Comment>? childComments;
   List<Report>? reports;
-  List? reactions;
+  List<Map> reactions;
   bool softDelete;
   DateTime creationDate;
   DateTime? updatedAt;
