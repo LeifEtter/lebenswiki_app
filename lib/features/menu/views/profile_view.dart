@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
-import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
+import 'package:lebenswiki_app/features/authentication/components/custom_form_field.dart';
+import 'package:lebenswiki_app/features/authentication/providers/auth_providers.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/authentication_buttons.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 import 'package:lebenswiki_app/models/enums.dart';
@@ -11,6 +13,7 @@ import 'package:lebenswiki_app/providers/providers.dart';
 
 //TODO show popups for succesfull changing
 //TODO implement proper validation
+//TODO adapt biography field
 class ProfileView extends ConsumerStatefulWidget {
   const ProfileView({Key? key}) : super(key: key);
 
@@ -21,219 +24,165 @@ class ProfileView extends ConsumerStatefulWidget {
 class _ProfileViewState extends ConsumerState<ProfileView> {
   final UserApi userApi = UserApi();
   late User user;
-
+  late FormNotifier _formProvider;
+  final GlobalKey<FormState> _authFormKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
-    //TODO set initial values for textfields
   }
 
   @override
   Widget build(BuildContext context) {
     final User user = ref.watch(userProvider).user!;
-    _profileImageController.text = user.profileImage;
-    _nameController.text = user.name;
-    _emailController.text = user.email!;
-    _biographyController.text = user.biography;
-    return Container();
-    /*return Scaffold(
+    _formProvider = ref.watch(formProvider);
+    return Scaffold(
         body: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: ListView(
-        children: [
-          const TopNav(pageName: "Profil", backName: "Menu"),
-          const SizedBox(height: 10.0),
-          CircleAvatar(
-            child: ClipOval(
-              child: Image.network(
-                user.profileImage,
-              ),
+      child: Form(
+        key: _authFormKey,
+        child: ListView(
+          children: [
+            const TopNav(pageName: "Profil", backName: "Menu"),
+            const SizedBox(height: 10.0),
+            CircleAvatar(
+              child: ClipOval(child: Image.network(user.profileImage)),
+              radius: 45,
             ),
-            radius: 45,
-          ),
-          const SizedBox(height: 10.0),
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: Text("Profilbild"),
-          ),
-          const SizedBox(height: 5.0),
-          AuthInputStyling(
-            child: TextFormField(
-              controller: _profileImageController,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(10.0),
-              ),
+            const SizedBox(height: 10.0),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text("Profilbild"),
             ),
-          ),
-          const SizedBox(height: 10.0),
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: Text("Biografie"),
-          ),
-          const SizedBox(height: 5),
-          AuthInputBiography(
-            child: TextFormField(
-              controller: _biographyController,
-              obscureText: false,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(10.0),
-              ),
-              minLines: 2,
-              maxLines: 5,
+            CustomInputField(
+              initialValue: user.profileImage,
+              paddingTop: 5,
+              hintText: "Profilbild",
+              errorText: _formProvider.profileImage.error,
+              onChanged: _formProvider.validateProfileImage,
+              iconData: Icons.image,
             ),
-          ),
-          const SizedBox(height: 30.0),
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: Text("Name"),
-          ),
-          const SizedBox(height: 5.0),
-          AuthInputStyling(
-            child: TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(10.0),
-              ),
+            const SizedBox(height: 10.0),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text("Biografie"),
             ),
-          ),
-          const SizedBox(height: 15.0),
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: Text("Email Adresse"),
-          ),
-          const SizedBox(height: 5.0),
-          AuthInputStyling(
-            child: TextFormField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(10.0),
-              ),
+            const SizedBox(height: 5),
+            CustomInputField(
+              initialValue: user.biography,
+              hintText: "Biography",
+              onChanged: _formProvider.validateBiography,
+              errorText: _formProvider.biography.error,
+              iconData: Icons.note_alt_rounded,
             ),
-          ),
-          const SizedBox(height: 30),
-          AuthenticationButton(
-            text: "Änderungen Speichern",
-            color: Colors.blue,
-            onPress: () => update(),
-          ),
-          const SizedBox(height: 20),
-          const Divider(),
-          const SizedBox(height: 20),
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: Text("Altes Passwort"),
-          ),
-          const SizedBox(height: 5.0),
-          AuthInputStyling(
-            child: TextFormField(
-              controller: _oldPasswordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(10.0),
-              ),
+            const SizedBox(height: 30.0),
+            CustomInputField(
+              initialValue: user.name,
+              paddingTop: 5,
+              hintText: "Vorname Nachname",
+              errorText: _formProvider.name.error,
+              iconData: Icons.person,
+              onChanged: _formProvider.validateName,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(
+                  RegExp(r"[a-zA-Z]+|\s"),
+                )
+              ],
             ),
-          ),
-          const SizedBox(height: 20),
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: Text("Neues Passwort"),
-          ),
-          const SizedBox(height: 5.0),
-          AuthInputStyling(
-            child: TextFormField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(10.0),
-              ),
+            const SizedBox(height: 15.0),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text("Email Adresse"),
             ),
-          ),
-          const SizedBox(height: 15.0),
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: Text("Neues Passwort wiederholen"),
-          ),
-          const SizedBox(height: 5.0),
-          AuthInputStyling(
-            child: TextFormField(
-              controller: _repeatPasswordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(10.0),
-              ),
+            CustomInputField(
+              initialValue: user.email,
+              paddingTop: 5,
+              hintText: "Email Adresse",
+              onChanged: _formProvider.validateEmail,
+              errorText: _formProvider.email.error,
+              iconData: Icons.local_post_office,
             ),
-          ),
-          const SizedBox(height: 30),
-          AuthenticationButton(
-            text: "Passwort Speichern",
-            color: Colors.blue,
-            onPress: () => changePassword(),
-          ),
-          const SizedBox(height: 20),
-        ],
+            const SizedBox(height: 30),
+            AuthenticationButton(
+              text: "Änderungen Speichern",
+              color: Colors.blue,
+              onPress: () => update(),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20.0),
+              child: Divider(),
+            ),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text("Altes Passwort"),
+            ),
+            const SizedBox(height: 5.0),
+            CustomInputField(
+              paddingTop: 5,
+              hintText: "Altes Passwort",
+              onChanged: _formProvider.validatePassword,
+              errorText: _formProvider.password.error,
+              iconData: Icons.key,
+              isPassword: true,
+            ),
+            const SizedBox(height: 20),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text("Neues Passwort"),
+            ),
+            const SizedBox(height: 5.0),
+            CustomInputField(
+              paddingTop: 5,
+              hintText: "Neues Passwort",
+              onChanged: _formProvider.validatePassword,
+              errorText: _formProvider.password.error,
+              iconData: Icons.key,
+              isPassword: true,
+            ),
+            const SizedBox(height: 15.0),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text("Neues Passwort wiederholen"),
+            ),
+            CustomInputField(
+              paddingTop: 5,
+              hintText: "Neues Passwort Wiederholen",
+              onChanged: _formProvider.validateRepeatPassword,
+              errorText: _formProvider.repeatPassword.error,
+              iconData: Icons.key,
+              isPassword: true,
+            ),
+            const SizedBox(height: 30),
+            AuthenticationButton(
+              text: "Passwort Speichern",
+              color: Colors.blue,
+              onPress: () => changePassword(),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
-    ));*/
-  }
-  /*
-  void validationProfile() {
-    errorMap["name"] =
-        _nameController.text.toString().isEmpty ? "Bitte Namen eingeben" : "";
-    errorMap["biography"] = _biographyController.text.toString().isEmpty
-        ? "Bitte Biography ausfüllen"
-        : "";
-    errorMap["email"] = _emailController.text.toString().isEmpty
-        ? "Bitte Email Adresse eingeben"
-        : "";
-    errorMap["profileImage"] = _profileImageController.text.toString().isEmpty
-        ? "Bitte gültiges Profilbild eingeben"
-        : "";
-
-    var isValidated = true;
-    errorMap.forEach((k, v) {
-      v != "" ? isValidated = false : 0;
-    });
-  }
-
-  void validationPassword() {
-    errorMap["password"] = _passwordController.text.toString().isEmpty
-        ? "Bitte Neues eingeben"
-        : "";
-    errorMap["oldPassword"] = _oldPasswordController.text.toString().isEmpty
-        ? "Bitte Biography ausfüllen"
-        : "";
-
-    if (_repeatPasswordController.text.toString().isEmpty) {
-      errorMap["repeatPassword"] = "Bitte Passwort nochmal eingebe";
-    } else if (!(_passwordController.text.toString() ==
-        _repeatPasswordController.text.toString())) {
-      errorMap["repeatPassword"] = "Passwörter stimmen nicht überein";
-    } else {
-      errorMap["repeatPassword"] = "";
-    }
-
-    var isValidated = true;
-    errorMap.forEach((k, v) {
-      v != "" ? isValidated = false : 0;
-    });
+    ));
   }
 
   void update() {
-    user.email = _emailController.text.toString();
-    user.name = _nameController.text.toString();
-    user.biography = _biographyController.text.toString();
-    user.profileImage = _profileImageController.text.toString();
+    //TODO create user object for updatin
+    //TODO set user provider to new user
 
-    userApi.updateProfile(user: user).then((ResultModel result) {
+    /*
+      Probably by implementing a new method insie the user notifier
+      that updates the user variable to the passed value and calls
+      "notifyListeners()""
+    */
+
+    User newUser = User(
+      name: _formProvider.name.value ?? "",
+      email: _formProvider.email.value ?? "",
+      biography: _formProvider.biography.value ?? "",
+      profileImage: _formProvider.profileImage.value ?? "",
+    );
+
+    userApi.updateProfile(user: newUser).then((ResultModel result) {
       if (result.type == ResultType.success) {
-        List errorList = convertError(result.message);
-        errorMap[errorList[0]] = errorList[1];
         setState(() {});
       } else {}
     });
@@ -242,19 +191,11 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
   void changePassword() {
     userApi
         .updatePassword(
-      oldpassword: _oldPasswordController.text.toString(),
-      password: _passwordController.text.toString(),
-    )
+            oldpassword: _formProvider.oldPassword.value ?? "",
+            password: _formProvider.password.value ?? "")
         .then((ResultModel result) {
       if (result.type == ResultType.success) {
-        List errorList = convertError(result.message);
-        errorMap[errorList[0]] = errorList[1];
-        setState(() {});
       } else {}
-    }).whenComplete(() {
-      _oldPasswordController.text = "";
-      _passwordController.text = "";
-      _repeatPasswordController.text = "";
     });
-  }*/
+  }
 }

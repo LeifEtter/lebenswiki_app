@@ -15,12 +15,14 @@ class FormNotifier extends ChangeNotifier {
   ValidationModel _biography = ValidationModel(null, null);
   ValidationModel _profileImage = ValidationModel(null, null);
   ValidationModel _repeatPassword = ValidationModel(null, null);
+  ValidationModel _oldPassword = ValidationModel(null, null);
   ValidationModel get name => _name;
   ValidationModel get email => _email;
   ValidationModel get password => _password;
   ValidationModel get biography => _biography;
   ValidationModel get profileImage => _profileImage;
   ValidationModel get repeatPassword => _repeatPassword;
+  ValidationModel get oldPassword => _oldPassword;
 
   void validateEmail(String? val) {
     if (val != null && val.isValidEmail) {
@@ -82,6 +84,19 @@ class FormNotifier extends ChangeNotifier {
 
   bool get validateForLogin {
     return _email.value != null && _password.value != null;
+  }
+
+  bool get validateForPasswordUpdate {
+    return _oldPassword.value != null &&
+        _password.value != null &&
+        _repeatPassword.value != null;
+  }
+
+  bool get validateForProfileUpdate {
+    return _email.value != null &&
+        _biography.value != null &&
+        _name.value != null &&
+        _profileImage.value != null;
   }
 }
 

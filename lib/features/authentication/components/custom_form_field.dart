@@ -11,6 +11,7 @@ class CustomInputField extends StatefulWidget {
   final bool? enabled;
   final double paddingTop;
   final bool isPassword;
+  final String? initialValue;
 
   const CustomInputField({
     Key? key,
@@ -23,6 +24,7 @@ class CustomInputField extends StatefulWidget {
     this.enabled = true,
     this.paddingTop = 0,
     this.isPassword = false,
+    this.initialValue,
   }) : super(key: key);
 
   @override
@@ -43,6 +45,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
     return customFormFieldStyling(
       paddingTop: widget.paddingTop,
       child: TextFormField(
+        initialValue: widget.initialValue ?? "",
         obscureText: obscure,
         onChanged: widget.onChanged,
         validator: widget.validator,

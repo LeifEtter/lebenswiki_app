@@ -15,6 +15,8 @@ import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
+//TODO adapt biography field
+
 class AuthenticationView extends ConsumerStatefulWidget {
   const AuthenticationView({Key? key}) : super(key: key);
 
