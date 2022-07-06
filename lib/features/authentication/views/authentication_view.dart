@@ -6,6 +6,7 @@ import 'package:lebenswiki_app/api/token/token_handler.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/authentication/components/custom_form_field.dart';
 import 'package:lebenswiki_app/features/authentication/providers/auth_providers.dart';
+import 'package:lebenswiki_app/features/testing/components/border.dart';
 import 'package:lebenswiki_app/repos/image_repo.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/authentication_buttons.dart';
 import 'package:lebenswiki_app/features/styling/colors.dart';
@@ -16,7 +17,7 @@ import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
 //TODO adapt biography field
-
+//TODO upload profile pictures to firebase storage
 class AuthenticationView extends ConsumerStatefulWidget {
   const AuthenticationView({Key? key}) : super(key: key);
 
@@ -48,23 +49,24 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
     _formProvider = ref.watch(formProvider);
 
     return Scaffold(
-      body: SizedBox(
-        child: Padding(
-          padding: EdgeInsets.only(
-              top: scHeight / (isSignUp ? 12 : 6), left: 30, right: 30.0),
-          child: Form(
-            key: _authFormKey,
-            child: ListView(
-              children: [
-                Center(
-                  child: Text(
-                    isSignUp ? "Registrieren" : "Login",
-                    style: LebenswikiTextStyles
-                        .authenticationContent.authenticationTitle,
-                  ),
+      body: Padding(
+        padding: EdgeInsets.only(
+            top: scHeight / (isSignUp ? 12 : 6), left: 30, right: 30.0),
+        child: Form(
+          key: _authFormKey,
+          child: ListView(
+            children: [
+              Center(
+                child: Text(
+                  isSignUp ? "Registrieren" : "Login",
+                  style: LebenswikiTextStyles
+                      .authenticationContent.authenticationTitle,
                 ),
-                const SizedBox(height: 30.0),
-                CustomInputField(
+              ),
+              const SizedBox(height: 30.0),
+              Visibility(
+                visible: isSignUp ? true : false,
+                child: CustomInputField(
                   paddingTop: 5,
                   hintText: "Vorname Nachname",
                   errorText: _formProvider.name.error,
@@ -76,96 +78,107 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                     )
                   ],
                 ),
-                CustomInputField(
+              ),
+              CustomInputField(
+                paddingTop: 5,
+                hintText: "Email Adresse",
+                onChanged: _formProvider.validateEmail,
+                errorText: _formProvider.email.error,
+                iconData: Icons.local_post_office,
+              ),
+              Visibility(
+                visible: isSignUp ? true : false,
+                child: CustomInputField(
                   paddingTop: 5,
-                  hintText: "Email Adresse",
-                  onChanged: _formProvider.validateEmail,
-                  errorText: _formProvider.email.error,
-                  iconData: Icons.local_post_office,
+                  isMultiline: true,
+                  hintText: "Biography",
+                  onChanged: _formProvider.validateBiography,
+                  errorText: _formProvider.biography.error,
+                  iconData: Icons.note_alt_rounded,
                 ),
-                Visibility(
-                  visible: isSignUp ? true : false,
-                  child: CustomInputField(
-                    hintText: "Biography",
-                    onChanged: _formProvider.validateBiography,
-                    errorText: _formProvider.biography.error,
-                    iconData: Icons.note_alt_rounded,
-                  ),
-                ),
-                CustomInputField(
+              ),
+              CustomInputField(
+                paddingTop: 5,
+                hintText: "Passwort",
+                onChanged: _formProvider.validatePassword,
+                errorText: _formProvider.password.error,
+                iconData: Icons.key,
+                isPassword: true,
+              ),
+              Visibility(
+                visible: isSignUp,
+                child: CustomInputField(
                   paddingTop: 5,
-                  hintText: "Passwort",
-                  onChanged: _formProvider.validatePassword,
-                  errorText: _formProvider.password.error,
+                  hintText: "Passwort Wiederholen",
+                  onChanged: _formProvider.validateRepeatPassword,
+                  errorText: _formProvider.repeatPassword.error,
                   iconData: Icons.key,
                   isPassword: true,
                 ),
-                Visibility(
-                  visible: isSignUp,
-                  child: CustomInputField(
-                    paddingTop: 5,
-                    hintText: "Passwort Wiederholen",
-                    onChanged: _formProvider.validateRepeatPassword,
-                    errorText: _formProvider.repeatPassword.error,
-                    iconData: Icons.key,
-                    isPassword: true,
-                  ),
-                ),
-                Visibility(
-                  visible: isSignUp,
-                  child: Row(
-                    children: [
-                      Checkbox(
+              ),
+              SizedBox(height: 10),
+              Visibility(
+                visible: isSignUp,
+                child: Row(
+                  children: [
+                    const SizedBox(width: 9),
+                    SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: Checkbox(
                           value: _defaultProfilePic,
                           onChanged: (value) => setState(() {
                                 _defaultProfilePic = value!;
                               })),
-                      const Text("Das Standardprofilbild verwenden")
-                    ],
-                  ),
+                    ),
+                    const Text("Das Standardprofilbild verwenden")
+                  ],
                 ),
-                Visibility(
-                  visible: isSignUp ? true : false,
-                  child: CustomInputField(
-                    paddingTop: 5,
-                    hintText: "Profilbild",
-                    errorText: _formProvider.profileImage.error,
-                    onChanged: _formProvider.validateProfileImage,
-                    iconData: Icons.image,
-                  ),
+              ),
+              Visibility(
+                visible: isSignUp ? true : false,
+                child: CustomInputField(
+                  enabled: !_defaultProfilePic,
+                  hintText: "Profilbild",
+                  errorText: _formProvider.profileImage.error,
+                  onChanged: _formProvider.validateProfileImage,
+                  iconData: Icons.image,
                 ),
-                Consumer(
-                  builder: (context, WidgetRef ref, child) {
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: AuthenticationButton(
-                        text: isSignUp ? "Registrieren" : "Einloggen",
-                        color: LebenswikiColors.createPackButton,
-                        onPress: () {
-                          if (isSignUp && _formProvider.validateForRegister) {
-                            signUp();
-                          } else if (!isSignUp &&
-                              _formProvider.validateForLogin) {
-                            signIn(ref);
-                          }
-                        },
-                      ),
-                    );
+              ),
+              Consumer(
+                builder: (context, WidgetRef ref, child) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: AuthenticationButton(
+                      text: isSignUp ? "Registrieren" : "Einloggen",
+                      color: LebenswikiColors.createPackButton,
+                      onPress: () {
+                        if (isSignUp && _formProvider.validateForRegister) {
+                          signUp();
+                        } else if (!isSignUp &&
+                            _formProvider.validateForLogin) {
+                          signIn(ref);
+                        }
+                      },
+                    ),
+                  );
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 30),
+                child: TextButton(
+                  child: Text(
+                    isSignUp
+                        ? "Du hast schon ein Account?"
+                        : "Du bist noch nicht registriert?",
+                  ),
+                  onPressed: () {
+                    _formProvider.resetErrors();
+                    toggleSignIn();
                   },
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10, bottom: 30),
-                  child: TextButton(
-                    child: Text(
-                      isSignUp
-                          ? "Du hast schon ein Account?"
-                          : "Du bist noch nicht registriert?",
-                    ),
-                    onPressed: () => toggleSignIn(),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -187,7 +200,6 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
     );
   }
 
-  //TODO encrypt password
   void signUp() {
     User user = User(
       email: _formProvider.email.value,
@@ -209,20 +221,17 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
     });
   }
 
-  //TODO encrypt password
   void signIn(WidgetRef ref) async {
     userApi
         .login(
             email: _formProvider.email.value ?? "",
             password: _formProvider.password.value ?? "")
         .then((ResultModel result) async {
-      if (result.type == ResultType.failure) {
-        setState(() {});
+      if (result.type != ResultType.success) {
+        _formProvider.handleApiError(result.message!);
       } else {
-        ResultModel userRequestResult = await userApi.getUserData();
-        User user = userRequestResult.responseItem;
-        setProviders(ref, result.responseItem, user);
-        TokenHandler().set(result.responseItem);
+        setProviders(ref, result.message!, result.responseItem);
+        TokenHandler().set(result.message!);
         navigateFeed();
       }
     });

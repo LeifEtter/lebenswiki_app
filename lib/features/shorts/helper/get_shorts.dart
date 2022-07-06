@@ -6,6 +6,7 @@ import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card_minimal.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card_scaffold.dart';
+import 'package:lebenswiki_app/features/shorts/helper/short_list_functions.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/short_model.dart';
@@ -39,7 +40,6 @@ class _GetShortsState extends ConsumerState<GetShorts> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO fix blockedList
     final List<User> blockedList = ref.watch(blockedListProvider).blockedList;
     _updateParameters();
     return FutureBuilder(
@@ -51,11 +51,12 @@ class _GetShortsState extends ConsumerState<GetShorts> {
           return LoadingHelper.loadingIndicator();
         }
         ResultModel response = snapshot.data!;
-        List responseList = response.responseList;
+        List<Short> responseList = List.from(response.responseList);
         if (responseList.isEmpty) {
           return Text(response.message!);
         }
-        //responseList = _filterBlocked(responseList, blockedList.data);
+        responseList =
+            ShortListFunctions.filterBlocked(responseList, blockedList);
         return Expanded(
           child: ListView.builder(
             addAutomaticKeepAlives: true,

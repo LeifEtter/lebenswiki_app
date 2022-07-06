@@ -10,7 +10,7 @@ class PackListFunctions {
   }
 
   //Filters out content from blocked users
-  static List _filterBlocked(List<Pack> packs, List blockedUsers) {
+  static List filterBlocked(List<Pack> packs, List blockedUsers) {
     List filteredPackList = [];
     bool canAdd = true;
 

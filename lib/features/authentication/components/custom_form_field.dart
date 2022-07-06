@@ -12,6 +12,7 @@ class CustomInputField extends StatefulWidget {
   final double paddingTop;
   final bool isPassword;
   final String? initialValue;
+  final bool isMultiline;
 
   const CustomInputField({
     Key? key,
@@ -25,6 +26,7 @@ class CustomInputField extends StatefulWidget {
     this.paddingTop = 0,
     this.isPassword = false,
     this.initialValue,
+    this.isMultiline = false,
   }) : super(key: key);
 
   @override
@@ -42,42 +44,69 @@ class _CustomInputFieldState extends State<CustomInputField> {
 
   @override
   Widget build(BuildContext context) {
-    return customFormFieldStyling(
-      paddingTop: widget.paddingTop,
-      child: TextFormField(
-        initialValue: widget.initialValue ?? "",
-        obscureText: obscure,
-        onChanged: widget.onChanged,
-        validator: widget.validator,
-        inputFormatters: widget.inputFormatters,
-        enabled: widget.enabled,
-        decoration: InputDecoration(
-          hintText: widget.hintText,
-          errorText: widget.errorText,
-          prefixIcon: Icon(widget.iconData),
-          suffixIcon: widget.isPassword
-              ? IconButton(
-                  icon: Icon(obscure ? Icons.visibility_off : Icons.visibility),
-                  onPressed: () => setState(() {
-                        obscure = !obscure;
-                      }))
-              : null,
-          border: InputBorder.none,
-        ),
+    return Padding(
+      padding: EdgeInsets.only(top: widget.paddingTop),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          customFormFieldStyling(
+              child: !widget.isMultiline
+                  ? TextFormField(
+                      initialValue: widget.initialValue ?? "",
+                      obscureText: obscure,
+                      onChanged: widget.onChanged,
+                      validator: widget.validator,
+                      inputFormatters: widget.inputFormatters,
+                      enabled: widget.enabled,
+                      decoration: InputDecoration(
+                        hintText: widget.hintText,
+                        prefixIcon: Icon(widget.iconData),
+                        suffixIcon: widget.isPassword
+                            ? IconButton(
+                                icon: Icon(obscure
+                                    ? Icons.visibility_off
+                                    : Icons.visibility),
+                                onPressed: () => setState(() {
+                                      obscure = !obscure;
+                                    }))
+                            : null,
+                        border: InputBorder.none,
+                      ),
+                    )
+                  : TextFormField(
+                      minLines: 3,
+                      maxLines: 5,
+                      initialValue: widget.initialValue ?? "",
+                      onChanged: widget.onChanged,
+                      decoration: InputDecoration(
+                        hintText: widget.hintText,
+                        prefixIcon: Icon(widget.iconData),
+                        border: InputBorder.none,
+                      ),
+                    )),
+          widget.errorText != null
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
+                  child: Text(
+                    widget.errorText!,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                )
+              : Container(),
+        ],
       ),
     );
   }
 }
 
-Widget customFormFieldStyling(
-    {required Widget child, required double paddingTop}) {
-  return Padding(
-    padding: EdgeInsets.only(top: paddingTop),
-    child: PhysicalModel(
-      color: Colors.white,
-      elevation: 3.0,
-      child: child,
-      borderRadius: BorderRadius.circular(15.0),
-    ),
+Widget customFormFieldStyling({required Widget child}) {
+  return PhysicalModel(
+    color: Colors.white,
+    elevation: 3.0,
+    child: child,
+    borderRadius: BorderRadius.circular(15.0),
   );
 }

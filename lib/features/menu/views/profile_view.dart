@@ -35,6 +35,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
   Widget build(BuildContext context) {
     final User user = ref.watch(userProvider).user!;
     _formProvider = ref.watch(formProvider);
+    _formProvider.convertFromUser(user);
     return Scaffold(
         body: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -68,6 +69,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
             ),
             const SizedBox(height: 5),
             CustomInputField(
+              paddingTop: 5,
               initialValue: user.biography,
               hintText: "Biography",
               onChanged: _formProvider.validateBiography,
@@ -173,14 +175,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
       that updates the user variable to the passed value and calls
       "notifyListeners()""
     */
-
-    User newUser = User(
-      name: _formProvider.name.value ?? "",
-      email: _formProvider.email.value ?? "",
-      biography: _formProvider.biography.value ?? "",
-      profileImage: _formProvider.profileImage.value ?? "",
-    );
-
+    User newUser = _formProvider.convertToUser();
     userApi.updateProfile(user: newUser).then((ResultModel result) {
       if (result.type == ResultType.success) {
         setState(() {});
