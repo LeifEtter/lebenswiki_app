@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/authentication/helpers/string_validation_extensions.dart';
+import 'package:lebenswiki_app/models/user_model.dart';
+import 'package:lebenswiki_app/repos/image_repo.dart';
 
 class ValidationModel {
   String? value;
@@ -13,12 +15,17 @@ class FormNotifier extends ChangeNotifier {
   ValidationModel _email = ValidationModel(null, null);
   ValidationModel _password = ValidationModel(null, null);
   ValidationModel _biography = ValidationModel(null, null);
-  ValidationModel _profileImage = ValidationModel(null, null);
+  ValidationModel _profileImage =
+      ValidationModel(ImageRepo.standardProfileImage, null);
+  ValidationModel _repeatPassword = ValidationModel(null, null);
+  ValidationModel _oldPassword = ValidationModel(null, null);
   ValidationModel get name => _name;
   ValidationModel get email => _email;
   ValidationModel get password => _password;
   ValidationModel get biography => _biography;
   ValidationModel get profileImage => _profileImage;
+  ValidationModel get repeatPassword => _repeatPassword;
+  ValidationModel get oldPassword => _oldPassword;
 
   void validateEmail(String? val) {
     if (val != null && val.isValidEmail) {
@@ -34,7 +41,16 @@ class FormNotifier extends ChangeNotifier {
       _password = ValidationModel(val, null);
     } else {
       _password = ValidationModel(null,
-          'Password must contain an uppercase, lowercase, numeric digit and special character');
+          'Password must contain an uppercase, lowercase, number and special character');
+    }
+    notifyListeners();
+  }
+
+  void validateRepeatPassword(String? val) {
+    if (val != null && val == _password.value) {
+      _repeatPassword = ValidationModel(val, null);
+    } else {
+      _repeatPassword = ValidationModel(null, 'Passwords must match');
     }
     notifyListeners();
   }
@@ -60,12 +76,74 @@ class FormNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool get validate {
+  void resetErrors() {
+    _name.error = null;
+    _email.error = null;
+    _biography.error = null;
+    _password.error = null;
+    _profileImage.error = null;
+    _repeatPassword.error = null;
+    _oldPassword.error = null;
+    notifyListeners();
+  }
+
+  void convertFromUser(User user) {
+    _name.value = user.name;
+    _email.value = user.email;
+    _biography.value = user.biography;
+    _password.value = user.password;
+    _profileImage.value = user.profileImage;
+  }
+
+  User convertToUser() => User(
+        name: _name.value ?? "",
+        email: _email.value,
+        biography: _biography.value ?? "",
+        password: password.value,
+        profileImage: profileImage.value ?? "",
+      );
+
+  bool get validateForRegister {
     return _email.value != null &&
         _password.value != null &&
+        _name.value != null &&
+        _profileImage.value != null &&
+        _repeatPassword.value != null;
+  }
+
+  bool get validateForLogin {
+    return _email.value != null && _password.value != null;
+  }
+
+  bool get validateForPasswordUpdate {
+    return _oldPassword.value != null &&
+        _password.value != null &&
+        _repeatPassword.value != null;
+  }
+
+  bool get validateForProfileUpdate {
+    return _email.value != null &&
         _biography.value != null &&
         _name.value != null &&
         _profileImage.value != null;
+  }
+
+  void handleApiError(String errorMessage) {
+    //TODO add case for old password is wrong
+    switch (errorMessage) {
+      case "user_not_found":
+        _email.error = "Email konnte nicht gefunden werden";
+        break;
+      case "invalid_mail":
+        _email.error = "Email und Passwort stimmen nicht überein";
+        _password.error = "Email und Passwort stimmen nicht überein";
+        break;
+      case "email/password_is_incorrect":
+        _email.error = "Email und Passwort stimmen nicht überein";
+        _password.error = "Email und Passwort stimmen nicht überein";
+        break;
+    }
+    notifyListeners();
   }
 }
 

@@ -86,7 +86,7 @@ class _MenuBarState extends ConsumerState<MenuBar> {
         _buildDrawerItem(
           icon: Icons.logout,
           text: "Ausloggen",
-          callback: () => AuthenticationFunctions().logout(context),
+          callback: () => AuthenticationFunctions.logout(context),
         ),
         const Divider(),
         Padding(

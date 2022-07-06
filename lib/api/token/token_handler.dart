@@ -13,7 +13,8 @@ class TokenHandler {
   }
 
   Future<String> get() async {
-    return await storage.read(key: "token") ?? "";
+    String token = await storage.read(key: "token") ?? "asda";
+    return token;
   }
 
   void delete() async {

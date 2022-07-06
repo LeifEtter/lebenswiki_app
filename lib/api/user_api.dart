@@ -51,14 +51,14 @@ class UserApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.success,
-        message: "Account erfolgreich erstellt",
-        responseItem: decodedBody["token"],
+        message: decodedBody["token"],
+        responseItem: User.forContent(decodedBody["user"]),
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return ResultModel(
         type: ResultType.failure,
-        message: "Dein Account konnte nicht erstellt werden",
+        message: decodedBody["error"]["errorMessage"],
       );
     }
   }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart';
+import 'package:lebenswiki_app/api/token/token_handler.dart';
+import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_feed.dart';
 import 'package:lebenswiki_app/features/common/components/nav/bottom_nav_bar.dart';
 import 'package:lebenswiki_app/features/common/components/nav/main_appbar.dart';
@@ -38,13 +41,26 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class AuthWrapper extends ConsumerWidget {
+class AuthWrapper extends StatefulWidget {
   const AuthWrapper({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final String token = ref.read(tokenProvider).token;
-    return token.isEmpty ? const AuthenticationView() : const NavBarWrapper();
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: TokenHandler().get(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (LoadingHelper.isLoading(snapshot)) {
+            return LoadingHelper.loadingIndicator();
+          }
+          return snapshot.data!.isEmpty
+              ? const NavBarWrapper()
+              : const AuthenticationView();
+        });
   }
 }
 
@@ -81,8 +97,8 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
       floatingActionButton: dialAddButton(context),
       backgroundColor: Colors.white,
       appBar: const MainAppBar(
-        //searchRoute: _searchRoute,
-      ),
+          //searchRoute: _searchRoute,
+          ),
       bottomNavigationBar: BottomNavBar(
         onItemTapped: onItemTapped,
         currentIndex: _currentIndex,
