@@ -5,11 +5,11 @@ import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/short_api.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
 import 'package:lebenswiki_app/features/comments/helper/get_comments.dart';
-import 'package:lebenswiki_app/features/styling/comment_input.dart';
-import 'package:lebenswiki_app/features/styling/shadows.dart';
+import 'package:lebenswiki_app/features/common/components/comment_input.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/short_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
+import 'package:lebenswiki_app/repository/shadows.dart';
 
 class ShortCardScaffold extends ConsumerStatefulWidget {
   final Short short;

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/token/token_handler.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_feed.dart';
@@ -12,7 +11,6 @@ import 'package:lebenswiki_app/features/routing/router.dart';
 import 'package:lebenswiki_app/features/routing/routing_constants.dart';
 import 'package:lebenswiki_app/features/authentication/views/authentication_view.dart';
 import 'package:lebenswiki_app/features/shorts/views/short_feed.dart';
-import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:flutter/services.dart';
 
 void main() async {

@@ -21,6 +21,7 @@ dependencies:
   flutter_speed_dial: ^5.1.0
   expandable_page_view: ^1.0.14
   flutter_secure_storage: ^5.0.2
+  another_flushbar: ^1.10.29
 
 dev_dependencies:
   flutter_test:

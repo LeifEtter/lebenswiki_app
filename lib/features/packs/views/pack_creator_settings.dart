@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/features/categories/components/tab_bar.dart';
+import 'package:lebenswiki_app/features/common/components/tab_bar.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_creator_overview.dart';
 import 'package:lebenswiki_app/features/menu/views/your_creator_packs.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
-import 'package:lebenswiki_app/features/styling/shadows.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
+import 'package:lebenswiki_app/repository/shadows.dart';
 
 class EditorSettings extends ConsumerStatefulWidget {
   final Pack pack;

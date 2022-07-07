@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/repos/misc_repo.dart';
+import 'package:lebenswiki_app/repository/misc_repo.dart';
 
 void showReactionMenu(
   BuildContext context, {

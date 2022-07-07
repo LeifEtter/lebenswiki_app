@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/features/styling/text_styles.dart';
 import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
+import 'package:lebenswiki_app/repository/text_styles.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   //final Function searchRoute;

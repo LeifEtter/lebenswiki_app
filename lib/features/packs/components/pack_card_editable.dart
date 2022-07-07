@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/pack_api.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_creator_settings.dart';
-import 'package:lebenswiki_app/features/styling/shadows.dart';
-import 'package:lebenswiki_app/features/styling/text_styles.dart';
+import 'package:lebenswiki_app/repository/shadows.dart';
+import 'package:lebenswiki_app/repository/text_styles.dart';
 
 class PackCardEdit extends StatefulWidget {
   final Pack pack;

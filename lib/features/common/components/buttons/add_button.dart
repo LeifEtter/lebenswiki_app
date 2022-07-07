@@ -5,8 +5,8 @@ import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_creator_settings.dart';
-import 'package:lebenswiki_app/features/styling/colors.dart';
-import 'package:lebenswiki_app/features/styling/shadows.dart';
+import 'package:lebenswiki_app/repository/colors.dart';
+import 'package:lebenswiki_app/repository/shadows.dart';
 import 'package:lebenswiki_app/features/shorts/views/short_creation.dart';
 
 class AddButton extends StatelessWidget {

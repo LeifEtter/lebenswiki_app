@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/authentication/helpers/string_validation_extensions.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
-import 'package:lebenswiki_app/repos/image_repo.dart';
+import 'package:lebenswiki_app/repository/image_repo.dart';
 
 class ValidationModel {
   String? value;

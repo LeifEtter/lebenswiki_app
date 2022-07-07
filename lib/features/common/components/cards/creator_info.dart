@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/features/styling/text_styles.dart';
+import 'package:lebenswiki_app/repository/text_styles.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 
 class CreatorInfo extends StatelessWidget {

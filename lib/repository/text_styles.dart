@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/features/styling/colors.dart';
+import 'package:lebenswiki_app/repository/colors.dart';
 
 class LebenswikiTextStyles {
   static const title = TextStyle(

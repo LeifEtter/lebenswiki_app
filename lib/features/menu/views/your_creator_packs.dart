@@ -5,10 +5,10 @@ import 'package:lebenswiki_app/features/packs/helper/get_packs.dart';
 import 'package:lebenswiki_app/models/pack_model.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_creator_settings.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
-import 'package:lebenswiki_app/features/styling/colors.dart';
-import 'package:lebenswiki_app/features/styling/shadows.dart';
 import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/models/enums.dart';
+import 'package:lebenswiki_app/repository/colors.dart';
+import 'package:lebenswiki_app/repository/shadows.dart';
 
 class YourCreatorPacks extends StatefulWidget {
   final int chosenTab;

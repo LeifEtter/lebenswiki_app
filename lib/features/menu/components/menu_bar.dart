@@ -4,14 +4,14 @@ import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/features/menu/views/your_creator_packs.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
-import 'package:lebenswiki_app/repos/image_repo.dart';
 import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/main_buttons.dart';
-import 'package:lebenswiki_app/features/styling/text_styles.dart';
 import 'package:lebenswiki_app/features/menu/views/bookmark_view.dart';
 import 'package:lebenswiki_app/features/menu/views/developer_info.dart';
 import 'package:lebenswiki_app/features/menu/views/profile_view.dart';
 import 'package:lebenswiki_app/features/menu/views/your_shorts_view.dart';
+import 'package:lebenswiki_app/repository/image_repo.dart';
+import 'package:lebenswiki_app/repository/text_styles.dart';
 import 'package:share_plus/share_plus.dart';
 
 class MenuBar extends ConsumerStatefulWidget {
