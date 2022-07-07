@@ -15,14 +15,12 @@ class ShortCardScaffold extends ConsumerStatefulWidget {
   final Short short;
   final Function reload;
   final CardType cardType;
-  final Function menuCallback;
 
   const ShortCardScaffold({
     Key? key,
     required this.short,
     required this.reload,
     required this.cardType,
-    required this.menuCallback,
   }) : super(key: key);
 
   @override
@@ -61,7 +59,6 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold>
                 cardType: widget.cardType,
                 userId: userId,
                 commentExpand: _triggerComments,
-                menuCallback: widget.menuCallback,
               ),
               widget.cardType == CardType.shortsByCategory
                   ? Visibility(
@@ -109,7 +106,6 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold>
                             child: GetContentComments(
                               reload: widget.reload,
                               comments: widget.short.comments,
-                              menuCallback: widget.menuCallback,
                             ),
                           )
                         ],

@@ -42,9 +42,7 @@ class ReactionHelper {
     }
   }
 
-  Widget reactionBar({
-    required Function menuCallback,
-  }) {
+  Widget reactionBar() {
     return ListView.builder(
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
@@ -55,9 +53,9 @@ class ReactionHelper {
           return Padding(
             padding: const EdgeInsets.only(left: 10.0, bottom: 5.0),
             child: GestureDetector(
-              child: Image.asset("assets/emojis/add_reaction.png"),
-              onTap: () => menuCallback(),
-            ),
+                child: Image.asset("assets/emojis/add_reaction.png"),
+                onTap: () {} //TODO implement m,enu call,
+                ),
           );
         } else {
           //Show Reaction with amount

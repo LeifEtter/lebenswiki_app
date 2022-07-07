@@ -17,14 +17,12 @@ class GetShorts extends ConsumerStatefulWidget {
   final ContentCategory? category;
   final Function reload;
   final CardType cardType;
-  final Function menuCallback;
 
   const GetShorts({
     Key? key,
     this.category,
     required this.reload,
     required this.cardType,
-    required this.menuCallback,
   }) : super(key: key);
 
   @override
@@ -78,10 +76,7 @@ class _GetShortsState extends ConsumerState<GetShorts> {
         provideCategory = true;
         packFuture = shortApi.getAllShorts;
         returnCard = (short, reload) => ShortCardScaffold(
-            short: short,
-            reload: reload,
-            menuCallback: widget.menuCallback,
-            cardType: widget.cardType);
+            short: short, reload: reload, cardType: widget.cardType);
         break;
       case CardType.shortBookmarks:
         packFuture = shortApi.getBookmarkedShorts;

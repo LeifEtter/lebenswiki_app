@@ -17,7 +17,6 @@ class ShortCard extends ConsumerStatefulWidget {
   final CardType cardType;
   final int userId;
   final Function commentExpand;
-  final Function menuCallback;
 
   const ShortCard({
     Key? key,
@@ -26,7 +25,6 @@ class ShortCard extends ConsumerStatefulWidget {
     required this.cardType,
     required this.userId,
     required this.commentExpand,
-    required this.menuCallback,
   }) : super(key: key);
 
   @override
@@ -121,7 +119,7 @@ class _ShortCardState extends ConsumerState<ShortCard> {
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
               onPressed: () {
-                widget.menuCallback(MenuType.moreShort, widget.short);
+                //TODO implement menu
               },
               icon: const Icon(Icons.more_horiz_outlined),
             ),
@@ -172,8 +170,7 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                         SizedBox(
                           height: 30,
                           width: 200,
-                          child: reactionHelper.reactionBar(
-                              menuCallback: widget.menuCallback),
+                          child: reactionHelper.reactionBar(),
                         ),
                       ],
                     )

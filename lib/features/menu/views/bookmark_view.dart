@@ -29,7 +29,6 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
             GetShorts(
               reload: reload,
               cardType: CardType.shortBookmarks,
-              menuCallback: () {},
             ),
           ],
         ),

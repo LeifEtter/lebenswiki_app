@@ -84,7 +84,6 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
                       GetPacks(
                         reload: reload,
                         cardType: CardType.yourPacks,
-                        menuCallback: () {},
                       ),
                       const SizedBox(height: 30),
                       _erstelleLernpack(),
@@ -95,7 +94,6 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
                       GetPacks(
                         reload: reload,
                         cardType: CardType.packDrafts,
-                        menuCallback: () {},
                       ),
                       const SizedBox(height: 30),
                       _erstelleLernpack(),

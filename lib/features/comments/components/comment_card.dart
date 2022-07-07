@@ -14,14 +14,12 @@ class CommentCard extends ConsumerStatefulWidget {
   final Function reloadCallback;
   final Comment comment;
   final CardType cardType;
-  final Function menuCallback;
 
   const CommentCard({
     Key? key,
     required this.reloadCallback,
     required this.comment,
     required this.cardType,
-    required this.menuCallback,
   }) : super(key: key);
 
   @override
@@ -90,9 +88,7 @@ class _CommentCardState extends ConsumerState<CommentCard> {
                               height: 30,
                               width: 200,
                               //TODO implement Menu Callback Provider
-                              child: reactionHelper.reactionBar(
-                                menuCallback: () => widget.menuCallback(),
-                              ),
+                              child: reactionHelper.reactionBar(),
                             ),
                           ],
                         )

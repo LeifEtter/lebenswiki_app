@@ -70,7 +70,6 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
                       GetShorts(
                         reload: reload,
                         cardType: CardType.yourShorts,
-                        menuCallback: () {},
                       ),
                     ],
                   ),
@@ -79,7 +78,6 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
                       GetShorts(
                         reload: reload,
                         cardType: CardType.shortDrafts,
-                        menuCallback: () {},
                       ),
                     ],
                   ),

@@ -67,8 +67,8 @@ class PackApi extends BaseApi {
       headers: await requestHeader(),
     ).then((res) {
       Map body = jsonDecode(res.body);
-      if (statusIsSuccess(res)) {
-        List<Pack> packs = body["body"].map((pack) => Pack.fromJson(pack));
+      if (statusIsSuccess(res.statusCode)) {
+        List packs = body["packs"].map((pack) => Pack.fromJson(pack)).toList();
         return ResultModel(
           type: ResultType.packList,
           responseList: packs,

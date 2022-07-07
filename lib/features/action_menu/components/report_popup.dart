@@ -1,5 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/api/report_api.dart';
+import 'package:lebenswiki_app/api/user_api.dart';
+import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/models/report_model.dart';
+import 'package:lebenswiki_app/models/short_model.dart';
+import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/repos/misc_repo.dart';
+
+void reportCallback(
+  BuildContext context, {
+  required String reason,
+  required bool blockUser,
+  required int contentId,
+  required int creatorId,
+  required Function reload,
+}) {
+  blockUser ? UserApi().blockUser(id: creatorId, reason: reason) : null;
+  ReportApi()
+      .reportPack(
+          report: Report(
+    reason: reason,
+    reportedContentId: contentId,
+    creationDate: DateTime.now(),
+  ))
+      .whenComplete(() {
+    reload();
+    Navigator.pop(context);
+    Navigator.pop(context);
+  });
+}
+
+void showReportDialog(
+  BuildContext context,
+  Function reload,
+  Map reportedContent,
+) =>
+    showDialog(
+        context: context,
+        builder: (context) => ReportDialog(reportCallback: (reason, blockUser) {
+              reportCallback(context,
+                  contentId: reportedContent["id"],
+                  creatorId: reportedContent["creatorId"],
+                  reason: reason,
+                  blockUser: blockUser,
+                  reload: reload);
+            }));
 
 class ReportDialog extends StatefulWidget {
   final Function(String, bool) reportCallback;
