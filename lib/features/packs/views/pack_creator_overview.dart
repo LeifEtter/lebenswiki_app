@@ -173,9 +173,7 @@ class _EditorState extends State<Editor> {
     );
   }
 
-  void reload() {
-    setState(() {});
-  }
+  void reload() => setState(() {});
 
   Widget _selectablePageImage(index) {
     return AnimatedContainer(

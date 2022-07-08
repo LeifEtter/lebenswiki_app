@@ -13,7 +13,7 @@ class CustomSnackbar {
   }) {
     return SnackBar(
         content: Row(
-      children: [Text("Test")],
+      children: const [Text("Test")],
     ));
   }
 }
