@@ -47,7 +47,7 @@ class _ShortCardState extends ConsumerState<ShortCard> {
 
   @override
   void initState() {
-    userId = ref.watch(userIdProvider).userId ?? 0;
+    userId = ref.watch(userIdProvider).userId;
     voteHelper = VoteHelper(
       upVoteData: widget.short.upVote,
       downVoteData: widget.short.downVote,

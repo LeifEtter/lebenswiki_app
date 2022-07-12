@@ -35,10 +35,8 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
     chosenTab = widget.chosenTab;
   }
 
-  void _home() {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: ((context) => const NavBarWrapper())));
-  }
+  void _home() => Navigator.of(context)
+      .push(MaterialPageRoute(builder: ((context) => const NavBarWrapper())));
 
   @override
   Widget build(BuildContext context) {

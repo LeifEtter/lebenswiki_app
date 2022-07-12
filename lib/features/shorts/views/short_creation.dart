@@ -28,7 +28,7 @@ class _CreateShortState extends ConsumerState<CreateShort> {
   Widget build(BuildContext context) {
     final List<ContentCategory> categories =
         ref.watch(categoryProvider).categories;
-    final User user = ref.watch(userProvider).user!;
+    final User user = ref.watch(userProvider).user;
     return Scaffold(
       body: SafeArea(
         child: DefaultTabController(

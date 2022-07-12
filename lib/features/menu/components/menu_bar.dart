@@ -31,7 +31,7 @@ class _MenuBarState extends ConsumerState<MenuBar> {
 
   @override
   Widget build(BuildContext context) {
-    final User user = ref.watch(userProvider).user!;
+    final User user = ref.watch(userProvider).user;
     return Drawer(
         child: ListView(
       padding: const EdgeInsets.only(top: 35.0),

@@ -36,7 +36,7 @@ class _CommentCardState extends ConsumerState<CommentCard> {
   @override
   void initState() {
     super.initState();
-    userId = ref.watch(userIdProvider).userId ?? 0;
+    userId = ref.watch(userIdProvider).userId;
     voteHelper = VoteHelper(
       userId: userId,
       reloadCallBack: widget.reloadCallback,

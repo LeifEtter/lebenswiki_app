@@ -39,7 +39,7 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final int userId = ref.watch(userIdProvider).userId!;
+    final int userId = ref.watch(userIdProvider).userId;
     return Padding(
       padding: const EdgeInsets.only(top: 5, left: 10.0, right: 10.0),
       child: Container(

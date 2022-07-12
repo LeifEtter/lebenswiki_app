@@ -33,7 +33,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    final User user = ref.watch(userProvider).user!;
+    final User user = ref.watch(userProvider).user;
     _formProvider = ref.watch(formProvider);
     _formProvider.convertFromUser(user);
     return Scaffold(
