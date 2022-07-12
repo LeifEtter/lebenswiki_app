@@ -38,7 +38,7 @@ class _PackFeedState extends ConsumerState<PackFeed> {
           TextButton(
             child: const Text("call snackbar"),
             onPressed: () {
-              CustomFlushbar.success(errorMessage: "Something").show(context);
+              CustomFlushbar.info(message: "Something").show(context);
             },
           )
         ],

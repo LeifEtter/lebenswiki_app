@@ -242,10 +242,10 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
 
   void setProviders(WidgetRef ref, String token, User user,
       List<ContentCategory> categories) {
-    ref.read(tokenProvider).token = token;
-    ref.read(userProvider).user = user;
-    ref.read(userIdProvider).userId = user.id;
-    ref.read(categoryProvider).categories = categories;
+    ref.read(tokenProvider).setToken(token);
+    ref.read(userProvider).setUser(user);
+    ref.read(userIdProvider).setUserId(user.id);
+    ref.read(categoryProvider).setCategories(categories);
   }
 
   void navigateFeed() {

@@ -12,6 +12,7 @@ import 'package:lebenswiki_app/features/routing/routing_constants.dart';
 import 'package:lebenswiki_app/features/authentication/views/authentication_view.dart';
 import 'package:lebenswiki_app/features/shorts/views/short_feed.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Lebenswiki',
+      title: 'Lebenswiki'
+      ,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: "Outfit",
