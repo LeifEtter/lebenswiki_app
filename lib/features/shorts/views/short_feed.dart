@@ -31,7 +31,7 @@ class _ShortFeedState extends ConsumerState<ShortFeed> {
           ),
           GetShorts(
             reload: _reload,
-            cardType: CardType.packsByCategory,
+            cardType: CardType.shortsByCategory,
             category: categories[currentCategory],
           ),
         ],

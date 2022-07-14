@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
-import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card_minimal.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card_scaffold.dart';
@@ -31,7 +30,6 @@ class GetShorts extends ConsumerStatefulWidget {
 
 class _GetShortsState extends ConsumerState<GetShorts> {
   final ShortApi shortApi = ShortApi();
-  final UserApi userApi = UserApi();
   bool provideCategory = false;
   late Function packFuture;
   late Function(Short, Function) returnCard;
@@ -39,6 +37,7 @@ class _GetShortsState extends ConsumerState<GetShorts> {
   @override
   Widget build(BuildContext context) {
     final List<User> blockedList = ref.watch(blockedListProvider).blockedList;
+    print(widget.cardType);
     _updateParameters();
     return FutureBuilder(
       future: provideCategory
@@ -74,7 +73,7 @@ class _GetShortsState extends ConsumerState<GetShorts> {
     switch (widget.cardType) {
       case CardType.shortsByCategory:
         provideCategory = true;
-        packFuture = shortApi.getAllShorts;
+        packFuture = shortApi.getShortsByCategory;
         returnCard = (short, reload) => ShortCardScaffold(
             short: short, reload: reload, cardType: widget.cardType);
         break;
