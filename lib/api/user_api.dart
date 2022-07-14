@@ -73,7 +73,7 @@ class UserApi extends BaseApi {
       return ResultModel(
         type: ResultType.user,
         responseItem: User.forContent(
-          decodedBody["body"],
+          decodedBody["user"],
         ),
       );
     } else {

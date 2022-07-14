@@ -23,7 +23,7 @@ final tokenProvider =
 class UserNotifier extends ChangeNotifier {
   User? _user;
 
-  User get user => _user ?? User(name: "erorr");
+  User get user => _user ?? User(name: "error");
 
   void setUser(User newUser) {
     _user = newUser;

@@ -1,18 +1,14 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
-import 'package:lebenswiki_app/api/misc_api.dart';
 import 'package:lebenswiki_app/api/token/token_handler.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/authentication/providers/auth_providers.dart';
 import 'package:lebenswiki_app/main.dart';
-import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
-import 'package:lebenswiki_app/providers/providers.dart';
-import 'package:lebenswiki_app/repository/image_repo.dart';
+import 'package:lebenswiki_app/providers/provider_helper.dart';
 
 class Authentication {
   static Future<ResultModel> register(FormNotifier formProvider) async {
@@ -55,24 +51,14 @@ class Authentication {
           message: loginResult.message,
         );
       }
-
-      User user = loginResult.responseItem;
       String token = loginResult.token ?? "";
 
       TokenHandler().set(token);
-
-      ResultModel categoriesResult = await MiscApi().getCategories();
-      List<ContentCategory> categories =
-          List.from(categoriesResult.responseList);
-
-      ref.read(tokenProvider).setToken(token);
-      ref.read(userProvider).setUser(user);
-      ref.read(userIdProvider).setUserId(user.id);
-      ref.read(categoryProvider).setCategories(categories);
+      //TODO Security hazard, remove before production
+      await ProviderHelper.getDataAndSetSessionProviders(ref, token: token);
 
       result = ResultModel(
         type: ResultType.success,
-        token: token,
       );
     });
 
@@ -82,11 +68,7 @@ class Authentication {
   static void logout(context, WidgetRef ref) async {
     TokenHandler().delete();
 
-    //Reset providers
-    ref.watch(tokenProvider).removeToken();
-    ref.watch(userIdProvider).removeUserId();
-    ref.watch(userProvider).removeUser();
-    ref.watch(categoryProvider).removeCategories();
+    ProviderHelper.resetSessionProviders(ref);
     //TODO ref.watch(blockedListProvider).removeBlockedList;
 
     Navigator.of(context).push(MaterialPageRoute(
