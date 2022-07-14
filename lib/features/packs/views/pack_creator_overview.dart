@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/api/pack_api.dart';
+import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/features/common/components/styling_edit.dart';
 import 'package:lebenswiki_app/features/packs/components/pack_creator_page.dart';
-import 'package:lebenswiki_app/models/pack_content_models.dart';
-import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
+import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_creator_settings.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_viewer.dart';
 import 'package:lebenswiki_app/features/menu/views/your_creator_packs.dart';

@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
 import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
-import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 
 class PackApi extends BaseApi {
   late ApiErrorHandler apiErrorHandler;

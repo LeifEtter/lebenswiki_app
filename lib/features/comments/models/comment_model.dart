@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:lebenswiki_app/features/common/helpers/date_helper.dart';
-import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
-import 'package:lebenswiki_app/models/short_model.dart';
+import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 
 Comment commentFromJson(String str) => Comment.fromJson(json.decode(str));

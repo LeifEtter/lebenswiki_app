@@ -51,7 +51,7 @@ class UserApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.success,
-        message: decodedBody["token"],
+        token: decodedBody["token"],
         responseItem: User.forContent(decodedBody["user"]),
       );
     } else {

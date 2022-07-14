@@ -1,7 +1,7 @@
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
-import 'package:lebenswiki_app/models/pack_model.dart';
-import 'package:lebenswiki_app/models/short_model.dart';
+import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
+import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 
 //TODO refactor response model to be more specific
@@ -10,12 +10,14 @@ class ResultModel {
   List responseList;
   var responseItem;
   String? message;
+  String? token;
 
   ResultModel({
     required this.type,
     this.responseList = const [],
     this.responseItem,
     this.message,
+    this.token,
   });
 }
 

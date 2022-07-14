@@ -1,4 +1,4 @@
-import 'package:lebenswiki_app/models/short_model.dart';
+import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 
 class ShortListFunctions {
   //Sorts Packs by Creation Date, newest is first element in list, oldest is last

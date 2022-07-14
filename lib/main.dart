@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/token/token_handler.dart';
@@ -29,8 +31,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Lebenswiki'
-      ,
+      title: 'Lebenswiki',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: "Outfit",
@@ -58,8 +59,8 @@ class _AuthWrapperState extends State<AuthWrapper> {
             return LoadingHelper.loadingIndicator();
           }
           return snapshot.data!.isEmpty
-              ? const NavBarWrapper()
-              : const AuthenticationView();
+              ? const AuthenticationView()
+              : const NavBarWrapper();
         });
   }
 }

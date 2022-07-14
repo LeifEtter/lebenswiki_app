@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_viewer.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';

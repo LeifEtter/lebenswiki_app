@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/api/comment_api.dart';
+import 'package:lebenswiki_app/features/comments/api/comment_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
-import 'package:lebenswiki_app/api/short_api.dart';
+import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
 import 'package:lebenswiki_app/features/comments/helper/get_comments.dart';
 import 'package:lebenswiki_app/features/common/components/comment_input.dart';
 import 'package:lebenswiki_app/models/enums.dart';
-import 'package:lebenswiki_app/models/short_model.dart';
+import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 

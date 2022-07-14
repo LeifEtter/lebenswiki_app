@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/api/pack_api.dart';
+import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/packs/components/pack_card.dart';
 import 'package:lebenswiki_app/features/packs/components/pack_card_editable.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
-import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
@@ -43,7 +43,6 @@ class _GetPacksState extends ConsumerState<GetPacks> {
           ? packFuture(category: widget.category)
           : packFuture(),
       builder: (context, AsyncSnapshot<ResultModel> snapshot) {
-        //print(snapshot.data);
         if (LoadingHelper.isLoading(snapshot)) {
           return LoadingHelper.loadingIndicator();
         }

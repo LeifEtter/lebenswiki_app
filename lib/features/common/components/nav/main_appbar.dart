@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
-class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
+class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
   //final Function searchRoute;
 
   const MainAppBar({
@@ -11,7 +12,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -34,7 +35,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         TextButton(
           child: const Text("Logout"),
           onPressed: () {
-            AuthenticationFunctions.logout(context);
+            Authentication.logout(context, ref);
           },
         ),
         IconButton(

@@ -1,9 +1,9 @@
-import 'package:lebenswiki_app/models/comment_model.dart';
+import 'package:lebenswiki_app/features/comments/models/comment_model.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
-import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'dart:convert';
 
-import 'package:lebenswiki_app/models/short_model.dart';
+import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/models/user_feedback_model.dart';
 import 'package:lebenswiki_app/repository/image_repo.dart';
 

@@ -1,4 +1,4 @@
-import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 
 class PackListFunctions {
   //Sorts Packs by Creation Date, newest is first element in list, oldest is last

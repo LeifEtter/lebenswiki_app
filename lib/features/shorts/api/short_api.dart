@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
 import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
-import 'package:lebenswiki_app/models/short_model.dart';
+import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 
 //TODO Implement extracting error message with "error" property
 class ShortApi extends BaseApi {
@@ -98,9 +99,9 @@ class ShortApi extends BaseApi {
       headers: await requestHeader(),
     ).then((res) {
       Map body = jsonDecode(res.body);
-      if (statusIsSuccess(res)) {
-        List<Short> shorts =
-            body["shorts"].map((short) => Short.fromJson(short));
+      if (statusIsSuccess(res.statusCode)) {
+        List shorts =
+            body["shorts"].map((short) => Short.fromJson(short)).toList();
         return ResultModel(
           type: ResultType.shortList,
           responseList: shorts,
