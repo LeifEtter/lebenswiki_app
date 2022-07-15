@@ -47,9 +47,9 @@ class _CreateShortState extends ConsumerState<CreateShort> {
                     ),
                     buildTabBar(
                         categories: categories,
-                        callback: (int value) {
-                          currentCategory = value;
-                        }),
+                        callback: (int value) => setState(() {
+                              currentCategory = value;
+                            })),
                     Padding(
                       padding: const EdgeInsets.only(left: 25.0),
                       child: TextField(
@@ -67,7 +67,7 @@ class _CreateShortState extends ConsumerState<CreateShort> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(bottom: 5.0),
-                            child: _buildProfileIndicator(user),
+                            child: _buildProfileIndicator(user.profileImage),
                           ),
                           const SizedBox(width: 10.0),
                           Expanded(
@@ -97,8 +97,8 @@ class _CreateShortState extends ConsumerState<CreateShort> {
                             text: "Entwürfe", callback: navigateToDrafts),
                         lebenswikiBlueButtonNormal(
                           text: "Post",
-                          callback: createCallback,
-                          categories: categories,
+                          callback: () => createCallback(
+                              categories: categories, user: user),
                         ),
                       ]),
                     ),
@@ -123,14 +123,14 @@ class _CreateShortState extends ConsumerState<CreateShort> {
     );
   }
 
-  Widget _buildProfileIndicator(profileData) {
+  Widget _buildProfileIndicator(String profileImage) {
     return Container(
       width: 30,
       height: 30,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         image: DecorationImage(
-          image: NetworkImage(profileData["profileImage"]),
+          image: NetworkImage(profileImage),
           fit: BoxFit.fitWidth,
         ),
       ),
@@ -138,14 +138,18 @@ class _CreateShortState extends ConsumerState<CreateShort> {
   }
 
   //TODO implement succesfull popup
-  void createCallback(categories) {
+  void createCallback({
+    required User user,
+    required List<ContentCategory> categories,
+  }) {
     shortApi
         .createShort(
             short: Short(
-          categories: categories,
+          id: 0,
+          categories: [categories[currentCategory]],
           title: _titleController.text.toString(),
           content: _contentController.text.toString(),
-          creator: User(name: "user"),
+          creator: user,
           creationDate: DateTime.now(),
         ))
         .then(

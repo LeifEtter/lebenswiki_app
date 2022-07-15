@@ -37,7 +37,6 @@ class _GetShortsState extends ConsumerState<GetShorts> {
   @override
   Widget build(BuildContext context) {
     final List<User> blockedList = ref.watch(blockedListProvider).blockedList;
-    print(widget.cardType);
     _updateParameters();
     return FutureBuilder(
       future: provideCategory
@@ -49,7 +48,10 @@ class _GetShortsState extends ConsumerState<GetShorts> {
         }
         ResultModel response = snapshot.data!;
         List<Short> responseList = List.from(response.responseList);
-        if (responseList.isEmpty) {
+        if (response.type == ResultType.failure) {
+          return Text(response.message!);
+        }
+        if (response.responseList.isEmpty) {
           return Text(response.message!);
         }
         responseList =

@@ -48,7 +48,10 @@ class _GetPacksState extends ConsumerState<GetPacks> {
         }
         ResultModel response = snapshot.data!;
         List responseList = response.responseList;
-        if (responseList.isEmpty) {
+        if (response.type == ResultType.failure) {
+          return Text(response.message!);
+        }
+        if (response.responseList.isEmpty) {
           return Text(response.message!);
         }
         //responseList = _filterBlocked(responseList, blockedList.data);

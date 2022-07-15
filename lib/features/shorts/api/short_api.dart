@@ -9,6 +9,7 @@ import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 
 //TODO Implement extracting error message with "error" property
+//TODO fix api results and add errormessages
 class ShortApi extends BaseApi {
   late ApiErrorHandler apiErrorHandler;
 
@@ -22,7 +23,7 @@ class ShortApi extends BaseApi {
       headers: await requestHeader(),
       body: jsonEncode({
         "title": short.title,
-        "categories": short.categories,
+        "categories": [short.categories.first.id],
         "content": short.content,
       }),
     ).then((Response res) {
@@ -34,8 +35,6 @@ class ShortApi extends BaseApi {
       } else {
         apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       }
-    }).catchError((error) {
-      apiErrorHandler.handleAndLog(reponseData: error);
     });
     return ResultModel(
       type: ResultType.failure,
@@ -90,21 +89,26 @@ class ShortApi extends BaseApi {
       errorMessage: "Du hast keine shorts gespeichert");
 
   Future<ResultModel> getCreatorsDraftShorts() => _getShorts(
-      url: "shorts/unpublished",
-      errorMessage: "Du hast keine shorts entworfen");
+        url: "shorts/unpublished",
+        errorMessage: "Du hast keine shorts entworfen",
+      );
 
   Future<ResultModel> _getShorts({url, errorMessage}) async {
+    ResultModel result = ResultModel(
+        type: ResultType.failure, message: errorMessage, responseList: []);
     await get(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
     ).then((res) {
       Map body = jsonDecode(res.body);
       if (statusIsSuccess(res.statusCode)) {
-        List shorts =
-            body["shorts"].map((short) => Short.fromJson(short)).toList();
-        return ResultModel(
+        List<Short> shorts = List<Short>.from(
+            body["shorts"].map((short) => Short.fromJson(short)).toList());
+        log("After");
+        result = ResultModel(
           type: ResultType.shortList,
           responseList: shorts,
+          message: errorMessage,
         );
       } else {
         apiErrorHandler.handleAndLog(reponseData: body);
@@ -112,10 +116,7 @@ class ShortApi extends BaseApi {
     }).catchError((error) {
       apiErrorHandler.handleAndLog(reponseData: error);
     });
-    return ResultModel(
-      type: ResultType.failure,
-      message: errorMessage,
-    );
+    return result;
   }
 
   Future<ResultModel> upvoteShort(id) => _interactShort(
@@ -178,10 +179,7 @@ class ShortApi extends BaseApi {
     }).catchError((error) {
       apiErrorHandler.handleAndLog(reponseData: error);
     });
-    return ResultModel(
-      type: ResultType.failure,
-      message: errorMessage,
-    );
+    return ResultModel(type: ResultType.failure);
   }
 
   Future<ResultModel> reactShort(id, reaction) => _updateShortData(

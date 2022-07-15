@@ -13,7 +13,7 @@ String shortToJson(Short data) => json.encode(data.toJson());
 
 class Short {
   Short({
-    this.id = 0,
+    required this.id,
     required this.title,
     required this.content,
     required this.creator,
@@ -68,12 +68,11 @@ class Short {
         comments: List<Comment>.from(
             json["comments"].map((comment) => Comment.fromJson(comment))),
         reportShort: List<Report>.from(
-            json["reportShort"].map((report) => Report.forContent(report))),
-        categories: List<ContentCategory>.from(json["categories"]
-            .map((category) => ContentCategory.forContent(category))),
-        reactions: json["reactions"],
-        creatorId: json["creatorId"],
-        creator: User.forContent(json["creator"]),
+            json["reports"].map((report) => Report.forContent(report))),
+        categories: List.from(json["categories"]
+            .map((category) => ContentCategory.fromJson(category))),
+        reactions: List.from(json["reactions"]),
+        creator: User.forId(json["creator"]),
       );
 
   Map<String, dynamic> toJson() => {

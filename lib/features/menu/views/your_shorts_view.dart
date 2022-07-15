@@ -95,8 +95,8 @@ class _YourShortsState extends State<YourShorts> with TickerProviderStateMixin {
     setState(() {});
   }
 
-  void reload(newChosenTab) {
-    _tabController.index = newChosenTab;
+  void reload() {
+    toggleTab();
     setState(() {});
   }
 }
