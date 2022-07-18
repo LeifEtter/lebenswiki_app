@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
-import 'package:lebenswiki_app/api/short_api.dart';
-import 'package:lebenswiki_app/features/styling/text_styles.dart';
+import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/models/enums.dart';
-import 'package:lebenswiki_app/models/short_model.dart';
+import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
+import 'package:lebenswiki_app/repository/text_styles.dart';
 
 class ShortCardMinimal extends StatefulWidget {
   final Short short;

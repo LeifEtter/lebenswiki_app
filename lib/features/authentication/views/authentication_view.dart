@@ -1,22 +1,18 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
-import 'package:lebenswiki_app/api/token/token_handler.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/authentication/components/custom_form_field.dart';
+import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
 import 'package:lebenswiki_app/features/authentication/providers/auth_providers.dart';
-import 'package:lebenswiki_app/features/testing/components/border.dart';
-import 'package:lebenswiki_app/repos/image_repo.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/authentication_buttons.dart';
-import 'package:lebenswiki_app/features/styling/colors.dart';
-import 'package:lebenswiki_app/features/styling/text_styles.dart';
+import 'package:lebenswiki_app/repository/text_styles.dart';
+import 'package:lebenswiki_app/repository/colors.dart';
 import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/models/enums.dart';
-import 'package:lebenswiki_app/models/user_model.dart';
-import 'package:lebenswiki_app/providers/providers.dart';
 
-//TODO adapt biography field
 //TODO upload profile pictures to firebase storage
 class AuthenticationView extends ConsumerStatefulWidget {
   const AuthenticationView({Key? key}) : super(key: key);
@@ -116,7 +112,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                   isPassword: true,
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Visibility(
                 visible: isSignUp,
                 child: Row(
@@ -152,12 +148,28 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                     child: AuthenticationButton(
                       text: isSignUp ? "Registrieren" : "Einloggen",
                       color: LebenswikiColors.createPackButton,
-                      onPress: () {
+                      onPress: () async {
                         if (isSignUp && _formProvider.validateForRegister) {
-                          signUp();
+                          //Perform register with Authentication Helper
+                          ResultModel result =
+                              await Authentication.register(_formProvider);
+
+                          //Decide action after result
+                          result.type == ResultType.failure
+                              ? log(result.message!)
+                              : setState(() {
+                                  isSignUp = false;
+                                });
                         } else if (!isSignUp &&
                             _formProvider.validateForLogin) {
-                          signIn(ref);
+                          //Perform login with Authentication Helper
+                          ResultModel result =
+                              await Authentication.login(_formProvider, ref);
+
+                          //Decide action after result
+                          result.type == ResultType.failure
+                              ? log(result.message!)
+                              : navigateFeed();
                         }
                       },
                     ),
@@ -198,49 +210,6 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
         color: Colors.black38,
       ),
     );
-  }
-
-  void signUp() {
-    User user = User(
-      email: _formProvider.email.value,
-      name: _formProvider.name.value ?? "",
-      password: _formProvider.password.value,
-      biography: _formProvider.biography.value ?? "",
-      profileImage:
-          _formProvider.profileImage.value ?? ImageRepo.standardProfileImage,
-    );
-
-    userApi.register(user).then((ResultModel result) {
-      if (result.type == ResultType.failure) {
-        setState(() {});
-      } else {
-        setState(() {
-          isSignUp = false;
-        });
-      }
-    });
-  }
-
-  void signIn(WidgetRef ref) async {
-    userApi
-        .login(
-            email: _formProvider.email.value ?? "",
-            password: _formProvider.password.value ?? "")
-        .then((ResultModel result) async {
-      if (result.type != ResultType.success) {
-        _formProvider.handleApiError(result.message!);
-      } else {
-        setProviders(ref, result.message!, result.responseItem);
-        TokenHandler().set(result.message!);
-        navigateFeed();
-      }
-    });
-  }
-
-  void setProviders(WidgetRef ref, String token, User user) {
-    ref.read(tokenProvider).token = token;
-    ref.read(userProvider).user = user;
-    ref.read(userIdProvider).userId = user.id;
   }
 
   void navigateFeed() {

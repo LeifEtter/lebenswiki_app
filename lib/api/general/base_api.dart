@@ -12,7 +12,7 @@ class BaseApi {
     };
   }
 
-  bool statusIsSuccess(statusCode) {
+  bool statusIsSuccess(int statusCode) {
     if (statusCode >= 200 && statusCode <= 202) {
       return true;
     } else {

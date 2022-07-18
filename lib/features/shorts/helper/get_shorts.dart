@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
-import 'package:lebenswiki_app/api/short_api.dart';
-import 'package:lebenswiki_app/api/user_api.dart';
+import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card_minimal.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card_scaffold.dart';
 import 'package:lebenswiki_app/features/shorts/helper/short_list_functions.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
-import 'package:lebenswiki_app/models/short_model.dart';
+import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
@@ -17,14 +16,12 @@ class GetShorts extends ConsumerStatefulWidget {
   final ContentCategory? category;
   final Function reload;
   final CardType cardType;
-  final Function menuCallback;
 
   const GetShorts({
     Key? key,
     this.category,
     required this.reload,
     required this.cardType,
-    required this.menuCallback,
   }) : super(key: key);
 
   @override
@@ -33,7 +30,6 @@ class GetShorts extends ConsumerStatefulWidget {
 
 class _GetShortsState extends ConsumerState<GetShorts> {
   final ShortApi shortApi = ShortApi();
-  final UserApi userApi = UserApi();
   bool provideCategory = false;
   late Function packFuture;
   late Function(Short, Function) returnCard;
@@ -52,7 +48,10 @@ class _GetShortsState extends ConsumerState<GetShorts> {
         }
         ResultModel response = snapshot.data!;
         List<Short> responseList = List.from(response.responseList);
-        if (responseList.isEmpty) {
+        if (response.type == ResultType.failure) {
+          return Text(response.message!);
+        }
+        if (response.responseList.isEmpty) {
           return Text(response.message!);
         }
         responseList =
@@ -76,12 +75,9 @@ class _GetShortsState extends ConsumerState<GetShorts> {
     switch (widget.cardType) {
       case CardType.shortsByCategory:
         provideCategory = true;
-        packFuture = shortApi.getAllShorts;
+        packFuture = shortApi.getShortsByCategory;
         returnCard = (short, reload) => ShortCardScaffold(
-            short: short,
-            reload: reload,
-            menuCallback: widget.menuCallback,
-            cardType: widget.cardType);
+            short: short, reload: reload, cardType: widget.cardType);
         break;
       case CardType.shortBookmarks:
         packFuture = shortApi.getBookmarkedShorts;

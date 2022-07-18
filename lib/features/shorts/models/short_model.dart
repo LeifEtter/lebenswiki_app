@@ -1,19 +1,11 @@
-import 'package:lebenswiki_app/features/common/helpers/date_helper.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
-import 'package:lebenswiki_app/models/comment_model.dart';
+import 'package:lebenswiki_app/features/comments/models/comment_model.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
-
-import 'dart:convert';
-
 import 'package:lebenswiki_app/models/user_model.dart';
-
-Short shortFromJson(String str) => Short.fromJson(json.decode(str));
-
-String shortToJson(Short data) => json.encode(data.toJson());
 
 class Short {
   Short({
-    this.id = 0,
+    required this.id,
     required this.title,
     required this.content,
     required this.creator,
@@ -31,7 +23,6 @@ class Short {
     required this.creationDate,
   }) {
     creatorId = creator.id;
-    //creationDate = DateTime.now();
     lastUpdated = DateTime.now();
   }
 
@@ -68,11 +59,10 @@ class Short {
         comments: List<Comment>.from(
             json["comments"].map((comment) => Comment.fromJson(comment))),
         reportShort: List<Report>.from(
-            json["reportShort"].map((report) => Report.forContent(report))),
-        categories: List<ContentCategory>.from(json["categories"]
-            .map((category) => ContentCategory.forContent(category))),
-        reactions: json["reactions"],
-        creatorId: json["creatorId"],
+            json["reports"].map((report) => Report.forContent(report))),
+        categories: List.from(json["categories"]
+            .map((category) => ContentCategory.fromJson(category))),
+        reactions: List.from(json["reactions"]),
         creator: User.forContent(json["creator"]),
       );
 
@@ -95,7 +85,5 @@ class Short {
         "reportShort": List<dynamic>.from(
             reportShort.map((Report report) => report.toJson())),
         "reactions": reactions,
-        "creationDate": DateHelper().convertToString(creationDate),
-        "lastUpdated": DateHelper().convertToString(lastUpdated!),
       };
 }

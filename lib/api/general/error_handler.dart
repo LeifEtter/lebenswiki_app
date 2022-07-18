@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 class ApiErrorHandler {
   ApiErrorHandler();
 
   String handleAndLog({
     required Map reponseData,
   }) {
-    print("API Error: $reponseData");
+    log("API Error: $reponseData");
     return "Error";
   }
 }

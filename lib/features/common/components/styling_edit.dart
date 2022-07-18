@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/features/styling/shadows.dart';
+import 'package:lebenswiki_app/repository/shadows.dart';
 
 class EditDecoration {
   Widget page({child}) => Container(

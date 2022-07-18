@@ -3,28 +3,24 @@ import 'package:flutter/material.dart';
 Widget lebenswikiBlueButtonNormal({
   required String text,
   required Function callback,
-  List categories = const [],
 }) {
   return lebenswikiBlueButton(
     backgroundColor: const Color.fromRGBO(115, 148, 192, 1),
     textColor: Colors.white,
     text: text,
     callback: callback,
-    categories: categories,
   );
 }
 
 Widget lebenswikiBlueButtonInverted({
   required String text,
   required Function callback,
-  List categories = const [],
 }) {
   return lebenswikiBlueButton(
     backgroundColor: Colors.transparent,
     textColor: const Color.fromRGBO(115, 148, 192, 1),
     text: text,
     callback: callback,
-    categories: categories,
   );
 }
 
@@ -33,7 +29,6 @@ Widget lebenswikiBlueButton({
   required Color textColor,
   required String text,
   required Function callback,
-  List categories = const [],
 }) {
   return Container(
     height: 43,
@@ -54,7 +49,7 @@ Widget lebenswikiBlueButton({
             ), //Colors.white
           ),
           onPressed: () {
-            categories.isNotEmpty ? callback(categories) : callback();
+            callback();
           },
         ),
       ],

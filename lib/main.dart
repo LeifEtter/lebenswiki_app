@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/token/token_handler.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_feed.dart';
@@ -12,8 +11,9 @@ import 'package:lebenswiki_app/features/routing/router.dart';
 import 'package:lebenswiki_app/features/routing/routing_constants.dart';
 import 'package:lebenswiki_app/features/authentication/views/authentication_view.dart';
 import 'package:lebenswiki_app/features/shorts/views/short_feed.dart';
-import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:lebenswiki_app/providers/provider_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,26 +41,42 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class AuthWrapper extends StatefulWidget {
+class AuthWrapper extends ConsumerStatefulWidget {
   const AuthWrapper({Key? key}) : super(key: key);
 
   @override
-  State<AuthWrapper> createState() => _AuthWrapperState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _AuthWrapperState();
 }
 
-class _AuthWrapperState extends State<AuthWrapper> {
+class _AuthWrapperState extends ConsumerState<AuthWrapper> {
+  bool sessionIsPossible = false;
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: TokenHandler().get(),
+        future: startOrDenySession(ref),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (LoadingHelper.isLoading(snapshot)) {
             return LoadingHelper.loadingIndicator();
           }
-          return snapshot.data!.isEmpty
+          return snapshot.data
               ? const NavBarWrapper()
               : const AuthenticationView();
         });
+  }
+
+  Future<bool> startOrDenySession(WidgetRef ref) async {
+    String token = await TokenHandler().get();
+    if (token.isEmpty) {
+      return false;
+    }
+    bool isSuccess =
+        await ProviderHelper.getDataAndSetSessionProviders(ref, token: token);
+    if (isSuccess) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 

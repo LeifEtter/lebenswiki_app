@@ -5,13 +5,11 @@ import 'package:lebenswiki_app/models/enums.dart';
 class GetContentComments extends StatefulWidget {
   final Function reload;
   final List comments;
-  final Function menuCallback;
 
   const GetContentComments({
     Key? key,
     required this.reload,
     required this.comments,
-    required this.menuCallback,
   }) : super(key: key);
 
   @override
@@ -33,7 +31,6 @@ class _GetContentCommentsState extends State<GetContentComments> {
               comment: currentComment,
               reloadCallback: widget.reload,
               cardType: CardType.shortComments,
-              menuCallback: widget.menuCallback,
             ),
             const Padding(
               padding: EdgeInsets.only(right: 20.0, left: 20.0),

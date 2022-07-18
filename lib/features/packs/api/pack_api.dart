@@ -5,7 +5,7 @@ import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
-import 'package:lebenswiki_app/models/pack_model.dart';
+import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 
 class PackApi extends BaseApi {
   late ApiErrorHandler apiErrorHandler;
@@ -67,8 +67,8 @@ class PackApi extends BaseApi {
       headers: await requestHeader(),
     ).then((res) {
       Map body = jsonDecode(res.body);
-      if (statusIsSuccess(res)) {
-        List<Pack> packs = body["body"].map((pack) => Pack.fromJson(pack));
+      if (statusIsSuccess(res.statusCode)) {
+        List packs = body["packs"].map((pack) => Pack.fromJson(pack)).toList();
         return ResultModel(
           type: ResultType.packList,
           responseList: packs,

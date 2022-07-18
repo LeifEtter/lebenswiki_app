@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   google_fonts: ^2.2.0
   cupertino_icons: ^1.0.2
   http: ^0.13.4
@@ -21,6 +23,7 @@ dependencies:
   flutter_speed_dial: ^5.1.0
   expandable_page_view: ^1.0.14
   flutter_secure_storage: ^5.0.2
+  another_flushbar: ^1.10.29
 
 dev_dependencies:
   flutter_test:
@@ -30,6 +33,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
 
   assets:
     - assets/icons/person_verified.png

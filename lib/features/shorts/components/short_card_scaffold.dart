@@ -1,28 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/api/comment_api.dart';
+import 'package:lebenswiki_app/features/comments/api/comment_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
-import 'package:lebenswiki_app/api/short_api.dart';
+import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
 import 'package:lebenswiki_app/features/comments/helper/get_comments.dart';
-import 'package:lebenswiki_app/features/styling/comment_input.dart';
-import 'package:lebenswiki_app/features/styling/shadows.dart';
+import 'package:lebenswiki_app/features/common/components/comment_input.dart';
 import 'package:lebenswiki_app/models/enums.dart';
-import 'package:lebenswiki_app/models/short_model.dart';
+import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
+import 'package:lebenswiki_app/repository/shadows.dart';
 
 class ShortCardScaffold extends ConsumerStatefulWidget {
   final Short short;
   final Function reload;
   final CardType cardType;
-  final Function menuCallback;
-
   const ShortCardScaffold({
     Key? key,
     required this.short,
     required this.reload,
     required this.cardType,
-    required this.menuCallback,
   }) : super(key: key);
 
   @override
@@ -30,18 +27,14 @@ class ShortCardScaffold extends ConsumerStatefulWidget {
       _ShortCardScaffoldState();
 }
 
-class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold>
-    with AutomaticKeepAliveClientMixin {
+class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold> {
+  CommentApi commentApi = CommentApi();
   bool _commentsExpanded = false;
   final TextEditingController _commentController = TextEditingController();
 
-  ShortApi shortApi = ShortApi();
-  CommentApi commentApi = CommentApi();
-
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    final int userId = ref.watch(userIdProvider).userId!;
+    int userId = ref.watch(userIdProvider).userId;
     return Padding(
       padding: const EdgeInsets.only(top: 5, left: 10.0, right: 10.0),
       child: Container(
@@ -56,12 +49,11 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold>
           child: Column(
             children: [
               ShortCard(
+                userId: userId,
                 short: widget.short,
                 reload: widget.reload,
                 cardType: widget.cardType,
-                userId: userId,
                 commentExpand: _triggerComments,
-                menuCallback: widget.menuCallback,
               ),
               widget.cardType == CardType.shortsByCategory
                   ? Visibility(
@@ -109,7 +101,6 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold>
                             child: GetContentComments(
                               reload: widget.reload,
                               comments: widget.short.comments,
-                              menuCallback: widget.menuCallback,
                             ),
                           )
                         ],
@@ -128,7 +119,4 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold>
       _commentsExpanded ? _commentsExpanded = false : _commentsExpanded = true;
     });
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
