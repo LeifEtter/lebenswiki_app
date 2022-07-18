@@ -7,8 +7,8 @@ class VoteHelper {
   List<User> downVoteData;
   Function reloadCallBack;
 
-  late bool userHasUpVoted;
-  late bool userHasDownVoted;
+  bool userHasUpVoted = false;
+  bool userHasDownVoted = false;
   late int totalVotes;
 
   VoteHelper({
@@ -30,9 +30,10 @@ class VoteHelper {
   void _setHasDownvoted() => _setHasVoted(false);
   void _setHasVoted(bool isUpvote) {
     for (User voter in isUpvote ? upVoteData : downVoteData) {
-      voter.id == userId
-          ? {isUpvote ? userHasUpVoted = true : userHasDownVoted = true}
-          : null;
+      if (voter.id == userId) {
+        isUpvote ? userHasUpVoted = true : userHasDownVoted = true;
+        break;
+      }
     }
   }
 

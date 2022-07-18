@@ -54,7 +54,6 @@ class User {
         name: json["name"],
         profileImage: json["profileImage"],
         role: json["role"],
-        email: json["email"],
       );
 
   factory User.forId(Map<String, dynamic> json) => User(

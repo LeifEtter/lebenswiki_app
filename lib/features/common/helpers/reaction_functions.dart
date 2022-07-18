@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 
@@ -32,6 +34,7 @@ class ReactionHelper {
     for (var value in Reactions.values) {
       result[value.name] = 0;
     }
+    _reactionMap = result;
   }
 
   void _fillReactionMapAndDetectUserReaction() {

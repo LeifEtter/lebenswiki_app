@@ -15,7 +15,6 @@ class ShortCardScaffold extends ConsumerStatefulWidget {
   final Short short;
   final Function reload;
   final CardType cardType;
-
   const ShortCardScaffold({
     Key? key,
     required this.short,
@@ -28,18 +27,14 @@ class ShortCardScaffold extends ConsumerStatefulWidget {
       _ShortCardScaffoldState();
 }
 
-class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold>
-    with AutomaticKeepAliveClientMixin {
+class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold> {
+  CommentApi commentApi = CommentApi();
   bool _commentsExpanded = false;
   final TextEditingController _commentController = TextEditingController();
 
-  ShortApi shortApi = ShortApi();
-  CommentApi commentApi = CommentApi();
-
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    final int userId = ref.watch(userIdProvider).userId;
+    int userId = ref.watch(userIdProvider).userId;
     return Padding(
       padding: const EdgeInsets.only(top: 5, left: 10.0, right: 10.0),
       child: Container(
@@ -54,10 +49,10 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold>
           child: Column(
             children: [
               ShortCard(
+                userId: userId,
                 short: widget.short,
                 reload: widget.reload,
                 cardType: widget.cardType,
-                userId: userId,
                 commentExpand: _triggerComments,
               ),
               widget.cardType == CardType.shortsByCategory
@@ -124,7 +119,4 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold>
       _commentsExpanded ? _commentsExpanded = false : _commentsExpanded = true;
     });
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
