@@ -6,6 +6,7 @@ import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
+//TODO add option to delete single page
 class PageOverview extends StatefulWidget {
   final PackPage page;
   final Function reload;
@@ -107,96 +108,82 @@ class _PageOverviewState extends State<PageOverview> {
   Widget _evalContentNew(PackPageItem item, int index) {
     switch (item.type) {
       case ItemType.list:
-        return Padding(
-          padding: const EdgeInsets.only(top: 30),
-          child: Column(
-            children: [
-              //Create Head Input
-              Container(
-                decoration: _standardInput(),
-                child: TextFormField(
-                    onEditingComplete: _save,
-                    controller: item.headContent.controller,
-                    decoration: _standardDecoration("Listen Titel eingeben")),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: Column(
-                  children: List.generate(item.bodyContent.length, (index) {
-                    //Set Current input item
-                    PackPageItemInput currentInput = item.bodyContent[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 5.0),
-                      child: Container(
-                        decoration: _standardInput(),
-                        child: TextFormField(
-                          onEditingComplete: _save,
-                          controller: currentInput.controller,
-                          decoration:
-                              _standardDecoration("Listen Element eingeben"),
-                        ),
+        return Column(
+          children: [
+            Container(
+              decoration: _standardInput(),
+              child: TextFormField(
+                  onEditingComplete: _save,
+                  controller: item.headContent.controller,
+                  decoration: _standardDecoration("Listen Titel eingeben")),
+            ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Column(
+                children: List.generate(item.bodyContent.length, (index) {
+                  //Set Current input item
+                  PackPageItemInput currentInput = item.bodyContent[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Container(
+                      decoration: _standardInput(),
+                      child: TextFormField(
+                        onEditingComplete: _save,
+                        controller: currentInput.controller,
+                        decoration:
+                            _standardDecoration("Listen Element eingeben"),
                       ),
-                    );
-                  }),
-                ),
+                    ),
+                  );
+                }),
               ),
-              IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () {
-                  setState(() {
-                    TextEditingController newController =
-                        TextEditingController();
-                    newController.text = "";
-                    page.items[index].bodyContent.add(
-                      PackPageItemInput(
-                        value: "",
-                        controller: newController,
-                      ),
-                    );
-                  });
-                },
-              ),
-            ],
-          ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                setState(() {
+                  TextEditingController newController = TextEditingController();
+                  newController.text = "";
+                  page.items[index].bodyContent.add(
+                    PackPageItemInput(
+                      value: "",
+                      controller: newController,
+                    ),
+                  );
+                });
+              },
+            ),
+          ],
         );
       case ItemType.title:
-        return Padding(
-          padding: const EdgeInsets.only(top: 20),
-          child: Container(
-            decoration: _standardInput(),
-            child: TextFormField(
-              onEditingComplete: _save,
-              controller: item.headContent.controller,
-              decoration: _standardDecoration("Titel eingeben"),
-            ),
+        return Container(
+          decoration: _standardInput(),
+          child: TextFormField(
+            onEditingComplete: _save,
+            controller: item.headContent.controller,
+            decoration: _standardDecoration("Titel eingeben"),
           ),
         );
       case ItemType.image:
-        return Padding(
-          padding: const EdgeInsets.only(top: 30),
-          child: Container(
-            decoration: _standardInput(),
-            child: TextFormField(
-              onEditingComplete: _save,
-              decoration: _standardDecoration("Bild Link eingeben"),
-              controller: item.headContent.controller,
-            ),
+        return Container(
+          decoration: _standardInput(),
+          child: TextFormField(
+            onEditingComplete: _save,
+            decoration: _standardDecoration("Bild Link eingeben"),
+            controller: item.headContent.controller,
           ),
         );
       case ItemType.text:
-        return Padding(
-          padding: const EdgeInsets.only(top: 30),
-          child: Container(
-            decoration: _standardInput(),
-            child: TextFormField(
-              onEditingComplete: _save,
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              minLines: 3,
-              controller: item.headContent.controller,
-              decoration: _standardDecoration("Text eingeben"),
-            ),
+        return Container(
+          decoration: _standardInput(),
+          child: TextFormField(
+            onEditingComplete: _save,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            minLines: 3,
+            controller: item.headContent.controller,
+            decoration: _standardDecoration("Text eingeben"),
           ),
         );
       default:
@@ -217,6 +204,8 @@ class _PageOverviewState extends State<PageOverview> {
         item.bodyContent[y].controller!.text = item.bodyContent[y].value;
       }
     }
+
+    setState(() {});
   }
 
   BoxDecoration _standardInput() {
@@ -262,58 +251,20 @@ class _PageOverviewState extends State<PageOverview> {
       icon: Icons.add_rounded,
       direction: SpeedDialDirection.right,
       children: items
-          .map<SpeedDialChild>((item) => SpeedDialChild(
-                child: Icon(item[1]),
+          .map<SpeedDialChild>((itemData) => SpeedDialChild(
+                child: Icon(itemData[1]),
                 onTap: () {
                   TextEditingController newController = TextEditingController();
-                  switch (item[0]) {
-                    case ItemType.list:
-                      newController.text = "";
-                      page.items.add(
-                        PackPageItem(
-                          type: ItemType.list,
-                          headContent: PackPageItemInput(
-                            value: "",
-                            controller: newController,
-                          ),
-                          bodyContent: [],
-                        ),
-                      );
-                      break;
-                    case ItemType.title:
-                      newController.text = "";
-                      page.items.add(
-                        PackPageItem(
-                          type: ItemType.title,
-                          headContent: PackPageItemInput(
-                              value: "", controller: newController),
-                          bodyContent: [],
-                        ),
-                      );
-                      break;
-                    case ItemType.image:
-                      newController.text = "";
-                      page.items.add(PackPageItem(
-                        type: ItemType.image,
-                        headContent: PackPageItemInput(
-                            value: "", controller: newController),
-                        bodyContent: [],
-                      ));
-                      break;
-                    case ItemType.text:
-                      newController.text = "";
-                      page.items.add(
-                        PackPageItem(
-                          type: ItemType.text,
-                          headContent: PackPageItemInput(
-                            value: "",
-                            controller: newController,
-                          ),
-                          bodyContent: [],
-                        ),
-                      );
-                      break;
-                  }
+
+                  newController.text = "";
+                  page.items.add(PackPageItem(
+                    type: itemData[0],
+                    headContent: PackPageItemInput(
+                      value: "",
+                      controller: newController,
+                    ),
+                    bodyContent: [],
+                  ));
                   setState(() {
                     _save();
                     _initializeControllers();
