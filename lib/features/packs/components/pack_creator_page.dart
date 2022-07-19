@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:lebenswiki_app/features/common/components/styling_edit.dart';
+import 'package:lebenswiki_app/features/packs/components/pack_editor_components.dart';
+import 'package:lebenswiki_app/features/packs/styling/pack_editor_styling.dart';
 import 'package:lebenswiki_app/features/testing/components/border.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
-import 'package:lebenswiki_app/repository/shadows.dart';
 
 //TODO add option to delete single page
 class PageOverview extends StatefulWidget {
@@ -40,45 +41,22 @@ class _PageOverviewState extends State<PageOverview> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-          left: 20.0, right: 20.0, top: 10.0, bottom: 20.0),
+          left: 20.0, right: 20.0, top: 15.0, bottom: 20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 5),
-          GiveBorder(
-            color: Colors.red,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 15.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      )),
-                  icon: const Icon(Icons.save),
-                  onPressed: () => _save(),
-                  label: const Text("Seite Speichern",
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w500,
-                      )),
-                ),
-              ],
-            ),
-          ),
-          GiveBorder(
-            color: Colors.green,
-            child: _buildPage(),
-          ),
+          PackEditorComponents.iconButton(
+              icon: Icons.save,
+              callback: () => _save(),
+              label: "Seite speichern"),
+          _buildPageContent(),
           buildAddButton(),
         ],
       ),
     );
   }
 
-  Widget _buildPage() {
+  Widget _buildPageContent() {
     return ListView.builder(
       padding: const EdgeInsets.all(0),
       physics: const NeverScrollableScrollPhysics(),
@@ -89,7 +67,8 @@ class _PageOverviewState extends State<PageOverview> {
           color: Colors.blue,
           child: Row(
             children: [
-              Expanded(child: _evalContentNew(page.items[index], index)),
+              Expanded(
+                  child: _showSingleEditableItem(page.items[index], index)),
               IconButton(
                 icon: const Icon(Icons.delete),
                 color: Colors.red,
@@ -105,17 +84,18 @@ class _PageOverviewState extends State<PageOverview> {
     );
   }
 
-  Widget _evalContentNew(PackPageItem item, int index) {
+  Widget _showSingleEditableItem(PackPageItem item, int index) {
     switch (item.type) {
       case ItemType.list:
         return Column(
           children: [
             Container(
-              decoration: _standardInput(),
+              decoration: PackEditorStyling.standardInput(),
               child: TextFormField(
                   onEditingComplete: _save,
                   controller: item.headContent.controller,
-                  decoration: _standardDecoration("Listen Titel eingeben")),
+                  decoration: PackEditorStyling.standardDecoration(
+                      "Listen Titel eingeben")),
             ),
             const SizedBox(height: 10),
             Padding(
@@ -127,12 +107,12 @@ class _PageOverviewState extends State<PageOverview> {
                   return Padding(
                     padding: const EdgeInsets.only(top: 5.0),
                     child: Container(
-                      decoration: _standardInput(),
+                      decoration: PackEditorStyling.standardInput(),
                       child: TextFormField(
                         onEditingComplete: _save,
                         controller: currentInput.controller,
-                        decoration:
-                            _standardDecoration("Listen Element eingeben"),
+                        decoration: PackEditorStyling.standardDecoration(
+                            "Listen Element eingeben"),
                       ),
                     ),
                   );
@@ -158,32 +138,33 @@ class _PageOverviewState extends State<PageOverview> {
         );
       case ItemType.title:
         return Container(
-          decoration: _standardInput(),
+          decoration: PackEditorStyling.standardInput(),
           child: TextFormField(
             onEditingComplete: _save,
             controller: item.headContent.controller,
-            decoration: _standardDecoration("Titel eingeben"),
+            decoration: PackEditorStyling.standardDecoration("Titel eingeben"),
           ),
         );
       case ItemType.image:
         return Container(
-          decoration: _standardInput(),
+          decoration: PackEditorStyling.standardInput(),
           child: TextFormField(
             onEditingComplete: _save,
-            decoration: _standardDecoration("Bild Link eingeben"),
+            decoration:
+                PackEditorStyling.standardDecoration("Bild Link eingeben"),
             controller: item.headContent.controller,
           ),
         );
       case ItemType.text:
         return Container(
-          decoration: _standardInput(),
+          decoration: PackEditorStyling.standardInput(),
           child: TextFormField(
             onEditingComplete: _save,
             keyboardType: TextInputType.multiline,
             maxLines: null,
             minLines: 3,
             controller: item.headContent.controller,
-            decoration: _standardDecoration("Text eingeben"),
+            decoration: PackEditorStyling.standardDecoration("Text eingeben"),
           ),
         );
       default:
@@ -206,22 +187,6 @@ class _PageOverviewState extends State<PageOverview> {
     }
 
     setState(() {});
-  }
-
-  BoxDecoration _standardInput() {
-    return BoxDecoration(
-      borderRadius: BorderRadius.circular(10.0),
-      boxShadow: [LebenswikiShadows().fancyShadow],
-      color: Colors.white,
-    );
-  }
-
-  InputDecoration _standardDecoration(placeholder) {
-    return InputDecoration(
-      border: InputBorder.none,
-      contentPadding: const EdgeInsets.all(10.0),
-      hintText: placeholder,
-    );
   }
 
   //Assign the controller values to the actual values

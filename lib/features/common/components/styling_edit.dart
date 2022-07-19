@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
 class EditDecoration {
-  Widget page({child}) => Container(
+  static Widget page({child}) => Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0),
           color: Colors.white,
@@ -13,7 +13,7 @@ class EditDecoration {
         child: child,
       );
 
-  Widget title({child}) => Container(
+  static Widget title({child}) => Container(
         decoration: BoxDecoration(
           border: Border.all(
             width: 1,

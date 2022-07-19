@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/features/common/components/styling_edit.dart';
 import 'package:lebenswiki_app/features/packs/components/pack_creator_page.dart';
+import 'package:lebenswiki_app/features/packs/components/pack_editor_components.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_creator_information.dart';
@@ -11,6 +12,7 @@ import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
+//TODO seperate routing logic
 class PackCreatorOverview extends StatefulWidget {
   final Pack pack;
 
@@ -26,10 +28,9 @@ class PackCreatorOverview extends StatefulWidget {
 class _PackCreatorOverviewState extends State<PackCreatorOverview> {
   final PackApi packApi = PackApi();
   final PageController _pageController = PageController();
-  final EditDecoration decoration = EditDecoration();
-  final List saveControllers = [];
   late Pack pack;
   int _selectedPage = 0;
+  List<Widget> pageViewPages = [];
 
   @override
   void initState() {
@@ -59,39 +60,15 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      /*Row(
-                        children: [
-                          _saveButton(),
-                          Text(
-                            "Speichern",
-                            style: _style2(),
-                          )
-                        ],
-                      ),*/
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PackViewer(pack: pack),
-                              ));
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0, vertical: 10.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15.0),
-                            boxShadow: [LebenswikiShadows().fancyShadow],
-                          ),
-                          child: Row(
-                            children: [
-                              Text("Vorschau", style: _style2()),
-                              const Icon(Icons.preview, size: 30),
-                            ],
-                          ),
-                        ),
-                      )
+                      PackEditorComponents.iconButton(
+                        callback: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PackViewer(pack: pack),
+                            )),
+                        label: "Vorschau",
+                        icon: Icons.preview,
+                      ),
                     ],
                   ),
                 ),
@@ -115,7 +92,7 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
                   children: List.generate(widget.pack.pages.length, (index) {
                     return Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: decoration.page(
+                      child: EditDecoration.page(
                         child: Container(
                           constraints: const BoxConstraints(minHeight: 400),
                           child: PageOverview(
@@ -204,13 +181,6 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
               )
             : const Icon(Icons.add, size: 20.0),
       ),
-    );
-  }
-
-  TextStyle _style2() {
-    return const TextStyle(
-      fontSize: 20.0,
-      fontWeight: FontWeight.w500,
     );
   }
 
