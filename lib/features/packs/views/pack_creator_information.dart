@@ -9,10 +9,10 @@ import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
-class EditorSettings extends ConsumerStatefulWidget {
+class PackCreatorInformation extends ConsumerStatefulWidget {
   final Pack pack;
 
-  const EditorSettings({
+  const PackCreatorInformation({
     Key? key,
     required this.pack,
   }) : super(key: key);
@@ -21,7 +21,7 @@ class EditorSettings extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _EditorSettingsState();
 }
 
-class _EditorSettingsState extends ConsumerState<EditorSettings> {
+class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
   late Pack pack;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -156,7 +156,9 @@ class _EditorSettingsState extends ConsumerState<EditorSettings> {
     pack.titleImage = imageLinkController.text;
 
     Navigator.push(
-        context, MaterialPageRoute(builder: ((context) => Editor(pack: pack))));
+        context,
+        MaterialPageRoute(
+            builder: ((context) => PackCreatorOverview(pack: pack))));
   }
 
   void _previousPage() {
@@ -175,7 +177,6 @@ class _EditorSettingsState extends ConsumerState<EditorSettings> {
           const begin = Offset(-1.0, 0.0);
           const end = Offset.zero;
           const curve = Curves.ease;
-
           var tween =
               Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 

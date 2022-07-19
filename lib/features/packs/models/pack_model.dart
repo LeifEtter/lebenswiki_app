@@ -1,20 +1,19 @@
 import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
+import 'package:lebenswiki_app/repository/image_repo.dart';
 
 class Pack {
-  int id;
+  int? id;
   String title;
   String description;
   String titleImage;
-  bool published;
+  bool published = false;
   //User? creator;
   int creatorId;
-  final List categories;
-  final List<CreatorPage> pages;
+  List categories = [];
+  List<PackPage> pages = [];
   late DateTime creationDate;
 
   Pack({
-    this.id = 0,
-    //required this.creator,
     required this.title,
     required this.description,
     required this.pages,
@@ -27,13 +26,10 @@ class Pack {
   }
 
   Pack.initial({
-    this.id = 0,
     this.creatorId = 0,
     this.title = "",
     this.description = "",
-    this.pages = const [],
-    this.categories = const [],
-    this.titleImage = "",
+    this.titleImage = ImageRepo.packPlaceholderImage,
     this.published = false,
   });
 
@@ -44,7 +40,7 @@ class Pack {
         'published': published,
         'categories': categories,
         'pages': List<dynamic>.from(
-          pages.map((CreatorPage page) => page.toJson()),
+          pages.map((PackPage page) => page.toJson()),
         )
       };
 
@@ -57,6 +53,6 @@ class Pack {
         categories = json["categories"],
         published = json["published"],
         creationDate = DateTime.parse(json["creationDate"]),
-        pages = List<CreatorPage>.from(
-            json["pages"].map((page) => CreatorPage.fromResponse(page)));
+        pages = List<PackPage>.from(
+            json["pages"].map((page) => PackPage.fromResponse(page)));
 }

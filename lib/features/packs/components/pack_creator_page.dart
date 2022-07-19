@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:lebenswiki_app/features/common/components/styling_edit.dart';
+import 'package:lebenswiki_app/features/testing/components/border.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
 class PageOverview extends StatefulWidget {
-  final CreatorPage page;
+  final PackPage page;
   final Function reload;
   final Function saveCallback;
   final int selfIndex;
@@ -24,7 +25,7 @@ class PageOverview extends StatefulWidget {
 }
 
 class _PageOverviewState extends State<PageOverview> {
-  late CreatorPage page;
+  late PackPage page;
   EditDecoration decoration = EditDecoration();
 
   @override
@@ -37,44 +38,40 @@ class _PageOverviewState extends State<PageOverview> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
+      padding: const EdgeInsets.only(
+          left: 20.0, right: 20.0, top: 10.0, bottom: 20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 5),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  _save();
-                },
-                child: Container(
-                  width: 200,
-                  height: 40,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.0),
-                      boxShadow: [LebenswikiShadows().fancyShadow]),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text("Seite Speichern  ",
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w500,
-                          )),
-                      Icon(Icons.save),
-                    ],
-                  ),
+          GiveBorder(
+            color: Colors.red,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 15.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      )),
+                  icon: const Icon(Icons.save),
+                  onPressed: () => _save(),
+                  label: const Text("Seite Speichern",
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w500,
+                      )),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          _buildPage(),
-          const SizedBox(height: 20),
+          GiveBorder(
+            color: Colors.green,
+            child: _buildPage(),
+          ),
           buildAddButton(),
-          const SizedBox(height: 30.0),
         ],
       ),
     );
@@ -82,28 +79,32 @@ class _PageOverviewState extends State<PageOverview> {
 
   Widget _buildPage() {
     return ListView.builder(
+      padding: const EdgeInsets.all(0),
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: page.items.length,
       itemBuilder: (BuildContext context, int index) {
-        return Row(
-          children: [
-            Expanded(child: _evalContentNew(page.items[index], index)),
-            IconButton(
-              icon: const Icon(Icons.delete),
-              color: Colors.red,
-              onPressed: () {
-                page.items.removeAt(index);
-                setState(() {});
-              },
-            ),
-          ],
+        return GiveBorder(
+          color: Colors.blue,
+          child: Row(
+            children: [
+              Expanded(child: _evalContentNew(page.items[index], index)),
+              IconButton(
+                icon: const Icon(Icons.delete),
+                color: Colors.red,
+                onPressed: () {
+                  page.items.removeAt(index);
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
         );
       },
     );
   }
 
-  Widget _evalContentNew(CreatorItem item, int index) {
+  Widget _evalContentNew(PackPageItem item, int index) {
     switch (item.type) {
       case ItemType.list:
         return Padding(
@@ -120,11 +121,11 @@ class _PageOverviewState extends State<PageOverview> {
               ),
               const SizedBox(height: 10),
               Padding(
-                padding: const EdgeInsets.only(left: 50.0),
+                padding: const EdgeInsets.only(left: 20.0),
                 child: Column(
                   children: List.generate(item.bodyContent.length, (index) {
                     //Set Current input item
-                    ItemInput currentInput = item.bodyContent[index];
+                    PackPageItemInput currentInput = item.bodyContent[index];
                     return Padding(
                       padding: const EdgeInsets.only(top: 5.0),
                       child: Container(
@@ -148,7 +149,7 @@ class _PageOverviewState extends State<PageOverview> {
                         TextEditingController();
                     newController.text = "";
                     page.items[index].bodyContent.add(
-                      ItemInput(
+                      PackPageItemInput(
                         value: "",
                         controller: newController,
                       ),
@@ -161,7 +162,7 @@ class _PageOverviewState extends State<PageOverview> {
         );
       case ItemType.title:
         return Padding(
-          padding: const EdgeInsets.only(top: 30),
+          padding: const EdgeInsets.only(top: 20),
           child: Container(
             decoration: _standardInput(),
             child: TextFormField(
@@ -178,7 +179,7 @@ class _PageOverviewState extends State<PageOverview> {
             decoration: _standardInput(),
             child: TextFormField(
               onEditingComplete: _save,
-              decoration: _standardDecoration("Bild Link eingebe"),
+              decoration: _standardDecoration("Bild Link eingeben"),
               controller: item.headContent.controller,
             ),
           ),
@@ -207,7 +208,7 @@ class _PageOverviewState extends State<PageOverview> {
   void _initializeControllers() {
     //Loop through all page items
     for (int x = 0; x < page.items.length; x++) {
-      CreatorItem item = page.items[x];
+      PackPageItem item = page.items[x];
       item.headContent.controller = TextEditingController();
       item.headContent.controller!.text = item.headContent.value;
 
@@ -237,13 +238,14 @@ class _PageOverviewState extends State<PageOverview> {
   //Assign the controller values to the actual values
   void _save() {
     for (int x = 0; x < page.items.length; x++) {
-      CreatorItem item = page.items[x];
+      PackPageItem item = page.items[x];
 
       item.headContent.value = item.headContent.controller!.text;
       for (int y = 0; y < item.bodyContent.length; y++) {
         item.bodyContent[y].value = item.bodyContent[y].controller!.text;
       }
     }
+
     //widget.saveCallback(page: page, index: widget.selfIndex);
     setState(() {});
   }
@@ -268,9 +270,9 @@ class _PageOverviewState extends State<PageOverview> {
                     case ItemType.list:
                       newController.text = "";
                       page.items.add(
-                        CreatorItem(
+                        PackPageItem(
                           type: ItemType.list,
-                          headContent: ItemInput(
+                          headContent: PackPageItemInput(
                             value: "",
                             controller: newController,
                           ),
@@ -281,29 +283,29 @@ class _PageOverviewState extends State<PageOverview> {
                     case ItemType.title:
                       newController.text = "";
                       page.items.add(
-                        CreatorItem(
+                        PackPageItem(
                           type: ItemType.title,
-                          headContent:
-                              ItemInput(value: "", controller: newController),
+                          headContent: PackPageItemInput(
+                              value: "", controller: newController),
                           bodyContent: [],
                         ),
                       );
                       break;
                     case ItemType.image:
                       newController.text = "";
-                      page.items.add(CreatorItem(
+                      page.items.add(PackPageItem(
                         type: ItemType.image,
-                        headContent:
-                            ItemInput(value: "", controller: newController),
+                        headContent: PackPageItemInput(
+                            value: "", controller: newController),
                         bodyContent: [],
                       ));
                       break;
                     case ItemType.text:
                       newController.text = "";
                       page.items.add(
-                        CreatorItem(
+                        PackPageItem(
                           type: ItemType.text,
-                          headContent: ItemInput(
+                          headContent: PackPageItemInput(
                             value: "",
                             controller: newController,
                           ),
@@ -320,9 +322,5 @@ class _PageOverviewState extends State<PageOverview> {
               ))
           .toList(),
     );
-  }
-
-  Widget _buildSaveButton() {
-    return IconButton(icon: const Icon(Icons.save), onPressed: () => _save());
   }
 }

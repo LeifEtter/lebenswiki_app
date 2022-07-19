@@ -4,26 +4,26 @@ import 'package:lebenswiki_app/features/common/components/styling_edit.dart';
 import 'package:lebenswiki_app/features/packs/components/pack_creator_page.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
-import 'package:lebenswiki_app/features/packs/views/pack_creator_settings.dart';
+import 'package:lebenswiki_app/features/packs/views/pack_creator_information.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_viewer.dart';
 import 'package:lebenswiki_app/features/menu/views/your_creator_packs.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
-class Editor extends StatefulWidget {
+class PackCreatorOverview extends StatefulWidget {
   final Pack pack;
 
-  const Editor({
+  const PackCreatorOverview({
     Key? key,
     required this.pack,
   }) : super(key: key);
 
   @override
-  _EditorState createState() => _EditorState();
+  _PackCreatorOverviewState createState() => _PackCreatorOverviewState();
 }
 
-class _EditorState extends State<Editor> {
+class _PackCreatorOverviewState extends State<PackCreatorOverview> {
   final PackApi packApi = PackApi();
   final PageController _pageController = PageController();
   final EditDecoration decoration = EditDecoration();
@@ -107,16 +107,23 @@ class _EditorState extends State<Editor> {
                 ),
                 const SizedBox(height: 20),
                 ExpandablePageView(
+                  onPageChanged: (value) {
+                    _selectedPage = value;
+                    setState(() {});
+                  },
                   controller: _pageController,
                   children: List.generate(widget.pack.pages.length, (index) {
                     return Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: decoration.page(
-                        child: PageOverview(
-                          page: widget.pack.pages[index],
-                          reload: reload,
-                          saveCallback: _saveCallback,
-                          selfIndex: index,
+                        child: Container(
+                          constraints: const BoxConstraints(minHeight: 400),
+                          child: PageOverview(
+                            page: widget.pack.pages[index],
+                            reload: reload,
+                            saveCallback: _saveCallback,
+                            selfIndex: index,
+                          ),
                         ),
                       ),
                     );
@@ -149,7 +156,7 @@ class _EditorState extends State<Editor> {
                 index == pack.pages.length
                     ? {
                         pack.pages
-                            .add(CreatorPage(pageNumber: index + 1, items: [])),
+                            .add(PackPage(pageNumber: index + 1, items: [])),
                         setState(() {
                           _selectedPage = index;
                           _pageController.animateToPage(
@@ -211,14 +218,14 @@ class _EditorState extends State<Editor> {
     return IconButton(
       icon: const Icon(Icons.save, size: 30),
       onPressed: () {
-        packApi.updatePack(pack: pack, id: pack.id);
+        packApi.updatePack(pack: pack, id: pack.id!);
         setState(() {});
       },
     );
   }
 
   void _goToYourPacks() {
-    packApi.updatePack(pack: pack, id: pack.id);
+    packApi.updatePack(pack: pack, id: pack.id!);
     Navigator.of(context).push(
         MaterialPageRoute(builder: ((context) => const YourCreatorPacks())));
   }
@@ -230,7 +237,7 @@ class _EditorState extends State<Editor> {
   Route _backRoute() {
     return PageRouteBuilder(
         pageBuilder: ((context, animation, secondaryAnimation) =>
-            EditorSettings(pack: pack)),
+            PackCreatorInformation(pack: pack)),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(-1.0, 0.0);
           const end = Offset.zero;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
 
-Widget evalPageElement(CreatorItem item) {
+Widget evalPageElement(PackPageItem item) {
   switch (item.type) {
     case ItemType.list:
       return Column(

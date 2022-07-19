@@ -63,7 +63,7 @@ class _PackViewerState extends State<PackViewer> {
     );
   }
 
-  Widget _buildPage(CreatorPage pageData) {
+  Widget _buildPage(PackPage pageData) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Card(

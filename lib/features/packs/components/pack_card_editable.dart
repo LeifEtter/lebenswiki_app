@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
-import 'package:lebenswiki_app/features/packs/views/pack_creator_settings.dart';
+import 'package:lebenswiki_app/features/packs/views/pack_creator_information.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
@@ -41,7 +41,8 @@ class _PackCardEditState extends State<PackCardEdit> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => EditorSettings(pack: widget.pack)),
+                    builder: (context) =>
+                        PackCreatorInformation(pack: widget.pack)),
               );
             },
             child: Column(

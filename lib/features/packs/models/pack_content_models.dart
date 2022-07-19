@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 
-class ItemInput {
+class PackPageItemInput {
   String value;
   TextEditingController? controller;
 
-  ItemInput({
+  PackPageItemInput({
     required this.value,
     this.controller,
   });
 
-  ItemInput.fromResponse(Map json) : value = json["value"];
+  PackPageItemInput.fromResponse(Map json) : value = json["value"];
 
   Map<String, dynamic> toJson() => {"value": value};
 }
 
-class CreatorItem {
+class PackPageItem {
   final ItemType type;
-  final ItemInput headContent;
-  final List<ItemInput> bodyContent;
+  final PackPageItemInput headContent;
+  final List<PackPageItemInput> bodyContent;
   //final List? styling;
 
-  CreatorItem({
+  PackPageItem({
     required this.type,
     required this.headContent,
     required this.bodyContent,
@@ -32,34 +32,34 @@ class CreatorItem {
         "type": type.toString(),
         "headContent": headContent.toJson(),
         "bodyContent": List<dynamic>.from(
-            bodyContent.map((ItemInput input) => input.toJson()))
+            bodyContent.map((PackPageItemInput input) => input.toJson()))
       };
 
-  CreatorItem.fromResponse(Map json)
+  PackPageItem.fromResponse(Map json)
       : type = ItemType.values.firstWhere((e) => e.toString() == json["type"]),
-        headContent = ItemInput(value: json["headContent"]["value"]),
-        bodyContent = List<ItemInput>.from(
-            json["bodyContent"].map((input) => ItemInput.fromResponse(input)));
+        headContent = PackPageItemInput(value: json["headContent"]["value"]),
+        bodyContent = List<PackPageItemInput>.from(json["bodyContent"]
+            .map((input) => PackPageItemInput.fromResponse(input)));
 }
 
-class CreatorPage {
+class PackPage {
   final int pageNumber;
-  final List<CreatorItem> items;
+  final List<PackPageItem> items;
 
-  CreatorPage({
+  PackPage({
     required this.pageNumber,
     required this.items,
   });
 
-  CreatorPage.fromResponse(Map json)
+  PackPage.fromResponse(Map json)
       : pageNumber = json["pageNumber"],
-        items = List<CreatorItem>.from(json["items"].map((item) {
-          return CreatorItem.fromResponse(item);
+        items = List<PackPageItem>.from(json["items"].map((item) {
+          return PackPageItem.fromResponse(item);
         }));
 
   Map<String, dynamic> toJson() => {
         "pageNumber": pageNumber,
         "items":
-            List<dynamic>.from(items.map((CreatorItem item) => item.toJson())),
+            List<dynamic>.from(items.map((PackPageItem item) => item.toJson())),
       };
 }

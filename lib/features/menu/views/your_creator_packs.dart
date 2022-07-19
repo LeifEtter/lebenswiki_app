@@ -3,7 +3,7 @@ import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/packs/helper/get_packs.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
-import 'package:lebenswiki_app/features/packs/views/pack_creator_settings.dart';
+import 'package:lebenswiki_app/features/packs/views/pack_creator_information.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/models/enums.dart';
@@ -150,7 +150,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => EditorSettings(pack: pack),
+            builder: (context) => PackCreatorInformation(pack: pack),
           ),
         );
       }
