@@ -24,7 +24,7 @@ class PackApi extends BaseApi {
       return ResultModel(
         type: ResultType.success,
         message: "Lernpack erfolgreich erstellt!",
-        responseItem: jsonDecode(res.body)["body"]["id"],
+        responseItem: jsonDecode(res.body)["pack"]["id"],
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));

@@ -9,6 +9,7 @@ import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
+//TODO add unsplash image
 class PackCreatorInformation extends ConsumerStatefulWidget {
   final Pack pack;
 

@@ -25,7 +25,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
   final UserApi userApi = UserApi();
   late User user;
   late FormNotifier _formProvider;
-  final GlobalKey<FormState> _authFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _profileFormKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -40,7 +40,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
         body: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Form(
-        key: _authFormKey,
+        key: _profileFormKey,
         child: ListView(
           children: [
             const TopNav(pageName: "Profil", backName: "Menu"),

@@ -27,8 +27,8 @@ class Pack {
 
   Pack.initial({
     this.creatorId = 0,
-    this.title = "",
-    this.description = "",
+    this.title = "Titel",
+    this.description = "Beschreibung",
     this.titleImage = ImageRepo.packPlaceholderImage,
     this.published = false,
   });

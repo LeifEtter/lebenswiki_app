@@ -10,16 +10,16 @@ import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
 //TODO add option to delete single page
 class PageOverview extends StatefulWidget {
   final PackPage page;
-  final Function reload;
   final Function saveCallback;
   final int selfIndex;
+  final Function deleteSelf;
 
   const PageOverview({
     Key? key,
     required this.page,
-    required this.reload,
     required this.saveCallback,
     required this.selfIndex,
+    required this.deleteSelf,
   }) : super(key: key);
 
   @override
@@ -41,16 +41,29 @@ class _PageOverviewState extends State<PageOverview> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-          left: 20.0, right: 20.0, top: 15.0, bottom: 20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+          left: 20.0, right: 10.0, top: 15.0, bottom: 10.0),
+      child: Stack(
         children: [
-          PackEditorComponents.iconButton(
-              icon: Icons.save,
-              callback: () => _save(),
-              label: "Seite speichern"),
-          _buildPageContent(),
-          buildAddButton(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              PackEditorComponents.iconButton(
+                  icon: Icons.save,
+                  callback: () => _save(),
+                  label: "Seite speichern"),
+              //TODO make button red
+              PackEditorComponents.iconButton(
+                  icon: Icons.delete,
+                  callback: () => widget.deleteSelf(widget.selfIndex),
+                  label: "Seite Löschen"),
+              _buildPageContent(),
+              SizedBox(height: 60),
+            ],
+          ),
+          Positioned.fill(
+            child: Align(
+                alignment: Alignment.bottomRight, child: buildAddButton()),
+          ),
         ],
       ),
     );
@@ -214,7 +227,7 @@ class _PageOverviewState extends State<PageOverview> {
     ];
     return SpeedDial(
       icon: Icons.add_rounded,
-      direction: SpeedDialDirection.right,
+      direction: SpeedDialDirection.left,
       children: items
           .map<SpeedDialChild>((itemData) => SpeedDialChild(
                 child: Icon(itemData[1]),
