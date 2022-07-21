@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/general/base_api.dart';
@@ -157,11 +158,11 @@ class UserApi extends BaseApi {
       Uri.parse("$serverIp/blocks/"),
       headers: await requestHeader(),
     );
-    List blocks = jsonDecode(res.body)["body"];
+    List blocks = jsonDecode(res.body)["blockedUsers"];
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.success,
-        responseList: blocks.map((e) => Block.fromJson(e)).toList(),
+        responseList: blocks.map((block) => Block.fromJson(block)).toList(),
       );
     } else {
       return ResultModel(

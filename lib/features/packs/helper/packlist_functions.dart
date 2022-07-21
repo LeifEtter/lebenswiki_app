@@ -10,21 +10,13 @@ class PackListFunctions {
   }
 
   //Filters out content from blocked users
-  static List filterBlocked(List<Pack> packs, List blockedUsers) {
-    List filteredPackList = [];
-    bool canAdd = true;
+  static List<Pack> filterBlocked(List<Pack> packs, List<int> blockedIdList) {
+    List<Pack> filteredPackList = [];
 
     for (Pack pack in packs) {
-      canAdd = true;
-      for (Map report in blockedUsers) {
-        for (Map blocked in report["blocked"]) {
-          if (blocked["id"] == pack.creatorId) {
-            canAdd = false;
-            break;
-          }
-        }
+      if (!blockedIdList.contains(pack.creatorId)) {
+        filteredPackList.add(pack);
       }
-      canAdd ? filteredPackList.add(pack) : null;
     }
     return filteredPackList;
   }

@@ -6,6 +6,7 @@ import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card_minimal.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card_scaffold.dart';
 import 'package:lebenswiki_app/features/shorts/helper/short_list_functions.dart';
+import 'package:lebenswiki_app/models/block_model.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
@@ -36,7 +37,8 @@ class _GetShortsState extends ConsumerState<GetShorts> {
 
   @override
   Widget build(BuildContext context) {
-    final List<User> blockedList = ref.watch(blockedListProvider).blockedList;
+    final List<int> blockedIdList =
+        ref.watch(blockedListProvider).blockedIdList;
     _updateParameters();
     return FutureBuilder(
       future: provideCategory
@@ -47,22 +49,21 @@ class _GetShortsState extends ConsumerState<GetShorts> {
           return LoadingHelper.loadingIndicator();
         }
         ResultModel response = snapshot.data!;
-        List<Short> responseList = List.from(response.responseList);
+        List<Short> shorts = List<Short>.from(response.responseList);
         if (response.type == ResultType.failure) {
           return Text(response.message!);
         }
         if (response.responseList.isEmpty) {
           return Text(response.message!);
         }
-        responseList =
-            ShortListFunctions.filterBlocked(responseList, blockedList);
+        shorts = ShortListFunctions.filterBlocked(shorts, blockedIdList);
         return Expanded(
           child: ListView.builder(
             addAutomaticKeepAlives: true,
             shrinkWrap: true,
-            itemCount: responseList.length,
+            itemCount: shorts.length,
             itemBuilder: (context, index) {
-              Short short = responseList[index];
+              Short short = shorts[index];
               return returnCard(short, widget.reload);
             },
           ),

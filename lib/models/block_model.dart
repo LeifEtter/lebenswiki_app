@@ -1,32 +1,29 @@
-import 'dart:convert';
 import 'package:lebenswiki_app/features/common/helpers/date_helper.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
-
-Block blockFromJson(String str) => Block.fromJson(json.decode(str));
-String blockToJson(Block data) => json.encode(data.toJson());
 
 class Block {
   Block({
     required this.reason,
     required this.blocker,
-    this.blockerId,
-    this.blocked = const [],
+    required this.blockerId,
+    required this.blocked,
+    required this.blockedId,
     required this.creationDate,
-  }) {
-    blockerId = blocker.id;
-  }
+  });
 
   String reason;
+  int blockerId;
   User blocker;
-  int? blockerId;
-  List<User> blocked;
+  int blockedId;
+  User blocked;
   DateTime creationDate;
 
   factory Block.fromJson(Map<String, dynamic> json) => Block(
         reason: json["reason"],
-        blocker: User.fromJson(json["blocker"]),
+        blocker: User.forContent(json["blocker"]),
         blockerId: json["blockerId"],
-        blocked: List<User>.from(json["blocked"].map((e) => User.fromJson(e))),
+        blocked: User.forContent(json["blocked"]),
+        blockedId: json["blockedId"],
         creationDate: DateTime.parse(json["creationDate"]),
       );
 
@@ -34,7 +31,8 @@ class Block {
         "reason": reason,
         "blocker": blocker.toJson(),
         "blockerId": blockerId,
-        "blocked": List<String>.from(blocked.map((User user) => user.toJson())),
+        "blocked": blocked.toJson(),
+        "blockedId": blockedId,
         "creationDate": DateHelper().convertToString(creationDate),
       };
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/models/block_model.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 
@@ -79,8 +80,34 @@ final categoryProvider =
     ChangeNotifierProvider<CategoryProvider>(((ref) => CategoryProvider()));
 
 //TODO actually set blocked List
+//TODO update everytime user blocks
 class BlockedListNotifier extends ChangeNotifier {
-  List<User> blockedList = [];
+  List<Block>? _blockedList;
+  List<int>? _blockedIdList;
+
+  List<Block> get blockedList => _blockedList ?? [];
+  //TODO remove hazard
+  List<int> get blockedIdList => _blockedIdList ?? [99999999];
+
+  void setBlockedList(List<Block> newBlocks) {
+    _blockedList = newBlocks;
+    _setBlockedIdList();
+  }
+
+  void _setBlockedIdList() {
+    _blockedIdList =
+        _blockedList!.map((Block block) => block.blockedId).toList();
+  }
+
+  void addBlock(Block block) {
+    _blockedList!.add(block);
+    _blockedIdList!.add(block.blockedId);
+  }
+
+  void removeBlockedList() {
+    _blockedList = null;
+    _blockedIdList = null;
+  }
 }
 
 final blockedListProvider =

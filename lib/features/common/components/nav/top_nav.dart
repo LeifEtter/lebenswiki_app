@@ -88,7 +88,8 @@ class TopNavYour extends StatelessWidget {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                Navigator.pop(context);
+                //* Remember this one
+                Navigator.popUntil(context, (route) => route.isFirst);
               },
               child: Row(
                 children: [

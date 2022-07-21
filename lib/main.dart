@@ -82,10 +82,12 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
 
 class NavBarWrapper extends StatefulWidget {
   final int initialTab;
+  final bool drawerOpen;
 
   const NavBarWrapper({
     Key? key,
     this.initialTab = 0,
+    this.drawerOpen = false,
   }) : super(key: key);
 
   @override
@@ -109,7 +111,7 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
       const ShortFeed(),
     ];
     return Scaffold(
-      drawer: const MenuBar(),
+      drawer: MenuBar(),
       floatingActionButton: dialAddButton(context),
       backgroundColor: Colors.white,
       appBar: const MainAppBar(

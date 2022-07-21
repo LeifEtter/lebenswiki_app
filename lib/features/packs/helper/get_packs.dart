@@ -5,10 +5,10 @@ import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/packs/components/pack_card.dart';
 import 'package:lebenswiki_app/features/packs/components/pack_card_editable.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
+import 'package:lebenswiki_app/features/packs/helper/packlist_functions.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
-import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
 class GetPacks extends ConsumerStatefulWidget {
@@ -35,8 +35,8 @@ class _GetPacksState extends ConsumerState<GetPacks> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO fix blockedList
-    final List<User> blockedList = ref.watch(blockedListProvider).blockedList;
+    final List<int> blockedIdList =
+        ref.watch(blockedListProvider).blockedIdList;
     _updateParameters();
     return FutureBuilder(
       future: provideCategory
@@ -47,21 +47,21 @@ class _GetPacksState extends ConsumerState<GetPacks> {
           return LoadingHelper.loadingIndicator();
         }
         ResultModel response = snapshot.data!;
-        List responseList = response.responseList;
+        List<Pack> packs = List<Pack>.from(response.responseList);
         if (response.type == ResultType.failure) {
           return Text(response.message!);
         }
         if (response.responseList.isEmpty) {
           return Text(response.message!);
         }
-        //responseList = _filterBlocked(responseList, blockedList.data);
+        packs = PackListFunctions.filterBlocked(packs, blockedIdList);
         return Expanded(
           child: ListView.builder(
             addAutomaticKeepAlives: true,
             shrinkWrap: true,
-            itemCount: responseList.length,
+            itemCount: packs.length,
             itemBuilder: (context, index) {
-              Pack pack = responseList[index];
+              Pack pack = packs[index];
               return returnCard(pack, widget.reload);
             },
           ),

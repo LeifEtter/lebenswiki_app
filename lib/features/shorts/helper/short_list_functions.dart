@@ -10,21 +10,14 @@ class ShortListFunctions {
   }
 
   //Filters out content from blocked users
-  static List<Short> filterBlocked(List<Short> shorts, List blockedUsers) {
+  static List<Short> filterBlocked(
+      List<Short> shorts, List<int> blockedIdList) {
     List<Short> filteredShortList = [];
-    bool canAdd = true;
 
     for (Short short in shorts) {
-      canAdd = true;
-      for (Map report in blockedUsers) {
-        for (Map blocked in report["blocked"]) {
-          if (blocked["id"] == short.creatorId) {
-            canAdd = false;
-            break;
-          }
-        }
+      if (!blockedIdList.contains(short.creatorId)) {
+        filteredShortList.add(short);
       }
-      canAdd ? filteredShortList.add(short) : null;
     }
     return filteredShortList;
   }
