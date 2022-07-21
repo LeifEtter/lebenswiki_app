@@ -24,7 +24,6 @@ class MiscApi extends BaseApi {
           .map<ContentCategory>(
               (category) => ContentCategory.fromJson(category))
           .toList();
-      categories.insert(0, ContentCategory.forNew());
       //Sort categories
       categories.sort((a, b) => a.id.compareTo(b.id));
       return ResultModel(

@@ -18,7 +18,7 @@ class ProviderHelper {
       return false;
     }
   }
-
+  
   static void resetSessionProviders(WidgetRef ref) {
     ref.read(tokenProvider).removeToken();
     ref.read(userIdProvider).removeUserId();

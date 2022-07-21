@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/common/components/tab_bar.dart';
 import 'package:lebenswiki_app/features/packs/helper/get_packs.dart';
-import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
@@ -35,12 +34,6 @@ class _PackFeedState extends ConsumerState<PackFeed> {
             cardType: CardType.packsByCategory,
             category: categories[currentCategory],
           ),
-          TextButton(
-            child: const Text("call snackbar"),
-            onPressed: () {
-              CustomFlushbar.info(message: "Something").show(context);
-            },
-          )
         ],
       ),
     );

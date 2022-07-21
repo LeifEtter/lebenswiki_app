@@ -56,16 +56,22 @@ final userIdProvider =
     ChangeNotifierProvider<UserIdNotifier>((ref) => UserIdNotifier());
 
 class CategoryProvider extends ChangeNotifier {
+  //TODO remove "neu" category
   List<ContentCategory>? _categories;
+  List<ContentCategory>? _categoriesNoNew;
 
   List<ContentCategory> get categories => _categories ?? [];
+  List<ContentCategory> get categoriesNoNew => _categoriesNoNew ?? [];
 
   void setCategories(List<ContentCategory> newCategories) {
     _categories = newCategories;
+    _categories!.insert(0, ContentCategory.forNew());
+    _categoriesNoNew = newCategories;
   }
 
   void removeCategories() {
     _categories = null;
+    _categoriesNoNew = null;
   }
 }
 

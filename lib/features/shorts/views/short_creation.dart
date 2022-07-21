@@ -145,22 +145,24 @@ class _CreateShortState extends ConsumerState<CreateShort> {
     shortApi
         .createShort(
             short: Short(
-          id: 0,
-          categories: [categories[currentCategory]],
-          title: _titleController.text.toString(),
-          content: _contentController.text.toString(),
-          creator: user,
-          creationDate: DateTime.now(),
-        ))
+      id: 0,
+      categories: [categories[currentCategory]],
+      title: _titleController.text.toString(),
+      content: _contentController.text.toString(),
+      creator: user,
+      creationDate: DateTime.now(),
+    ))
         .then(
-          (_) => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const YourShorts(
-                chosenTab: 1,
-              ),
+      (_) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const YourShorts(
+              chosenTab: 1,
             ),
           ),
         );
+      },
+    );
   }
 }

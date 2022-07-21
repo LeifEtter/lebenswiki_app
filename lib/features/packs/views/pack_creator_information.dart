@@ -10,7 +10,8 @@ import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
 //TODO add unsplash image
-//TODO remove new category
+//TODO enable choosing multiple categories
+
 class PackCreatorInformation extends ConsumerStatefulWidget {
   final Pack pack;
 
@@ -41,7 +42,9 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
 
   @override
   Widget build(BuildContext context) {
-    List<ContentCategory> categories = ref.watch(categoryProvider).categories;
+    List<ContentCategory> categoriesPreFilter =
+        ref.watch(categoryProvider).categoriesNoNew;
+    List<ContentCategory> categories = _removeNew(categoriesPreFilter);
     return Scaffold(
       body: ListView(
         padding: const EdgeInsets.only(top: 0),
@@ -131,6 +134,12 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
         ],
       ),
     );
+  }
+
+  List<ContentCategory> _removeNew(List<ContentCategory> result) {
+    return result
+        .where((ContentCategory cat) => cat.categoryName != "Neu")
+        .toList();
   }
 
   BoxDecoration _inputStyle() {
