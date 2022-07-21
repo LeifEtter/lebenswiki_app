@@ -155,7 +155,7 @@ class TopNavCustom extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          LebenswikiShadows().fancyShadow,
+          LebenswikiShadows.fancyShadow,
         ],
       ),
       child: Padding(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/features/menu/views/your_creator_packs.dart';
-import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_creator_information.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_feed.dart';

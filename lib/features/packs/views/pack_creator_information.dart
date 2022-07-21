@@ -10,6 +10,7 @@ import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
 //TODO add unsplash image
+//TODO remove new category
 class PackCreatorInformation extends ConsumerStatefulWidget {
   final Pack pack;
 
@@ -135,7 +136,7 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
   BoxDecoration _inputStyle() {
     return BoxDecoration(
       boxShadow: [
-        LebenswikiShadows().fancyShadow,
+        LebenswikiShadows.fancyShadow,
       ],
       color: Colors.white,
       borderRadius: BorderRadius.circular(15.0),

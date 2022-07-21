@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/misc_api.dart';
@@ -9,6 +7,7 @@ import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
 class ProviderHelper {
+  //TODO remove token Provider as it is not secure
   static bool areSessionProvidersReset(WidgetRef ref) {
     if (ref.read(tokenProvider).token == "" ||
         ref.read(userIdProvider).userId == 0 ||

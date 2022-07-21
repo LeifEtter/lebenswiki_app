@@ -26,7 +26,7 @@ class _PackCardState extends State<PackCard> {
           const EdgeInsets.only(top: 10, bottom: 10, left: 10.0, right: 10.0),
       child: Container(
         decoration: BoxDecoration(boxShadow: [
-          LebenswikiShadows().cardShadow,
+          LebenswikiShadows.cardShadow,
         ]),
         child: Card(
           shape: RoundedRectangleBorder(

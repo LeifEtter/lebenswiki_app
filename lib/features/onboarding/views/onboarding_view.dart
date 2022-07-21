@@ -85,7 +85,7 @@ class _OnboardingViewState extends State<OnboardingView> {
       padding: const EdgeInsets.only(bottom: 20, top: 10),
       child: Container(
         decoration: BoxDecoration(boxShadow: [
-          LebenswikiShadows().fancyShadow,
+          LebenswikiShadows.fancyShadow,
         ]),
         child: Stack(
           children: [
@@ -176,7 +176,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20.0),
-                      boxShadow: [LebenswikiShadows().fancyShadow],
+                      boxShadow: [LebenswikiShadows.fancyShadow],
                     ),
                     child: TextField(
                       textAlign: TextAlign.center,
@@ -265,7 +265,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20.0),
                       color: Colors.white,
-                      boxShadow: [LebenswikiShadows().fancyShadow]),
+                      boxShadow: [LebenswikiShadows.fancyShadow]),
                   child: Padding(
                     padding: const EdgeInsets.only(
                         top: 60, left: 20, right: 20, bottom: 20),
@@ -318,7 +318,7 @@ class _OnboardingViewState extends State<OnboardingView> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25.0),
                   color: LebenswikiColors.blue,
-                  boxShadow: [LebenswikiShadows().fancyShadow]),
+                  boxShadow: [LebenswikiShadows.fancyShadow]),
               child: TextButton(
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 10.0),

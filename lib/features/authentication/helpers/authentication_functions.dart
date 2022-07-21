@@ -54,7 +54,6 @@ class Authentication {
       String token = loginResult.token ?? "";
 
       TokenHandler().set(token);
-      //TODO Security hazard, remove before production
       await ProviderHelper.getDataAndSetSessionProviders(ref, token: token);
 
       result = ResultModel(

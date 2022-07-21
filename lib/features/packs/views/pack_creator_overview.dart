@@ -181,7 +181,7 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
       decoration: BoxDecoration(
         color: index == _selectedPage ? Colors.blueAccent : Colors.white,
         borderRadius: BorderRadius.circular(10.0),
-        boxShadow: [LebenswikiShadows().fancyShadow],
+        boxShadow: [LebenswikiShadows.fancyShadow],
       ),
       child: Center(
         child: index != pack.pages.length

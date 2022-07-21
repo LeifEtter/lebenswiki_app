@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/comments/api/comment_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
-import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
 import 'package:lebenswiki_app/features/comments/helper/get_comments.dart';
 import 'package:lebenswiki_app/features/common/components/comment_input.dart';
@@ -39,7 +38,7 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold> {
       padding: const EdgeInsets.only(top: 5, left: 10.0, right: 10.0),
       child: Container(
         decoration: BoxDecoration(boxShadow: [
-          LebenswikiShadows().cardShadow,
+          LebenswikiShadows.cardShadow,
         ]),
         child: Card(
           shape: RoundedRectangleBorder(

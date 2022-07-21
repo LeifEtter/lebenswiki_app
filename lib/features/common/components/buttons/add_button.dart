@@ -8,7 +8,6 @@ import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/repository/colors.dart';
-import 'package:lebenswiki_app/features/shorts/views/short_creation.dart';
 
 Widget dialAddButton(context) {
   return SpeedDial(

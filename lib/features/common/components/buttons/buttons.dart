@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/repository/colors.dart';
+import 'package:lebenswiki_app/repository/shadows.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
 class LebenswikiButtons {
@@ -90,6 +91,31 @@ class LebenswikiTextButton {
   }
 }
 
-class LebenswikiIconButton {}
+class LebenswikiIconButton {
+  Widget roundEdgesWhite({
+    required Function callback,
+    required IconData icon,
+  }) =>
+      roundEdges(callback: callback, icon: icon, backgroundColor: Colors.white);
+
+  Widget roundEdges({
+    required Function callback,
+    required IconData icon,
+    required Color backgroundColor,
+    Color iconColor = Colors.black,
+  }) =>
+      Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5.0),
+          boxShadow: [LebenswikiShadows.fancyShadow],
+          color: backgroundColor,
+        ),
+        child: IconButton(
+          onPressed: () => callback(),
+          icon: Icon(icon),
+          color: iconColor,
+        ),
+      );
+}
 
 class LebenswikiTextIconButton {}

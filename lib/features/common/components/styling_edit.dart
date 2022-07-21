@@ -7,7 +7,7 @@ class EditDecoration {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0),
           color: Colors.white,
-          boxShadow: [LebenswikiShadows().fancyShadow],
+          boxShadow: [LebenswikiShadows.fancyShadow],
         ),
         child: child,
       );

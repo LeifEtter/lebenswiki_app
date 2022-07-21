@@ -5,7 +5,7 @@ class PackEditorStyling {
   static BoxDecoration standardInput() {
     return BoxDecoration(
       borderRadius: BorderRadius.circular(10.0),
-      boxShadow: [LebenswikiShadows().fancyShadow],
+      boxShadow: [LebenswikiShadows.fancyShadow],
       color: Colors.white,
     );
   }

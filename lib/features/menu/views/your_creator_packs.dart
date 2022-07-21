@@ -115,7 +115,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
               color: LebenswikiColors.blue,
-              boxShadow: [LebenswikiShadows().fancyShadow]),
+              boxShadow: [LebenswikiShadows.fancyShadow]),
           child: TextButton(
             onPressed: () {
               _routeCreatePack();

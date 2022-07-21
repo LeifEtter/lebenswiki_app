@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/features/common/components/buttons/buttons.dart';
 import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_creator_information.dart';
+import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
+//TODO add unpublish pack
+//TODO check if published -> Show different options depending on that
 class PackCardEdit extends StatefulWidget {
   final Pack pack;
   final Function reload;
@@ -29,7 +35,7 @@ class _PackCardEditState extends State<PackCardEdit> {
           const EdgeInsets.only(top: 10, bottom: 10, left: 10.0, right: 10.0),
       child: Container(
         decoration: BoxDecoration(boxShadow: [
-          LebenswikiShadows().cardShadow,
+          LebenswikiShadows.cardShadow,
         ]),
         child: Card(
           shape: RoundedRectangleBorder(
@@ -39,11 +45,10 @@ class _PackCardEditState extends State<PackCardEdit> {
           child: InkWell(
             onTap: () {
               Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        PackCreatorInformation(pack: widget.pack)),
-              );
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          PackCreatorInformation(pack: widget.pack)));
             },
             child: Column(
               children: [
@@ -65,42 +70,50 @@ class _PackCardEditState extends State<PackCardEdit> {
                     Positioned.fill(
                       child: Align(
                         alignment: Alignment.topRight,
-                        child: GestureDetector(
-                          onTap: () {
-                            packApi.publishPack(widget.pack.id);
-                            widget.reload();
+                        child: LebenswikiButtons.iconButton.roundEdgesWhite(
+                          callback: () async {
+                            await packApi
+                                .publishPack(widget.pack.id)
+                                .then((ResultModel result) {
+                              if (result.type == ResultType.success) {
+                                CustomFlushbar.success(
+                                        message: "Lernpack veröffentlicht!")
+                                    .show(context);
+                                widget.reload();
+                              } else {
+                                CustomFlushbar.error(
+                                        message: "Dafür hast du keine Rechte")
+                                    .show(context);
+                              }
+                            });
                           },
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            child: const Icon(Icons.publish),
-                            decoration: BoxDecoration(
-                              boxShadow: [LebenswikiShadows().fancyShadow],
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                          ),
+                          icon: Icons.publish,
                         ),
                       ),
                     ),
                     Positioned.fill(
                       child: Align(
                         alignment: Alignment.topLeft,
-                        child: GestureDetector(
-                          onTap: () {
-                            packApi.deletePack(widget.pack.id);
-                            widget.reload();
+                        child: LebenswikiButtons.iconButton.roundEdgesWhite(
+                          callback: () {
+                            //TODO add popup "Do you really want to delete pack?"
+                            packApi
+                                .deletePack(widget.pack.id)
+                                .then((ResultModel result) {
+                              if (result.type == ResultType.success) {
+                                CustomFlushbar.success(
+                                        message: "Lernpack gelöscht")
+                                    .show(context);
+                              } else {
+                                CustomFlushbar.error(
+                                        message:
+                                            "Lernpack konnte nicht gelöscht werden")
+                                    .show(context);
+                              }
+                              widget.reload();
+                            });
                           },
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            child: const Icon(Icons.delete),
-                            decoration: BoxDecoration(
-                              boxShadow: [LebenswikiShadows().fancyShadow],
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                          ),
+                          icon: Icons.delete,
                         ),
                       ),
                     ),
