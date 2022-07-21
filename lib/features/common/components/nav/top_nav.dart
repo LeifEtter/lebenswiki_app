@@ -88,11 +88,7 @@ class TopNavYour extends StatelessWidget {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const NavBarWrapper(),
-                    ));
+                Navigator.pop(context);
               },
               child: Row(
                 children: [

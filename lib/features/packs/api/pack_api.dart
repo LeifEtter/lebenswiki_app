@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
 import 'package:http/http.dart';
@@ -47,6 +48,11 @@ class PackApi extends BaseApi {
       url: "packs/published",
       errorMessage: "Du hast noch keine packs veröffentlicht");
 
+  Future<ResultModel> getOwnUnpublishedPacks() => getPacks(
+        url: "packs/unpublished",
+        errorMessage: "Du hast noch keine Lernpacks entworfen",
+      );
+
   Future<ResultModel> getOthersPublishedpacks() => getPacks(
       url: "packs/published",
       errorMessage: "Dieser Benutzer hat noch keine packs veröffentlicht");
@@ -62,16 +68,20 @@ class PackApi extends BaseApi {
       url: "packs/unpublished", errorMessage: "Du hast keine packs entworfen");
 
   Future<ResultModel> getPacks({url, errorMessage}) async {
+    ResultModel result = ResultModel(
+        type: ResultType.failure, message: errorMessage, responseList: []);
     await get(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
     ).then((res) {
       Map body = jsonDecode(res.body);
       if (statusIsSuccess(res.statusCode)) {
-        List packs = body["packs"].map((pack) => Pack.fromJson(pack)).toList();
-        return ResultModel(
-          type: ResultType.packList,
+        List<Pack> packs = List<Pack>.from(
+            body["packs"].map((pack) => Pack.fromJson(pack)).toList());
+        result = ResultModel(
+          type: ResultType.shortList,
           responseList: packs,
+          message: errorMessage,
         );
       } else {
         apiErrorHandler.handleAndLog(reponseData: body);
@@ -79,10 +89,7 @@ class PackApi extends BaseApi {
     }).catchError((error) {
       apiErrorHandler.handleAndLog(reponseData: error);
     });
-    return ResultModel(
-      type: ResultType.failure,
-      message: errorMessage,
-    );
+    return result;
   }
 
   Future<ResultModel> upvotePack(id) => _interactPack(

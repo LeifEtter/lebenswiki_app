@@ -5,7 +5,7 @@ import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/authentication/components/custom_form_field.dart';
 import 'package:lebenswiki_app/features/authentication/providers/auth_providers.dart';
-import 'package:lebenswiki_app/features/common/components/buttons/authentication_buttons.dart';
+import 'package:lebenswiki_app/features/common/components/buttons/buttons.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
@@ -104,7 +104,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
               iconData: Icons.local_post_office,
             ),
             const SizedBox(height: 30),
-            AuthenticationButton(
+            LebenswikiButtons.textButton.authenticationButton(
               text: "Änderungen Speichern",
               color: Colors.blue,
               onPress: () => update(),
@@ -154,7 +154,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
               isPassword: true,
             ),
             const SizedBox(height: 30),
-            AuthenticationButton(
+            LebenswikiButtons.textButton.authenticationButton(
               text: "Passwort Speichern",
               color: Colors.blue,
               onPress: () => changePassword(),

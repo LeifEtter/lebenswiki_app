@@ -49,36 +49,19 @@ class _PackCardEditState extends State<PackCardEdit> {
               children: [
                 Stack(
                   children: [
-                    widget.pack.titleImage != ""
-                        ? Container(
-                            height: 150,
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(10.0),
-                                topLeft: Radius.circular(10.0),
-                              ),
-                              image: DecorationImage(
-                                fit: BoxFit.fitWidth,
-                                image: NetworkImage(widget.pack.titleImage),
-                              ),
-                            ),
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: 150,
-                                decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(10.0),
-                                    topLeft: Radius.circular(10.0),
-                                  ),
-                                ),
-                                child: const Center(
-                                    child: Text("Füge ein bild hinzu")),
-                              ),
-                            ],
-                          ),
+                    Container(
+                      height: 150,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(10.0),
+                          topLeft: Radius.circular(10.0),
+                        ),
+                        image: DecorationImage(
+                          fit: BoxFit.fitWidth,
+                          image: NetworkImage(widget.pack.titleImage),
+                        ),
+                      ),
+                    ),
                     Positioned.fill(
                       child: Align(
                         alignment: Alignment.topRight,
@@ -123,11 +106,6 @@ class _PackCardEditState extends State<PackCardEdit> {
                     ),
                   ],
                 ),
-                widget.pack.titleImage == ""
-                    ? const Divider(
-                        thickness: 2,
-                      )
-                    : Container(),
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 20.0, top: 10.0, right: 20.0, bottom: 20.0),

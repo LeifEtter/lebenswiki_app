@@ -12,9 +12,9 @@ import 'package:lebenswiki_app/features/routing/routing_constants.dart';
 import 'package:lebenswiki_app/features/authentication/views/authentication_view.dart';
 import 'package:lebenswiki_app/features/shorts/views/short_feed.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lebenswiki_app/providers/provider_helper.dart';
 
+//TODO check if token is expired
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(

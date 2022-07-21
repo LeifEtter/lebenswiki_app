@@ -12,8 +12,6 @@ import 'package:lebenswiki_app/features/routing/routes.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
 //TODO save when any navigation button is pressed
-//TODO seperate routing logic
-//TODO implement pack id that is received from creation
 class PackCreatorOverview extends StatefulWidget {
   final Pack pack;
 
@@ -126,7 +124,16 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
     //TODO Implement Saving
   }
 
-  void _deletePage(int index) {}
+  void _deletePage(int index) {
+    pack.pages.removeAt(index);
+    pageViewPages.removeAt(index);
+    _pageController.animateToPage(
+      index - 1,
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.easeInOut,
+    );
+    setState(() {});
+  }
 
   Widget _buildPageBar() {
     return ListView.builder(

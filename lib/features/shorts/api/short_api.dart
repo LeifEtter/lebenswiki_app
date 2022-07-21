@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
 import 'package:http/http.dart';
@@ -104,7 +103,6 @@ class ShortApi extends BaseApi {
       if (statusIsSuccess(res.statusCode)) {
         List<Short> shorts = List<Short>.from(
             body["shorts"].map((short) => Short.fromJson(short)).toList());
-        log("After");
         result = ResultModel(
           type: ResultType.shortList,
           responseList: shorts,

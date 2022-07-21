@@ -7,7 +7,7 @@ import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/authentication/components/custom_form_field.dart';
 import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
 import 'package:lebenswiki_app/features/authentication/providers/auth_providers.dart';
-import 'package:lebenswiki_app/features/common/components/buttons/authentication_buttons.dart';
+import 'package:lebenswiki_app/features/common/components/buttons/buttons.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 import 'package:lebenswiki_app/repository/colors.dart';
 import 'package:lebenswiki_app/main.dart';
@@ -145,7 +145,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                 builder: (context, WidgetRef ref, child) {
                   return Padding(
                     padding: const EdgeInsets.only(top: 10.0),
-                    child: AuthenticationButton(
+                    child: LebenswikiButtons.textButton.authenticationButton(
                       text: isSignUp ? "Registrieren" : "Einloggen",
                       color: LebenswikiColors.createPackButton,
                       onPress: () async {

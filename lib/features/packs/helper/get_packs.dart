@@ -88,7 +88,7 @@ class _GetPacksState extends ConsumerState<GetPacks> {
             (pack, reload) => PackCardEdit(pack: pack, reload: reload);
         break;
       case CardType.packDrafts:
-        packFuture = () {};
+        packFuture = packApi.getOwnUnpublishedPacks;
         returnCard = returnCard =
             (pack, reload) => PackCardEdit(pack: pack, reload: reload);
         break;

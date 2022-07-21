@@ -47,23 +47,28 @@ class _PageOverviewState extends State<PageOverview> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              PackEditorComponents.iconButton(
-                  icon: Icons.save,
-                  callback: () => _save(),
-                  label: "Seite speichern"),
               //TODO make button red
-              PackEditorComponents.iconButton(
-                  icon: Icons.delete,
-                  callback: () => widget.deleteSelf(widget.selfIndex),
-                  label: "Seite Löschen"),
+              if (widget.selfIndex != 0)
+                PackEditorComponents.iconButton(
+                    icon: Icons.delete,
+                    callback: () => widget.deleteSelf(widget.selfIndex),
+                    label: "Seite Löschen"),
               _buildPageContent(),
-              SizedBox(height: 60),
+              const SizedBox(height: 60),
             ],
           ),
           Positioned.fill(
             child: Align(
                 alignment: Alignment.bottomRight, child: buildAddButton()),
           ),
+          Positioned.fill(
+              child: Align(
+            alignment: Alignment.bottomLeft,
+            child: PackEditorComponents.iconButton(
+                icon: Icons.save,
+                callback: () => _save(),
+                label: "Seite speichern"),
+          )),
         ],
       ),
     );

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
+import 'package:lebenswiki_app/features/common/components/buttons/buttons.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/features/menu/views/your_creator_packs.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
-import 'package:lebenswiki_app/features/common/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/features/menu/views/bookmark_view.dart';
 import 'package:lebenswiki_app/features/menu/views/developer_info.dart';
 import 'package:lebenswiki_app/features/menu/views/profile_view.dart';
@@ -92,7 +92,7 @@ class _MenuBarState extends ConsumerState<MenuBar> {
         Padding(
           padding: const EdgeInsets.only(
               left: 25.0, right: 25.0, top: 15.0, bottom: 15.0),
-          child: lebenswikiBlueButtonNormal(
+          child: LebenswikiButtons.textButton.blueButtonNormal(
             callback: () {
               Share.share('Hey, check die Lebenswiki App aus!');
             },
