@@ -102,6 +102,7 @@ class BlockedListNotifier extends ChangeNotifier {
   void addBlock(Block block) {
     _blockedList!.add(block);
     _blockedIdList!.add(block.blockedId);
+    notifyListeners();
   }
 
   void removeBlockedList() {

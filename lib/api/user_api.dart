@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
@@ -136,7 +134,7 @@ class UserApi extends BaseApi {
       Uri.parse("$serverIp/blocks/create/$id"),
       headers: await requestHeader(),
       body: jsonEncode({
-        reason: reason,
+        "reason": reason,
       }),
     );
     if (statusIsSuccess(res.statusCode)) {

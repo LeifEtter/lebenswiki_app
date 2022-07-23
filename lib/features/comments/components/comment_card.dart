@@ -4,13 +4,12 @@ import 'package:lebenswiki_app/features/comments/api/comment_api.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/vote_button.dart';
 import 'package:lebenswiki_app/features/common/components/cards/creator_info.dart';
 import 'package:lebenswiki_app/features/common/helpers/reaction_functions.dart';
-import 'package:lebenswiki_app/features/common/helpers/vote_functions.dart';
 import 'package:lebenswiki_app/features/comments/models/comment_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
-class CommentCard extends ConsumerStatefulWidget {
+/*class CommentCard extends ConsumerStatefulWidget {
   final Function reloadCallback;
   final Comment comment;
   final CardType cardType;
@@ -88,7 +87,7 @@ class _CommentCardState extends ConsumerState<CommentCard> {
                               height: 30,
                               width: 200,
                               //TODO implement Menu Callback Provider
-                              child: reactionHelper.reactionBar(),
+                              child: reactionBar(),
                             ),
                           ],
                         )
@@ -129,18 +128,6 @@ class _CommentCardState extends ConsumerState<CommentCard> {
         ),
       );
 
-  void _voteCallback(bool isUpvote) {
-    VoteType voteType = voteHelper.getVoteType(isUpvote: isUpvote);
-    //TODO implement comment voting
-    switch (voteType) {
-      case VoteType.upvote:
-        break;
-      case VoteType.downvote:
-        break;
-      case VoteType.removeUpvote:
-        break;
-      case VoteType.removeDownvote:
-        break;
-    }
-  }
+  void _voteCallback(bool isUpvote) {}
 }
+*/

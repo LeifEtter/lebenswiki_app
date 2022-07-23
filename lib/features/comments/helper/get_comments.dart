@@ -3,12 +3,10 @@ import 'package:lebenswiki_app/features/comments/components/comment_card.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 
 class GetContentComments extends StatefulWidget {
-  final Function reload;
   final List comments;
 
   const GetContentComments({
     Key? key,
-    required this.reload,
     required this.comments,
   }) : super(key: key);
 
@@ -27,11 +25,11 @@ class _GetContentCommentsState extends State<GetContentComments> {
         var currentComment = widget.comments[index];
         return Column(
           children: [
-            CommentCard(
+            /*CommentCard(
               comment: currentComment,
               reloadCallback: widget.reload,
               cardType: CardType.shortComments,
-            ),
+            ),*/
             const Padding(
               padding: EdgeInsets.only(right: 20.0, left: 20.0),
               child: Divider(),

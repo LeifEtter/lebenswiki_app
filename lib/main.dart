@@ -13,6 +13,7 @@ import 'package:lebenswiki_app/features/authentication/views/authentication_view
 import 'package:lebenswiki_app/features/shorts/views/short_feed.dart';
 import 'package:flutter/services.dart';
 import 'package:lebenswiki_app/providers/provider_helper.dart';
+import 'package:lebenswiki_app/testing/testing_view.dart';
 
 //TODO check if token is expired
 void main() async {
@@ -21,7 +22,21 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(
     const ProviderScope(child: MyApp()),
+    /*const ProviderScope(
+      child: Testing(),
+    ),*/
   );
+}
+
+class Testing extends StatelessWidget {
+  const Testing({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: TestingView(),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {

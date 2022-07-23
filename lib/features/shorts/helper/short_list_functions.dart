@@ -1,5 +1,6 @@
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 
+//Provide all important functionality like setting if bookmarked, votes etc in this class
 class ShortListFunctions {
   //Sorts Packs by Creation Date, newest is first element in list, oldest is last
   static List<Short> sortPacks(List<Short> shorts) {
@@ -21,4 +22,8 @@ class ShortListFunctions {
     }
     return filteredShortList;
   }
+  /*
+  static List<Short> iterateThroughShortsAndSetParams(List<Short> list, int userId) {
+    list.forEach(() { });
+  }*/
 }

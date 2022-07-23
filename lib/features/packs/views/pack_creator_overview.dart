@@ -64,11 +64,14 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       PackEditorComponents.iconButton(
-                        callback: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PackViewer(pack: pack),
-                            )),
+                        callback: () {
+                          _saveCallback();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PackViewer(pack: pack),
+                              ));
+                        },
                         label: "Vorschau",
                         icon: Icons.preview,
                       ),
@@ -121,7 +124,14 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
   }
 
   void _saveCallback({page, index}) {
-    //TODO Implement Saving
+    for (PackPage page in pack.pages) {
+      for (PackPageItem item in page.items) {
+        item.headContent.value = item.headContent.controller!.text;
+        for (PackPageItemInput item in item.bodyContent) {
+          item.value = item.controller!.text;
+        }
+      }
+    }
   }
 
   void _deletePage(int index) {
