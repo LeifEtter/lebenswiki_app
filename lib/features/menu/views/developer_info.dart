@@ -28,13 +28,13 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
             padding: const EdgeInsets.all(15.0),
             child: Row(
               children: [
-                Image.network(
-                  "https://i.ibb.co/74PBzW8/6207c565b83821547c42e94a-BMFSFJ-gefo-rdert-vom.jpg%22%20alt=%226207c565b83821547c42e94a-BMFSFJ-gefo-rdert-vom",
+                Image.asset(
+                  "assets/images/BMFSFJ_logo.png",
                   width: MediaQuery.of(context).size.width * 0.4,
                 ),
                 const SizedBox(width: 20),
-                Image.network(
-                  "https://i.ibb.co/Bf24khm/jugendstrategie-logo-aktionsplan-1.png",
+                Image.asset(
+                  "assets/images/jugendstrategie-logo.png",
                   width: MediaQuery.of(context).size.width * 0.4,
                 ),
               ],

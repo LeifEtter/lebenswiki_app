@@ -100,10 +100,10 @@ class _MenuBarState extends ConsumerState<MenuBar> {
           ),
         ),
         const Divider(),
-        Image.network(ImageRepo.bmsLogo),
+        Image.asset("assets/images/BMFSFJ_logo.png"),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 50.0),
-          child: Image.network(ImageRepo.jugendStrategieLogo),
+          child: Image.asset("assets/images/jugendstrategie-logo.png"),
         ),
       ],
     ));

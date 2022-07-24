@@ -60,6 +60,10 @@ flutter:
     - assets/icons/community_filled.png
     - assets/images/zins_graph.png
     - assets/images/investieren_pack_image.png
+    - assets/images/BMFSFJ_logo.png
+    - assets/images/default_profile_image.jpg
+    - assets/images/jugendstrategie-logo.png
+    - assets/images/pack_placeholder_image.jpg
 
   fonts:
     - family: Outfit
