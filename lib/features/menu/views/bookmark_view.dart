@@ -91,29 +91,36 @@ class _BookmarkFeedState extends ConsumerState<BookmarkFeed>
                       child: TabBarView(
                         controller: _tabController,
                         children: [
-                          ListView.builder(
-                            addAutomaticKeepAlives: true,
-                            shrinkWrap: true,
-                            itemCount: packListHelper.packs.length,
-                            itemBuilder: ((context, index) {
-                              Pack pack = packListHelper.packs[index];
+                          packListHelper.packs.isEmpty
+                              ? const Center(
+                                  child: Text("Es wurden keine Packs gefunden"))
+                              : ListView.builder(
+                                  addAutomaticKeepAlives: true,
+                                  shrinkWrap: true,
+                                  itemCount: packListHelper.packs.length,
+                                  itemBuilder: ((context, index) {
+                                    Pack pack = packListHelper.packs[index];
 
-                              return PackCard(pack: pack);
-                            }),
-                          ),
-                          ListView.builder(
-                            addAutomaticKeepAlives: true,
-                            shrinkWrap: true,
-                            itemCount: shortListHelper.shorts.length,
-                            itemBuilder: ((context, index) {
-                              Short short = shortListHelper.shorts[index];
+                                    return PackCard(pack: pack);
+                                  }),
+                                ),
+                          shortListHelper.shorts.isEmpty
+                              ? const Center(
+                                  child:
+                                      Text("Es wurden keine Shorts gefunden"))
+                              : ListView.builder(
+                                  addAutomaticKeepAlives: true,
+                                  shrinkWrap: true,
+                                  itemCount: shortListHelper.shorts.length,
+                                  itemBuilder: ((context, index) {
+                                    Short short = shortListHelper.shorts[index];
 
-                              return ShortCardScaffold(
-                                cardType: CardType.yourShorts,
-                                short: short,
-                              );
-                            }),
-                          ),
+                                    return ShortCardScaffold(
+                                      cardType: CardType.yourShorts,
+                                      short: short,
+                                    );
+                                  }),
+                                ),
                         ],
                       ),
                     ),

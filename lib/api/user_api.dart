@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
@@ -71,7 +72,7 @@ class UserApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.user,
-        responseItem: User.forContent(
+        responseItem: User.forProvider(
           decodedBody["user"],
         ),
       );
@@ -109,11 +110,17 @@ class UserApi extends BaseApi {
   Future<ResultModel> updateProfile({
     required User user,
   }) async {
-    Response res = await patch(
+    Response res = await put(
       Uri.parse("$serverIp/users/profile/update"),
       headers: await requestHeader(),
-      body: user.toJson(),
+      body: jsonEncode({
+        "email": user.email,
+        "name": user.name,
+        "biography": user.biography,
+        "profileImage": user.profileImage
+      }),
     );
+    log(res.body);
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
           type: ResultType.success, message: "Profil erfolgreich geändert");

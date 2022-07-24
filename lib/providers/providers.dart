@@ -28,6 +28,7 @@ class UserNotifier extends ChangeNotifier {
 
   void setUser(User newUser) {
     _user = newUser;
+    notifyListeners();
   }
 
   void removeUser() {

@@ -102,7 +102,9 @@ class ShortApi extends BaseApi {
       headers: await requestHeader(),
     ).then((res) {
       Map body = jsonDecode(res.body);
+      if (url == "shorts/bookmarks") print(body);
       if (statusIsSuccess(res.statusCode)) {
+        log("till here");
         List<Short> shorts = List<Short>.from(
             body["shorts"].map((short) => Short.fromJson(short)).toList());
         result = ResultModel(

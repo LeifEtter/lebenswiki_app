@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -76,7 +78,11 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
               errorText: _formProvider.biography.error,
               iconData: Icons.note_alt_rounded,
             ),
-            const SizedBox(height: 30.0),
+            const SizedBox(height: 15.0),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text("Name"),
+            ),
             CustomInputField(
               initialValue: user.name,
               paddingTop: 5,
@@ -166,7 +172,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
     ));
   }
 
-  void update() {
+  void update() async {
     //TODO create user object for updatin
     //TODO set user provider to new user
 
@@ -175,12 +181,16 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
       that updates the user variable to the passed value and calls
       "notifyListeners()""
     */
+    log(_formProvider.email.value!);
     User newUser = _formProvider.convertToUser();
-    userApi.updateProfile(user: newUser).then((ResultModel result) {
-      if (result.type == ResultType.success) {
-        setState(() {});
-      } else {}
-    });
+
+    await userApi.updateProfile(user: newUser).then((ResultModel result) {});
+
+    ResultModel userResponse = await UserApi().getUserData();
+    User newnewUser = userResponse.responseItem;
+    print(newnewUser.name);
+    ref.read(userProvider).setUser(newnewUser);
+    setState(() {});
   }
 
   void changePassword() {
