@@ -5,7 +5,6 @@ import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/packs/components/pack_card.dart';
 import 'package:lebenswiki_app/features/packs/components/pack_card_editable.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
-import 'package:lebenswiki_app/features/packs/helper/packlist_functions.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
@@ -54,7 +53,6 @@ class _GetPacksState extends ConsumerState<GetPacks> {
         if (response.responseList.isEmpty) {
           return Text(response.message!);
         }
-        packs = PackListFunctions.filterBlocked(packs, blockedIdList);
         return Expanded(
           child: ListView.builder(
             addAutomaticKeepAlives: true,
@@ -75,7 +73,7 @@ class _GetPacksState extends ConsumerState<GetPacks> {
       case CardType.packsByCategory:
         provideCategory = true;
         packFuture = packApi.getPacksByCategory;
-        returnCard = (pack, reload) => PackCard(pack: pack, reload: reload);
+        returnCard = (pack, reload) => PackCard(pack: pack);
         break;
       case CardType.packBookmarks:
         packFuture = packApi.getBookmarkedPacks;

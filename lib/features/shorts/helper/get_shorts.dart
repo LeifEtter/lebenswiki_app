@@ -5,7 +5,6 @@ import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card_minimal.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card_scaffold.dart';
-import 'package:lebenswiki_app/features/shorts/helper/short_list_functions.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
@@ -55,7 +54,6 @@ class _GetShortsState extends ConsumerState<GetShorts> {
         if (response.responseList.isEmpty) {
           return Text(response.message!);
         }
-        shorts = ShortListFunctions.filterBlocked(shorts, blockedIdList);
         return Expanded(
           child: ListView.builder(
             addAutomaticKeepAlives: true,

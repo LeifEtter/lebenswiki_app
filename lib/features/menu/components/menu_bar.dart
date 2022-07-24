@@ -65,7 +65,6 @@ class _MenuBarState extends ConsumerState<MenuBar> {
             icon: Icons.bookmark_outline,
             text: "Gespeichert",
             destination: const BookmarkFeed(
-              isShort: true,
               isSearching: false,
             )),
         _buildNavigationDrawerItem(

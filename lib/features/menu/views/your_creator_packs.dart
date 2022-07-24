@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/features/common/components/tab_styles.dart';
 import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/packs/helper/get_packs.dart';
@@ -50,25 +51,9 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
               height: 50,
               child: TabBar(
                 controller: _tabController,
-                tabs: const [
-                  Tab(
-                    child: Text(
-                      "Veröffentlichte",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 17.0,
-                      ),
-                    ),
-                  ),
-                  Tab(
-                    child: Text(
-                      "Entwürfe",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 17.0,
-                      ),
-                    ),
-                  ),
+                tabs: [
+                  customTab("Veröffentlicht"),
+                  customTab("Entwürfe"),
                 ],
               ),
             ),
