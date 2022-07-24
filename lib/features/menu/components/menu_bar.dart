@@ -59,7 +59,7 @@ class _MenuBarState extends ConsumerState<MenuBar> {
         _buildNavigationDrawerItem(
           icon: Icons.person_outline,
           text: "Profil",
-          destination: const ProfileView(),
+          destination: ProfileView(user: user),
         ),
         _buildNavigationDrawerItem(
             icon: Icons.bookmark_outline,

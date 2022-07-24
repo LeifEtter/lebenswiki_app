@@ -15,6 +15,18 @@ class UserApi extends BaseApi {
     apiErrorHandler = ApiErrorHandler();
   }
 
+  Future<bool> authenticate() async {
+    Response res = await get(
+      Uri.parse("$serverIp/users/authentication"),
+      headers: await requestHeader(),
+    );
+    if (statusIsSuccess(res.statusCode)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<ResultModel> register(User user) async {
     Response res = await post(
       Uri.parse("$serverIp/users/register"),
@@ -87,13 +99,13 @@ class UserApi extends BaseApi {
 
   Future<ResultModel> updatePassword({
     required String oldpassword,
-    required String password,
+    required String newpassword,
   }) async {
     Response res = await patch(Uri.parse("$serverIp/users/password/update"),
         headers: await requestHeader(),
         body: jsonEncode({
           "oldPassword": oldpassword,
-          "newPassword": password,
+          "newPassword": newpassword,
         }));
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
@@ -163,8 +175,8 @@ class UserApi extends BaseApi {
       Uri.parse("$serverIp/blocks/"),
       headers: await requestHeader(),
     );
-    List blocks = jsonDecode(res.body)["blockedUsers"];
     if (statusIsSuccess(res.statusCode)) {
+      List blocks = jsonDecode(res.body)["blockedUsers"];
       return ResultModel(
         type: ResultType.success,
         responseList: blocks.map((block) => Block.fromJson(block)).toList(),
