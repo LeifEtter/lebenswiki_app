@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
@@ -74,57 +76,63 @@ class _BookmarkFeedState extends ConsumerState<BookmarkFeed>
                   blockedList: blockedList,
                 );
 
-                return Column(
-                  children: [
-                    SizedBox(
-                      height: 50,
-                      child: TabBar(
-                        controller: _tabController,
-                        tabs: [
-                          customTab("Lernpacks"),
-                          customTab("Shorts"),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Expanded(
-                      child: TabBarView(
-                        controller: _tabController,
-                        children: [
-                          packListHelper.packs.isEmpty
-                              ? const Center(
-                                  child: Text("Es wurden keine Packs gefunden"))
-                              : ListView.builder(
-                                  addAutomaticKeepAlives: true,
-                                  shrinkWrap: true,
-                                  itemCount: packListHelper.packs.length,
-                                  itemBuilder: ((context, index) {
-                                    Pack pack = packListHelper.packs[index];
+                log("after packs init");
 
-                                    return PackCard(pack: pack);
-                                  }),
-                                ),
-                          shortListHelper.shorts.isEmpty
-                              ? const Center(
-                                  child:
-                                      Text("Es wurden keine Shorts gefunden"))
-                              : ListView.builder(
-                                  addAutomaticKeepAlives: true,
-                                  shrinkWrap: true,
-                                  itemCount: shortListHelper.shorts.length,
-                                  itemBuilder: ((context, index) {
-                                    Short short = shortListHelper.shorts[index];
-
-                                    return ShortCardScaffold(
-                                      cardType: CardType.yourShorts,
-                                      short: short,
-                                    );
-                                  }),
-                                ),
-                        ],
+                return Expanded(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 50,
+                        child: TabBar(
+                          controller: _tabController,
+                          tabs: [
+                            customTab("Lernpacks"),
+                            customTab("Shorts"),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      Expanded(
+                        child: TabBarView(
+                          controller: _tabController,
+                          children: [
+                            packListHelper.packs.isEmpty
+                                ? const Center(
+                                    child:
+                                        Text("Es wurden keine Packs gefunden"))
+                                : ListView.builder(
+                                    addAutomaticKeepAlives: true,
+                                    shrinkWrap: true,
+                                    itemCount: packListHelper.packs.length,
+                                    itemBuilder: ((context, index) {
+                                      Pack pack = packListHelper.packs[index];
+
+                                      return PackCard(pack: pack);
+                                    }),
+                                  ),
+                            shortListHelper.shorts.isEmpty
+                                ? const Center(
+                                    child:
+                                        Text("Es wurden keine Shorts gefunden"))
+                                : ListView.builder(
+                                    addAutomaticKeepAlives: true,
+                                    shrinkWrap: true,
+                                    itemCount: shortListHelper.shorts.length,
+                                    itemBuilder: ((context, index) {
+                                      Short short =
+                                          shortListHelper.shorts[index];
+
+                                      return ShortCardScaffold(
+                                        cardType: CardType.yourShorts,
+                                        short: short,
+                                      );
+                                    }),
+                                  ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               }),
             ),
