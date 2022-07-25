@@ -9,7 +9,7 @@ class Pack {
   String description;
   String titleImage;
   bool published = false;
-  //User? creator;
+  User? creator;
   int creatorId;
   List categories = [];
   List<PackPage> pages = [];
@@ -59,11 +59,14 @@ class Pack {
   Pack.fromJson(Map json)
       : id = json["id"],
         title = json["title"],
+        creator = User.forContent(json["creatorPack"]),
         creatorId = json["creatorId"],
         description = json["description"],
         titleImage = json["titleImage"],
         categories = json["categories"],
         published = json["published"],
+        bookmarks =
+            List<User>.from(json["bookmarks"].map((user) => User.forId(user))),
         creationDate = DateTime.parse(json["creationDate"]),
         pages = List<PackPage>.from(
             json["pages"].map((page) => PackPage.fromResponse(page)));
@@ -75,6 +78,7 @@ class Pack {
 
   void _initHasBookmarked(int currentUserId) {
     bookmarkedByUser = false;
+
     for (User user in bookmarks) {
       if (user.id == currentUserId) {
         bookmarkedByUser = true;

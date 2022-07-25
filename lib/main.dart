@@ -130,7 +130,7 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
       const ShortFeed(),
     ];
     return Scaffold(
-      drawer: MenuBar(),
+      drawer: const MenuBar(),
       floatingActionButton: dialAddButton(context),
       backgroundColor: Colors.white,
       appBar: const MainAppBar(

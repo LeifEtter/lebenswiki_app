@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 
@@ -41,8 +43,11 @@ class PackListHelper {
 
     //Fill in entries with shorts fitting to id
     categorizedPacks[0] = packs;
+
     for (Pack pack in packs) {
-      categorizedPacks[pack.categories.first.id]!.add(pack);
+      if (pack.categories.isNotEmpty) {
+        categorizedPacks[pack.categories.first.id]!.add(pack);
+      }
     }
   }
 }
