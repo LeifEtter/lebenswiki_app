@@ -6,7 +6,6 @@ import 'package:lebenswiki_app/features/packs/helper/get_packs.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_creator_information.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
-import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/repository/colors.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
@@ -35,9 +34,6 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
     _tabController.index = widget.chosenTab;
     chosenTab = widget.chosenTab;
   }
-
-  void _home() => Navigator.of(context)
-      .push(MaterialPageRoute(builder: ((context) => const NavBarWrapper())));
 
   @override
   Widget build(BuildContext context) {

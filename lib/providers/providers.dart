@@ -58,36 +58,28 @@ final userIdProvider =
     ChangeNotifierProvider<UserIdNotifier>((ref) => UserIdNotifier());
 
 class CategoryProvider extends ChangeNotifier {
-  //TODO remove "neu" category
   List<ContentCategory>? _categories;
-  List<ContentCategory>? _categoriesNoNew;
 
   List<ContentCategory> get categories => _categories ?? [];
-  List<ContentCategory> get categoriesNoNew => _categoriesNoNew ?? [];
 
   void setCategories(List<ContentCategory> newCategories) {
     _categories = newCategories;
     _categories!.insert(0, ContentCategory.forNew());
-    _categoriesNoNew = newCategories;
   }
 
   void removeCategories() {
     _categories = null;
-    _categoriesNoNew = null;
   }
 }
 
 final categoryProvider =
     ChangeNotifierProvider<CategoryProvider>(((ref) => CategoryProvider()));
 
-//TODO actually set blocked List
-//TODO update everytime user blocks
 class BlockedListNotifier extends ChangeNotifier {
   List<Block>? _blockedList;
   List<int>? _blockedIdList;
 
   List<Block> get blockedList => _blockedList ?? [];
-  //TODO remove hazard
   List<int> get blockedIdList => _blockedIdList ?? [99999999];
 
   void setBlockedList(List<Block> newBlocks) {

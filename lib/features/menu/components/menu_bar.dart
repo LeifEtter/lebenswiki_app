@@ -10,7 +10,6 @@ import 'package:lebenswiki_app/features/menu/views/bookmark_view.dart';
 import 'package:lebenswiki_app/features/menu/views/developer_info.dart';
 import 'package:lebenswiki_app/features/menu/views/profile_view.dart';
 import 'package:lebenswiki_app/features/menu/views/your_shorts_view.dart';
-import 'package:lebenswiki_app/repository/image_repo.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 import 'package:share_plus/share_plus.dart';
 

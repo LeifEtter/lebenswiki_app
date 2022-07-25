@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/repository/misc_repo.dart';
 

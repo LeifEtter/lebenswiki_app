@@ -36,7 +36,6 @@ class Pack {
   bool reactedByUser = false;
   Map reactionMap = {};
 
-  //TODO change image to local
   Pack.initial({
     this.creatorId = 0,
     this.title = "Titel",

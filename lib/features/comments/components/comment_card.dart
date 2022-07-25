@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/comments/api/comment_api.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/vote_button.dart';
@@ -7,7 +7,7 @@ import 'package:lebenswiki_app/features/common/helpers/reaction_functions.dart';
 import 'package:lebenswiki_app/features/comments/models/comment_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
-import 'package:lebenswiki_app/repository/text_styles.dart';
+import 'package:lebenswiki_app/repository/text_styles.dart';*/
 
 /*class CommentCard extends ConsumerStatefulWidget {
   final Function reloadCallback;

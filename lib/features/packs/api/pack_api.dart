@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
 import 'package:http/http.dart';
@@ -8,7 +7,6 @@ import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 
-//TODO rework api
 class PackApi extends BaseApi {
   late ApiErrorHandler apiErrorHandler;
 
@@ -139,7 +137,6 @@ class PackApi extends BaseApi {
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
     ).then((Response res) {
-      print(res.body);
       if (statusIsSuccess(res.statusCode)) {
         result = ResultModel(
           type: ResultType.success,

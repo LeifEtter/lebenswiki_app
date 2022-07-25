@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/features/routing/routing_constants.dart';
-import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
 class TopNav extends StatelessWidget {

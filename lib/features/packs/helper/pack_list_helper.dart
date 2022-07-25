@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 
-//TODO Add Sorting and filtering
 class PackListHelper {
   List<Pack> packs = [];
   Map<int, List<Pack>> categorizedPacks = {};

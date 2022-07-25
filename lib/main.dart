@@ -16,7 +16,6 @@ import 'package:flutter/services.dart';
 import 'package:lebenswiki_app/providers/provider_helper.dart';
 import 'package:lebenswiki_app/testing/testing_view.dart';
 
-//TODO check if token is expired
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(

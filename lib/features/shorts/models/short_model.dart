@@ -105,8 +105,6 @@ class Short {
         "reactions": reactions,
       };
 
-  //TODO Add functionality to figure out voting and bookmarked
-
   void initializeDisplayParams(int currentUserId) {
     _initHasUpvoted(currentUserId);
     _initHasDownVoted(currentUserId);

@@ -7,7 +7,6 @@ import 'package:lebenswiki_app/features/testing/components/border.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
 
-//TODO add option to delete single page
 //TODO remove save page button
 //TODO Add quiz
 class PageOverview extends StatefulWidget {
@@ -15,6 +14,7 @@ class PageOverview extends StatefulWidget {
   final Function saveCallback;
   final int selfIndex;
   final Function deleteSelf;
+  final Function saveSelf;
 
   const PageOverview({
     Key? key,
@@ -22,6 +22,7 @@ class PageOverview extends StatefulWidget {
     required this.saveCallback,
     required this.selfIndex,
     required this.deleteSelf,
+    required this.saveSelf,
   }) : super(key: key);
 
   @override
@@ -209,16 +210,19 @@ class _PageOverviewState extends State<PageOverview> {
     setState(() {});
   }
 
+  //TODO implement saving only that specific page
   //Assign the controller values to the actual values
   void _save() {
-    for (int x = 0; x < page.items.length; x++) {
+    /*for (int x = 0; x < page.items.length; x++) {
       PackPageItem item = page.items[x];
 
       item.headContent.value = item.headContent.controller!.text;
       for (int y = 0; y < item.bodyContent.length; y++) {
         item.bodyContent[y].value = item.bodyContent[y].controller!.text;
       }
-    }
+    }*/
+
+    widget.saveSelf(widget.selfIndex);
 
     //widget.saveCallback(page: page, index: widget.selfIndex);
     setState(() {});

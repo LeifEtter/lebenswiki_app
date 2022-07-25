@@ -26,6 +26,7 @@ class PackCreatorInformation extends ConsumerStatefulWidget {
 
 class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
   late Pack pack;
+  late List<ContentCategory> categories;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController imageLinkController = TextEditingController();
@@ -43,8 +44,8 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
   @override
   Widget build(BuildContext context) {
     List<ContentCategory> categoriesPreFilter =
-        ref.watch(categoryProvider).categoriesNoNew;
-    List<ContentCategory> categories = _removeNew(categoriesPreFilter);
+        ref.watch(categoryProvider).categories;
+    categories = _removeNew(categoriesPreFilter);
     return Scaffold(
       body: ListView(
         padding: const EdgeInsets.only(top: 0),
@@ -162,9 +163,8 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
 
   //TODO improve routing
   void _nextPage() {
-    pack.description = descriptionController.text;
-    pack.title = titleController.text;
-    pack.titleImage = imageLinkController.text;
+    _saveInfo();
+    //TODO update pack with packapi
 
     Navigator.push(
         context,
@@ -173,11 +173,16 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
   }
 
   void _previousPage() {
+    _saveInfo();
+    //TODO update pack with packapi
+    Navigator.push(context, _backRoute());
+  }
+
+  void _saveInfo() {
     pack.description = descriptionController.text;
     pack.title = titleController.text;
     pack.titleImage = imageLinkController.text;
-
-    Navigator.push(context, _backRoute());
+    pack.categories.add(categories[currentCategory].id);
   }
 
   Route _backRoute() {

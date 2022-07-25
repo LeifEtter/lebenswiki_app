@@ -8,7 +8,6 @@ import 'package:lebenswiki_app/features/shorts/components/short_card_scaffold.da
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
-import 'package:lebenswiki_app/providers/providers.dart';
 
 class GetShorts extends ConsumerStatefulWidget {
   final ContentCategory? category;
@@ -34,9 +33,6 @@ class _GetShortsState extends ConsumerState<GetShorts> {
 
   @override
   Widget build(BuildContext context) {
-    print("rebuilding");
-    final List<int> blockedIdList =
-        ref.watch(blockedListProvider).blockedIdList;
     _updateParameters();
     return FutureBuilder(
       future: provideCategory

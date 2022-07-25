@@ -10,7 +10,6 @@ import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 
 //TODO Implement extracting error message with "error" property
 //TODO fix api results and add error messages
-//TODO fix getting bookmarked Shorts
 class ShortApi extends BaseApi {
   late ApiErrorHandler apiErrorHandler;
 
@@ -102,7 +101,6 @@ class ShortApi extends BaseApi {
       headers: await requestHeader(),
     ).then((res) {
       Map body = jsonDecode(res.body);
-      if (url == "shorts/bookmarks") print(body);
       if (statusIsSuccess(res.statusCode)) {
         log("till here");
         List<Short> shorts = List<Short>.from(

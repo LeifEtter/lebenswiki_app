@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/report_api.dart';
@@ -115,7 +113,6 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                                 ReportApi().reportShort(report: newReport);
 
                                 if (blockUser) {
-                                  print(blockUser);
                                   UserApi().blockUser(
                                     id: widget.short.creator.id,
                                     reason: reason,

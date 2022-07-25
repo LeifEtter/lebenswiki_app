@@ -3,17 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/comments/api/comment_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
-import 'package:lebenswiki_app/features/comments/helper/get_comments.dart';
+//import 'package:lebenswiki_app/features/comments/helper/get_comments.dart';
 import 'package:lebenswiki_app/features/common/components/comment_input.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
-import 'package:lebenswiki_app/models/user_model.dart';
-import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
 //TODO fix comment functionality
-//TODO fix Voting delay
-//TODO fix reactions
 class ShortCardScaffold extends ConsumerStatefulWidget {
   final Short short;
   final CardType cardType;
@@ -95,12 +91,12 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold> {
                             ],
                           ),
                           const SizedBox(height: 8),
-                          Padding(
+                          /*Padding(
                             padding: const EdgeInsets.only(left: 10.0),
                             child: GetContentComments(
                               comments: widget.short.comments,
                             ),
-                          )
+                          )*/
                         ],
                       ),
                     )

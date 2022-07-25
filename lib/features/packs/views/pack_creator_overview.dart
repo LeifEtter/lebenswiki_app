@@ -11,7 +11,6 @@ import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:lebenswiki_app/features/routing/routes.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
-//TODO save when any navigation button is pressed
 class PackCreatorOverview extends StatefulWidget {
   final Pack pack;
 
@@ -115,6 +114,7 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
               child: PageOverview(
                 page: pack.pages[index],
                 saveCallback: _saveCallback,
+                saveSelf: _saveSelectedPageCallback,
                 selfIndex: index,
                 deleteSelf: _deletePage,
               ),
@@ -123,13 +123,23 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
     );
   }
 
-  void _saveCallback({page, index}) {
+  void _saveCallback() {
     for (PackPage page in pack.pages) {
       for (PackPageItem item in page.items) {
         item.headContent.value = item.headContent.controller!.text;
         for (PackPageItemInput item in item.bodyContent) {
           item.value = item.controller!.text;
         }
+      }
+    }
+  }
+
+  void _saveSelectedPageCallback(toSaveIndex) {
+    PackPage pageToSave = pack.pages[toSaveIndex];
+    for (PackPageItem item in pageToSave.items) {
+      item.headContent.value = item.headContent.controller!.text;
+      for (PackPageItemInput item in item.bodyContent) {
+        item.value = item.controller!.text;
       }
     }
   }

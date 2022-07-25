@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/features/comments/components/comment_card.dart';
-import 'package:lebenswiki_app/models/enums.dart';
+//import 'package:flutter/material.dart';
+//TODO fix comments
 
-class GetContentComments extends StatefulWidget {
+/*class GetContentComments extends StatefulWidget {
   final List comments;
 
   const GetContentComments({
@@ -39,4 +38,4 @@ class _GetContentCommentsState extends State<GetContentComments> {
       },
     );
   }
-}
+}*/

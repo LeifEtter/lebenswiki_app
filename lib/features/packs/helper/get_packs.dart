@@ -8,7 +8,6 @@ import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
-import 'package:lebenswiki_app/providers/providers.dart';
 
 class GetPacks extends ConsumerStatefulWidget {
   final ContentCategory? category;
@@ -34,8 +33,6 @@ class _GetPacksState extends ConsumerState<GetPacks> {
 
   @override
   Widget build(BuildContext context) {
-    final List<int> blockedIdList =
-        ref.watch(blockedListProvider).blockedIdList;
     _updateParameters();
     return FutureBuilder(
       future: provideCategory

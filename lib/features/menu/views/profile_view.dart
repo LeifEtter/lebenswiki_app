@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -200,8 +198,6 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
   }
 
   void changePassword() {
-    print(_formProvider.oldPassword.value);
-    print(_formProvider.password.value);
     userApi
         .updatePassword(
             oldpassword: _formProvider.oldPassword.value ?? "",
