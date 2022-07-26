@@ -47,9 +47,12 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
             pageName: "Seiten Übersicht",
             backName: "Informationen",
             nextName: "Speichern",
-            previousCallback: () => Navigator.of(context).pop(),
-            nextCallback: () {
-              //TODO Save Pack with API
+            previousCallback: () async {
+              await packApi.updatePack(id: pack.id!, pack: pack);
+              Navigator.of(context).pop();
+            },
+            nextCallback: () async {
+              await packApi.updatePack(id: pack.id!, pack: pack);
               Navigator.of(context).push(LebenswikiRoutes.goToYourPacks());
             },
           ),

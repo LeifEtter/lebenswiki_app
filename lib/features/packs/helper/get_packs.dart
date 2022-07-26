@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
-import 'package:lebenswiki_app/features/packs/components/pack_card.dart';
 import 'package:lebenswiki_app/features/packs/components/pack_card_editable.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
@@ -27,7 +26,6 @@ class GetPacks extends ConsumerStatefulWidget {
 
 class _GetPacksState extends ConsumerState<GetPacks> {
   final PackApi packApi = PackApi();
-  bool provideCategory = false;
   late Function packFuture;
   late Function(Pack, Function) returnCard;
 
@@ -35,9 +33,7 @@ class _GetPacksState extends ConsumerState<GetPacks> {
   Widget build(BuildContext context) {
     _updateParameters();
     return FutureBuilder(
-      future: provideCategory
-          ? packFuture(category: widget.category)
-          : packFuture(),
+      future: packFuture(),
       builder: (context, AsyncSnapshot<ResultModel> snapshot) {
         if (LoadingHelper.isLoading(snapshot)) {
           return LoadingHelper.loadingIndicator();
@@ -67,11 +63,6 @@ class _GetPacksState extends ConsumerState<GetPacks> {
 
   void _updateParameters() {
     switch (widget.cardType) {
-      case CardType.packsByCategory:
-        provideCategory = true;
-        packFuture = packApi.getPacksByCategory;
-        returnCard = (pack, reload) => PackCard(pack: pack);
-        break;
       case CardType.packBookmarks:
         packFuture = packApi.getBookmarkedPacks;
         returnCard = returnCard =

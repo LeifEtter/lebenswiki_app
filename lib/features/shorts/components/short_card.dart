@@ -17,7 +17,6 @@ import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
-//TODO fix upvote button
 class ShortCard extends ConsumerStatefulWidget {
   final Short short;
   final CardType cardType;
@@ -40,7 +39,6 @@ class _ShortCardState extends ConsumerState<ShortCard> {
   bool blockUser = false;
   ShortApi shortApi = ShortApi();
 
-  late ReactionHelper reactionHelper;
   late User user;
 
   String? chosenReason = "Illegal unter der NetzDG";
@@ -95,44 +93,12 @@ class _ShortCardState extends ConsumerState<ShortCard> {
             child: IconButton(
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
-              onPressed: () {
-                //Close menu and reload
-                showActionsMenuForShorts(context,
-                    isBookmarked: widget.short.bookmarkedByUser,
-                    bookmarkCallback: () => _bookmarkCallback(),
-                    reportCallback: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) => ReportDialog(reportCallback:
-                                  (bool blockUser, String reason) {
-                                Report newReport = Report(
-                                  reportedContentId: widget.short.id,
-                                  reason: reason,
-                                  creationDate: DateTime.now(),
-                                );
-                                ReportApi().reportShort(report: newReport);
-
-                                if (blockUser) {
-                                  UserApi().blockUser(
-                                    id: widget.short.creator.id,
-                                    reason: reason,
-                                  );
-
-                                  Block newBlock = Block(
-                                      reason: reason,
-                                      blocker: user,
-                                      blockerId: user.id,
-                                      blocked: widget.short.creator,
-                                      blockedId: widget.short.creator.id,
-                                      creationDate: DateTime.now());
-                                  ref
-                                      .read(blockedListProvider)
-                                      .addBlock(newBlock);
-                                }
-                                Navigator.pop(context);
-                              }));
-                    });
-              },
+              onPressed: () => showActionsMenuForShorts(
+                context,
+                isBookmarked: widget.short.bookmarkedByUser,
+                bookmarkCallback: () => _bookmarkCallback(),
+                reportCallback: () => _reportCallback(),
+              ),
               icon: const Icon(Icons.more_horiz_outlined),
             ),
           ),
@@ -176,26 +142,22 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                           onPressed: () => widget.commentExpand(),
                           icon: const Icon(Icons.comment_outlined),
                         ),
-                        //TODO implement menu callback
                         SizedBox(
                           height: 30,
                           width: 200,
                           child: reactionBar(
                             widget.short.reactionMap,
-                            () {
-                              showReactionMenu(
-                                context,
-                                callback: (String reaction) {
-                                  shortApi.reactShort(
-                                      widget.short.id, reaction);
-                                  widget.short.react(
-                                    user.id,
-                                    reaction.toLowerCase(),
-                                  );
-                                  setState(() {});
-                                },
-                              );
-                            },
+                            () => showReactionMenu(
+                              context,
+                              callback: (String reaction) {
+                                shortApi.reactShort(widget.short.id, reaction);
+                                widget.short.react(
+                                  user.id,
+                                  reaction.toLowerCase(),
+                                );
+                                setState(() {});
+                              },
+                            ),
                           ),
                         ),
                       ],
@@ -217,6 +179,37 @@ class _ShortCardState extends ConsumerState<ShortCard> {
     widget.short.toggleBookmarked(user);
     setState(() {});
   }
+
+  void _reportCallback() => showDialog(
+        context: context,
+        builder: (context) => ReportDialog(
+          reportCallback: (bool blockUser, String reason) {
+            Report newReport = Report(
+              reportedContentId: widget.short.id,
+              reason: reason,
+              creationDate: DateTime.now(),
+            );
+            ReportApi().reportShort(report: newReport);
+
+            if (blockUser) {
+              UserApi().blockUser(
+                id: widget.short.creator.id,
+                reason: reason,
+              );
+
+              Block newBlock = Block(
+                  reason: reason,
+                  blocker: user,
+                  blockerId: user.id,
+                  blocked: widget.short.creator,
+                  blockedId: widget.short.creator.id,
+                  creationDate: DateTime.now());
+              ref.read(blockedListProvider).addBlock(newBlock);
+            }
+            Navigator.pop(context);
+          },
+        ),
+      );
 
   void _voteCallback(bool isUpvote) {
     VoteType voteType = widget.short.getVoteType(isUpvote: isUpvote);

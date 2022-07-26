@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/common/components/tab_bar.dart';
+import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_creator_overview.dart';
@@ -162,9 +163,9 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
   }
 
   //TODO improve routing
-  void _nextPage() {
+  void _nextPage() async {
     _saveInfo();
-    //TODO update pack with packapi
+    await PackApi().updatePack(id: pack.id!, pack: pack);
 
     Navigator.push(
         context,
@@ -172,9 +173,10 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
             builder: ((context) => PackCreatorOverview(pack: pack))));
   }
 
-  void _previousPage() {
+  void _previousPage() async {
     _saveInfo();
-    //TODO update pack with packapi
+    await PackApi().updatePack(id: pack.id!, pack: pack);
+
     Navigator.push(context, _backRoute());
   }
 

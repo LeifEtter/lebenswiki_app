@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 
@@ -31,7 +32,7 @@ class CreatorInfo extends StatelessWidget {
         ),
         const SizedBox(width: 5.0),
         Text(
-          "${isComment ? "Kommentar" : "Artikel"} von ${user.name} | $creationDate",
+          "${isComment ? "Kommentar" : "Artikel"} von ${user.name} | ${DateFormat("yMMMd").format(creationDate)}",
           style: LebenswikiTextStyles.publisherInfo,
         ),
       ],

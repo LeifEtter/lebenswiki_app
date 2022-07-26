@@ -13,7 +13,6 @@ import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
 //TODO show popups for succesfull changing
-//TODO implement proper validation
 //TODO adapt biography field
 class ProfileView extends ConsumerStatefulWidget {
   final User user;

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/features/bottom_sheet/components/show_reactions_sheet.dart';
 import 'package:lebenswiki_app/features/common/components/cards/creator_info.dart';
+import 'package:lebenswiki_app/features/common/helpers/reaction_functions.dart';
 import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_viewer.dart';
@@ -9,6 +11,7 @@ import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
+//TODO add reactions
 class PackCard extends ConsumerStatefulWidget {
   final Pack pack;
 
@@ -66,7 +69,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(
-                          left: 20.0, top: 10.0, right: 20.0, bottom: 20.0),
+                          left: 20.0, top: 10.0, right: 20.0, bottom: 10.0),
                       child: Row(
                         children: [
                           Column(
@@ -88,6 +91,25 @@ class _PackCardState extends ConsumerState<PackCard> {
                                 child: Text(
                                   widget.pack.description,
                                   style: LebenswikiTextStyles.packDescription,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 30,
+                                width: 200,
+                                child: reactionBar(
+                                  widget.pack.reactionMap,
+                                  () => showReactionMenu(
+                                    context,
+                                    callback: (String reaction) {
+                                      packApi.reactPack(
+                                          widget.pack.id, reaction);
+                                      widget.pack.react(
+                                        user.id,
+                                        reaction.toLowerCase(),
+                                      );
+                                      setState(() {});
+                                    },
+                                  ),
                                 ),
                               ),
                             ],
