@@ -22,7 +22,9 @@ class _ShortCommentViewState extends State<ShortCommentView> {
       children: [
         const TopNav(pageName: "Kommentare", backName: "Shorts"),
         ListView(
-          children: [],
+          children: [
+            
+          ],
         ),
       ],
     );

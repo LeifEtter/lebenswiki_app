@@ -64,14 +64,6 @@ class _PageOverviewState extends State<PageOverview> {
             child: Align(
                 alignment: Alignment.bottomRight, child: buildAddButton()),
           ),
-          Positioned.fill(
-              child: Align(
-            alignment: Alignment.bottomLeft,
-            child: PackEditorComponents.iconButton(
-                icon: Icons.save,
-                callback: () => _save(),
-                label: "Seite speichern"),
-          )),
         ],
       ),
     );

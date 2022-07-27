@@ -32,24 +32,25 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
-        TextButton(
+        /*TextButton(
           child: const Text("Logout"),
           onPressed: () {
             Authentication.logout(context, ref);
           },
-        ),
+        ),*/
         IconButton(
           icon: Image.asset("assets/icons/profile_icon.png", width: 20.0),
           onPressed: () {
             Scaffold.of(context).openDrawer();
           },
         ),
-        IconButton(
+        //TODO Fix search
+        /*IconButton(
           onPressed: () {
             // Navigator.of(context).push(searchRoute());
           },
           icon: Image.asset("assets/icons/search.png", width: 28),
-        )
+        )*/
       ],
     );
   }

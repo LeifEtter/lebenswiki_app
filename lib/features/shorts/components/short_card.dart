@@ -20,13 +20,11 @@ import 'package:lebenswiki_app/repository/text_styles.dart';
 class ShortCard extends ConsumerStatefulWidget {
   final Short short;
   final CardType cardType;
-  final Function commentExpand;
 
   const ShortCard({
     Key? key,
     required this.short,
     required this.cardType,
-    required this.commentExpand,
   }) : super(key: key);
 
   @override
@@ -139,7 +137,7 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                       children: [
                         IconButton(
                           constraints: const BoxConstraints(),
-                          onPressed: () => widget.commentExpand(),
+                          onPressed: () {},
                           icon: const Icon(Icons.comment_outlined),
                         ),
                         SizedBox(

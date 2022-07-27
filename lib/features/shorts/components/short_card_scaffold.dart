@@ -49,7 +49,6 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold> {
               ShortCard(
                 short: widget.short,
                 cardType: widget.cardType,
-                commentExpand: _triggerComments,
               ),
               widget.cardType == CardType.shortsByCategory
                   ? Visibility(
