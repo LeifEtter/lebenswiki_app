@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/features/common/components/buttons/buttons.dart';
 import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/features/common/components/tab_bar.dart';
-import 'package:lebenswiki_app/features/common/components/buttons/main_buttons.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/features/menu/views/your_shorts_view.dart';
@@ -22,12 +22,17 @@ class _CreateShortState extends ConsumerState<CreateShort> {
   final ShortApi shortApi = ShortApi();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
+  final GlobalKey _shortCreationKey = GlobalKey();
+  late List<ContentCategory> categories;
   int currentCategory = 0;
+  bool titleEmpty = false;
+  bool bodyEmpty = false;
 
   @override
   Widget build(BuildContext context) {
-    final List<ContentCategory> categories =
+    final List<ContentCategory> categoriesPreFilter =
         ref.watch(categoryProvider).categories;
+    categories = _removeNew(categoriesPreFilter);
     final User user = ref.watch(userProvider).user;
     return Scaffold(
       body: SafeArea(
@@ -37,53 +42,78 @@ class _CreateShortState extends ConsumerState<CreateShort> {
             padding: const EdgeInsets.all(10.0),
             child: Stack(
               children: [
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: const [
-                        CloseButton(),
-                      ],
-                    ),
-                    buildTabBar(
-                        categories: categories,
-                        callback: (int value) => setState(() {
-                              currentCategory = value;
-                            })),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25.0),
-                      child: TextField(
-                        decoration: const InputDecoration(
-                          hintText: "Titel",
-                          border: InputBorder.none,
-                        ),
-                        controller: _titleController,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 5.0),
-                            child: _buildProfileIndicator(user.profileImage),
-                          ),
-                          const SizedBox(width: 10.0),
-                          Expanded(
-                            child: TextField(
-                              maxLines: null,
-                              decoration: const InputDecoration(
-                                hintText: "Was geht dir durch den Kopf?",
-                                border: InputBorder.none,
-                              ),
-                              controller: _contentController,
-                            ),
-                          ),
+                Form(
+                  key: _shortCreationKey,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: const [
+                          CloseButton(),
                         ],
                       ),
-                    ),
-                  ],
+                      buildTabBar(
+                          categories: categories,
+                          callback: (int value) => setState(() {
+                                currentCategory = value;
+                              })),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25.0),
+                        child: TextFormField(
+                          onChanged: (value) {
+                            if (value.isEmpty) {
+                              titleEmpty = true;
+                            } else {
+                              titleEmpty = false;
+                            }
+                            setState(() {});
+                          },
+                          decoration: InputDecoration(
+                            errorText: titleEmpty
+                                ? "Bitte fülle dieses Feld aus"
+                                : null,
+                            hintText: "Titel",
+                            border: InputBorder.none,
+                          ),
+                          controller: _titleController,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 5.0),
+                              child: _buildProfileIndicator(user.profileImage),
+                            ),
+                            const SizedBox(width: 10.0),
+                            Expanded(
+                              child: TextFormField(
+                                maxLines: null,
+                                onChanged: (value) {
+                                  if (value.isEmpty) {
+                                    bodyEmpty = true;
+                                  } else {
+                                    bodyEmpty = false;
+                                  }
+                                  setState(() {});
+                                },
+                                decoration: InputDecoration(
+                                  errorText: bodyEmpty
+                                      ? "Bitte fülle dieses Feld aus"
+                                      : null,
+                                  hintText: "Was geht dir durch den Kopf?",
+                                  border: InputBorder.none,
+                                ),
+                                controller: _contentController,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 Positioned.fill(
                   right: 15.0,
@@ -93,12 +123,24 @@ class _CreateShortState extends ConsumerState<CreateShort> {
                     child: SizedBox(
                       width: 150,
                       child: Row(children: [
-                        lebenswikiBlueButtonInverted(
+                        LebenswikiButtons.textButton.blueButtonInverted(
                             text: "Entwürfe", callback: navigateToDrafts),
-                        lebenswikiBlueButtonNormal(
+                        LebenswikiButtons.textButton.blueButtonNormal(
                           text: "Post",
-                          callback: () => createCallback(
-                              categories: categories, user: user),
+                          callback: () {
+                            if (_titleController.text.isEmpty) {
+                              titleEmpty = true;
+                              setState(() {});
+                            }
+                            if (_contentController.text.isEmpty) {
+                              bodyEmpty = true;
+                              setState(() {});
+                            }
+                            if (!titleEmpty && !bodyEmpty) {
+                              createCallback(
+                                  categories: categories, user: user);
+                            }
+                          },
                         ),
                       ]),
                     ),
@@ -110,6 +152,12 @@ class _CreateShortState extends ConsumerState<CreateShort> {
         ),
       ),
     );
+  }
+
+  List<ContentCategory> _removeNew(List<ContentCategory> result) {
+    return result
+        .where((ContentCategory cat) => cat.categoryName != "Neu")
+        .toList();
   }
 
   void navigateToDrafts() {
@@ -145,22 +193,24 @@ class _CreateShortState extends ConsumerState<CreateShort> {
     shortApi
         .createShort(
             short: Short(
-          id: 0,
-          categories: [categories[currentCategory]],
-          title: _titleController.text.toString(),
-          content: _contentController.text.toString(),
-          creator: user,
-          creationDate: DateTime.now(),
-        ))
+      id: 0,
+      categories: [categories[currentCategory]],
+      title: _titleController.text.toString(),
+      content: _contentController.text.toString(),
+      creator: user,
+      creationDate: DateTime.now(),
+    ))
         .then(
-          (_) => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const YourShorts(
-                chosenTab: 1,
-              ),
+      (_) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const YourShorts(
+              chosenTab: 1,
             ),
           ),
         );
+      },
+    );
   }
 }

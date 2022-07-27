@@ -9,7 +9,7 @@ import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 
 //TODO Implement extracting error message with "error" property
-//TODO fix api results and add errormessages
+//TODO fix api results and add error messages
 class ShortApi extends BaseApi {
   late ApiErrorHandler apiErrorHandler;
 
@@ -102,9 +102,9 @@ class ShortApi extends BaseApi {
     ).then((res) {
       Map body = jsonDecode(res.body);
       if (statusIsSuccess(res.statusCode)) {
+        log("till here");
         List<Short> shorts = List<Short>.from(
             body["shorts"].map((short) => Short.fromJson(short)).toList());
-        log("After");
         result = ResultModel(
           type: ResultType.shortList,
           responseList: shorts,
@@ -164,6 +164,7 @@ class ShortApi extends BaseApi {
     required String successMessage,
     required String errorMessage,
   }) async {
+    log(url);
     await put(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),

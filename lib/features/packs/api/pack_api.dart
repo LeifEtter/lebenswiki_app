@@ -24,7 +24,7 @@ class PackApi extends BaseApi {
       return ResultModel(
         type: ResultType.success,
         message: "Lernpack erfolgreich erstellt!",
-        responseItem: jsonDecode(res.body)["body"]["id"],
+        responseItem: jsonDecode(res.body)["pack"]["id"],
       );
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
@@ -47,6 +47,11 @@ class PackApi extends BaseApi {
       url: "packs/published",
       errorMessage: "Du hast noch keine packs veröffentlicht");
 
+  Future<ResultModel> getOwnUnpublishedPacks() => getPacks(
+        url: "packs/unpublished",
+        errorMessage: "Du hast noch keine Lernpacks entworfen",
+      );
+
   Future<ResultModel> getOthersPublishedpacks() => getPacks(
       url: "packs/published",
       errorMessage: "Dieser Benutzer hat noch keine packs veröffentlicht");
@@ -62,16 +67,20 @@ class PackApi extends BaseApi {
       url: "packs/unpublished", errorMessage: "Du hast keine packs entworfen");
 
   Future<ResultModel> getPacks({url, errorMessage}) async {
+    ResultModel result = ResultModel(
+        type: ResultType.failure, message: errorMessage, responseList: []);
     await get(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
     ).then((res) {
       Map body = jsonDecode(res.body);
       if (statusIsSuccess(res.statusCode)) {
-        List packs = body["packs"].map((pack) => Pack.fromJson(pack)).toList();
-        return ResultModel(
-          type: ResultType.packList,
+        List<Pack> packs = List<Pack>.from(
+            body["packs"].map((pack) => Pack.fromJson(pack)).toList());
+        result = ResultModel(
+          type: ResultType.shortList,
           responseList: packs,
+          message: errorMessage,
         );
       } else {
         apiErrorHandler.handleAndLog(reponseData: body);
@@ -79,10 +88,7 @@ class PackApi extends BaseApi {
     }).catchError((error) {
       apiErrorHandler.handleAndLog(reponseData: error);
     });
-    return ResultModel(
-      type: ResultType.failure,
-      message: errorMessage,
-    );
+    return result;
   }
 
   Future<ResultModel> upvotePack(id) => _interactPack(
@@ -115,16 +121,6 @@ class PackApi extends BaseApi {
       successMessage: "Successfully Removed Pack from Bookmarks",
       errorMessage: "Couldn't remove Pack from bookmarks");
 
-  Future<ResultModel> publishPack(id) => _interactPack(
-      url: "packs/publish/$id",
-      successMessage: "Successfully Published Pack",
-      errorMessage: "Coldn't publish Pack");
-
-  Future<ResultModel> unpublishPack(id) => _interactPack(
-      url: "packs/unpublish/$id",
-      successMessage: "Successfully Unpublished Pack",
-      errorMessage: "Coldn't Unpublish Pack");
-
   Future<ResultModel> deletePack(id) => _interactPackDelete(
       url: "packs/delete/$id",
       successMessage: "Pack successfully deleted",
@@ -135,12 +131,14 @@ class PackApi extends BaseApi {
     required String successMessage,
     required String errorMessage,
   }) async {
+    ResultModel result = ResultModel(
+        type: ResultType.failure, message: errorMessage, responseList: []);
     await put(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
     ).then((Response res) {
       if (statusIsSuccess(res.statusCode)) {
-        return ResultModel(
+        result = ResultModel(
           type: ResultType.success,
           message: successMessage,
         );
@@ -150,10 +148,7 @@ class PackApi extends BaseApi {
     }).catchError((error) {
       apiErrorHandler.handleAndLog(reponseData: error);
     });
-    return ResultModel(
-      type: ResultType.failure,
-      message: errorMessage,
-    );
+    return result;
   }
 
   Future<ResultModel> _interactPackDelete({
@@ -161,12 +156,14 @@ class PackApi extends BaseApi {
     required String successMessage,
     required String errorMessage,
   }) async {
+    ResultModel result = ResultModel(
+        type: ResultType.failure, message: errorMessage, responseList: []);
     await delete(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
     ).then((Response res) {
       if (statusIsSuccess(res.statusCode)) {
-        return ResultModel(
+        result = ResultModel(
           type: ResultType.success,
           message: successMessage,
         );
@@ -176,10 +173,7 @@ class PackApi extends BaseApi {
     }).catchError((error) {
       apiErrorHandler.handleAndLog(reponseData: error);
     });
-    return ResultModel(
-      type: ResultType.failure,
-      message: errorMessage,
-    );
+    return result;
   }
 
   Future<ResultModel> reactPack(id, reaction) => _updatePackData(
@@ -207,13 +201,16 @@ class PackApi extends BaseApi {
     required String errorMessage,
     required Map requestBody,
   }) async {
+    ResultModel result = ResultModel(
+        type: ResultType.failure, message: errorMessage, responseList: []);
     await put(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
       body: jsonEncode(requestBody),
     ).then((Response res) {
+      print(requestBody);
       if (statusIsSuccess(res.statusCode)) {
-        return ResultModel(
+        result = ResultModel(
           type: ResultType.success,
           message: successMessage,
         );
@@ -223,9 +220,41 @@ class PackApi extends BaseApi {
     }).catchError((error) {
       apiErrorHandler.handleAndLog(reponseData: error);
     });
-    return ResultModel(
-      type: ResultType.failure,
-      message: errorMessage,
-    );
+    return result;
+  }
+
+  Future<ResultModel> publishPack(id) => _interactPackPatch(
+      url: "packs/publish/$id",
+      successMessage: "Successfully Published Pack",
+      errorMessage: "Coldn't publish Pack");
+
+  Future<ResultModel> unpublishPack(id) => _interactPackPatch(
+      url: "packs/unpublish/$id",
+      successMessage: "Successfully Unpublished Pack",
+      errorMessage: "Coldn't Unpublish Pack");
+
+  Future<ResultModel> _interactPackPatch({
+    required String url,
+    required String successMessage,
+    required String errorMessage,
+  }) async {
+    ResultModel result = ResultModel(
+        type: ResultType.failure, message: errorMessage, responseList: []);
+    await patch(
+      Uri.parse("$serverIp/$url"),
+      headers: await requestHeader(),
+    ).then((Response res) {
+      if (statusIsSuccess(res.statusCode)) {
+        result = ResultModel(
+          type: ResultType.success,
+          message: successMessage,
+        );
+      } else {
+        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      }
+    }).catchError((error) {
+      apiErrorHandler.handleAndLog(reponseData: error);
+    });
+    return result;
   }
 }

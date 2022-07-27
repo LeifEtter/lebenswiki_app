@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
-import 'package:lebenswiki_app/features/common/components/buttons/main_buttons.dart';
+import 'package:lebenswiki_app/features/common/components/buttons/buttons.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 
 class DeveloperInfoView extends StatefulWidget {
@@ -28,13 +28,13 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
             padding: const EdgeInsets.all(15.0),
             child: Row(
               children: [
-                Image.network(
-                  "https://i.ibb.co/74PBzW8/6207c565b83821547c42e94a-BMFSFJ-gefo-rdert-vom.jpg%22%20alt=%226207c565b83821547c42e94a-BMFSFJ-gefo-rdert-vom",
+                Image.asset(
+                  "assets/images/BMFSFJ_logo.png",
                   width: MediaQuery.of(context).size.width * 0.4,
                 ),
                 const SizedBox(width: 20),
-                Image.network(
-                  "https://i.ibb.co/Bf24khm/jugendstrategie-logo-aktionsplan-1.png",
+                Image.asset(
+                  "assets/images/jugendstrategie-logo.png",
                   width: MediaQuery.of(context).size.width * 0.4,
                 ),
               ],
@@ -200,7 +200,8 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                       child: Row(
                         children: [
                           Expanded(
-                            child: lebenswikiBlueButtonNormal(
+                            child:
+                                LebenswikiButtons.textButton.blueButtonNormal(
                               text: "Feedback abschicken",
                               callback: () {
                                 userApi.createFeedback(

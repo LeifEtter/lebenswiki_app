@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
@@ -13,6 +12,18 @@ class UserApi extends BaseApi {
 
   UserApi() {
     apiErrorHandler = ApiErrorHandler();
+  }
+
+  Future<bool> authenticate() async {
+    Response res = await get(
+      Uri.parse("$serverIp/users/authentication"),
+      headers: await requestHeader(),
+    );
+    if (statusIsSuccess(res.statusCode)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   Future<ResultModel> register(User user) async {
@@ -72,7 +83,7 @@ class UserApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
         type: ResultType.user,
-        responseItem: User.forContent(
+        responseItem: User.forProvider(
           decodedBody["user"],
         ),
       );
@@ -87,13 +98,13 @@ class UserApi extends BaseApi {
 
   Future<ResultModel> updatePassword({
     required String oldpassword,
-    required String password,
+    required String newpassword,
   }) async {
     Response res = await patch(Uri.parse("$serverIp/users/password/update"),
         headers: await requestHeader(),
         body: jsonEncode({
           "oldPassword": oldpassword,
-          "newPassword": password,
+          "newPassword": newpassword,
         }));
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
@@ -110,10 +121,15 @@ class UserApi extends BaseApi {
   Future<ResultModel> updateProfile({
     required User user,
   }) async {
-    Response res = await patch(
+    Response res = await put(
       Uri.parse("$serverIp/users/profile/update"),
       headers: await requestHeader(),
-      body: user.toJson(),
+      body: jsonEncode({
+        "email": user.email,
+        "name": user.name,
+        "biography": user.biography,
+        "profileImage": user.profileImage
+      }),
     );
     if (statusIsSuccess(res.statusCode)) {
       return ResultModel(
@@ -135,7 +151,7 @@ class UserApi extends BaseApi {
       Uri.parse("$serverIp/blocks/create/$id"),
       headers: await requestHeader(),
       body: jsonEncode({
-        reason: reason,
+        "reason": reason,
       }),
     );
     if (statusIsSuccess(res.statusCode)) {
@@ -157,11 +173,11 @@ class UserApi extends BaseApi {
       Uri.parse("$serverIp/blocks/"),
       headers: await requestHeader(),
     );
-    List blocks = jsonDecode(res.body)["body"];
     if (statusIsSuccess(res.statusCode)) {
+      List blocks = jsonDecode(res.body)["blockedUsers"];
       return ResultModel(
         type: ResultType.success,
-        responseList: blocks.map((e) => Block.fromJson(e)).toList(),
+        responseList: blocks.map((block) => Block.fromJson(block)).toList(),
       );
     } else {
       return ResultModel(

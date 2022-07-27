@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/authentication/helpers/string_validation_extensions.dart';
@@ -46,6 +47,16 @@ class FormNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void validateOldPassword(String? val) {
+    if (val != null && val.isValidPassword) {
+      _oldPassword = ValidationModel(val, null);
+    } else {
+      _oldPassword = ValidationModel(null,
+          'Password must contain an uppercase, lowercase, number and special character');
+    }
+    notifyListeners();
+  }
+
   void validateRepeatPassword(String? val) {
     if (val != null && val == _password.value) {
       _repeatPassword = ValidationModel(val, null);
@@ -61,10 +72,10 @@ class FormNotifier extends ChangeNotifier {
     } else {
       _name = ValidationModel(null, 'Please enter a valid name');
     }
+    log(_name.value!);
     notifyListeners();
   }
 
-  //TODO generate Regex for biography
   void validateBiography(String? val) {
     _biography = ValidationModel(val, null);
     notifyListeners();

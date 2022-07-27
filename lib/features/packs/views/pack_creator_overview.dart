@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/features/common/components/styling_edit.dart';
 import 'package:lebenswiki_app/features/packs/components/pack_creator_page.dart';
+import 'package:lebenswiki_app/features/packs/components/pack_editor_components.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
-import 'package:lebenswiki_app/features/packs/views/pack_creator_information.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_viewer.dart';
-import 'package:lebenswiki_app/features/menu/views/your_creator_packs.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
+import 'package:lebenswiki_app/features/routing/routes.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
 class PackCreatorOverview extends StatefulWidget {
@@ -26,10 +26,9 @@ class PackCreatorOverview extends StatefulWidget {
 class _PackCreatorOverviewState extends State<PackCreatorOverview> {
   final PackApi packApi = PackApi();
   final PageController _pageController = PageController();
-  final EditDecoration decoration = EditDecoration();
-  final List saveControllers = [];
   late Pack pack;
   int _selectedPage = 0;
+  List<Widget> pageViewPages = [];
 
   @override
   void initState() {
@@ -39,6 +38,7 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
 
   @override
   Widget build(BuildContext context) {
+    _initalizePageViewPages();
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -47,8 +47,14 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
             pageName: "Seiten Übersicht",
             backName: "Informationen",
             nextName: "Speichern",
-            previousCallback: _backToSettings,
-            nextCallback: _goToYourPacks,
+            previousCallback: () async {
+              await packApi.updatePack(id: pack.id!, pack: pack);
+              Navigator.of(context).pop();
+            },
+            nextCallback: () async {
+              await packApi.updatePack(id: pack.id!, pack: pack);
+              Navigator.of(context).push(LebenswikiRoutes.goToYourPacks());
+            },
           ),
           Expanded(
             child: ListView(
@@ -59,43 +65,25 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      /*Row(
-                        children: [
-                          _saveButton(),
-                          Text(
-                            "Speichern",
-                            style: _style2(),
-                          )
-                        ],
-                      ),*/
-                      GestureDetector(
-                        onTap: () {
+                      PackEditorComponents.iconButton(
+                        callback: () {
+                          _saveCallback();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => PackViewer(pack: pack),
+                                builder: (context) => PackViewer(
+                                  pack: pack,
+                                  isPreview: true,
+                                ),
                               ));
                         },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0, vertical: 10.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15.0),
-                            boxShadow: [LebenswikiShadows().fancyShadow],
-                          ),
-                          child: Row(
-                            children: [
-                              Text("Vorschau", style: _style2()),
-                              const Icon(Icons.preview, size: 30),
-                            ],
-                          ),
-                        ),
-                      )
+                        label: "Vorschau",
+                        icon: Icons.preview,
+                      ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 80),
+                const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -112,22 +100,7 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
                     setState(() {});
                   },
                   controller: _pageController,
-                  children: List.generate(widget.pack.pages.length, (index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: decoration.page(
-                        child: Container(
-                          constraints: const BoxConstraints(minHeight: 400),
-                          child: PageOverview(
-                            page: widget.pack.pages[index],
-                            reload: reload,
-                            saveCallback: _saveCallback,
-                            selfIndex: index,
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
+                  children: pageViewPages,
                 ),
               ],
             ),
@@ -137,8 +110,55 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
     );
   }
 
-  void _saveCallback({page, index}) {
-    //TODO Implement Saving
+  void _initalizePageViewPages() {
+    pageViewPages = List.generate(
+      pack.pages.length,
+      ((index) => Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            child: EditDecoration.page(
+              child: PageOverview(
+                page: pack.pages[index],
+                saveCallback: _saveCallback,
+                saveSelf: _saveSelectedPageCallback,
+                selfIndex: index,
+                deleteSelf: _deletePage,
+              ),
+            ),
+          )),
+    );
+  }
+
+  void _saveCallback() {
+    for (PackPage page in pack.pages) {
+      for (PackPageItem item in page.items) {
+        item.headContent.value = item.headContent.controller!.text;
+        for (PackPageItemInput item in item.bodyContent) {
+          item.value = item.controller!.text;
+        }
+      }
+    }
+  }
+
+  void _saveSelectedPageCallback(toSaveIndex) {
+    PackPage pageToSave = pack.pages[toSaveIndex];
+    for (PackPageItem item in pageToSave.items) {
+      item.headContent.value = item.headContent.controller!.text;
+      for (PackPageItemInput item in item.bodyContent) {
+        item.value = item.controller!.text;
+      }
+    }
+  }
+
+  void _deletePage(int index) {
+    pack.pages.removeAt(index);
+    pageViewPages.removeAt(index);
+    _pageController.animateToPage(
+      index - 1,
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.easeInOut,
+    );
+    setState(() {});
   }
 
   Widget _buildPageBar() {
@@ -180,8 +200,6 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
     );
   }
 
-  void reload() => setState(() {});
-
   Widget _selectablePageImage(index) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -189,9 +207,7 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
       decoration: BoxDecoration(
         color: index == _selectedPage ? Colors.blueAccent : Colors.white,
         borderRadius: BorderRadius.circular(10.0),
-        boxShadow: [
-          LebenswikiShadows().fancyShadow,
-        ],
+        boxShadow: [LebenswikiShadows.fancyShadow],
       ),
       child: Center(
         child: index != pack.pages.length
@@ -205,51 +221,5 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
             : const Icon(Icons.add, size: 20.0),
       ),
     );
-  }
-
-  TextStyle _style2() {
-    return const TextStyle(
-      fontSize: 20.0,
-      fontWeight: FontWeight.w500,
-    );
-  }
-
-  Widget _saveButton() {
-    return IconButton(
-      icon: const Icon(Icons.save, size: 30),
-      onPressed: () {
-        packApi.updatePack(pack: pack, id: pack.id!);
-        setState(() {});
-      },
-    );
-  }
-
-  void _goToYourPacks() {
-    packApi.updatePack(pack: pack, id: pack.id!);
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: ((context) => const YourCreatorPacks())));
-  }
-
-  void _backToSettings() {
-    Navigator.of(context).push(_backRoute());
-  }
-
-  Route _backRoute() {
-    return PageRouteBuilder(
-        pageBuilder: ((context, animation, secondaryAnimation) =>
-            PackCreatorInformation(pack: pack)),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(-1.0, 0.0);
-          const end = Offset.zero;
-          const curve = Curves.ease;
-
-          var tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-          return SlideTransition(
-            position: animation.drive(tween),
-            child: child,
-          );
-        });
   }
 }

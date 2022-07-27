@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
@@ -32,13 +31,17 @@ class ReportApi extends BaseApi {
     required String errorMessage,
     required Map requestBody,
   }) async {
+    ResultModel result = ResultModel(
+      type: ResultType.failure,
+      message: "Error",
+    );
     await post(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
       body: jsonEncode(requestBody),
     ).then((Response res) {
       if (statusIsSuccess(res.statusCode)) {
-        return ResultModel(
+        result = ResultModel(
           type: ResultType.success,
           message: successMessage,
         );
@@ -48,9 +51,6 @@ class ReportApi extends BaseApi {
     }).catchError((error) {
       apiErrorHandler.handleAndLog(reponseData: error);
     });
-    return ResultModel(
-      type: ResultType.failure,
-      message: errorMessage,
-    );
+    return result;
   }
 }

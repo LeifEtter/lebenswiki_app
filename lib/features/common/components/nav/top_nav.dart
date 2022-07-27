@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/features/routing/routing_constants.dart';
-import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
 class TopNav extends StatelessWidget {
   final String pageName;
   final String backName;
+  final bool onlyPop;
 
   const TopNav({
     Key? key,
     required this.pageName,
     required this.backName,
+    this.onlyPop = false,
   }) : super(key: key);
 
   @override
@@ -23,7 +24,9 @@ class TopNav extends StatelessWidget {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                Navigator.pop(context);
+                onlyPop
+                    ? Navigator.pop(context)
+                    : Navigator.popUntil(context, (route) => route.isFirst);
               },
               child: Row(
                 children: [
@@ -88,11 +91,8 @@ class TopNavYour extends StatelessWidget {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const NavBarWrapper(),
-                    ));
+                //* Remember this one
+                Navigator.popUntil(context, (route) => route.isFirst);
               },
               child: Row(
                 children: [
@@ -159,7 +159,7 @@ class TopNavCustom extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          LebenswikiShadows().fancyShadow,
+          LebenswikiShadows.fancyShadow,
         ],
       ),
       child: Padding(

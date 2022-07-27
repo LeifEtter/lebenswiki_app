@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/common/components/tab_bar.dart';
+import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_creator_overview.dart';
@@ -8,6 +9,10 @@ import 'package:lebenswiki_app/features/menu/views/your_creator_packs.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
+
+//TODO add unsplash image
+//TODO add own image upload
+//TODO enable choosing multiple categories
 
 class PackCreatorInformation extends ConsumerStatefulWidget {
   final Pack pack;
@@ -23,6 +28,7 @@ class PackCreatorInformation extends ConsumerStatefulWidget {
 
 class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
   late Pack pack;
+  late List<ContentCategory> categories;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController imageLinkController = TextEditingController();
@@ -34,12 +40,17 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
     titleController.text = pack.title;
     descriptionController.text = pack.description;
     imageLinkController.text = pack.titleImage;
+    if (pack.categories.isNotEmpty) {
+      currentCategory = pack.categories.first.id - 1;
+    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<ContentCategory> categories = ref.watch(categoryProvider).categories;
+    List<ContentCategory> categoriesPreFilter =
+        ref.watch(categoryProvider).categories;
+    categories = _removeNew(categoriesPreFilter);
     return Scaffold(
       body: ListView(
         padding: const EdgeInsets.only(top: 0),
@@ -64,11 +75,15 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
                     style: _labelStyle(),
                   ),
                   const SizedBox(height: 20.0),
-                  buildTabBar(
-                      categories: categories,
-                      callback: (int value) {
-                        currentCategory = value;
-                      }),
+                  DefaultTabController(
+                    initialIndex: currentCategory,
+                    length: categories.length,
+                    child: buildTabBar(
+                        categories: categories,
+                        callback: (int value) {
+                          currentCategory = value;
+                        }),
+                  ),
                   const SizedBox(height: 20),
                   Text("Titel", style: _labelStyle()),
                   const SizedBox(height: 20),
@@ -131,10 +146,16 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
     );
   }
 
+  List<ContentCategory> _removeNew(List<ContentCategory> result) {
+    return result
+        .where((ContentCategory cat) => cat.categoryName != "Neu")
+        .toList();
+  }
+
   BoxDecoration _inputStyle() {
     return BoxDecoration(
       boxShadow: [
-        LebenswikiShadows().fancyShadow,
+        LebenswikiShadows.fancyShadow,
       ],
       color: Colors.white,
       borderRadius: BorderRadius.circular(15.0),
@@ -150,10 +171,9 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
   }
 
   //TODO improve routing
-  void _nextPage() {
-    pack.description = descriptionController.text;
-    pack.title = titleController.text;
-    pack.titleImage = imageLinkController.text;
+  void _nextPage() async {
+    _saveInfo();
+    await PackApi().updatePack(id: pack.id!, pack: pack);
 
     Navigator.push(
         context,
@@ -161,12 +181,18 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
             builder: ((context) => PackCreatorOverview(pack: pack))));
   }
 
-  void _previousPage() {
+  void _previousPage() async {
+    _saveInfo();
+    await PackApi().updatePack(id: pack.id!, pack: pack);
+
+    Navigator.push(context, _backRoute());
+  }
+
+  void _saveInfo() {
     pack.description = descriptionController.text;
     pack.title = titleController.text;
     pack.titleImage = imageLinkController.text;
-
-    Navigator.push(context, _backRoute());
+    pack.categories = [categories[currentCategory]];
   }
 
   Route _backRoute() {

@@ -35,10 +35,11 @@ void showReactionMenu(
                 String reaction = MiscRepo.allReactions[index].toUpperCase();
                 return GestureDetector(
                   onTap: () {
+                    Navigator.pop(context);
                     callback(reaction);
                   },
                   child: Image.asset(
-                    "assets/emojis/${reaction.toLowerCase}.png",
+                    "assets/emojis/${reaction.toLowerCase()}.png",
                     width: 20,
                   ),
                 );

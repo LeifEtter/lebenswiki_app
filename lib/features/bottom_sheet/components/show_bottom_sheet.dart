@@ -23,13 +23,21 @@ void showActionsMenuForPacks(BuildContext context) =>
       ),
     ]);
 
-void showActionsMenuForShorts(BuildContext context) =>
+void showActionsMenuForShorts(
+  BuildContext context, {
+  required bool isBookmarked,
+  required Function bookmarkCallback,
+  required Function reportCallback,
+}) =>
     showActionsMenu(context, menuItems: [
       basicMenuItem(
         Icons.flag,
         "Melden",
         "Diesen Short melden",
-        () => {} /*_reportDialog(contentId: contentId, creatorId: creatorId)*/,
+        () {
+          Navigator.pop(context);
+          reportCallback();
+        },
       ),
       basicMenuItem(
         Icons.comment_outlined,
@@ -37,12 +45,25 @@ void showActionsMenuForShorts(BuildContext context) =>
         "Schreibe einen Kommentar",
         () {},
       ),
-      basicMenuItem(
-        Icons.bookmark_outline,
-        "Speichern",
-        "Zu gespeicherten Shorts hinzufügen",
-        () {},
-      ),
+      isBookmarked
+          ? basicMenuItem(
+              Icons.bookmark_remove,
+              "Entfernen",
+              "Von gespeicherten Shorts entfernen",
+              () {
+                Navigator.pop(context);
+                bookmarkCallback();
+              },
+            )
+          : basicMenuItem(
+              Icons.bookmark_add_outlined,
+              "Speichern",
+              "Zu gespeicherten Shorts hinzufügen",
+              () {
+                Navigator.pop(context);
+                bookmarkCallback();
+              },
+            ),
     ]);
 
 void showActionsMenu(BuildContext context, {required List<Widget> menuItems}) {

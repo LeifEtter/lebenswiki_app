@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/features/common/components/tab_styles.dart';
 import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/packs/helper/get_packs.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_creator_information.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
-import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/repository/colors.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
@@ -35,9 +35,6 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
     chosenTab = widget.chosenTab;
   }
 
-  void _home() => Navigator.of(context)
-      .push(MaterialPageRoute(builder: ((context) => const NavBarWrapper())));
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,25 +47,9 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
               height: 50,
               child: TabBar(
                 controller: _tabController,
-                tabs: const [
-                  Tab(
-                    child: Text(
-                      "Veröffentlichte",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 17.0,
-                      ),
-                    ),
-                  ),
-                  Tab(
-                    child: Text(
-                      "Entwürfe",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 17.0,
-                      ),
-                    ),
-                  ),
+                tabs: [
+                  customTab("Veröffentlicht"),
+                  customTab("Entwürfe"),
                 ],
               ),
             ),
@@ -115,7 +96,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
               color: LebenswikiColors.blue,
-              boxShadow: [LebenswikiShadows().fancyShadow]),
+              boxShadow: [LebenswikiShadows.fancyShadow]),
           child: TextButton(
             onPressed: () {
               _routeCreatePack();

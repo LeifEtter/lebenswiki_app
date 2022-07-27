@@ -9,6 +9,7 @@ import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/provider_helper.dart';
+import 'package:lebenswiki_app/providers/providers.dart';
 
 class Authentication {
   static Future<ResultModel> register(FormNotifier formProvider) async {
@@ -54,7 +55,6 @@ class Authentication {
       String token = loginResult.token ?? "";
 
       TokenHandler().set(token);
-      //TODO Security hazard, remove before production
       await ProviderHelper.getDataAndSetSessionProviders(ref, token: token);
 
       result = ResultModel(
@@ -69,7 +69,7 @@ class Authentication {
     TokenHandler().delete();
 
     ProviderHelper.resetSessionProviders(ref);
-    //TODO ref.watch(blockedListProvider).removeBlockedList;
+    ref.watch(blockedListProvider).removeBlockedList;
 
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => const AuthWrapper(),

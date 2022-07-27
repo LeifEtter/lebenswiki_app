@@ -49,6 +49,14 @@ class User {
   List<UserFeedback> feedback;
   String role;
 
+  factory User.forProvider(Map<String, dynamic> json) => User(
+      id: json["id"],
+      name: json["name"],
+      profileImage: json["profileImage"],
+      role: json["role"],
+      email: json["email"],
+      biography: json["biography"]);
+
   factory User.forContent(Map<String, dynamic> json) => User(
         id: json["id"],
         name: json["name"],

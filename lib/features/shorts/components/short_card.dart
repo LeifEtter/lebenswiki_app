@@ -1,71 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/api/report_api.dart';
+import 'package:lebenswiki_app/api/user_api.dart';
+import 'package:lebenswiki_app/features/alert_dialog/components/report_popup.dart';
+import 'package:lebenswiki_app/features/bottom_sheet/components/show_bottom_sheet.dart';
+import 'package:lebenswiki_app/features/bottom_sheet/components/show_reactions_sheet.dart';
 import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/vote_button.dart';
 import 'package:lebenswiki_app/features/common/components/cards/creator_info.dart';
-import 'package:lebenswiki_app/features/common/helpers/bookmark_functions.dart';
 import 'package:lebenswiki_app/features/common/helpers/reaction_functions.dart';
-import 'package:lebenswiki_app/features/common/helpers/vote_functions.dart';
+import 'package:lebenswiki_app/models/block_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
+import 'package:lebenswiki_app/models/report_model.dart';
+import 'package:lebenswiki_app/models/user_model.dart';
+import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
-class ShortCard extends StatefulWidget {
+class ShortCard extends ConsumerStatefulWidget {
   final Short short;
-  final Function reload;
   final CardType cardType;
   final Function commentExpand;
-  final int userId;
 
   const ShortCard({
     Key? key,
     required this.short,
-    required this.reload,
     required this.cardType,
     required this.commentExpand,
-    required this.userId,
   }) : super(key: key);
 
   @override
-  State<ShortCard> createState() => _ShortCardState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ShortCardState();
 }
 
-class _ShortCardState extends State<ShortCard> {
-  bool reactionMenuOpen = false;
+class _ShortCardState extends ConsumerState<ShortCard> {
   bool hasReacted = false;
   bool optionsMenuOpen = false;
   bool blockUser = false;
   ShortApi shortApi = ShortApi();
 
-  late int userId;
-  late VoteHelper voteHelper;
-  late BookmarkHelper bookmarkHelper;
-  late ReactionHelper reactionHelper;
+  late User user;
 
   String? chosenReason = "Illegal unter der NetzDG";
 
   @override
   void initState() {
     super.initState();
-    userId = widget.userId;
-    bookmarkHelper = BookmarkHelper(
-      contentId: widget.short.id,
-      bookmarkedBy: widget.short.bookmarks,
-      cardType: widget.cardType,
-    );
-    reactionHelper = ReactionHelper(
-      reactionsResponse: widget.short.reactions,
-      userId: userId,
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    voteHelper = VoteHelper(
-      upVoteData: widget.short.upVote,
-      downVoteData: widget.short.downVote,
-      reloadCallBack: widget.reload,
-      userId: userId,
-    );
+    user = ref.read(userProvider).user;
     double screenWidth = MediaQuery.of(context).size.width;
     return Stack(
       children: [
@@ -74,10 +59,10 @@ class _ShortCardState extends State<ShortCard> {
           child: Align(
               alignment: Alignment.centerRight,
               child: VoteButtonStack(
-                currentVotes: voteHelper.totalVotes,
+                currentVotes: widget.short.totalVotes,
                 changeVote: _voteCallback,
-                hasDownvoted: voteHelper.userHasDownVoted,
-                hasUpvoted: voteHelper.userHasUpVoted,
+                hasDownvoted: widget.short.downvotedByUser,
+                hasUpvoted: widget.short.upvotedByUser,
               )),
         ),
         Positioned.fill(
@@ -89,19 +74,13 @@ class _ShortCardState extends State<ShortCard> {
                 padding: const EdgeInsets.only(top: 5.0),
                 child: GestureDetector(
                   child: Image.asset(
-                    bookmarkHelper.userHasBookmarked
+                    widget.short.bookmarkedByUser
                         ? "assets/icons/bookmark_filled.png"
                         : "assets/icons/bookmark.png",
                     width: 20.0,
                   ),
                   onTap: () {
-                    bookmarkHelper.toggleBookmarkShort(
-                      bookmarkCallback: () =>
-                          shortApi.bookmarkShort(widget.short.id),
-                      unbookmarkCallback: () =>
-                          shortApi.unbookmarkShort(widget.short.id),
-                    );
-                    widget.reload();
+                    _bookmarkCallback();
                   },
                 ),
               )),
@@ -114,9 +93,12 @@ class _ShortCardState extends State<ShortCard> {
             child: IconButton(
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
-              onPressed: () {
-                //TODO implement menu
-              },
+              onPressed: () => showActionsMenuForShorts(
+                context,
+                isBookmarked: widget.short.bookmarkedByUser,
+                bookmarkCallback: () => _bookmarkCallback(),
+                reportCallback: () => _reportCallback(),
+              ),
               icon: const Icon(Icons.more_horiz_outlined),
             ),
           ),
@@ -157,16 +139,26 @@ class _ShortCardState extends State<ShortCard> {
                       children: [
                         IconButton(
                           constraints: const BoxConstraints(),
-                          onPressed: () {
-                            widget.commentExpand();
-                          },
+                          onPressed: () => widget.commentExpand(),
                           icon: const Icon(Icons.comment_outlined),
                         ),
-                        //TODO implement menu callback
                         SizedBox(
                           height: 30,
                           width: 200,
-                          child: reactionHelper.reactionBar(),
+                          child: reactionBar(
+                            widget.short.reactionMap,
+                            () => showReactionMenu(
+                              context,
+                              callback: (String reaction) {
+                                shortApi.reactShort(widget.short.id, reaction);
+                                widget.short.react(
+                                  user.id,
+                                  reaction.toLowerCase(),
+                                );
+                                setState(() {});
+                              },
+                            ),
+                          ),
                         ),
                       ],
                     )
@@ -180,23 +172,65 @@ class _ShortCardState extends State<ShortCard> {
     );
   }
 
+  void _bookmarkCallback() {
+    widget.short.bookmarkedByUser
+        ? shortApi.unbookmarkShort(widget.short.id)
+        : shortApi.bookmarkShort(widget.short.id);
+    widget.short.toggleBookmarked(user);
+    setState(() {});
+  }
+
+  void _reportCallback() => showDialog(
+        context: context,
+        builder: (context) => ReportDialog(
+          reportCallback: (bool blockUser, String reason) {
+            Report newReport = Report(
+              reportedContentId: widget.short.id,
+              reason: reason,
+              creationDate: DateTime.now(),
+            );
+            ReportApi().reportShort(report: newReport);
+
+            if (blockUser) {
+              UserApi().blockUser(
+                id: widget.short.creator.id,
+                reason: reason,
+              );
+
+              Block newBlock = Block(
+                  reason: reason,
+                  blocker: user,
+                  blockerId: user.id,
+                  blocked: widget.short.creator,
+                  blockedId: widget.short.creator.id,
+                  creationDate: DateTime.now());
+              ref.read(blockedListProvider).addBlock(newBlock);
+            }
+            Navigator.pop(context);
+          },
+        ),
+      );
+
   void _voteCallback(bool isUpvote) {
-    VoteType voteType = voteHelper.getVoteType(isUpvote: isUpvote);
+    VoteType voteType = widget.short.getVoteType(isUpvote: isUpvote);
     switch (voteType) {
       case VoteType.upvote:
         shortApi.upvoteShort(widget.short.id);
+        widget.short.updateUpvote(user);
         break;
       case VoteType.downvote:
         shortApi.downvoteShort(widget.short.id);
+        widget.short.updateDownvote(user);
         break;
       case VoteType.removeUpvote:
         shortApi.removeUpvoteShort(widget.short.id);
+        widget.short.removeVotes(user);
         break;
       case VoteType.removeDownvote:
         shortApi.removeDownvoteShort(widget.short.id);
+        widget.short.removeVotes(user);
         break;
     }
     setState(() {});
-    widget.reload();
   }
 }

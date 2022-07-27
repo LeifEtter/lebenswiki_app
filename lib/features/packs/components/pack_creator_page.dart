@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:lebenswiki_app/features/common/components/styling_edit.dart';
+import 'package:lebenswiki_app/features/packs/components/pack_editor_components.dart';
+import 'package:lebenswiki_app/features/packs/styling/pack_editor_styling.dart';
 import 'package:lebenswiki_app/features/testing/components/border.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
-import 'package:lebenswiki_app/repository/shadows.dart';
 
+//TODO remove save page button
+//TODO Add quiz
 class PageOverview extends StatefulWidget {
   final PackPage page;
-  final Function reload;
   final Function saveCallback;
   final int selfIndex;
+  final Function deleteSelf;
+  final Function saveSelf;
 
   const PageOverview({
     Key? key,
     required this.page,
-    required this.reload,
     required this.saveCallback,
     required this.selfIndex,
+    required this.deleteSelf,
+    required this.saveSelf,
   }) : super(key: key);
 
   @override
@@ -39,45 +44,40 @@ class _PageOverviewState extends State<PageOverview> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-          left: 20.0, right: 20.0, top: 10.0, bottom: 20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+          left: 20.0, right: 10.0, top: 15.0, bottom: 10.0),
+      child: Stack(
         children: [
-          const SizedBox(height: 5),
-          GiveBorder(
-            color: Colors.red,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 15.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      )),
-                  icon: const Icon(Icons.save),
-                  onPressed: () => _save(),
-                  label: const Text("Seite Speichern",
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w500,
-                      )),
-                ),
-              ],
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //TODO make button red
+              if (widget.selfIndex != 0)
+                PackEditorComponents.iconButton(
+                    icon: Icons.delete,
+                    callback: () => widget.deleteSelf(widget.selfIndex),
+                    label: "Seite Löschen"),
+              _buildPageContent(),
+              const SizedBox(height: 60),
+            ],
           ),
-          GiveBorder(
-            color: Colors.green,
-            child: _buildPage(),
+          Positioned.fill(
+            child: Align(
+                alignment: Alignment.bottomRight, child: buildAddButton()),
           ),
-          buildAddButton(),
+          Positioned.fill(
+              child: Align(
+            alignment: Alignment.bottomLeft,
+            child: PackEditorComponents.iconButton(
+                icon: Icons.save,
+                callback: () => _save(),
+                label: "Seite speichern"),
+          )),
         ],
       ),
     );
   }
 
-  Widget _buildPage() {
+  Widget _buildPageContent() {
     return ListView.builder(
       padding: const EdgeInsets.all(0),
       physics: const NeverScrollableScrollPhysics(),
@@ -88,7 +88,8 @@ class _PageOverviewState extends State<PageOverview> {
           color: Colors.blue,
           child: Row(
             children: [
-              Expanded(child: _evalContentNew(page.items[index], index)),
+              Expanded(
+                  child: _showSingleEditableItem(page.items[index], index)),
               IconButton(
                 icon: const Icon(Icons.delete),
                 color: Colors.red,
@@ -104,99 +105,87 @@ class _PageOverviewState extends State<PageOverview> {
     );
   }
 
-  Widget _evalContentNew(PackPageItem item, int index) {
+  Widget _showSingleEditableItem(PackPageItem item, int index) {
     switch (item.type) {
       case ItemType.list:
-        return Padding(
-          padding: const EdgeInsets.only(top: 30),
-          child: Column(
-            children: [
-              //Create Head Input
-              Container(
-                decoration: _standardInput(),
-                child: TextFormField(
-                    onEditingComplete: _save,
-                    controller: item.headContent.controller,
-                    decoration: _standardDecoration("Listen Titel eingeben")),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: Column(
-                  children: List.generate(item.bodyContent.length, (index) {
-                    //Set Current input item
-                    PackPageItemInput currentInput = item.bodyContent[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 5.0),
-                      child: Container(
-                        decoration: _standardInput(),
-                        child: TextFormField(
-                          onEditingComplete: _save,
-                          controller: currentInput.controller,
-                          decoration:
-                              _standardDecoration("Listen Element eingeben"),
-                        ),
+        return Column(
+          children: [
+            Container(
+              decoration: PackEditorStyling.standardInput(),
+              child: TextFormField(
+                  onEditingComplete: _save,
+                  controller: item.headContent.controller,
+                  decoration: PackEditorStyling.standardDecoration(
+                      "Listen Titel eingeben")),
+            ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Column(
+                children: List.generate(item.bodyContent.length, (index) {
+                  //Set Current input item
+                  PackPageItemInput currentInput = item.bodyContent[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Container(
+                      decoration: PackEditorStyling.standardInput(),
+                      child: TextFormField(
+                        onEditingComplete: _save,
+                        controller: currentInput.controller,
+                        decoration: PackEditorStyling.standardDecoration(
+                            "Listen Element eingeben"),
                       ),
-                    );
-                  }),
-                ),
+                    ),
+                  );
+                }),
               ),
-              IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () {
-                  setState(() {
-                    TextEditingController newController =
-                        TextEditingController();
-                    newController.text = "";
-                    page.items[index].bodyContent.add(
-                      PackPageItemInput(
-                        value: "",
-                        controller: newController,
-                      ),
-                    );
-                  });
-                },
-              ),
-            ],
-          ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                setState(() {
+                  TextEditingController newController = TextEditingController();
+                  newController.text = "";
+                  page.items[index].bodyContent.add(
+                    PackPageItemInput(
+                      value: "",
+                      controller: newController,
+                    ),
+                  );
+                });
+              },
+            ),
+          ],
         );
       case ItemType.title:
-        return Padding(
-          padding: const EdgeInsets.only(top: 20),
-          child: Container(
-            decoration: _standardInput(),
-            child: TextFormField(
-              onEditingComplete: _save,
-              controller: item.headContent.controller,
-              decoration: _standardDecoration("Titel eingeben"),
-            ),
+        return Container(
+          decoration: PackEditorStyling.standardInput(),
+          child: TextFormField(
+            onEditingComplete: _save,
+            controller: item.headContent.controller,
+            decoration: PackEditorStyling.standardDecoration("Titel eingeben"),
           ),
         );
       case ItemType.image:
-        return Padding(
-          padding: const EdgeInsets.only(top: 30),
-          child: Container(
-            decoration: _standardInput(),
-            child: TextFormField(
-              onEditingComplete: _save,
-              decoration: _standardDecoration("Bild Link eingeben"),
-              controller: item.headContent.controller,
-            ),
+        return Container(
+          decoration: PackEditorStyling.standardInput(),
+          child: TextFormField(
+            onEditingComplete: _save,
+            decoration:
+                PackEditorStyling.standardDecoration("Bild Link eingeben"),
+            controller: item.headContent.controller,
           ),
         );
       case ItemType.text:
-        return Padding(
-          padding: const EdgeInsets.only(top: 30),
-          child: Container(
-            decoration: _standardInput(),
-            child: TextFormField(
-              onEditingComplete: _save,
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              minLines: 3,
-              controller: item.headContent.controller,
-              decoration: _standardDecoration("Text eingeben"),
-            ),
+        return Container(
+          decoration: PackEditorStyling.standardInput(),
+          child: TextFormField(
+            onEditingComplete: _save,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            minLines: 3,
+            controller: item.headContent.controller,
+            decoration: PackEditorStyling.standardDecoration("Text eingeben"),
           ),
         );
       default:
@@ -217,36 +206,12 @@ class _PageOverviewState extends State<PageOverview> {
         item.bodyContent[y].controller!.text = item.bodyContent[y].value;
       }
     }
+
+    setState(() {});
   }
 
-  BoxDecoration _standardInput() {
-    return BoxDecoration(
-      borderRadius: BorderRadius.circular(10.0),
-      boxShadow: [LebenswikiShadows().fancyShadow],
-      color: Colors.white,
-    );
-  }
-
-  InputDecoration _standardDecoration(placeholder) {
-    return InputDecoration(
-      border: InputBorder.none,
-      contentPadding: const EdgeInsets.all(10.0),
-      hintText: placeholder,
-    );
-  }
-
-  //Assign the controller values to the actual values
   void _save() {
-    for (int x = 0; x < page.items.length; x++) {
-      PackPageItem item = page.items[x];
-
-      item.headContent.value = item.headContent.controller!.text;
-      for (int y = 0; y < item.bodyContent.length; y++) {
-        item.bodyContent[y].value = item.bodyContent[y].controller!.text;
-      }
-    }
-
-    //widget.saveCallback(page: page, index: widget.selfIndex);
+    widget.saveSelf(widget.selfIndex);
     setState(() {});
   }
 
@@ -260,60 +225,22 @@ class _PageOverviewState extends State<PageOverview> {
     ];
     return SpeedDial(
       icon: Icons.add_rounded,
-      direction: SpeedDialDirection.right,
+      direction: SpeedDialDirection.left,
       children: items
-          .map<SpeedDialChild>((item) => SpeedDialChild(
-                child: Icon(item[1]),
+          .map<SpeedDialChild>((itemData) => SpeedDialChild(
+                child: Icon(itemData[1]),
                 onTap: () {
                   TextEditingController newController = TextEditingController();
-                  switch (item[0]) {
-                    case ItemType.list:
-                      newController.text = "";
-                      page.items.add(
-                        PackPageItem(
-                          type: ItemType.list,
-                          headContent: PackPageItemInput(
-                            value: "",
-                            controller: newController,
-                          ),
-                          bodyContent: [],
-                        ),
-                      );
-                      break;
-                    case ItemType.title:
-                      newController.text = "";
-                      page.items.add(
-                        PackPageItem(
-                          type: ItemType.title,
-                          headContent: PackPageItemInput(
-                              value: "", controller: newController),
-                          bodyContent: [],
-                        ),
-                      );
-                      break;
-                    case ItemType.image:
-                      newController.text = "";
-                      page.items.add(PackPageItem(
-                        type: ItemType.image,
-                        headContent: PackPageItemInput(
-                            value: "", controller: newController),
-                        bodyContent: [],
-                      ));
-                      break;
-                    case ItemType.text:
-                      newController.text = "";
-                      page.items.add(
-                        PackPageItem(
-                          type: ItemType.text,
-                          headContent: PackPageItemInput(
-                            value: "",
-                            controller: newController,
-                          ),
-                          bodyContent: [],
-                        ),
-                      );
-                      break;
-                  }
+
+                  newController.text = "";
+                  page.items.add(PackPageItem(
+                    type: itemData[0],
+                    headContent: PackPageItemInput(
+                      value: "",
+                      controller: newController,
+                    ),
+                    bodyContent: [],
+                  ));
                   setState(() {
                     _save();
                     _initializeControllers();

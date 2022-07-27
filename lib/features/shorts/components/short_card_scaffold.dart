@@ -2,24 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/comments/api/comment_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
-import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
-import 'package:lebenswiki_app/features/comments/helper/get_comments.dart';
+//import 'package:lebenswiki_app/features/comments/helper/get_comments.dart';
 import 'package:lebenswiki_app/features/common/components/comment_input.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
-import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
+//TODO fix comment functionality
 class ShortCardScaffold extends ConsumerStatefulWidget {
   final Short short;
-  final Function reload;
   final CardType cardType;
+  final Function? reload;
   const ShortCardScaffold({
     Key? key,
     required this.short,
-    required this.reload,
     required this.cardType,
+    this.reload,
   }) : super(key: key);
 
   @override
@@ -34,12 +33,11 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    int userId = ref.watch(userIdProvider).userId;
     return Padding(
       padding: const EdgeInsets.only(top: 5, left: 10.0, right: 10.0),
       child: Container(
         decoration: BoxDecoration(boxShadow: [
-          LebenswikiShadows().cardShadow,
+          LebenswikiShadows.cardShadow,
         ]),
         child: Card(
           shape: RoundedRectangleBorder(
@@ -49,9 +47,7 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold> {
           child: Column(
             children: [
               ShortCard(
-                userId: userId,
                 short: widget.short,
-                reload: widget.reload,
                 cardType: widget.cardType,
                 commentExpand: _triggerComments,
               ),
@@ -89,20 +85,18 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold> {
                                           id: widget.short.id)
                                       .then((ResultModel result) {
                                     _commentController.text = "";
-                                    widget.reload();
                                   });
                                 },
                               )
                             ],
                           ),
                           const SizedBox(height: 8),
-                          Padding(
+                          /*Padding(
                             padding: const EdgeInsets.only(left: 10.0),
                             child: GetContentComments(
-                              reload: widget.reload,
                               comments: widget.short.comments,
                             ),
-                          )
+                          ),*/
                         ],
                       ),
                     )
@@ -114,9 +108,7 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold> {
     );
   }
 
-  void _triggerComments() {
-    setState(() {
-      _commentsExpanded ? _commentsExpanded = false : _commentsExpanded = true;
-    });
-  }
+  void _triggerComments() => setState(() {
+        _commentsExpanded = !_commentsExpanded;
+      });
 }
