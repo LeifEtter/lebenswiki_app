@@ -38,7 +38,6 @@ class _PackFeedState extends ConsumerState<PackFeed> {
         ResultModel result = snapshot.data;
         //If request fails show error text
         if (result.type == ResultType.failure) return Text(result.message!);
-        if (result.responseList.isEmpty) return Text(result.message!);
 
         List<Pack> _packList = List<Pack>.from(result.responseList);
 
