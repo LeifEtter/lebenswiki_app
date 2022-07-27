@@ -5,11 +5,13 @@ import 'package:lebenswiki_app/repository/shadows.dart';
 class TopNav extends StatelessWidget {
   final String pageName;
   final String backName;
+  final bool onlyPop;
 
   const TopNav({
     Key? key,
     required this.pageName,
     required this.backName,
+    this.onlyPop = false,
   }) : super(key: key);
 
   @override
@@ -22,7 +24,9 @@ class TopNav extends StatelessWidget {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                Navigator.popUntil(context, (route) => route.isFirst);
+                onlyPop
+                    ? Navigator.pop(context)
+                    : Navigator.popUntil(context, (route) => route.isFirst);
               },
               child: Row(
                 children: [

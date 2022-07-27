@@ -1,4 +1,4 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/comments/api/comment_api.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/vote_button.dart';
@@ -7,16 +7,14 @@ import 'package:lebenswiki_app/features/common/helpers/reaction_functions.dart';
 import 'package:lebenswiki_app/features/comments/models/comment_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
-import 'package:lebenswiki_app/repository/text_styles.dart';*/
+import 'package:lebenswiki_app/repository/text_styles.dart';
 
-/*class CommentCard extends ConsumerStatefulWidget {
-  final Function reloadCallback;
+class CommentCard extends ConsumerStatefulWidget {
   final Comment comment;
   final CardType cardType;
 
   const CommentCard({
     Key? key,
-    required this.reloadCallback,
     required this.comment,
     required this.cardType,
   }) : super(key: key);
@@ -29,21 +27,11 @@ class _CommentCardState extends ConsumerState<CommentCard> {
   CommentApi commentApi = CommentApi();
 
   late int userId;
-  late VoteHelper voteHelper;
-  late ReactionHelper reactionHelper;
 
   @override
   void initState() {
     super.initState();
     userId = ref.watch(userIdProvider).userId;
-    voteHelper = VoteHelper(
-      userId: userId,
-      reloadCallBack: widget.reloadCallback,
-    );
-    reactionHelper = ReactionHelper(
-      reactionsResponse: widget.comment.reactions,
-      userId: userId,
-    );
   }
 
   @override
@@ -83,12 +71,12 @@ class _CommentCardState extends ConsumerState<CommentCard> {
                         const SizedBox(height: 20),
                         Row(
                           children: [
-                            SizedBox(
+                            /*SizedBox(
                               height: 30,
                               width: 200,
                               //TODO implement Menu Callback Provider
                               child: reactionBar(),
-                            ),
+                            ),*/
                           ],
                         )
                       ],
@@ -108,12 +96,12 @@ class _CommentCardState extends ConsumerState<CommentCard> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            VoteButtonStack(
+            /*VoteButtonStack(
               currentVotes: voteHelper.totalVotes,
               changeVote: _voteCallback,
               hasDownvoted: voteHelper.userHasUpVoted,
               hasUpvoted: voteHelper.userHasDownVoted,
-            ),
+            ),*/
             //TODO implement menu
             Padding(
               padding: const EdgeInsets.only(bottom: 5.0),
@@ -130,4 +118,3 @@ class _CommentCardState extends ConsumerState<CommentCard> {
 
   void _voteCallback(bool isUpvote) {}
 }
-*/

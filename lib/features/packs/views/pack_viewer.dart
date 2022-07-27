@@ -6,10 +6,12 @@ import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 
 class PackViewer extends StatefulWidget {
   final Pack pack;
+  final bool isPreview;
 
   const PackViewer({
     Key? key,
     required this.pack,
+    this.isPreview = false,
   }) : super(key: key);
 
   @override
@@ -37,7 +39,11 @@ class _PackViewerState extends State<PackViewer> {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 50.0, bottom: 10.0),
-            child: TopNav(pageName: widget.pack.title, backName: "Packs"),
+            child: TopNav(
+              pageName: widget.pack.title,
+              backName: "Packs",
+              onlyPop: widget.isPreview,
+            ),
           ),
           const SizedBox(height: 50),
           Expanded(

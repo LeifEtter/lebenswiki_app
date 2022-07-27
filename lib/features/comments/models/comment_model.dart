@@ -51,9 +51,9 @@ class Comment {
         creator: User.forContent(json["creator"]),
         creatorId: json["creatorId"],
         parentId: json["parentId"],
-        parentShort: json["parentShort"] ?? json["parentShort"],
-        parentPack: json["parentPack"] ?? json["parentPack"],
-        parentComment: json["parentComment"] ?? json["parentComment"],
+        parentShort: json["parentShort"],
+        parentPack: json["parentPack"],
+        parentComment: json["parentComment"],
         childComments: json["childComments"] ??
             List<Comment>.from(json["childComments"]
                 .map((comment) => Comment.fromJson(comment))),

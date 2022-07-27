@@ -11,6 +11,7 @@ import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
 //TODO add unsplash image
+//TODO add own image upload
 //TODO enable choosing multiple categories
 
 class PackCreatorInformation extends ConsumerStatefulWidget {
@@ -39,6 +40,9 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
     titleController.text = pack.title;
     descriptionController.text = pack.description;
     imageLinkController.text = pack.titleImage;
+    if (pack.categories.isNotEmpty) {
+      currentCategory = pack.categories.first.id - 1;
+    }
     super.initState();
   }
 
@@ -71,11 +75,15 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
                     style: _labelStyle(),
                   ),
                   const SizedBox(height: 20.0),
-                  buildTabBar(
-                      categories: categories,
-                      callback: (int value) {
-                        currentCategory = value;
-                      }),
+                  DefaultTabController(
+                    initialIndex: currentCategory,
+                    length: categories.length,
+                    child: buildTabBar(
+                        categories: categories,
+                        callback: (int value) {
+                          currentCategory = value;
+                        }),
+                  ),
                   const SizedBox(height: 20),
                   Text("Titel", style: _labelStyle()),
                   const SizedBox(height: 20),
@@ -184,7 +192,7 @@ class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
     pack.description = descriptionController.text;
     pack.title = titleController.text;
     pack.titleImage = imageLinkController.text;
-    pack.categories.add(categories[currentCategory].id);
+    pack.categories = [categories[currentCategory]];
   }
 
   Route _backRoute() {

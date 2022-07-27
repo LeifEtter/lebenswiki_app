@@ -1,7 +1,9 @@
-//import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/features/comments/components/comment_card.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 //TODO fix comments
 
-/*class GetContentComments extends StatefulWidget {
+class GetContentComments extends StatefulWidget {
   final List comments;
 
   const GetContentComments({
@@ -24,11 +26,10 @@ class _GetContentCommentsState extends State<GetContentComments> {
         var currentComment = widget.comments[index];
         return Column(
           children: [
-            /*CommentCard(
+            CommentCard(
               comment: currentComment,
-              reloadCallback: widget.reload,
               cardType: CardType.shortComments,
-            ),*/
+            ),
             const Padding(
               padding: EdgeInsets.only(right: 20.0, left: 20.0),
               child: Divider(),
@@ -38,4 +39,4 @@ class _GetContentCommentsState extends State<GetContentComments> {
       },
     );
   }
-}*/
+}

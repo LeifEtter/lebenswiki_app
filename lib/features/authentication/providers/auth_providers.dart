@@ -76,7 +76,6 @@ class FormNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  //TODO generate Regex for biography
   void validateBiography(String? val) {
     _biography = ValidationModel(val, null);
     notifyListeners();

@@ -96,7 +96,7 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold> {
                             child: GetContentComments(
                               comments: widget.short.comments,
                             ),
-                          )*/
+                          ),*/
                         ],
                       ),
                     )

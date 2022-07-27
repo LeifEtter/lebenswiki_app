@@ -71,7 +71,10 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => PackViewer(pack: pack),
+                                builder: (context) => PackViewer(
+                                  pack: pack,
+                                  isPreview: true,
+                                ),
                               ));
                         },
                         label: "Vorschau",

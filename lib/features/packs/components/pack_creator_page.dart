@@ -210,21 +210,8 @@ class _PageOverviewState extends State<PageOverview> {
     setState(() {});
   }
 
-  //TODO implement saving only that specific page
-  //Assign the controller values to the actual values
   void _save() {
-    /*for (int x = 0; x < page.items.length; x++) {
-      PackPageItem item = page.items[x];
-
-      item.headContent.value = item.headContent.controller!.text;
-      for (int y = 0; y < item.bodyContent.length; y++) {
-        item.bodyContent[y].value = item.bodyContent[y].controller!.text;
-      }
-    }*/
-
     widget.saveSelf(widget.selfIndex);
-
-    //widget.saveCallback(page: page, index: widget.selfIndex);
     setState(() {});
   }
 

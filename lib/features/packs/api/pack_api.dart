@@ -208,6 +208,7 @@ class PackApi extends BaseApi {
       headers: await requestHeader(),
       body: jsonEncode(requestBody),
     ).then((Response res) {
+      print(requestBody);
       if (statusIsSuccess(res.statusCode)) {
         result = ResultModel(
           type: ResultType.success,

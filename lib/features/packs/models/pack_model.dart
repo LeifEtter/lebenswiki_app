@@ -1,4 +1,5 @@
 import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
+import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/repository/image_repo.dart';
@@ -49,7 +50,7 @@ class Pack {
         'description': description,
         'titleImage': titleImage,
         'published': published,
-        'categories': categories,
+        'categories': categories.isNotEmpty ? [categories.first.id] : [],
         'pages': List<dynamic>.from(
           pages.map((PackPage page) => page.toJson()),
         ),
@@ -64,7 +65,8 @@ class Pack {
         creatorId = json["creatorId"],
         description = json["description"],
         titleImage = json["titleImage"],
-        categories = json["categories"],
+        categories = List<ContentCategory>.from(
+            json["categories"].map((cat) => ContentCategory.forContent(cat))),
         published = json["published"],
         bookmarks = json["bookmarks"] != null
             ? List<User>.from(json["bookmarks"].map((user) => User.forId(user)))
