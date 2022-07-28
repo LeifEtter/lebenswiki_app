@@ -32,7 +32,7 @@ class FormNotifier extends ChangeNotifier {
     if (val != null && val.isValidEmail) {
       _email = ValidationModel(val, null);
     } else {
-      _email = ValidationModel(null, 'Please Enter a Valid Email');
+      _email = ValidationModel(null, 'Bitte eine valide Email eingeben');
     }
     notifyListeners();
   }
@@ -42,7 +42,7 @@ class FormNotifier extends ChangeNotifier {
       _password = ValidationModel(val, null);
     } else {
       _password = ValidationModel(null,
-          'Password must contain an uppercase, lowercase, number and special character');
+          'Password sollte mind. 6 Zeichen lang sein, einen Groß- und Kleinbuchstaben als auch eine Zahl enthalten');
     }
     notifyListeners();
   }
@@ -52,7 +52,7 @@ class FormNotifier extends ChangeNotifier {
       _oldPassword = ValidationModel(val, null);
     } else {
       _oldPassword = ValidationModel(null,
-          'Password must contain an uppercase, lowercase, number and special character');
+          'Password sollte mind. 6 Zeichen lang sein, einen Groß- und Kleinbuchstaben als auch eine Zahl enthalten');
     }
     notifyListeners();
   }
@@ -61,7 +61,8 @@ class FormNotifier extends ChangeNotifier {
     if (val != null && val == _password.value) {
       _repeatPassword = ValidationModel(val, null);
     } else {
-      _repeatPassword = ValidationModel(null, 'Passwords must match');
+      _repeatPassword =
+          ValidationModel(null, 'Passwörter müssen übereinstimmen');
     }
     notifyListeners();
   }
@@ -70,7 +71,7 @@ class FormNotifier extends ChangeNotifier {
     if (val != null && val.isValidName) {
       _name = ValidationModel(val, null);
     } else {
-      _name = ValidationModel(null, 'Please enter a valid name');
+      _name = ValidationModel(null, 'Passwörter müssen übereinstimmen');
     }
     log(_name.value!);
     notifyListeners();
@@ -153,6 +154,8 @@ class FormNotifier extends ChangeNotifier {
         _email.error = "Email und Passwort stimmen nicht überein";
         _password.error = "Email und Passwort stimmen nicht überein";
         break;
+      case "oldPassword_is_incorrect":
+        _oldPassword.error = "Altes Password stimmt nicht";
     }
     notifyListeners();
   }

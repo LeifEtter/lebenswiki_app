@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
+import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 
 //TODO finish comment view
@@ -23,7 +24,7 @@ class _ShortCommentViewState extends State<ShortCommentView> {
         const TopNav(pageName: "Kommentare", backName: "Shorts"),
         ListView(
           children: [
-            
+            ShortCard(short: widget.short),
           ],
         ),
       ],

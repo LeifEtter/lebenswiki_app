@@ -27,7 +27,7 @@ class _ShortFeedState extends ConsumerState<ShortFeed> {
   Widget build(BuildContext context) {
     final List<ContentCategory> categories =
         ref.read(categoryProvider).categories;
-    final int userId = ref.read(userIdProvider).userId;
+    final int userId = ref.read(userProvider).user.id;
     final List<int> blockedList = ref.watch(blockedListProvider).blockedIdList;
     return FutureBuilder(
       future: shortApi.getAllShorts(),

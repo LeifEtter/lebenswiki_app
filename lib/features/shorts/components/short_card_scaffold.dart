@@ -48,7 +48,6 @@ class _ShortCardScaffoldState extends ConsumerState<ShortCardScaffold> {
             children: [
               ShortCard(
                 short: widget.short,
-                cardType: widget.cardType,
               ),
               widget.cardType == CardType.shortsByCategory
                   ? Visibility(

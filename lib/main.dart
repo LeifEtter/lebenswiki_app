@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/token/token_handler.dart';
-import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_feed.dart';
 import 'package:lebenswiki_app/features/common/components/nav/bottom_nav_bar.dart';
@@ -14,7 +13,6 @@ import 'package:lebenswiki_app/features/authentication/views/authentication_view
 import 'package:lebenswiki_app/features/shorts/views/short_feed.dart';
 import 'package:flutter/services.dart';
 import 'package:lebenswiki_app/providers/provider_helper.dart';
-import 'package:lebenswiki_app/testing/testing_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,21 +20,7 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(
     const ProviderScope(child: MyApp()),
-    /*const ProviderScope(
-      child: Testing(),
-    ),*/
   );
-}
-
-class Testing extends StatelessWidget {
-  const Testing({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: TestingView(),
-    );
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -81,16 +65,11 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
   }
 
   Future<bool> startOrDenySession(WidgetRef ref) async {
-    String token = await TokenHandler().get();
-    if (token.isEmpty) {
-      return false;
-    }
-    if (await UserApi().authenticate() == false) {
-      return false;
-    }
-    bool isSuccess =
-        await ProviderHelper.getDataAndSetSessionProviders(ref, token: token);
-    if (isSuccess) {
+    bool isValid = await TokenHandler().authenticateCurrentToken();
+    if (isValid) {
+      //In case data has changed set Providers again
+      ProviderHelper.resetSessionProviders(ref);
+      await ProviderHelper.getDataAndSetSessionProviders(ref);
       return true;
     } else {
       return false;

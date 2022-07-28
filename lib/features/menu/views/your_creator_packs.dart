@@ -41,7 +41,7 @@ class _YourCreatorPacksState extends State<YourCreatorPacks>
       body: SafeArea(
         child: Column(
           children: [
-            const TopNavYour(pageName: "Deine Lernpacks", backName: "Menu"),
+            const TopNav(pageName: "Deine Lernpacks", backName: "Menu"),
             const SizedBox(height: 0),
             SizedBox(
               height: 50,

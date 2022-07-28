@@ -31,7 +31,7 @@ class _CommentCardState extends ConsumerState<CommentCard> {
   @override
   void initState() {
     super.initState();
-    userId = ref.watch(userIdProvider).userId;
+    userId = ref.watch(userProvider).user.id;
   }
 
   @override

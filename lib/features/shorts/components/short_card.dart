@@ -19,12 +19,10 @@ import 'package:lebenswiki_app/repository/text_styles.dart';
 
 class ShortCard extends ConsumerStatefulWidget {
   final Short short;
-  final CardType cardType;
 
   const ShortCard({
     Key? key,
     required this.short,
-    required this.cardType,
   }) : super(key: key);
 
   @override
