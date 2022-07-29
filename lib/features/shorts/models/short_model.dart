@@ -61,28 +61,30 @@ class Short {
         creationDate: DateTime.now(),
       );
 
-  factory Short.fromJson(Map<String, dynamic> json) => Short(
-        id: json["id"],
-        title: json["title"],
-        content: json["content"],
-        published: json["published"],
-        requestPublish: json["requestPublish"],
-        creationDate: DateTime.parse(json["creationDate"]),
-        lastUpdated: DateTime.parse(json["lastUpdated"]),
-        upVote: List<User>.from(json["upVote"].map((user) => User.forId(user))),
-        downVote:
-            List<User>.from(json["downVote"].map((user) => User.forId(user))),
-        bookmarks:
-            List<User>.from(json["bookmarks"].map((user) => User.forId(user))),
-        comments: List<Comment>.from(
-            json["comments"].map((comment) => Comment.fromJson(comment))),
-        reportShort: List<Report>.from(
-            json["reports"].map((report) => Report.forContent(report))),
-        categories: List.from(json["categories"]
-            .map((category) => ContentCategory.fromJson(category))),
-        reactions: List.from(json["reactions"]),
-        creator: User.forContent(json["creator"]),
-      );
+  factory Short.fromJson(Map<String, dynamic> json) {
+    return Short(
+      id: json["id"],
+      title: json["title"],
+      content: json["content"],
+      published: json["published"],
+      requestPublish: json["requestPublish"],
+      creationDate: DateTime.parse(json["creationDate"]),
+      lastUpdated: DateTime.parse(json["lastUpdated"]),
+      upVote: List<User>.from(json["upVote"].map((user) => User.forId(user))),
+      downVote:
+          List<User>.from(json["downVote"].map((user) => User.forId(user))),
+      bookmarks:
+          List<User>.from(json["bookmarks"].map((user) => User.forId(user))),
+      comments: List<Comment>.from(
+          json["comments"].map((comment) => Comment.forShort(comment))),
+      reportShort: List<Report>.from(
+          json["reports"].map((report) => Report.forContent(report))),
+      categories: List.from(json["categories"]
+          .map((category) => ContentCategory.fromJson(category))),
+      reactions: List.from(json["reactions"]),
+      creator: User.forContent(json["creator"]),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "title": title,

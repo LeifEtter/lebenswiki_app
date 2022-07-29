@@ -19,15 +19,20 @@ class ShortCommentView extends StatefulWidget {
 class _ShortCommentViewState extends State<ShortCommentView> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const TopNav(pageName: "Kommentare", backName: "Shorts"),
-        ListView(
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
           children: [
-            ShortCard(short: widget.short),
+            const TopNav(pageName: "Kommentare", backName: "Shorts"),
+            ListView(
+              shrinkWrap: true,
+              children: [
+                ShortCard(short: widget.short),
+              ],
+            ),
           ],
         ),
-      ],
+      ),
     );
   }
 }

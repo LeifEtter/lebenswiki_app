@@ -87,8 +87,8 @@ class User {
             json["upVotesForShorts"].map((short) => Short.fromJson(short))),
         bookmarkedShorts: List<Short>.from(
             json["upVotesForShorts"].map((short) => Short.fromJson(short))),
-        commentsAsUser: List<Comment>.from(
-            json["commentsAsUser"].map((comment) => Comment.fromJson(comment))),
+        commentsAsUser: List<Comment>.from(json["commentsAsUser"]
+            .map((comment) => Comment.forUniversal(comment))),
         reports: List<Report>.from(
             json["reportUser"].map((report) => Report.fromJson(report))),
         blockerUser:

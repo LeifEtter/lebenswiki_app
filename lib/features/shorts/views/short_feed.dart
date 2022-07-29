@@ -4,7 +4,7 @@ import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/common/components/tab_bar.dart';
 import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
-import 'package:lebenswiki_app/features/shorts/components/short_card_scaffold.dart';
+import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/features/shorts/helper/short_list_helper.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
@@ -77,8 +77,7 @@ class _ShortFeedState extends ConsumerState<ShortFeed> {
                             itemBuilder: ((context, index) {
                               Short short = currentShorts[index];
 
-                              return ShortCardScaffold(
-                                cardType: CardType.yourShorts,
+                              return ShortCard(
                                 short: short,
                               );
                             }),
