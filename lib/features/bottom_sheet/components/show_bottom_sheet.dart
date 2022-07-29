@@ -1,6 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/features/bottom_sheet/components/bottom_sheet_item.dart';
 
+void showActionsMenuForComments(
+  BuildContext context, {
+  required Function reportCallback,
+}) =>
+    showActionsMenu(context, menuItems: [
+      basicMenuItem(
+        Icons.flag,
+        "Melden",
+        "Diesen Kommentar melden",
+        () => reportCallback(),
+      ),
+    ]);
+
 void showActionsMenuForPacks(BuildContext context) =>
     showActionsMenu(context, menuItems: [
       basicMenuItem(

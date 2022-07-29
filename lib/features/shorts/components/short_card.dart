@@ -19,6 +19,7 @@ import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
+//TODO show am
 class ShortCard extends ConsumerStatefulWidget {
   final Short short;
   final bool inCommentView;
@@ -34,19 +35,8 @@ class ShortCard extends ConsumerStatefulWidget {
 }
 
 class _ShortCardState extends ConsumerState<ShortCard> {
-  bool hasReacted = false;
-  bool optionsMenuOpen = false;
-  bool blockUser = false;
   ShortApi shortApi = ShortApi();
-
   late User user;
-
-  String? chosenReason = "Illegal unter der NetzDG";
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -154,11 +144,23 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                           const SizedBox(height: 20),
                           Row(
                             children: [
-                              IconButton(
-                                constraints: const BoxConstraints(),
-                                onPressed: () {},
-                                icon: const Icon(Icons.comment_outlined),
-                              ),
+                              widget.inCommentView
+                                  ? Container()
+                                  : Row(
+                                      children: [
+                                        IconButton(
+                                          constraints: const BoxConstraints(),
+                                          onPressed: () {},
+                                          icon: const Icon(
+                                              Icons.comment_outlined),
+                                        ),
+                                        Text(
+                                          widget.short.comments.length
+                                              .toString(),
+                                        ),
+                                        const SizedBox(width: 5),
+                                      ],
+                                    ),
                               SizedBox(
                                 height: 30,
                                 width: 200,

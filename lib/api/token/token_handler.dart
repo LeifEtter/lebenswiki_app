@@ -1,6 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:lebenswiki_app/api/general/authentication_api.dart';
-import 'package:lebenswiki_app/api/user_api.dart';
 
 //TODO enable encrypt android
 /*  AndroidOptions _getAndroidOptions() => const AndroidOptions(

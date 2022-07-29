@@ -141,7 +141,6 @@ class FormNotifier extends ChangeNotifier {
   }
 
   void handleApiError(String errorMessage) {
-    //TODO add case for old password is wrong
     switch (errorMessage) {
       case "user_not_found":
         _email.error = "Email konnte nicht gefunden werden";

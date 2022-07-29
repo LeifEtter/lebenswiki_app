@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
 class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {

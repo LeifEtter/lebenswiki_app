@@ -1,7 +1,8 @@
+import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 
-//TODO Repair Comments
+//TODO Add voting functionality
 class Comment {
   Comment({
     required this.id,
@@ -34,6 +35,13 @@ class Comment {
   int? shortsCommentId;
   int? packAsCommentId;
   int? parentCommentId;
+
+  //Temp params
+  bool upvotedByUser = false;
+  bool downvotedByUser = false;
+  bool reactedByUser = false;
+  int totalVotes = 0;
+  Map reactionMap = {};
 
   factory Comment.forUniversal(Map<String, dynamic> json) => Comment(
         id: json["id"],
@@ -80,4 +88,94 @@ class Comment {
         "creator": creator.toJson(),
         "reactions": reactions,
       };
+
+  void initializeDisplayParams(int currentUserId) {
+    /*_initHasUpvoted(currentUserId);
+    _initHasDownVoted(currentUserId);
+    _setTotalVotes(currentUserId);*/
+    _generateReactionMap();
+    _setReactions(currentUserId);
+  }
+
+  void _generateReactionMap() {
+    Map result = {};
+    for (var value in Reactions.values) {
+      result[value.name] = 0;
+    }
+    reactionMap = result;
+  }
+
+  void _setReactions(int currentUserId) {
+    for (Map reactionData in reactions) {
+      if (reactionData.containsValue(currentUserId)) reactedByUser = true;
+      String reactionName = reactionData["reaction"];
+      reactionMap[reactionName.toLowerCase()] += 1;
+    }
+  }
+
+  void react(int currentUserId, String reaction) {
+    if (reactedByUser) {
+      reactions.removeWhere((Map reaction) => reaction["id"] == currentUserId);
+    }
+    reactions.add({"id": currentUserId, "reaction": reaction});
+    _generateReactionMap();
+    _setReactions(currentUserId);
+  }
+
+  /*void _initHasUpvoted(int currentUserId) {
+    upvotedByUser = false;
+    for (User user in upVote) {
+      if (user.id == currentUserId) {
+        upvotedByUser = true;
+      }
+    }
+  }
+
+  void _initHasDownVoted(int currentUserId) {
+    downvotedByUser = false;
+    for (User user in downVote) {
+      if (user.id == currentUserId) {
+        downvotedByUser = true;
+      }
+    }
+  }
+
+  void _setTotalVotes(int currentUserId) {
+    totalVotes = upVote.length - downVote.length;
+  }
+
+  VoteType getVoteType({required bool isUpvote}) {
+    if ((isUpvote && downvotedByUser) || (isUpvote && !upvotedByUser)) {
+      return VoteType.upvote;
+    } else if ((!isUpvote && upvotedByUser && !downvotedByUser) ||
+        (!isUpvote && !upvotedByUser && !downvotedByUser)) {
+      return VoteType.downvote;
+    } else {
+      return isUpvote ? VoteType.removeUpvote : VoteType.removeDownvote;
+    }
+  }
+
+  void updateUpvote(User user) {
+    upVote.add(user);
+    downVote.removeWhere((User iteratedUser) => iteratedUser.id == user.id);
+    reinitVotes(user.id);
+  }
+
+  void updateDownvote(User user) {
+    downVote.add(user);
+    upVote.removeWhere((User iteratedUser) => iteratedUser.id == user.id);
+    reinitVotes(user.id);
+  }
+
+  void removeVotes(User user) {
+    upVote.removeWhere((User iteratedUser) => iteratedUser.id == user.id);
+    downVote.removeWhere((User iteratedUser) => iteratedUser.id == user.id);
+    reinitVotes(user.id);
+  }
+
+  void reinitVotes(int userId) {
+    _initHasUpvoted(userId);
+    _initHasDownVoted(userId);
+    _setTotalVotes(userId);
+  }*/
 }

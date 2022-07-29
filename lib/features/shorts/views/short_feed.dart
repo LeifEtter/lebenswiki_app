@@ -11,7 +11,6 @@ import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
-//TODO Add functionality to reaction to comment
 class ShortFeed extends ConsumerStatefulWidget {
   const ShortFeed({Key? key}) : super(key: key);
 

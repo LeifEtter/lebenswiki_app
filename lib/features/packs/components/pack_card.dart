@@ -11,7 +11,6 @@ import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
-//TODO add reactions
 class PackCard extends ConsumerStatefulWidget {
   final Pack pack;
 
