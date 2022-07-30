@@ -75,7 +75,10 @@ class _ShortCommentViewState extends ConsumerState<ShortCommentView> {
                     widget.short.comments.length,
                     (index) {
                       Comment currentComment = widget.short.comments[index];
-                      return CommentCard(comment: currentComment);
+                      return CommentCard(
+                        comment: currentComment,
+                        deleteSelf: _commentDeleteSelfCallback,
+                      );
                     },
                   ),
                   const SizedBox(height: 50),
@@ -130,6 +133,7 @@ class _ShortCommentViewState extends ConsumerState<ShortCommentView> {
                       )
                           .then((ResultModel result) {
                         Comment comment = result.responseItem;
+                        comment.creator = user;
                         commentListHelper.comments.add(comment);
                         setState(() {});
                       });
@@ -143,4 +147,10 @@ class _ShortCommentViewState extends ConsumerState<ShortCommentView> {
           ),
         ),
       );
+
+  void _commentDeleteSelfCallback(int id) async {
+    await CommentApi().deleteComment(id: id);
+    widget.short.comments.removeWhere((Comment comment) => comment.id == id);
+    setState(() {});
+  }
 }

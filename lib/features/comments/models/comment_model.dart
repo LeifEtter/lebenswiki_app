@@ -18,6 +18,8 @@ class Comment {
     this.shortsCommentId,
     this.packAsCommentId,
     this.parentCommentId,
+    this.upVote = const [],
+    this.downVote = const [],
   });
 
   int id;
@@ -28,6 +30,8 @@ class Comment {
   Comment? parentComment;
   List<Comment>? childComments;
   List<Report>? reports;
+  List<User> upVote;
+  List<User> downVote;
   List<Map> reactions;
   DateTime creationDate;
 
@@ -56,6 +60,12 @@ class Comment {
         reactions: List<Map>.from(json["reactions"]),
         reports: List<Report>.from(
             json["reportedComment"].map((report) => Report.forContent(report))),
+        upVote: json["upVote"] != null
+            ? List<User>.from(json["upVote"].map((user) => User.forId(user)))
+            : [],
+        downVote: json["downVote"] != null
+            ? List<User>.from(json["downVote"].map((user) => User.forId(user)))
+            : [],
       );
 
   factory Comment.forPack(Map<String, dynamic> json) => Comment(
@@ -68,6 +78,12 @@ class Comment {
         reactions: List<Map>.from(json["reactions"]),
         reports: List<Report>.from(
             json["reportedComment"].map((report) => Report.forContent(report))),
+        upVote: json["upVote"] != null
+            ? List<User>.from(json["upVote"].map((user) => User.forId(user)))
+            : [],
+        downVote: json["downVote"] != null
+            ? List<User>.from(json["downVote"].map((user) => User.forId(user)))
+            : [],
       );
 
   factory Comment.forShort(Map<String, dynamic> json) => Comment(
@@ -84,6 +100,12 @@ class Comment {
             ? List<Report>.from(json["reportedComment"]
                 .map((report) => Report.forContent(report)))
             : [],
+        upVote: json["upVote"] != null
+            ? List<User>.from(json["upVote"].map((user) => User.forId(user)))
+            : [],
+        downVote: json["downVote"] != null
+            ? List<User>.from(json["downVote"].map((user) => User.forId(user)))
+            : [],
       );
 
   Map<String, dynamic> toJson() => {
@@ -94,9 +116,9 @@ class Comment {
       };
 
   void initializeDisplayParams(int currentUserId) {
-    /*_initHasUpvoted(currentUserId);
+    _initHasUpvoted(currentUserId);
     _initHasDownVoted(currentUserId);
-    _setTotalVotes(currentUserId);*/
+    _setTotalVotes(currentUserId);
     _generateReactionMap();
     _setReactions(currentUserId);
   }
@@ -126,7 +148,7 @@ class Comment {
     _setReactions(currentUserId);
   }
 
-  /*void _initHasUpvoted(int currentUserId) {
+  void _initHasUpvoted(int currentUserId) {
     upvotedByUser = false;
     for (User user in upVote) {
       if (user.id == currentUserId) {
@@ -181,5 +203,5 @@ class Comment {
     _initHasUpvoted(userId);
     _initHasDownVoted(userId);
     _setTotalVotes(userId);
-  }*/
+  }
 }

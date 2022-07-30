@@ -7,9 +7,12 @@ import 'package:lebenswiki_app/features/bottom_sheet/components/show_bottom_shee
 import 'package:lebenswiki_app/features/bottom_sheet/components/show_reactions_sheet.dart';
 import 'package:lebenswiki_app/features/comments/api/comment_api.dart';
 import 'package:lebenswiki_app/features/comments/models/comment_model.dart';
+import 'package:lebenswiki_app/features/common/components/buttons/vote_button.dart';
 import 'package:lebenswiki_app/features/common/components/cards/creator_info.dart';
+import 'package:lebenswiki_app/features/common/components/custom_card.dart';
 import 'package:lebenswiki_app/features/common/helpers/reaction_functions.dart';
 import 'package:lebenswiki_app/models/block_model.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
@@ -19,11 +22,13 @@ import 'package:lebenswiki_app/repository/text_styles.dart';
 class CommentCard extends ConsumerStatefulWidget {
   final Comment comment;
   final bool inCommentView;
+  final Function deleteSelf;
 
   const CommentCard({
     Key? key,
     required this.comment,
     this.inCommentView = false,
+    required this.deleteSelf,
   }) : super(key: key);
 
   @override
@@ -38,98 +43,96 @@ class _CommentCardState extends ConsumerState<CommentCard> {
   Widget build(BuildContext context) {
     user = ref.read(userProvider).user;
     double screenWidth = MediaQuery.of(context).size.width;
-    return Padding(
-      padding: const EdgeInsets.only(top: 10, left: 10.0, right: 10.0),
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10.0),
-            boxShadow: [LebenswikiShadows.fancyShadow]),
-        child: Stack(
-          children: [
-            /*Positioned.fill(
-              right: 1.0,
-              child: Align(
-                  alignment: Alignment.centerRight,
-                  child: VoteButtonStack(
-                    currentVotes: widget.comment.totalVotes,
-                    changeVote: _voteCallback,
-                    hasDownvoted: widget.comment.downvotedByUser,
-                    hasUpvoted: widget.comment.upvotedByUser,
-                  )),
-            ),*/
-            Positioned.fill(
-              right: 15.0,
-              bottom: 5.0,
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: () => showActionsMenuForComments(
-                    context,
-                    reportCallback: () => _reportCallback(),
-                  ),
-                  icon: const Icon(Icons.more_horiz_outlined),
+    return LebenswikiCards.standardCard(
+      horizontalPadding: 20,
+      topPadding: 10,
+      isOwn: widget.comment.creator.id == user.id,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            right: 1.0,
+            child: Align(
+                alignment: Alignment.centerRight,
+                child: VoteButtonStack(
+                  currentVotes: widget.comment.totalVotes,
+                  changeVote: _voteCallback,
+                  hasDownvoted: widget.comment.downvotedByUser,
+                  hasUpvoted: widget.comment.upvotedByUser,
+                )),
+          ),
+          Positioned.fill(
+            right: 15.0,
+            bottom: 5.0,
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () => showActionsMenuForComments(
+                  context,
+                  isOwn: widget.comment.creator.id == user.id,
+                  reportCallback: () => _reportCallback(),
+                  deleteCallback: () => widget.deleteSelf(widget.comment.id),
                 ),
+                icon: const Icon(Icons.more_horiz_outlined),
               ),
             ),
-            IntrinsicHeight(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, top: 15.0, bottom: 10.0, right: 0.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CreatorInfo(
-                          isComment: true,
-                          creationDate: widget.comment.creationDate,
-                          user: widget.comment.creator,
+          ),
+          IntrinsicHeight(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 20.0, top: 15.0, bottom: 10.0, right: 0.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CreatorInfo(
+                        isComment: true,
+                        creationDate: widget.comment.creationDate,
+                        user: widget.comment.creator,
+                      ),
+                      const SizedBox(height: 5),
+                      SizedBox(
+                        width: screenWidth * 0.7,
+                        child: Text(
+                          widget.comment.content,
+                          style: LebenswikiTextStyles.packDescription,
                         ),
-                        const SizedBox(height: 5),
-                        SizedBox(
-                          width: screenWidth * 0.7,
-                          child: Text(
-                            widget.comment.content,
-                            style: LebenswikiTextStyles.packDescription,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            SizedBox(
-                              height: 30,
-                              width: 200,
-                              child: reactionBar(
-                                widget.comment.reactionMap,
-                                () => showReactionMenu(
-                                  context,
-                                  callback: (String reaction) {
-                                    commentApi.addCommentReaction(
-                                        id: widget.comment.id,
-                                        reaction: reaction);
-                                    widget.comment.react(
-                                      user.id,
-                                      reaction.toLowerCase(),
-                                    );
-                                    setState(() {});
-                                  },
-                                ),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          SizedBox(
+                            height: 30,
+                            width: 200,
+                            child: reactionBar(
+                              widget.comment.reactionMap,
+                              () => showReactionMenu(
+                                context,
+                                callback: (String reaction) {
+                                  commentApi.addCommentReaction(
+                                      id: widget.comment.id,
+                                      reaction: reaction);
+                                  widget.comment.react(
+                                    user.id,
+                                    reaction.toLowerCase(),
+                                  );
+                                  setState(() {});
+                                },
                               ),
                             ),
-                          ],
-                        )
-                      ],
-                    ),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -165,26 +168,26 @@ class _CommentCardState extends ConsumerState<CommentCard> {
         ),
       );
 
-  /*void _voteCallback(bool isUpvote) {
+  void _voteCallback(bool isUpvote) {
     VoteType voteType = widget.comment.getVoteType(isUpvote: isUpvote);
     switch (voteType) {
       case VoteType.upvote:
-        shortApi.upvoteShort(widget.comment.id);
+        commentApi.upvoteComment(widget.comment.id);
         widget.comment.updateUpvote(user);
         break;
       case VoteType.downvote:
-        shortApi.downvoteShort(widget.comment.id);
+        commentApi.downvoteComment(widget.comment.id);
         widget.comment.updateDownvote(user);
         break;
       case VoteType.removeUpvote:
-        shortApi.removeUpvoteShort(widget.comment.id);
+        commentApi.removeUpvoteComment(widget.comment.id);
         widget.comment.removeVotes(user);
         break;
       case VoteType.removeDownvote:
-        shortApi.removeDownvoteShort(widget.comment.id);
+        commentApi.removeDownvoteComment(widget.comment.id);
         widget.comment.removeVotes(user);
         break;
     }
     setState(() {});
-  }*/
+  }
 }

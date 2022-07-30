@@ -4,14 +4,26 @@ import 'package:lebenswiki_app/features/bottom_sheet/components/bottom_sheet_ite
 void showActionsMenuForComments(
   BuildContext context, {
   required Function reportCallback,
+  required Function deleteCallback,
+  required bool isOwn,
 }) =>
     showActionsMenu(context, menuItems: [
-      basicMenuItem(
-        Icons.flag,
-        "Melden",
-        "Diesen Kommentar melden",
-        () => reportCallback(),
-      ),
+      isOwn
+          ? basicMenuItem(
+              Icons.flag,
+              "Löschen",
+              "Deinen Kommentar löschen",
+              () {
+                Navigator.pop(context);
+                deleteCallback();
+              },
+            )
+          : basicMenuItem(
+              Icons.flag,
+              "Melden",
+              "Diesen Kommentar melden",
+              () => reportCallback(),
+            ),
     ]);
 
 void showActionsMenuForPacks(BuildContext context) =>

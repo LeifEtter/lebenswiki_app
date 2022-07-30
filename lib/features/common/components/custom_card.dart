@@ -43,6 +43,7 @@ class LebenswikiCards {
 
   static standardCard({
     required Widget child,
+    bool isOwn = false,
     double horizontalPadding = 0,
     double topPadding = 0,
     double bottomPadding = 0,
@@ -64,7 +65,15 @@ class LebenswikiCards {
           child: Container(
             decoration: BoxDecoration(
               color: backgroundColor ?? Colors.white,
-              boxShadow: [LebenswikiShadows.fancyShadow],
+              boxShadow: [
+                isOwn
+                    ? const BoxShadow(
+                        color: Colors.blueAccent,
+                        spreadRadius: 1,
+                        blurRadius: 2,
+                      )
+                    : LebenswikiShadows.fancyShadow
+              ],
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: Padding(
