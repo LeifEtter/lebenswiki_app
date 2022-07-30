@@ -2,7 +2,7 @@ import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 
-//TODO Add voting functionality
+//TODO Add voting functionality to
 class Comment {
   Comment({
     required this.id,
@@ -73,13 +73,17 @@ class Comment {
   factory Comment.forShort(Map<String, dynamic> json) => Comment(
         id: json["id"],
         content: json["commentResponse"],
-        creator: User.forContent(json["creator"]),
+        creator: json["creator"] != null
+            ? User.forContent(json["creator"])
+            : User(name: "Placeholder"),
         creatorId: json["creatorId"],
         parentId: json["shortsCommentId"],
         creationDate: DateTime.parse(json["creationDate"]),
         reactions: List<Map>.from(json["reactions"]),
-        reports: List<Report>.from(
-            json["reportedComment"].map((report) => Report.forContent(report))),
+        reports: json["reportedComment"] != null
+            ? List<Report>.from(json["reportedComment"]
+                .map((report) => Report.forContent(report)))
+            : [],
       );
 
   Map<String, dynamic> toJson() => {

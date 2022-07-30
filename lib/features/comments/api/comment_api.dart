@@ -3,6 +3,7 @@ import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/features/comments/models/comment_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 
 class CommentApi extends BaseApi {
@@ -48,9 +49,12 @@ class CommentApi extends BaseApi {
       body: jsonEncode({"comment": comment}),
     ).then((Response res) {
       if (statusIsSuccess(res.statusCode)) {
+        Map body = jsonDecode(res.body);
+        Comment comment = Comment.forShort(body["comment"]);
         result = ResultModel(
           type: ResultType.success,
           message: successMessage,
+          responseItem: comment,
         );
       } else {
         apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
