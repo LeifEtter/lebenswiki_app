@@ -61,28 +61,30 @@ class Short {
         creationDate: DateTime.now(),
       );
 
-  factory Short.fromJson(Map<String, dynamic> json) => Short(
-        id: json["id"],
-        title: json["title"],
-        content: json["content"],
-        published: json["published"],
-        requestPublish: json["requestPublish"],
-        creationDate: DateTime.parse(json["creationDate"]),
-        lastUpdated: DateTime.parse(json["lastUpdated"]),
-        upVote: List<User>.from(json["upVote"].map((user) => User.forId(user))),
-        downVote:
-            List<User>.from(json["downVote"].map((user) => User.forId(user))),
-        bookmarks:
-            List<User>.from(json["bookmarks"].map((user) => User.forId(user))),
-        comments: List<Comment>.from(
-            json["comments"].map((comment) => Comment.fromJson(comment))),
-        reportShort: List<Report>.from(
-            json["reports"].map((report) => Report.forContent(report))),
-        categories: List.from(json["categories"]
-            .map((category) => ContentCategory.fromJson(category))),
-        reactions: List.from(json["reactions"]),
-        creator: User.forContent(json["creator"]),
-      );
+  factory Short.fromJson(Map<String, dynamic> json) {
+    return Short(
+      id: json["id"],
+      title: json["title"],
+      content: json["content"],
+      published: json["published"],
+      requestPublish: json["requestPublish"],
+      creationDate: DateTime.parse(json["creationDate"]),
+      lastUpdated: DateTime.parse(json["lastUpdated"]),
+      upVote: List<User>.from(json["upVote"].map((user) => User.forId(user))),
+      downVote:
+          List<User>.from(json["downVote"].map((user) => User.forId(user))),
+      bookmarks:
+          List<User>.from(json["bookmarks"].map((user) => User.forId(user))),
+      comments: List<Comment>.from(
+          json["comments"].map((comment) => Comment.forShort(comment))),
+      reportShort: List<Report>.from(
+          json["reports"].map((report) => Report.forContent(report))),
+      categories: List.from(json["categories"]
+          .map((category) => ContentCategory.fromJson(category))),
+      reactions: List.from(json["reactions"]),
+      creator: User.forContent(json["creator"]),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "title": title,
@@ -106,9 +108,7 @@ class Short {
       };
 
   void initializeDisplayParams(int currentUserId) {
-    _initHasUpvoted(currentUserId);
-    _initHasDownVoted(currentUserId);
-    _initHasBookmarked(currentUserId);
+    _initVotes(currentUserId);
     _setTotalVotes(currentUserId);
     _generateReactionMap();
     _setReactions(currentUserId);
@@ -159,25 +159,25 @@ class Short {
   void updateUpvote(User user) {
     upVote.add(user);
     downVote.removeWhere((User iteratedUser) => iteratedUser.id == user.id);
-    _initHasUpvoted(user.id);
-    _initHasDownVoted(user.id);
-    _setTotalVotes(user.id);
+    _initVotes(user.id);
   }
 
   void updateDownvote(User user) {
     downVote.add(user);
     upVote.removeWhere((User iteratedUser) => iteratedUser.id == user.id);
-    _initHasUpvoted(user.id);
-    _initHasDownVoted(user.id);
-    _setTotalVotes(user.id);
+    _initVotes(user.id);
   }
 
   void removeVotes(User user) {
     upVote.removeWhere((User iteratedUser) => iteratedUser.id == user.id);
     downVote.removeWhere((User iteratedUser) => iteratedUser.id == user.id);
-    _initHasUpvoted(user.id);
-    _initHasDownVoted(user.id);
-    _setTotalVotes(user.id);
+    _initVotes(user.id);
+  }
+
+  void _initVotes(int userId) {
+    _initHasUpvoted(userId);
+    _initHasDownVoted(userId);
+    _setTotalVotes(userId);
   }
 
   void _generateReactionMap() {

@@ -50,7 +50,7 @@ class Report {
         reportedPack:
             json["reportedPack"] ?? Pack.fromJson(json["reportedPack"]),
         reportedComment: json["reportedComment"] ??
-            Comment.fromJson(json["reportedComment"]),
+            Comment.forUniversal(json["reportedComment"]),
         creationDate: DateTime.parse(json["creationDate"]),
       );
 

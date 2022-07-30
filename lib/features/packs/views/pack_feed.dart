@@ -26,7 +26,7 @@ class _PackFeedState extends ConsumerState<PackFeed> {
   Widget build(BuildContext context) {
     final List<ContentCategory> categories =
         ref.read(categoryProvider).categories;
-    final int userId = ref.read(userIdProvider).userId;
+    final int userId = ref.read(userProvider).user.id;
     final List<int> blockedList = ref.watch(blockedListProvider).blockedIdList;
     return FutureBuilder(
       future: packApi.getAllPacks(),
@@ -38,7 +38,6 @@ class _PackFeedState extends ConsumerState<PackFeed> {
         ResultModel result = snapshot.data;
         //If request fails show error text
         if (result.type == ResultType.failure) return Text(result.message!);
-        if (result.responseList.isEmpty) return Text(result.message!);
 
         List<Pack> _packList = List<Pack>.from(result.responseList);
 

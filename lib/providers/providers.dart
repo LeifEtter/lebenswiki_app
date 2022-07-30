@@ -4,23 +4,6 @@ import 'package:lebenswiki_app/models/block_model.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 
-class TokenNotifier extends ChangeNotifier {
-  String? _token;
-
-  String get token => _token ?? "";
-
-  void setToken(newToken) {
-    _token = newToken;
-  }
-
-  void removeToken() {
-    _token = null;
-  }
-}
-
-final tokenProvider =
-    ChangeNotifierProvider<TokenNotifier>(((ref) => TokenNotifier()));
-
 class UserNotifier extends ChangeNotifier {
   User? _user;
 
@@ -39,23 +22,6 @@ class UserNotifier extends ChangeNotifier {
 final userProvider = ChangeNotifierProvider<UserNotifier>(
   (ref) => UserNotifier(),
 );
-
-class UserIdNotifier extends ChangeNotifier {
-  int? _userId;
-
-  int get userId => _userId ?? 0;
-
-  void setUserId(newUserId) {
-    _userId = newUserId;
-  }
-
-  void removeUserId() {
-    _userId = null;
-  }
-}
-
-final userIdProvider =
-    ChangeNotifierProvider<UserIdNotifier>((ref) => UserIdNotifier());
 
 class CategoryProvider extends ChangeNotifier {
   List<ContentCategory>? _categories;

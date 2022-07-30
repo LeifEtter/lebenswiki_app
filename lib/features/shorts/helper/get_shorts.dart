@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
+import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card_minimal.dart';
-import 'package:lebenswiki_app/features/shorts/components/short_card_scaffold.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
@@ -70,8 +70,7 @@ class _GetShortsState extends ConsumerState<GetShorts> {
       case CardType.shortsByCategory:
         provideCategory = true;
         packFuture = shortApi.getShortsByCategory;
-        returnCard = (short, reload) => ShortCardScaffold(
-            short: short, reload: reload, cardType: widget.cardType);
+        returnCard = (short, reload) => ShortCard(short: short);
         break;
       case CardType.shortBookmarks:
         packFuture = shortApi.getBookmarkedShorts;

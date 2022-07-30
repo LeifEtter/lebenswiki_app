@@ -6,7 +6,7 @@ Widget reactionBar(Map reactionMap, Function callback) {
     scrollDirection: Axis.horizontal,
     itemCount: reactionMap.length + 1,
     itemBuilder: (BuildContext context, int i) {
-      //Return add Reactoin symbol
+      //Return add Reaction symbol
       if (i == reactionMap.length) {
         return Padding(
           padding: const EdgeInsets.only(left: 10.0, bottom: 5.0),

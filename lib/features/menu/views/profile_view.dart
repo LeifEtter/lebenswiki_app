@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/api/token/token_handler.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/authentication/components/custom_form_field.dart';
 import 'package:lebenswiki_app/features/authentication/providers/auth_providers.dart';
@@ -168,32 +169,33 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
     ));
   }
 
-  void update() async {
-    /*
-      Probably by implementing a new method insie the user notifier
-      that updates the user variable to the passed value and calls
-      "notifyListeners()""
-    */
+  bool emailEdited() {
+    if (_formProvider.email.value != widget.user.email) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
+  void update() async {
     _formProvider.email.value ??= widget.user.email;
     _formProvider.name.value ??= widget.user.name;
     _formProvider.biography.value ??= widget.user.biography;
     _formProvider.profileImage.value ??= widget.user.profileImage;
 
-    if (_formProvider.email.value != widget.user.email) {
-      ref.watch(tokenProvider).removeToken();
-    }
     User newUser = _formProvider.convertToUser();
 
     await userApi.updateProfile(user: newUser).then((ResultModel result) {});
-    if (_formProvider.email.value != widget.user.email) {
+    if (emailEdited()) {
+      TokenHandler().delete;
       Navigator.push(
           context, MaterialPageRoute(builder: ((context) => const MyApp())));
+    } else {
+      ResultModel userResponse = await UserApi().getUserData();
+      User newnewUser = userResponse.responseItem;
+      ref.read(userProvider).setUser(newnewUser);
+      setState(() {});
     }
-    ResultModel userResponse = await UserApi().getUserData();
-    User newnewUser = userResponse.responseItem;
-    ref.read(userProvider).setUser(newnewUser);
-    setState(() {});
   }
 
   void changePassword() {
@@ -203,7 +205,9 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
             newpassword: _formProvider.password.value ?? "")
         .then((ResultModel result) {
       if (result.type == ResultType.success) {
-      } else {}
+      } else {
+        _formProvider.handleApiError(result.message!);
+      }
     });
   }
 }

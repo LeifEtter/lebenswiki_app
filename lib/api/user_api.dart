@@ -111,9 +111,10 @@ class UserApi extends BaseApi {
           type: ResultType.success, message: "Password erfolgreich geändert");
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      String errorMessage = jsonDecode(res.body)["error"]["errorMessage"];
       return ResultModel(
         type: ResultType.failure,
-        message: "Password konnte nicht geändert werden",
+        message: errorMessage,
       );
     }
   }

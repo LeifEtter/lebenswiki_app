@@ -3,6 +3,16 @@ import 'package:lebenswiki_app/repository/text_styles.dart';
 import 'package:lebenswiki_app/repository/colors.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 
+Widget customTab(String text) => Tab(
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.black,
+          fontSize: 17.0,
+        ),
+      ),
+    );
+
 Widget buildTabBar({
   required List<ContentCategory> categories,
   required Function callback,

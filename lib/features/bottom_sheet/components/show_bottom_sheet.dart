@@ -1,6 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/features/bottom_sheet/components/bottom_sheet_item.dart';
 
+void showActionsMenuForComments(
+  BuildContext context, {
+  required Function reportCallback,
+  required Function deleteCallback,
+  required bool isOwn,
+}) =>
+    showActionsMenu(context, menuItems: [
+      isOwn
+          ? basicMenuItem(
+              Icons.flag,
+              "Löschen",
+              "Deinen Kommentar löschen",
+              () {
+                Navigator.pop(context);
+                deleteCallback();
+              },
+            )
+          : basicMenuItem(
+              Icons.flag,
+              "Melden",
+              "Diesen Kommentar melden",
+              () => reportCallback(),
+            ),
+    ]);
+
 void showActionsMenuForPacks(BuildContext context) =>
     showActionsMenu(context, menuItems: [
       basicMenuItem(

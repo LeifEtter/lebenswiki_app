@@ -9,7 +9,6 @@ import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/provider_helper.dart';
-import 'package:lebenswiki_app/providers/providers.dart';
 
 class Authentication {
   static Future<ResultModel> register(FormNotifier formProvider) async {
@@ -51,25 +50,21 @@ class Authentication {
           type: ResultType.failure,
           message: loginResult.message,
         );
+      } else {
+        String token = loginResult.token!;
+        await TokenHandler().set(token);
+        await ProviderHelper.getDataAndSetSessionProviders(ref);
+        result = ResultModel(
+          type: ResultType.success,
+        );
       }
-      String token = loginResult.token ?? "";
-
-      TokenHandler().set(token);
-      await ProviderHelper.getDataAndSetSessionProviders(ref, token: token);
-
-      result = ResultModel(
-        type: ResultType.success,
-      );
     });
-
     return result;
   }
 
   static void logout(context, WidgetRef ref) async {
     TokenHandler().delete();
-
     ProviderHelper.resetSessionProviders(ref);
-    ref.watch(blockedListProvider).removeBlockedList;
 
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => const AuthWrapper(),

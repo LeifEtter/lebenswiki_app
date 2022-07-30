@@ -4,14 +4,13 @@ import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/common/components/tab_bar.dart';
 import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
-import 'package:lebenswiki_app/features/shorts/components/short_card_scaffold.dart';
+import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/features/shorts/helper/short_list_helper.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
-//TODO Add functionality to reaction to comment
 class ShortFeed extends ConsumerStatefulWidget {
   const ShortFeed({Key? key}) : super(key: key);
 
@@ -27,7 +26,7 @@ class _ShortFeedState extends ConsumerState<ShortFeed> {
   Widget build(BuildContext context) {
     final List<ContentCategory> categories =
         ref.read(categoryProvider).categories;
-    final int userId = ref.read(userIdProvider).userId;
+    final int userId = ref.read(userProvider).user.id;
     final List<int> blockedList = ref.watch(blockedListProvider).blockedIdList;
     return FutureBuilder(
       future: shortApi.getAllShorts(),
@@ -77,8 +76,7 @@ class _ShortFeedState extends ConsumerState<ShortFeed> {
                             itemBuilder: ((context, index) {
                               Short short = currentShorts[index];
 
-                              return ShortCardScaffold(
-                                cardType: CardType.yourShorts,
+                              return ShortCard(
                                 short: short,
                               );
                             }),

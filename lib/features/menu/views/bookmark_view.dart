@@ -1,17 +1,16 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
-import 'package:lebenswiki_app/features/common/components/tab_styles.dart';
+import 'package:lebenswiki_app/features/common/components/tab_bar.dart';
 import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/features/packs/components/pack_card.dart';
 import 'package:lebenswiki_app/features/packs/helper/pack_list_helper.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
-import 'package:lebenswiki_app/features/shorts/components/short_card_scaffold.dart';
+import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
 import 'package:lebenswiki_app/features/shorts/helper/short_list_helper.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
@@ -122,8 +121,7 @@ class _BookmarkFeedState extends ConsumerState<BookmarkFeed>
                                       Short short =
                                           shortListHelper.shorts[index];
 
-                                      return ShortCardScaffold(
-                                        cardType: CardType.yourShorts,
+                                      return ShortCard(
                                         short: short,
                                       );
                                     }),

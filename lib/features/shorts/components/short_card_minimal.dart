@@ -104,24 +104,27 @@ class _ShortCardMinimalState extends State<ShortCardMinimal> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Visibility(
-                  visible: widget.cardType == CardType.shortDrafts,
-                  child: IconButton(
-                    icon: Transform.rotate(
-                      angle: widget.cardType == CardType.shortDrafts ? 0 : 3.13,
-                      child: const Icon(
-                        Icons.publish,
-                        size: 30.0,
-                      ),
+                IconButton(
+                  icon: Transform.rotate(
+                    angle: widget.cardType == CardType.shortDrafts ? 0 : 3.13,
+                    child: const Icon(
+                      Icons.publish,
+                      size: 30.0,
                     ),
-                    onPressed: () {
-                      shortApi
-                          .publishShort(widget.short.id)
-                          .then((ResultModel result) {
-                        widget.reload();
-                      });
-                    },
                   ),
+                  onPressed: () {
+                    widget.cardType == CardType.shortDrafts
+                        ? shortApi
+                            .publishShort(widget.short.id)
+                            .then((ResultModel result) {
+                            widget.reload();
+                          })
+                        : shortApi
+                            .unpublishShort(widget.short.id)
+                            .then((ResultModel result) {
+                            widget.reload();
+                          });
+                  },
                 ),
                 IconButton(
                   icon: const Icon(

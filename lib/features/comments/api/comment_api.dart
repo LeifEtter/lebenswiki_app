@@ -3,6 +3,7 @@ import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/features/comments/models/comment_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 
 class CommentApi extends BaseApi {
@@ -38,15 +39,22 @@ class CommentApi extends BaseApi {
     required String errorMessage,
     required String comment,
   }) async {
+    ResultModel result = ResultModel(
+      type: ResultType.failure,
+      message: errorMessage,
+    );
     await post(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
       body: jsonEncode({"comment": comment}),
     ).then((Response res) {
       if (statusIsSuccess(res.statusCode)) {
-        return ResultModel(
+        Map body = jsonDecode(res.body);
+        Comment comment = Comment.forShort(body["comment"]);
+        result = ResultModel(
           type: ResultType.success,
           message: successMessage,
+          responseItem: comment,
         );
       } else {
         apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
@@ -54,10 +62,7 @@ class CommentApi extends BaseApi {
     }).catchError((error) {
       apiErrorHandler.handleAndLog(reponseData: error);
     });
-    return ResultModel(
-      type: ResultType.failure,
-      message: errorMessage,
-    );
+    return result;
   }
 
   Future<ResultModel> addCommentReaction({
@@ -81,5 +86,73 @@ class CommentApi extends BaseApi {
         message: "Konnte nicht reagieren",
       );
     }
+  }
+
+  Future<ResultModel> upvoteComment(id) => _interactComment(
+      url: "comments/upvote/$id",
+      successMessage: "Successfully Upvoted Comment",
+      errorMessage: "Couldn't Upvote Comment");
+
+  Future<ResultModel> downvoteComment(id) => _interactComment(
+      url: "comments/downvote/$id",
+      successMessage: "Successfully Downvoted Comment",
+      errorMessage: "Couldn't Downvote Comment");
+
+  Future<ResultModel> removeUpvoteComment(id) => _interactComment(
+      url: "comments/upvote/remove/$id",
+      successMessage: "Successfully Removed Upvote from Comment",
+      errorMessage: "Couldn't Remove Upvote Comment");
+
+  Future<ResultModel> removeDownvoteComment(id) => _interactComment(
+      url: "comments/downvote/remove/$id",
+      successMessage: "Successfully Removed Downvote Comment",
+      errorMessage: "Couldn't Remove Downvote Comment");
+
+  Future<ResultModel> _interactComment({
+    required String url,
+    required String successMessage,
+    required String errorMessage,
+  }) async {
+    await put(
+      Uri.parse("$serverIp/$url"),
+      headers: await requestHeader(),
+    ).then((Response res) {
+      if (statusIsSuccess(res.statusCode)) {
+        return ResultModel(
+          type: ResultType.success,
+          message: successMessage,
+        );
+      } else {
+        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      }
+    }).catchError((error) {
+      apiErrorHandler.handleAndLog(reponseData: error);
+    });
+    return ResultModel(type: ResultType.failure);
+  }
+
+  Future<ResultModel> deleteComment({
+    required int id,
+  }) async {
+    ResultModel result = ResultModel(
+      type: ResultType.failure,
+      message: "Couldn't delete comment",
+    );
+    await delete(
+      Uri.parse("$serverIp/comments/delete/$id"),
+      headers: await requestHeader(),
+    ).then((Response res) {
+      if (statusIsSuccess(res.statusCode)) {
+        return ResultModel(
+          type: ResultType.success,
+          message: "Comment successfully deleted",
+        );
+      } else {
+        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      }
+    }).catchError((error) {
+      apiErrorHandler.handleAndLog(reponseData: error);
+    });
+    return result;
   }
 }

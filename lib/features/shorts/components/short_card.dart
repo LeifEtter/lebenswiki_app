@@ -5,10 +5,12 @@ import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/alert_dialog/components/report_popup.dart';
 import 'package:lebenswiki_app/features/bottom_sheet/components/show_bottom_sheet.dart';
 import 'package:lebenswiki_app/features/bottom_sheet/components/show_reactions_sheet.dart';
+import 'package:lebenswiki_app/features/common/components/custom_card.dart';
 import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/vote_button.dart';
 import 'package:lebenswiki_app/features/common/components/cards/creator_info.dart';
 import 'package:lebenswiki_app/features/common/helpers/reaction_functions.dart';
+import 'package:lebenswiki_app/features/shorts/views/short_comment_view.dart';
 import 'package:lebenswiki_app/models/block_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
@@ -17,16 +19,15 @@ import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
+//TODO show am
 class ShortCard extends ConsumerStatefulWidget {
   final Short short;
-  final CardType cardType;
-  final Function commentExpand;
+  final bool inCommentView;
 
   const ShortCard({
     Key? key,
     required this.short,
-    required this.cardType,
-    required this.commentExpand,
+    this.inCommentView = false,
   }) : super(key: key);
 
   @override
@@ -34,141 +35,150 @@ class ShortCard extends ConsumerStatefulWidget {
 }
 
 class _ShortCardState extends ConsumerState<ShortCard> {
-  bool hasReacted = false;
-  bool optionsMenuOpen = false;
-  bool blockUser = false;
   ShortApi shortApi = ShortApi();
-
   late User user;
-
-  String? chosenReason = "Illegal unter der NetzDG";
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     user = ref.read(userProvider).user;
     double screenWidth = MediaQuery.of(context).size.width;
-    return Stack(
-      children: [
-        Positioned.fill(
-          right: 1.0,
-          child: Align(
-              alignment: Alignment.centerRight,
-              child: VoteButtonStack(
-                currentVotes: widget.short.totalVotes,
-                changeVote: _voteCallback,
-                hasDownvoted: widget.short.downvotedByUser,
-                hasUpvoted: widget.short.upvotedByUser,
-              )),
-        ),
-        Positioned.fill(
-          right: 15.0,
-          top: 5.0,
-          child: Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: GestureDetector(
-                  child: Image.asset(
-                    widget.short.bookmarkedByUser
-                        ? "assets/icons/bookmark_filled.png"
-                        : "assets/icons/bookmark.png",
-                    width: 20.0,
+    return LebenswikiCards.standardCard(
+      onPressed: () => widget.inCommentView
+          ? null
+          : Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: ((context) =>
+                      ShortCommentView(short: widget.short)))),
+      topPadding: 20.0,
+      horizontalPadding: 20.0,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            right: 1.0,
+            child: Align(
+                alignment: Alignment.centerRight,
+                child: VoteButtonStack(
+                  currentVotes: widget.short.totalVotes,
+                  changeVote: _voteCallback,
+                  hasDownvoted: widget.short.downvotedByUser,
+                  hasUpvoted: widget.short.upvotedByUser,
+                )),
+          ),
+          Positioned.fill(
+            right: 15.0,
+            top: 5.0,
+            child: Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child: GestureDetector(
+                    child: Image.asset(
+                      widget.short.bookmarkedByUser
+                          ? "assets/icons/bookmark_filled.png"
+                          : "assets/icons/bookmark.png",
+                      width: 20.0,
+                    ),
+                    onTap: () => _bookmarkCallback(),
                   ),
-                  onTap: () {
-                    _bookmarkCallback();
-                  },
+                )),
+          ),
+          Positioned.fill(
+            right: 15.0,
+            bottom: 5.0,
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () => showActionsMenuForShorts(
+                  context,
+                  isBookmarked: widget.short.bookmarkedByUser,
+                  bookmarkCallback: () => _bookmarkCallback(),
+                  reportCallback: () => _reportCallback(),
                 ),
-              )),
-        ),
-        Positioned.fill(
-          right: 15.0,
-          bottom: 5.0,
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-              onPressed: () => showActionsMenuForShorts(
-                context,
-                isBookmarked: widget.short.bookmarkedByUser,
-                bookmarkCallback: () => _bookmarkCallback(),
-                reportCallback: () => _reportCallback(),
+                icon: const Icon(Icons.more_horiz_outlined),
               ),
-              icon: const Icon(Icons.more_horiz_outlined),
             ),
           ),
-        ),
-        IntrinsicHeight(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 20.0, top: 15.0, bottom: 10.0, right: 0.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CreatorInfo(
-                      isComment: false,
-                      creationDate: widget.short.creationDate,
-                      user: widget.short.creator,
-                    ),
-                    const SizedBox(height: 5),
-                    SizedBox(
-                      width: screenWidth * 0.7,
-                      child: Text(
-                        widget.short.title,
-                        style: LebenswikiTextStyles.packTitle,
+          IntrinsicHeight(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 20.0, top: 15.0, bottom: 10.0, right: 0.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CreatorInfo(
+                        isComment: false,
+                        creationDate: widget.short.creationDate,
+                        user: widget.short.creator,
                       ),
-                    ),
-                    const SizedBox(height: 5),
-                    SizedBox(
-                      width: screenWidth * 0.7,
-                      child: Text(
-                        widget.short.content,
-                        style: LebenswikiTextStyles.packDescription,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        IconButton(
-                          constraints: const BoxConstraints(),
-                          onPressed: () => widget.commentExpand(),
-                          icon: const Icon(Icons.comment_outlined),
+                      const SizedBox(height: 5),
+                      SizedBox(
+                        width: screenWidth * 0.7,
+                        child: Text(
+                          widget.short.title,
+                          style: LebenswikiTextStyles.packTitle,
                         ),
-                        SizedBox(
-                          height: 30,
-                          width: 200,
-                          child: reactionBar(
-                            widget.short.reactionMap,
-                            () => showReactionMenu(
-                              context,
-                              callback: (String reaction) {
-                                shortApi.reactShort(widget.short.id, reaction);
-                                widget.short.react(
-                                  user.id,
-                                  reaction.toLowerCase(),
-                                );
-                                setState(() {});
-                              },
+                      ),
+                      const SizedBox(height: 5),
+                      SizedBox(
+                        width: screenWidth * 0.7,
+                        child: Text(
+                          widget.short.content,
+                          style: LebenswikiTextStyles.packDescription,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          widget.inCommentView
+                              ? Container()
+                              : Row(
+                                  children: [
+                                    IconButton(
+                                      constraints: const BoxConstraints(),
+                                      onPressed: () {},
+                                      icon: const Icon(Icons.comment_outlined),
+                                    ),
+                                    Text(
+                                      widget.short.comments.length.toString(),
+                                    ),
+                                    const SizedBox(width: 5),
+                                  ],
+                                ),
+                          SizedBox(
+                            height: 30,
+                            width: 200,
+                            child: reactionBar(
+                              widget.short.reactionMap,
+                              () => showReactionMenu(
+                                context,
+                                callback: (String reaction) {
+                                  shortApi.reactShort(
+                                      widget.short.id, reaction);
+                                  widget.short.react(
+                                    user.id,
+                                    reaction.toLowerCase(),
+                                  );
+                                  setState(() {});
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    )
-                  ],
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
 class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -32,24 +31,25 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
-        TextButton(
+        /*TextButton(
           child: const Text("Logout"),
           onPressed: () {
             Authentication.logout(context, ref);
           },
-        ),
+        ),*/
         IconButton(
           icon: Image.asset("assets/icons/profile_icon.png", width: 20.0),
           onPressed: () {
             Scaffold.of(context).openDrawer();
           },
         ),
-        IconButton(
+        //TODO Fix search
+        /*IconButton(
           onPressed: () {
             // Navigator.of(context).push(searchRoute());
           },
           icon: Image.asset("assets/icons/search.png", width: 28),
-        )
+        )*/
       ],
     );
   }

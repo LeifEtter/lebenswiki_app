@@ -91,11 +91,8 @@ class _FilterViewState extends State<FilterView> {
                 var currentPack = (_filteredPacks.isEmpty)
                     ? widget.packList[index]
                     : _filteredPacks[index];
-                return ShortCardScaffold(
+                return ShortCard(
                   short: currentPack,
-                  reload: () {},
-                  cardType: widget.cardType,
-                  menuCallback: () {},
                 );
               },
             ),

@@ -9,8 +9,6 @@ import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
-//TODO add unpublish pack
-//TODO check if published -> Show different options depending on that
 class PackCardEdit extends StatefulWidget {
   final Pack pack;
   final Function reload;

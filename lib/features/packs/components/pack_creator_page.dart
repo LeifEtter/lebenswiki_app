@@ -7,7 +7,6 @@ import 'package:lebenswiki_app/features/testing/components/border.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
 
-//TODO remove save page button
 //TODO Add quiz
 class PageOverview extends StatefulWidget {
   final PackPage page;
@@ -64,14 +63,6 @@ class _PageOverviewState extends State<PageOverview> {
             child: Align(
                 alignment: Alignment.bottomRight, child: buildAddButton()),
           ),
-          Positioned.fill(
-              child: Align(
-            alignment: Alignment.bottomLeft,
-            child: PackEditorComponents.iconButton(
-                icon: Icons.save,
-                callback: () => _save(),
-                label: "Seite speichern"),
-          )),
         ],
       ),
     );
