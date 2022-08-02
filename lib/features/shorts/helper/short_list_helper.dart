@@ -3,6 +3,7 @@ import 'package:lebenswiki_app/models/category_model.dart';
 
 class ShortListHelper {
   List<Short> shorts = [];
+  List<Short> queriedShorts = [];
   Map<int, List<Short>> categorizedShorts = {};
 
   ShortListHelper({
@@ -14,6 +15,7 @@ class ShortListHelper {
     filterShortsForBlocked(blockedList);
     initDisplayParams(currentUserId);
     initCategorizedShorts(categories);
+    queriedShorts = shorts;
   }
 
   void initDisplayParams(int currentUserId) {
@@ -43,5 +45,15 @@ class ShortListHelper {
     for (Short short in shorts) {
       categorizedShorts[short.categories.first.id]!.add(short);
     }
+  }
+
+  void queryShorts(String query) {
+    String queryNormalized = query.toUpperCase();
+    queriedShorts = shorts
+        .where((Short short) =>
+            short.title.toLowerCase().contains(queryNormalized) ||
+            short.content.toUpperCase().contains(queryNormalized) ||
+            short.creator.name.toUpperCase().contains(queryNormalized))
+        .toList();
   }
 }
