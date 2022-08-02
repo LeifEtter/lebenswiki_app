@@ -12,14 +12,15 @@ import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
-//TODO finish comment view
-//TODO filter out comments from blocked users
+//TODO implement sorting for most votes / latest comment
 class ShortCommentView extends ConsumerStatefulWidget {
   final Short short;
+  final CommentListHelper commentListHelper;
 
   const ShortCommentView({
     Key? key,
     required this.short,
+    required this.commentListHelper,
   }) : super(key: key);
 
   @override
@@ -31,8 +32,6 @@ class _ShortCommentViewState extends ConsumerState<ShortCommentView> {
   TextEditingController commentController = TextEditingController();
 
   late User user;
-  late List<int> blockedIdList;
-  late CommentListHelper commentListHelper;
 
   @override
   void initState() {
@@ -42,12 +41,6 @@ class _ShortCommentViewState extends ConsumerState<ShortCommentView> {
   @override
   Widget build(BuildContext context) {
     user = ref.watch(userProvider).user;
-    blockedIdList = ref.watch(blockedListProvider).blockedIdList;
-    commentListHelper = CommentListHelper(
-      comments: widget.short.comments,
-      currentUserId: user.id,
-      blockedList: blockedIdList,
-    );
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -71,10 +64,34 @@ class _ShortCommentViewState extends ConsumerState<ShortCommentView> {
                     backgroundColor: Colors.blueAccent,
                     itemColors: Colors.white,
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5, right: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        const Text("Sortieren nach"),
+                        const SizedBox(width: 10),
+                        IconButton(
+                            onPressed: () {
+                              widget.commentListHelper.sortByDate();
+                              setState(() {});
+                            },
+                            icon: const Icon(Icons.calendar_month)),
+                        const SizedBox(width: 10),
+                        IconButton(
+                            onPressed: () {
+                              widget.commentListHelper.sortByVote();
+                              setState(() {});
+                            },
+                            icon: const Icon(Icons.thumb_up_sharp)),
+                      ],
+                    ),
+                  ),
                   ...List<Widget>.generate(
-                    widget.short.comments.length,
+                    widget.commentListHelper.comments.length,
                     (index) {
-                      Comment currentComment = widget.short.comments[index];
+                      Comment currentComment =
+                          widget.commentListHelper.comments[index];
                       return CommentCard(
                         comment: currentComment,
                         deleteSelf: _commentDeleteSelfCallback,
@@ -134,7 +151,7 @@ class _ShortCommentViewState extends ConsumerState<ShortCommentView> {
                           .then((ResultModel result) {
                         Comment comment = result.responseItem;
                         comment.creator = user;
-                        commentListHelper.comments.add(comment);
+                        widget.commentListHelper.comments.add(comment);
                         setState(() {});
                       });
                     },
@@ -151,6 +168,8 @@ class _ShortCommentViewState extends ConsumerState<ShortCommentView> {
   void _commentDeleteSelfCallback(int id) async {
     await CommentApi().deleteComment(id: id);
     widget.short.comments.removeWhere((Comment comment) => comment.id == id);
+    widget.commentListHelper.comments
+        .removeWhere((Comment comment) => comment.id == id);
     setState(() {});
   }
 }

@@ -24,5 +24,13 @@ class CommentListHelper {
         (Comment comment) => blockedList.contains(comment.creator.id));
   }
 
-  //void sortByDate
+  void sortByDate() {
+    comments.sort(
+        (Comment a, Comment b) => b.creationDate.compareTo(a.creationDate));
+  }
+
+  void sortByVote() {
+    comments
+        .sort((Comment a, Comment b) => b.totalVotes.compareTo(a.totalVotes));
+  }
 }

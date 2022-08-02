@@ -5,6 +5,7 @@ import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/alert_dialog/components/report_popup.dart';
 import 'package:lebenswiki_app/features/bottom_sheet/components/show_bottom_sheet.dart';
 import 'package:lebenswiki_app/features/bottom_sheet/components/show_reactions_sheet.dart';
+import 'package:lebenswiki_app/features/comments/helper/comment_list_helper.dart';
 import 'package:lebenswiki_app/features/common/components/custom_card.dart';
 import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/vote_button.dart';
@@ -19,7 +20,6 @@ import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
-//TODO show am
 class ShortCard extends ConsumerStatefulWidget {
   final Short short;
   final bool inCommentView;
@@ -37,19 +37,15 @@ class ShortCard extends ConsumerStatefulWidget {
 class _ShortCardState extends ConsumerState<ShortCard> {
   ShortApi shortApi = ShortApi();
   late User user;
+  late List<int> blockedList;
 
   @override
   Widget build(BuildContext context) {
     user = ref.read(userProvider).user;
+    blockedList = ref.read(blockedListProvider).blockedIdList;
     double screenWidth = MediaQuery.of(context).size.width;
     return LebenswikiCards.standardCard(
-      onPressed: () => widget.inCommentView
-          ? null
-          : Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: ((context) =>
-                      ShortCommentView(short: widget.short)))),
+      onPressed: () => widget.inCommentView ? null : _navigateToCommentView(),
       topPadding: 20.0,
       horizontalPadding: 20.0,
       child: Stack(
@@ -141,7 +137,7 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                                   children: [
                                     IconButton(
                                       constraints: const BoxConstraints(),
-                                      onPressed: () {},
+                                      onPressed: () => _navigateToCommentView(),
                                       icon: const Icon(Icons.comment_outlined),
                                     ),
                                     Text(
@@ -220,6 +216,21 @@ class _ShortCardState extends ConsumerState<ShortCard> {
           },
         ),
       );
+
+  void _navigateToCommentView() {
+    CommentListHelper commentListHelper = CommentListHelper(
+      currentUserId: user.id,
+      blockedList: blockedList,
+      comments: widget.short.comments,
+    );
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ShortCommentView(
+                  short: widget.short,
+                  commentListHelper: commentListHelper,
+                )));
+  }
 
   void _voteCallback(bool isUpvote) {
     VoteType voteType = widget.short.getVoteType(isUpvote: isUpvote);
