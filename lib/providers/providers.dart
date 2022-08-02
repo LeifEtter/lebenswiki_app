@@ -100,3 +100,5 @@ class SearchNotifier extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+final searchProvider = ChangeNotifierProvider((ref) => SearchNotifier());
