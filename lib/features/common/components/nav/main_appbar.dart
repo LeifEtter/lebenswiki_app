@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
+//TODO create search icon that triggers search provider
 class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
   //final Function searchRoute;
 
