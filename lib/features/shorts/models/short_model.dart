@@ -109,6 +109,7 @@ class Short {
 
   void initializeDisplayParams(int currentUserId) {
     _initVotes(currentUserId);
+    _initHasBookmarked(currentUserId);
     _setTotalVotes(currentUserId);
     _generateReactionMap();
     _setReactions(currentUserId);

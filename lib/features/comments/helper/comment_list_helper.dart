@@ -1,6 +1,5 @@
 import 'package:lebenswiki_app/features/comments/models/comment_model.dart';
 
-//TODO Add sort by date and sort by vote count
 class CommentListHelper {
   List<Comment> comments = [];
 

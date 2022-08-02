@@ -12,7 +12,6 @@ import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
-//TODO implement sorting for most votes / latest comment
 class ShortCommentView extends ConsumerStatefulWidget {
   final Short short;
   final CommentListHelper commentListHelper;

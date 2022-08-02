@@ -2,7 +2,6 @@ import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/report_model.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 
-//TODO Add voting functionality to
 class Comment {
   Comment({
     required this.id,
