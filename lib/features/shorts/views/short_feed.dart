@@ -78,66 +78,61 @@ class _ShortFeedViewState extends ConsumerState<ShortFeedView> {
   @override
   Widget build(BuildContext context) {
     bool searchActive = ref.watch(searchProvider).active;
+    int currentCategoryId = widget.categories[currentCategory].id;
+    List<Short> currentShorts = searchActive
+        ? List<Short>.from(widget.shortListHelper.queriedShorts)
+        : List<Short>.from(
+            widget.shortListHelper.categorizedShorts[currentCategoryId]!);
     return DefaultTabController(
       length: widget.categories.length,
-      child: StatefulBuilder(
-        builder: (context, newSetState) {
-          int currentCategoryId = widget.categories[currentCategory].id;
-          List<Short> currentShorts = searchActive
-              ? List<Short>.from(widget.shortListHelper.queriedShorts)
-              : List<Short>.from(
-                  widget.shortListHelper.categorizedShorts[currentCategoryId]!);
-
-          return Column(
-            children: [
-              searchActive
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              autofocus: true,
-                              onChanged: (value) {
-                                widget.shortListHelper.queryShorts(value);
-                                setState(() {});
-                              },
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () =>
-                                ref.read(searchProvider).switchActiveOff(),
-                            child: const Text("Abbrechen"),
-                          )
-                        ],
+      child: Column(
+        children: [
+          searchActive
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          autofocus: true,
+                          onChanged: (value) {
+                            widget.shortListHelper.queryPacks(value);
+                            setState(() {});
+                          },
+                        ),
                       ),
-                    )
-                  : buildTabBar(
-                      categories: widget.categories,
-                      callback: (newCategory) {
-                        currentCategory = newCategory;
-                        setState(() {});
-                      },
-                    ),
-              currentShorts.isEmpty
-                  ? const Center(child: Text("Es wurden keine shorts gefunden"))
-                  : Expanded(
-                      child: ListView.builder(
-                        addAutomaticKeepAlives: true,
-                        shrinkWrap: true,
-                        itemCount: currentShorts.length,
-                        itemBuilder: ((context, index) {
-                          Short short = currentShorts[index];
+                      TextButton(
+                        onPressed: () =>
+                            ref.read(searchProvider).switchActiveOff(),
+                        child: const Text("Abbrechen"),
+                      )
+                    ],
+                  ),
+                )
+              : buildTabBar(
+                  categories: widget.categories,
+                  callback: (newCategory) {
+                    currentCategory = newCategory;
+                    setState(() {});
+                  },
+                ),
+          currentShorts.isEmpty
+              ? const Center(child: Text("Es wurden keine shorts gefunden"))
+              : Expanded(
+                  child: ListView.builder(
+                    addAutomaticKeepAlives: true,
+                    shrinkWrap: true,
+                    itemCount: currentShorts.length,
+                    itemBuilder: ((context, index) {
+                      Short short = currentShorts[index];
 
-                          return ShortCard(
-                            short: short,
-                          );
-                        }),
-                      ),
-                    ),
-            ],
-          );
-        },
+                      return ShortCard(
+                        short: short,
+                      );
+                    }),
+                  ),
+                ),
+        ],
       ),
     );
   }

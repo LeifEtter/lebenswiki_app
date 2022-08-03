@@ -47,11 +47,11 @@ class ShortListHelper {
     }
   }
 
-  void queryShorts(String query) {
+  void queryPacks(String query) {
     String queryNormalized = query.toUpperCase();
     queriedShorts = shorts
         .where((Short short) =>
-            short.title.toLowerCase().contains(queryNormalized) ||
+            short.title.toUpperCase().contains(queryNormalized) ||
             short.content.toUpperCase().contains(queryNormalized) ||
             short.creator.name.toUpperCase().contains(queryNormalized))
         .toList();
