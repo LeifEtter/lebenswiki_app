@@ -48,45 +48,89 @@ class _PackFeedState extends ConsumerState<PackFeed> {
           blockedList: blockedList,
         );
 
-        return DefaultTabController(
-          length: categories.length,
-          child: StatefulBuilder(
-            builder: (context, newSetState) {
-              int currentCategoryId = categories[currentCategory].id;
-              List<Pack> currentPacks = List<Pack>.from(
-                  packListHelper.categorizedPacks[currentCategoryId]!);
-              return Column(
-                children: [
-                  buildTabBar(
-                    categories: categories,
-                    callback: (newCategory) {
-                      currentCategory = newCategory;
-                      newSetState(() {});
-                    },
-                  ),
-                  currentPacks.isEmpty
-                      ? const Center(
-                          child: Text("Es wurden keine packs gefunden"))
-                      : Expanded(
-                          child: ListView.builder(
-                            addAutomaticKeepAlives: true,
-                            shrinkWrap: true,
-                            itemCount: currentPacks.length,
-                            itemBuilder: ((context, index) {
-                              Pack pack = currentPacks[index];
-
-                              return PackCard(
-                                pack: pack,
-                              );
-                            }),
-                          ),
-                        ),
-                ],
-              );
-            },
-          ),
-        );
+        return PackFeedView(
+            categories: categories, packListHelper: packListHelper);
       }),
+    );
+  }
+}
+
+class PackFeedView extends ConsumerStatefulWidget {
+  final List<ContentCategory> categories;
+  final PackListHelper packListHelper;
+
+  const PackFeedView({
+    Key? key,
+    required this.categories,
+    required this.packListHelper,
+  }) : super(key: key);
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _PackFeedViewState();
+}
+
+class _PackFeedViewState extends ConsumerState<PackFeedView> {
+  int currentCategory = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    bool searchActive = ref.watch(searchProvider).active;
+    int currentCategoryId = widget.categories[currentCategory].id;
+    List<Pack> currentPacks = searchActive
+        ? List<Pack>.from(widget.packListHelper.queriedPacks)
+        : List<Pack>.from(
+            widget.packListHelper.categorizedPacks[currentCategoryId]!);
+    return DefaultTabController(
+      length: widget.categories.length,
+      child: Column(
+        children: [
+          searchActive
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          autofocus: true,
+                          onChanged: (value) {
+                            widget.packListHelper.queryShorts(value);
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () =>
+                            ref.read(searchProvider).switchActiveOff(),
+                        child: const Text("Abbrechen"),
+                      )
+                    ],
+                  ),
+                )
+              : buildTabBar(
+                  categories: widget.categories,
+                  callback: (newCategory) {
+                    currentCategory = newCategory;
+                    setState(() {});
+                  },
+                ),
+          currentPacks.isEmpty
+              ? const Center(child: Text("Es wurden keine packs gefunden"))
+              : Expanded(
+                  child: ListView.builder(
+                    addAutomaticKeepAlives: true,
+                    shrinkWrap: true,
+                    itemCount: currentPacks.length,
+                    itemBuilder: ((context, index) {
+                      Pack pack = currentPacks[index];
+
+                      return PackCard(
+                        pack: pack,
+                      );
+                    }),
+                  ),
+                ),
+        ],
+      ),
     );
   }
 }

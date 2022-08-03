@@ -72,3 +72,33 @@ class BlockedListNotifier extends ChangeNotifier {
 
 final blockedListProvider =
     ChangeNotifierProvider(((ref) => BlockedListNotifier()));
+
+class SearchNotifier extends ChangeNotifier {
+  bool _active = false;
+  String _query = "";
+
+  bool get active => _active;
+  String get query => _query;
+
+  void toggleActive() {
+    _active = !_active;
+    notifyListeners();
+  }
+
+  void switchActiveOff() {
+    _active = false;
+    notifyListeners();
+  }
+
+  void switchActiveOn() {
+    _active = true;
+    notifyListeners();
+  }
+
+  void updateQuery(String newQuery) {
+    _query = newQuery;
+    notifyListeners();
+  }
+}
+
+final searchProvider = ChangeNotifierProvider((ref) => SearchNotifier());

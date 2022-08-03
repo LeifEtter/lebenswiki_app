@@ -14,7 +14,6 @@ import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
 //TODO show popups for succesfull changing
-//TODO adapt biography field
 class ProfileView extends ConsumerStatefulWidget {
   final User user;
 
@@ -74,6 +73,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
               onChanged: _formProvider.validateBiography,
               errorText: _formProvider.biography.error,
               iconData: Icons.note_alt_rounded,
+              isMultiline: true,
             ),
             const SizedBox(height: 15.0),
             const Align(

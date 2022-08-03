@@ -11,6 +11,7 @@ import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
+//TODO find alternative to showing images if none is given
 class PackCard extends ConsumerStatefulWidget {
   final Pack pack;
 
@@ -56,15 +57,21 @@ class _PackCardState extends ConsumerState<PackCard> {
                     Container(
                       height: 150,
                       decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(10.0),
-                          topLeft: Radius.circular(10.0),
-                        ),
-                        image: DecorationImage(
-                          fit: BoxFit.fitWidth,
-                          image: NetworkImage(widget.pack.titleImage),
-                        ),
-                      ),
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(10.0),
+                            topLeft: Radius.circular(10.0),
+                          ),
+                          image: widget.pack.titleImage ==
+                                  "https://i.ibb.co/wQvfG5Y/placeholder-image10.jpg"
+                              ? const DecorationImage(
+                                  fit: BoxFit.fitWidth,
+                                  image: AssetImage(
+                                      "assets/images/pack_placeholder_image.jpg"),
+                                )
+                              : DecorationImage(
+                                  fit: BoxFit.fitWidth,
+                                  image: NetworkImage(widget.pack.titleImage),
+                                )),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(

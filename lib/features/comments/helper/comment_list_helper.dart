@@ -2,6 +2,8 @@ import 'package:lebenswiki_app/features/comments/models/comment_model.dart';
 
 class CommentListHelper {
   List<Comment> comments = [];
+  bool isSortedByDate = false;
+  bool isSortedByVotes = false;
 
   CommentListHelper({
     required this.comments,
@@ -10,6 +12,7 @@ class CommentListHelper {
   }) {
     filterCommentsForBlocked(blockedList);
     initDisplayParams(currentUserId);
+    sortByDate();
   }
 
   void initDisplayParams(int currentUserId) {
@@ -26,10 +29,14 @@ class CommentListHelper {
   void sortByDate() {
     comments.sort(
         (Comment a, Comment b) => b.creationDate.compareTo(a.creationDate));
+    isSortedByDate = true;
+    isSortedByVotes = false;
   }
 
   void sortByVote() {
     comments
         .sort((Comment a, Comment b) => b.totalVotes.compareTo(a.totalVotes));
+    isSortedByDate = false;
+    isSortedByVotes = true;
   }
 }

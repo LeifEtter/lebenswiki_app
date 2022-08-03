@@ -3,6 +3,7 @@ import 'package:lebenswiki_app/models/category_model.dart';
 
 class PackListHelper {
   List<Pack> packs = [];
+  List<Pack> queriedPacks = [];
   Map<int, List<Pack>> categorizedPacks = {};
 
   PackListHelper({
@@ -14,6 +15,7 @@ class PackListHelper {
     filterShortsForBlocked(blockedList);
     initDisplayParams(currentUserId);
     initCategorizedShorts(categories);
+    queriedPacks = packs;
   }
 
   void initDisplayParams(int currentUserId) {
@@ -46,5 +48,15 @@ class PackListHelper {
         categorizedPacks[pack.categories.first.id]!.add(pack);
       }
     }
+  }
+
+  void queryShorts(String query) {
+    String queryNormalized = query.toUpperCase();
+    queriedPacks = packs
+        .where((Pack pack) =>
+            pack.title.toUpperCase().contains(queryNormalized) ||
+            pack.description.toUpperCase().contains(queryNormalized) ||
+            pack.creator!.name.toUpperCase().contains(queryNormalized))
+        .toList();
   }
 }

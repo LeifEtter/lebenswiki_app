@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
 class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
-  //final Function searchRoute;
-
-  const MainAppBar({
-    Key? key,
-    //required this.searchRoute,
-  }) : super(key: key);
+  const MainAppBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,13 +39,12 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
             Scaffold.of(context).openDrawer();
           },
         ),
-        //TODO Fix search
-        /*IconButton(
+        IconButton(
           onPressed: () {
-            // Navigator.of(context).push(searchRoute());
+            ref.read(searchProvider).toggleActive();
           },
           icon: Image.asset("assets/icons/search.png", width: 28),
-        )*/
+        )
       ],
     );
   }
