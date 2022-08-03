@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/report_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/alert_dialog/components/report_popup.dart';
@@ -12,6 +13,7 @@ import 'package:lebenswiki_app/features/common/components/buttons/vote_button.da
 import 'package:lebenswiki_app/features/common/components/cards/creator_info.dart';
 import 'package:lebenswiki_app/features/common/helpers/reaction_functions.dart';
 import 'package:lebenswiki_app/features/shorts/views/short_comment_view.dart';
+import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
 import 'package:lebenswiki_app/models/block_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
@@ -178,11 +180,24 @@ class _ShortCardState extends ConsumerState<ShortCard> {
     );
   }
 
-  void _bookmarkCallback() {
-    widget.short.bookmarkedByUser
-        ? shortApi.unbookmarkShort(widget.short.id)
-        : shortApi.bookmarkShort(widget.short.id);
-    widget.short.toggleBookmarked(user);
+  void _bookmarkCallback() async {
+    ResultModel bookMarkResult = widget.short.bookmarkedByUser
+        ? await shortApi.unbookmarkShort(widget.short.id)
+        : await shortApi.bookmarkShort(widget.short.id);
+    if (bookMarkResult.type == ResultType.success) {
+      CustomFlushbar.success(
+              message: widget.short.bookmarkedByUser
+                  ? "Lernpack von gespeicherten Lernpacks entfernt"
+                  : "Lernpack gespeichert")
+          .show(context);
+      widget.short.toggleBookmarked(user);
+    } else {
+      CustomFlushbar.error(
+              message: widget.short.bookmarkedByUser
+                  ? "Lernpack konnte nicht von gespeicherten Lernpacks entfernt werden"
+                  : "Lernpack konnte nicht gespeichert werden")
+          .show(context);
+    }
     setState(() {});
   }
 
