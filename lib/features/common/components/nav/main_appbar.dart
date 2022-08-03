@@ -3,14 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
-//TODO create search icon that triggers search provider
 class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
-  //final Function searchRoute;
-
-  const MainAppBar({
-    Key? key,
-    //required this.searchRoute,
-  }) : super(key: key);
+  const MainAppBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
