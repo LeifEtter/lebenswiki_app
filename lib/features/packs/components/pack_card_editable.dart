@@ -123,25 +123,48 @@ class _PackCardEditState extends State<PackCardEdit> {
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: LebenswikiButtons.iconButton.roundEdgesWhite(
-                          callback: () {
-                            //TODO add popup "Do you really want to delete pack?"
-                            packApi
-                                .deletePack(widget.pack.id)
-                                .then((ResultModel result) {
-                              if (result.type == ResultType.success) {
-                                CustomFlushbar.success(
-                                        message: "Lernpack gelöscht")
-                                    .show(context);
-                              } else {
-                                CustomFlushbar.error(
-                                        message:
-                                            "Lernpack konnte nicht gelöscht werden")
-                                    .show(context);
+                          callback: () async {
+                            await showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (BuildContext context) => AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0)),
+                                title: const Text("Lernpack löschen"),
+                                content: const Text(
+                                    "Willst du das Lernpack wirklich löschen?"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(true),
+                                      child: const Text("Löschen")),
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      child: const Text("Abbrechen")),
+                                ],
+                              ),
+                            ).then((confirmed) {
+                              if (confirmed) {
+                                packApi
+                                    .deletePack(widget.pack.id)
+                                    .then((ResultModel result) {
+                                  if (result.type == ResultType.success) {
+                                    CustomFlushbar.success(
+                                            message: "Lernpack gelöscht")
+                                        .show(context);
+                                  } else {
+                                    CustomFlushbar.error(
+                                            message:
+                                                "Lernpack konnte nicht gelöscht werden")
+                                        .show(context);
+                                  }
+                                  widget.reload();
+                                });
                               }
-                              widget.reload();
                             });
                           },
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                         ),
                       ),
                     ),
