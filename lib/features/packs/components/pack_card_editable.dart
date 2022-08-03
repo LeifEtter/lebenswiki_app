@@ -12,11 +12,13 @@ import 'package:lebenswiki_app/repository/text_styles.dart';
 class PackCardEdit extends StatefulWidget {
   final Pack pack;
   final Function reload;
+  final bool isPublished;
 
   const PackCardEdit({
     Key? key,
     required this.pack,
     required this.reload,
+    this.isPublished = false,
   }) : super(key: key);
 
   @override
@@ -68,25 +70,53 @@ class _PackCardEditState extends State<PackCardEdit> {
                     Positioned.fill(
                       child: Align(
                         alignment: Alignment.topRight,
-                        child: LebenswikiButtons.iconButton.roundEdgesWhite(
-                          callback: () async {
-                            await packApi
-                                .publishPack(widget.pack.id)
-                                .then((ResultModel result) {
-                              if (result.type == ResultType.success) {
-                                CustomFlushbar.success(
-                                        message: "Lernpack veröffentlicht!")
-                                    .show(context);
-                                widget.reload();
-                              } else {
-                                CustomFlushbar.error(
-                                        message: "Dafür hast du keine Rechte")
-                                    .show(context);
-                              }
-                            });
-                          },
-                          icon: Icons.publish,
-                        ),
+                        child: widget.isPublished
+                            ? Transform.rotate(
+                                angle: 3.14,
+                                child: LebenswikiButtons.iconButton
+                                    .roundEdgesWhite(
+                                  callback: () async {
+                                    await packApi
+                                        .unpublishPack(widget.pack.id)
+                                        .then((ResultModel result) {
+                                      if (result.type == ResultType.success) {
+                                        CustomFlushbar.success(
+                                                message:
+                                                    "Lernpack von veröffentlichten entfernt!")
+                                            .show(context);
+                                        widget.reload();
+                                      } else {
+                                        CustomFlushbar.error(
+                                                message:
+                                                    "Dafür hast du keine Rechte")
+                                            .show(context);
+                                      }
+                                    });
+                                  },
+                                  icon: const Icon(Icons.publish),
+                                ),
+                              )
+                            : LebenswikiButtons.iconButton.roundEdgesWhite(
+                                callback: () async {
+                                  await packApi
+                                      .publishPack(widget.pack.id)
+                                      .then((ResultModel result) {
+                                    if (result.type == ResultType.success) {
+                                      CustomFlushbar.success(
+                                              message:
+                                                  "Lernpack veröffentlicht!")
+                                          .show(context);
+                                      widget.reload();
+                                    } else {
+                                      CustomFlushbar.error(
+                                              message:
+                                                  "Dafür hast du keine Rechte")
+                                          .show(context);
+                                    }
+                                  });
+                                },
+                                icon: const Icon(Icons.publish),
+                              ),
                       ),
                     ),
                     Positioned.fill(
@@ -111,7 +141,7 @@ class _PackCardEditState extends State<PackCardEdit> {
                               widget.reload();
                             });
                           },
-                          icon: Icons.delete,
+                          icon: Icon(Icons.delete),
                         ),
                       ),
                     ),
@@ -125,10 +155,6 @@ class _PackCardEditState extends State<PackCardEdit> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          /*CreatorInfo(
-                            isComment: false,
-                            packData: widget.packData,
-                          ),*/
                           const SizedBox(height: 5),
                           Text(
                             widget.pack.title,

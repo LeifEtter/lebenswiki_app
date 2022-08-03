@@ -63,15 +63,10 @@ class _GetPacksState extends ConsumerState<GetPacks> {
 
   void _updateParameters() {
     switch (widget.cardType) {
-      case CardType.packBookmarks:
-        packFuture = packApi.getBookmarkedPacks;
-        returnCard = returnCard =
-            (pack, reload) => PackCardEdit(pack: pack, reload: reload);
-        break;
       case CardType.yourPacks:
         packFuture = packApi.getOwnPublishedpacks;
-        returnCard = returnCard =
-            (pack, reload) => PackCardEdit(pack: pack, reload: reload);
+        returnCard = returnCard = (pack, reload) =>
+            PackCardEdit(pack: pack, reload: reload, isPublished: true);
         break;
       case CardType.packDrafts:
         packFuture = packApi.getOwnUnpublishedPacks;
