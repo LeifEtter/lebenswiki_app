@@ -64,25 +64,13 @@ class _ShortCommentViewState extends ConsumerState<ShortCommentView> {
                     itemColors: Colors.white,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 5, right: 30),
+                    padding: const EdgeInsets.only(top: 10, right: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         const Text("Sortieren nach"),
                         const SizedBox(width: 10),
-                        IconButton(
-                            onPressed: () {
-                              widget.commentListHelper.sortByDate();
-                              setState(() {});
-                            },
-                            icon: const Icon(Icons.calendar_month)),
-                        const SizedBox(width: 10),
-                        IconButton(
-                            onPressed: () {
-                              widget.commentListHelper.sortByVote();
-                              setState(() {});
-                            },
-                            icon: const Icon(Icons.thumb_up_sharp)),
+                        _buildSortingButtonRow(),
                       ],
                     ),
                   ),
@@ -104,6 +92,65 @@ class _ShortCommentViewState extends ConsumerState<ShortCommentView> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSortingButtonRow() {
+    return Row(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(width: 2, color: Colors.blueAccent),
+            color: widget.commentListHelper.isSortedByDate
+                ? Colors.blueAccent
+                : Colors.white,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(15.0),
+              bottomLeft: Radius.circular(15.0),
+            ),
+          ),
+          child: IconButton(
+            constraints: const BoxConstraints(minWidth: 35, minHeight: 35),
+            iconSize: 17,
+            color: widget.commentListHelper.isSortedByDate
+                ? Colors.white
+                : Colors.blueAccent,
+            onPressed: () {
+              widget.commentListHelper.sortByDate();
+              setState(() {});
+            },
+            icon: const Icon(
+              Icons.calendar_month,
+            ),
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(width: 2, color: Colors.blueAccent),
+            color: widget.commentListHelper.isSortedByVotes
+                ? Colors.blueAccent
+                : Colors.white,
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(15.0),
+              bottomRight: Radius.circular(15.0),
+            ),
+          ),
+          child: IconButton(
+            constraints: const BoxConstraints(minWidth: 35, minHeight: 35),
+            iconSize: 17,
+            color: widget.commentListHelper.isSortedByVotes
+                ? Colors.white
+                : Colors.blueAccent,
+            onPressed: () {
+              widget.commentListHelper.sortByVote();
+              setState(() {});
+            },
+            icon: const Icon(
+              Icons.thumb_up_sharp,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
