@@ -187,15 +187,15 @@ class _ShortCardState extends ConsumerState<ShortCard> {
     if (bookMarkResult.type == ResultType.success) {
       CustomFlushbar.success(
               message: widget.short.bookmarkedByUser
-                  ? "Lernpack von gespeicherten Lernpacks entfernt"
-                  : "Lernpack gespeichert")
+                  ? "Short von gespeicherten Lernpacks entfernt"
+                  : "Short gespeichert")
           .show(context);
       widget.short.toggleBookmarked(user);
     } else {
       CustomFlushbar.error(
               message: widget.short.bookmarkedByUser
-                  ? "Lernpack konnte nicht von gespeicherten Lernpacks entfernt werden"
-                  : "Lernpack konnte nicht gespeichert werden")
+                  ? "Short konnte nicht von gespeicherten Lernpacks entfernt werden"
+                  : "Short konnte nicht gespeichert werden")
           .show(context);
     }
     setState(() {});
