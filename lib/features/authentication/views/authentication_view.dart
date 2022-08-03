@@ -149,6 +149,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                       text: isSignUp ? "Registrieren" : "Einloggen",
                       color: LebenswikiColors.createPackButton,
                       onPress: () async {
+                        _formProvider.resetErrors();
                         if (isSignUp && _formProvider.validateForRegister) {
                           //Perform register with Authentication Helper
                           ResultModel result =
