@@ -81,7 +81,6 @@ class SearchNotifier extends ChangeNotifier {
   String get query => _query;
 
   void toggleActive() {
-    print("toggling provider");
     _active = !_active;
     notifyListeners();
   }

@@ -91,11 +91,26 @@ class _ShortFeedViewState extends ConsumerState<ShortFeedView> {
           return Column(
             children: [
               searchActive
-                  ? TextFormField(
-                      onChanged: (value) {
-                        widget.shortListHelper.queryShorts(value);
-                        setState(() {});
-                      },
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              autofocus: true,
+                              onChanged: (value) {
+                                widget.shortListHelper.queryShorts(value);
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () =>
+                                ref.read(searchProvider).switchActiveOff(),
+                            child: const Text("Abbrechen"),
+                          )
+                        ],
+                      ),
                     )
                   : buildTabBar(
                       categories: widget.categories,
