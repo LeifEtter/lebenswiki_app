@@ -144,7 +144,7 @@ class CommentApi extends BaseApi {
       headers: await requestHeader(),
     ).then((Response res) {
       if (statusIsSuccess(res.statusCode)) {
-        return ResultModel(
+        result = ResultModel(
           type: ResultType.success,
           message: "Comment successfully deleted",
         );
