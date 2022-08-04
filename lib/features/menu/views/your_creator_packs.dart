@@ -5,7 +5,6 @@ import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/packs/helper/get_packs.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
-import 'package:lebenswiki_app/features/packs/views/pack_creator_information.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 import 'package:lebenswiki_app/features/routing/routes.dart';
 import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';

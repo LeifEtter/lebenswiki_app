@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
+import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
@@ -117,11 +118,32 @@ class _ShortCardMinimalState extends State<ShortCardMinimal> {
                         ? shortApi
                             .publishShort(widget.short.id)
                             .then((ResultModel result) {
+                            if (result.type == ResultType.success) {
+                              CustomFlushbar.success(
+                                      message: "Short wurde veröffentlicht")
+                                  .show(context);
+                            } else {
+                              CustomFlushbar.error(
+                                      message:
+                                          "Short konnte nicht veröffentlicht werden")
+                                  .show(context);
+                            }
                             widget.reload();
                           })
                         : shortApi
                             .unpublishShort(widget.short.id)
                             .then((ResultModel result) {
+                            if (result.type == ResultType.success) {
+                              CustomFlushbar.success(
+                                      message:
+                                          "Short wurde von veröffentlichten Shorts entfernt")
+                                  .show(context);
+                            } else {
+                              CustomFlushbar.error(
+                                      message:
+                                          "Short konnte nicht von veröffentlichten Shorts entfernt werden")
+                                  .show(context);
+                            }
                             widget.reload();
                           });
                   },
@@ -135,6 +157,15 @@ class _ShortCardMinimalState extends State<ShortCardMinimal> {
                     shortApi
                         .deleteShort(id: widget.short.id)
                         .then((ResultModel result) {
+                      if (result.type == ResultType.success) {
+                        CustomFlushbar.info(message: "Short wurde gelöscht")
+                            .show(context);
+                      } else {
+                        CustomFlushbar.error(
+                                message: "Short konnte nicht gelöscht werden")
+                            .show(context);
+                      }
+
                       widget.reload();
                     });
                   },
