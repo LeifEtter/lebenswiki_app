@@ -102,3 +102,11 @@ class SearchNotifier extends ChangeNotifier {
 }
 
 final searchProvider = ChangeNotifierProvider((ref) => SearchNotifier());
+
+class ReloadNotifier extends ChangeNotifier {
+  void reload() {
+    notifyListeners();
+  }
+}
+
+final reloadProvider = ChangeNotifierProvider((ref) => ReloadNotifier());

@@ -24,6 +24,7 @@ class _ShortFeedState extends ConsumerState<ShortFeed> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(reloadProvider);
     final List<ContentCategory> categories =
         ref.read(categoryProvider).categories;
     final int userId = ref.read(userProvider).user.id;

@@ -7,8 +7,6 @@ import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 
-//TODO Implement extracting error message with "error" property
-//TODO fix api results and add error messages
 class ShortApi extends BaseApi {
   late ApiErrorHandler apiErrorHandler;
 

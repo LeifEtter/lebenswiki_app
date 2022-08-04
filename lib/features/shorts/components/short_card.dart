@@ -50,6 +50,7 @@ class _ShortCardState extends ConsumerState<ShortCard> {
       onPressed: () => widget.inCommentView ? null : _navigateToCommentView(),
       topPadding: 20.0,
       horizontalPadding: 20.0,
+      isOwn: widget.short.creator.id == user.id,
       child: Stack(
         children: [
           Positioned.fill(
@@ -94,6 +95,8 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                   isBookmarked: widget.short.bookmarkedByUser,
                   bookmarkCallback: () => _bookmarkCallback(),
                   reportCallback: () => _reportCallback(),
+                  deleteSelf: () => _deleteSelf(),
+                  isOwn: widget.short.creator.id == user.id,
                 ),
                 icon: const Icon(Icons.more_horiz_outlined),
               ),
@@ -199,6 +202,18 @@ class _ShortCardState extends ConsumerState<ShortCard> {
           .show(context);
     }
     setState(() {});
+  }
+
+  void _deleteSelf() async {
+    ResultModel result = await shortApi.deleteShort(id: widget.short.id);
+    ref.watch(reloadProvider).reload();
+    if (result.type == ResultType.success) {
+      CustomFlushbar.success(message: "Dein Short wurde erfolgreich gelöscht")
+          .show(context);
+    } else {
+      CustomFlushbar.error(message: "Dein Short konnte nicht gelöscht werden")
+          .show(context);
+    }
   }
 
   void _reportCallback() => showDialog(
