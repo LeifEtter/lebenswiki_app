@@ -165,7 +165,6 @@ class _ShortCardMinimalState extends State<ShortCardMinimal> {
                                 message: "Short konnte nicht gelöscht werden")
                             .show(context);
                       }
-
                       widget.reload();
                     });
                   },
