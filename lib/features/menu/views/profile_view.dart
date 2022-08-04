@@ -1,4 +1,3 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +14,6 @@ import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
-//TODO show popups for succesfull changing
 class ProfileView extends ConsumerStatefulWidget {
   final User user;
 

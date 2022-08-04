@@ -71,9 +71,8 @@ class FormNotifier extends ChangeNotifier {
     if (val != null && val.isValidName) {
       _name = ValidationModel(val, null);
     } else {
-      _name = ValidationModel(null, 'Passwörter müssen übereinstimmen');
+      _name = ValidationModel(null, 'Bitte gib einen Namen an');
     }
-    log(_name.value!);
     notifyListeners();
   }
 
@@ -116,6 +115,12 @@ class FormNotifier extends ChangeNotifier {
       );
 
   bool get validateForRegister {
+    validateName(_name.value);
+    validateEmail(_email.value);
+    validatePassword(_password.value);
+    validateRepeatPassword(_repeatPassword.value);
+    validateBiography(_biography.value);
+    validateProfileImage(_profileImage.value);
     return _email.value != null &&
         _password.value != null &&
         _name.value != null &&
@@ -124,6 +129,8 @@ class FormNotifier extends ChangeNotifier {
   }
 
   bool get validateForLogin {
+    validateEmail(email.value);
+    validatePassword(password.value);
     return _email.value != null && _password.value != null;
   }
 

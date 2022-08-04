@@ -16,7 +16,7 @@ class Authentication {
       type: ResultType.failure,
       message: "Functoins not run",
     );
-
+    
     User user = formProvider.convertToUser();
 
     await UserApi().register(user).then((ResultModel registerResult) {

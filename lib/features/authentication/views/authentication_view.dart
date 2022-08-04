@@ -8,6 +8,7 @@ import 'package:lebenswiki_app/features/authentication/components/custom_form_fi
 import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
 import 'package:lebenswiki_app/features/authentication/providers/auth_providers.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/buttons.dart';
+import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 import 'package:lebenswiki_app/repository/colors.dart';
 import 'package:lebenswiki_app/main.dart';
@@ -32,6 +33,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
 
   void toggleSignIn() => setState(() {
         isSignUp = !isSignUp;
+        _formProvider.resetErrors();
       });
 
   void toggleAdminSignup() => setState(() {
@@ -149,28 +151,24 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                       text: isSignUp ? "Registrieren" : "Einloggen",
                       color: LebenswikiColors.createPackButton,
                       onPress: () async {
-                        _formProvider.resetErrors();
-                        if (isSignUp && _formProvider.validateForRegister) {
-                          //Perform register with Authentication Helper
-                          ResultModel result =
-                              await Authentication.register(_formProvider);
-
-                          //Decide action after result
-                          result.type == ResultType.failure
-                              ? log(result.message!)
-                              : setState(() {
-                                  isSignUp = false;
-                                });
-                        } else if (!isSignUp &&
-                            _formProvider.validateForLogin) {
-                          //Perform login with Authentication Helper
-                          ResultModel result =
-                              await Authentication.login(_formProvider, ref);
-
-                          //Decide action after result
-                          result.type == ResultType.failure
-                              ? log(result.message!)
-                              : navigateFeed();
+                        if (isSignUp) {
+                          if (await _register()) {
+                            CustomFlushbar.success(
+                                    message: "Erfolgreich registriert")
+                                .show(context);
+                            toggleSignIn();
+                          } else {
+                            CustomFlushbar.error(
+                                message: "Registrierung fehlgeschlagen");
+                          }
+                        } else {
+                          if (await _login()) {
+                            navigateFeed();
+                          } else {
+                            CustomFlushbar.error(
+                                    message: "Login fehlgeschlagen")
+                                .show(context);
+                          }
                         }
                       },
                     ),
@@ -198,21 +196,6 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
     );
   }
 
-  InputDecoration customInputDecoration(hintText, prefixIcon) {
-    return InputDecoration(
-      hintText: hintText,
-      prefixIcon: Icon(
-        prefixIcon,
-        color: const Color.fromRGBO(115, 148, 192, 1),
-      ),
-      border: InputBorder.none,
-      hintStyle: const TextStyle(
-        fontWeight: FontWeight.w500,
-        color: Colors.black38,
-      ),
-    );
-  }
-
   void navigateFeed() {
     Navigator.pushReplacement(
       context,
@@ -222,5 +205,21 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
         ),
       ),
     );
+  }
+
+  Future<bool> _register() async {
+    //TODO check with formprovider if all values are correct
+    if (!_formProvider.validateForRegister) return false;
+
+    ResultModel result = await Authentication.register(_formProvider);
+    return result.type == ResultType.failure ? false : true;
+  }
+
+  Future<bool> _login() async {
+    //TODO check with formprovider if all values are correct
+    if (!_formProvider.validateForLogin) return false;
+
+    ResultModel result = await Authentication.login(_formProvider, ref);
+    return result.type == ResultType.failure ? false : true;
   }
 }
