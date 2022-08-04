@@ -113,12 +113,13 @@ class CommentApi extends BaseApi {
     required String successMessage,
     required String errorMessage,
   }) async {
+    ResultModel result = ResultModel(type: ResultType.failure);
     await put(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
     ).then((Response res) {
       if (statusIsSuccess(res.statusCode)) {
-        return ResultModel(
+        result = ResultModel(
           type: ResultType.success,
           message: successMessage,
         );
@@ -128,7 +129,7 @@ class CommentApi extends BaseApi {
     }).catchError((error) {
       apiErrorHandler.handleAndLog(reponseData: error);
     });
-    return ResultModel(type: ResultType.failure);
+    return result;
   }
 
   Future<ResultModel> deleteComment({

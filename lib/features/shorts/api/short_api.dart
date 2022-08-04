@@ -17,6 +17,9 @@ class ShortApi extends BaseApi {
   }
 
   Future<ResultModel> createShort({required Short short}) async {
+    ResultModel result = ResultModel(
+      type: ResultType.failure,
+    );
     await post(
       Uri.parse("$serverIp/shorts/create"),
       headers: await requestHeader(),
@@ -27,7 +30,7 @@ class ShortApi extends BaseApi {
       }),
     ).then((Response res) {
       if (statusIsSuccess(res.statusCode)) {
-        return ResultModel(
+        result = ResultModel(
           type: ResultType.success,
           message: "Short Erfolgreich Erstellt",
         );
@@ -35,19 +38,19 @@ class ShortApi extends BaseApi {
         apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       }
     });
-    return ResultModel(
-      type: ResultType.failure,
-      message: "Short konnte nicht erstellt werden",
-    );
+    return result;
   }
 
   Future<ResultModel> deleteShort({required int id}) async {
+    ResultModel result = ResultModel(
+      type: ResultType.success,
+    );
     await delete(
       Uri.parse("$serverIp/shorts/delete/$id"),
       headers: await requestHeader(),
     ).then((Response res) {
       if (statusIsSuccess(res.statusCode)) {
-        return ResultModel(
+        result = ResultModel(
           type: ResultType.success,
           message: "Short Erfolgreich Gelöscht",
         );
@@ -57,10 +60,7 @@ class ShortApi extends BaseApi {
     }).catchError((error) {
       apiErrorHandler.handleAndLog(reponseData: error);
     });
-    return ResultModel(
-      type: ResultType.failure,
-      message: "Short konnte nicht gelöscht werden",
-    );
+    return result;
   }
 
   Future<ResultModel> getShortsByCategory({required ContentCategory category}) {
@@ -200,13 +200,16 @@ class ShortApi extends BaseApi {
     required String errorMessage,
     required Map requestBody,
   }) async {
+    ResultModel result = ResultModel(
+      type: ResultType.success,
+    );
     await put(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
       body: jsonEncode(requestBody),
     ).then((Response res) {
       if (statusIsSuccess(res.statusCode)) {
-        return ResultModel(
+        result = ResultModel(
           type: ResultType.success,
           message: successMessage,
         );
@@ -216,9 +219,6 @@ class ShortApi extends BaseApi {
     }).catchError((error) {
       apiErrorHandler.handleAndLog(reponseData: error);
     });
-    return ResultModel(
-      type: ResultType.failure,
-      message: errorMessage,
-    );
+    return result;
   }
 }

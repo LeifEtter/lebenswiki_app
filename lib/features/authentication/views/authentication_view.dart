@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -208,7 +207,6 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
   }
 
   Future<bool> _register() async {
-    //TODO check with formprovider if all values are correct
     if (!_formProvider.validateForRegister) return false;
 
     ResultModel result = await Authentication.register(_formProvider);
@@ -216,7 +214,6 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
   }
 
   Future<bool> _login() async {
-    //TODO check with formprovider if all values are correct
     if (!_formProvider.validateForLogin) return false;
 
     ResultModel result = await Authentication.login(_formProvider, ref);
