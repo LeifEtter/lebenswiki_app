@@ -24,6 +24,7 @@ class _ShortFeedState extends ConsumerState<ShortFeed> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(reloadProvider);
     final List<ContentCategory> categories =
         ref.read(categoryProvider).categories;
     final int userId = ref.read(userProvider).user.id;
@@ -119,17 +120,22 @@ class _ShortFeedViewState extends ConsumerState<ShortFeedView> {
           currentShorts.isEmpty
               ? const Center(child: Text("Es wurden keine shorts gefunden"))
               : Expanded(
-                  child: ListView.builder(
-                    addAutomaticKeepAlives: true,
-                    shrinkWrap: true,
-                    itemCount: currentShorts.length,
-                    itemBuilder: ((context, index) {
-                      Short short = currentShorts[index];
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      ref.read(reloadProvider).reload();
+                    },
+                    child: ListView.builder(
+                      addAutomaticKeepAlives: true,
+                      shrinkWrap: true,
+                      itemCount: currentShorts.length,
+                      itemBuilder: ((context, index) {
+                        Short short = currentShorts[index];
 
-                      return ShortCard(
-                        short: short,
-                      );
-                    }),
+                        return ShortCard(
+                          short: short,
+                        );
+                      }),
+                    ),
                   ),
                 ),
         ],

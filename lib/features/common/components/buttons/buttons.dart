@@ -94,13 +94,13 @@ class LebenswikiTextButton {
 class LebenswikiIconButton {
   Widget roundEdgesWhite({
     required Function callback,
-    required IconData icon,
+    required Icon icon,
   }) =>
       roundEdges(callback: callback, icon: icon, backgroundColor: Colors.white);
 
   Widget roundEdges({
     required Function callback,
-    required IconData icon,
+    required Icon icon,
     required Color backgroundColor,
     Color iconColor = Colors.black,
   }) =>
@@ -112,7 +112,7 @@ class LebenswikiIconButton {
         ),
         child: IconButton(
           onPressed: () => callback(),
-          icon: Icon(icon),
+          icon: icon,
           color: iconColor,
         ),
       );

@@ -48,10 +48,12 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
             backName: "Informationen",
             nextName: "Speichern",
             previousCallback: () async {
+              _saveCallback();
               await packApi.updatePack(id: pack.id!, pack: pack);
               Navigator.of(context).pop();
             },
             nextCallback: () async {
+              _saveCallback();
               await packApi.updatePack(id: pack.id!, pack: pack);
               Navigator.of(context).push(LebenswikiRoutes.goToYourPacks());
             },
@@ -171,6 +173,7 @@ class _PackCreatorOverviewState extends State<PackCreatorOverview> {
           padding: const EdgeInsets.symmetric(horizontal: 5.0),
           child: GestureDetector(
             onTap: () {
+              _saveCallback();
               setState(() {
                 _selectedPage = index;
                 index == pack.pages.length

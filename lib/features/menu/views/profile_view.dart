@@ -8,12 +8,12 @@ import 'package:lebenswiki_app/features/authentication/components/custom_form_fi
 import 'package:lebenswiki_app/features/authentication/providers/auth_providers.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/buttons.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
+import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
 import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
-//TODO show popups for succesfull changing
 class ProfileView extends ConsumerStatefulWidget {
   final User user;
 
@@ -178,6 +178,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
   }
 
   void update() async {
+    _formProvider.resetErrors();
     _formProvider.email.value ??= widget.user.email;
     _formProvider.name.value ??= widget.user.name;
     _formProvider.biography.value ??= widget.user.biography;
@@ -185,27 +186,44 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
 
     User newUser = _formProvider.convertToUser();
 
-    await userApi.updateProfile(user: newUser).then((ResultModel result) {});
-    if (emailEdited()) {
-      TokenHandler().delete;
-      Navigator.push(
-          context, MaterialPageRoute(builder: ((context) => const MyApp())));
-    } else {
-      ResultModel userResponse = await UserApi().getUserData();
-      User newnewUser = userResponse.responseItem;
-      ref.read(userProvider).setUser(newnewUser);
-      setState(() {});
-    }
+    await userApi.updateProfile(user: newUser).then((ResultModel result) async {
+      if (result.type == ResultType.success) {
+        if (emailEdited()) {
+          CustomFlushbar.success(
+                  message:
+                      "Profil erfolgreich geändert, du wirst ausgeloggt da du deine email geändert hast")
+              .show(context);
+          await Future.delayed(const Duration(milliseconds: 3000));
+          TokenHandler().delete;
+          Navigator.push(context,
+              MaterialPageRoute(builder: ((context) => const MyApp())));
+        } else {
+          CustomFlushbar.success(message: "Profil erfolgreich geändert")
+              .show(context);
+          ResultModel userResponse = await UserApi().getUserData();
+          User newnewUser = userResponse.responseItem;
+          ref.read(userProvider).setUser(newnewUser);
+          setState(() {});
+        }
+      } else {
+        CustomFlushbar.error(message: "Profil konnte nicht geändert werden")
+            .show(context);
+      }
+    });
   }
 
   void changePassword() {
+    _formProvider.resetErrors();
     userApi
         .updatePassword(
             oldpassword: _formProvider.oldPassword.value ?? "",
             newpassword: _formProvider.password.value ?? "")
         .then((ResultModel result) {
       if (result.type == ResultType.success) {
+        CustomFlushbar.success(message: "Password geändert").show(context);
       } else {
+        CustomFlushbar.error(message: "Password konnte nicht geändert werden")
+            .show(context);
         _formProvider.handleApiError(result.message!);
       }
     });

@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/bottom_sheet/components/show_reactions_sheet.dart';
 import 'package:lebenswiki_app/features/common/components/cards/creator_info.dart';
 import 'package:lebenswiki_app/features/common/helpers/reaction_functions.dart';
 import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/features/packs/views/pack_viewer.dart';
+import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
-//TODO find alternative to showing images if none is given
 class PackCard extends ConsumerStatefulWidget {
   final Pack pack;
 
@@ -135,13 +137,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                         boxShadow: [LebenswikiShadows.fancyShadow],
                       ),
                       child: IconButton(
-                        onPressed: () {
-                          widget.pack.bookmarkedByUser
-                              ? packApi.unbookmarkPack(widget.pack.id)
-                              : packApi.bookmarkPack(widget.pack.id);
-                          widget.pack.toggleBookmarked(user);
-                          setState(() {});
-                        },
+                        onPressed: () => _bookmarkCallback(),
                         icon: Icon(
                           widget.pack.bookmarkedByUser
                               ? Icons.bookmark
@@ -158,5 +154,26 @@ class _PackCardState extends ConsumerState<PackCard> {
         ),
       ),
     );
+  }
+
+  void _bookmarkCallback() async {
+    ResultModel bookMarkResult = widget.pack.bookmarkedByUser
+        ? await packApi.unbookmarkPack(widget.pack.id)
+        : await packApi.bookmarkPack(widget.pack.id);
+    if (bookMarkResult.type == ResultType.success) {
+      CustomFlushbar.success(
+              message: widget.pack.bookmarkedByUser
+                  ? "Lernpack von gespeicherten Lernpacks entfernt"
+                  : "Lernpack gespeichert")
+          .show(context);
+      widget.pack.toggleBookmarked(user);
+    } else {
+      CustomFlushbar.error(
+              message: widget.pack.bookmarkedByUser
+                  ? "Lernpack konnte nicht von gespeicherten Lernpacks entfernt werden"
+                  : "Lernpack konnte nicht gespeichert werden")
+          .show(context);
+    }
+    setState(() {});
   }
 }

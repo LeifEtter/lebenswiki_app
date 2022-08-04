@@ -9,6 +9,8 @@ import 'package:lebenswiki_app/features/common/components/custom_card.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
+import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
@@ -212,10 +214,16 @@ class _ShortCommentViewState extends ConsumerState<ShortCommentView> {
       );
 
   void _commentDeleteSelfCallback(int id) async {
-    await CommentApi().deleteComment(id: id);
-    widget.short.comments.removeWhere((Comment comment) => comment.id == id);
-    widget.commentListHelper.comments
-        .removeWhere((Comment comment) => comment.id == id);
+    ResultModel result = await CommentApi().deleteComment(id: id);
+    if (result.type == ResultType.success) {
+      widget.short.comments.removeWhere((Comment comment) => comment.id == id);
+      widget.commentListHelper.comments
+          .removeWhere((Comment comment) => comment.id == id);
+      CustomFlushbar.success(message: "Kommentar wurde gelöscht").show(context);
+    } else {
+      CustomFlushbar.error(message: "Kommentar konnte nicht gelöscht werden")
+          .show(context);
+    }
     setState(() {});
   }
 }

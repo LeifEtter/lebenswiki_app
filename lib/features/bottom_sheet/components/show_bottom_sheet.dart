@@ -53,6 +53,8 @@ void showActionsMenuForShorts(
   required bool isBookmarked,
   required Function bookmarkCallback,
   required Function reportCallback,
+  required Function deleteSelf,
+  bool isOwn = false,
 }) =>
     showActionsMenu(context, menuItems: [
       basicMenuItem(
@@ -89,6 +91,14 @@ void showActionsMenuForShorts(
                 bookmarkCallback();
               },
             ),
+      isOwn
+          ? basicMenuItem(
+              Icons.delete, "Short löschen", "Dein erstellten short löschen",
+              () {
+              Navigator.pop(context);
+              deleteSelf();
+            })
+          : Container(),
     ]);
 
 void showActionsMenu(BuildContext context, {required List<Widget> menuItems}) {

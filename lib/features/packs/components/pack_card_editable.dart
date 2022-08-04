@@ -12,11 +12,13 @@ import 'package:lebenswiki_app/repository/text_styles.dart';
 class PackCardEdit extends StatefulWidget {
   final Pack pack;
   final Function reload;
+  final bool isPublished;
 
   const PackCardEdit({
     Key? key,
     required this.pack,
     required this.reload,
+    this.isPublished = false,
   }) : super(key: key);
 
   @override
@@ -68,50 +70,101 @@ class _PackCardEditState extends State<PackCardEdit> {
                     Positioned.fill(
                       child: Align(
                         alignment: Alignment.topRight,
-                        child: LebenswikiButtons.iconButton.roundEdgesWhite(
-                          callback: () async {
-                            await packApi
-                                .publishPack(widget.pack.id)
-                                .then((ResultModel result) {
-                              if (result.type == ResultType.success) {
-                                CustomFlushbar.success(
-                                        message: "Lernpack veröffentlicht!")
-                                    .show(context);
-                                widget.reload();
-                              } else {
-                                CustomFlushbar.error(
-                                        message: "Dafür hast du keine Rechte")
-                                    .show(context);
-                              }
-                            });
-                          },
-                          icon: Icons.publish,
-                        ),
+                        child: widget.isPublished
+                            ? Transform.rotate(
+                                angle: 3.14,
+                                child: LebenswikiButtons.iconButton
+                                    .roundEdgesWhite(
+                                  callback: () async {
+                                    await packApi
+                                        .unpublishPack(widget.pack.id)
+                                        .then((ResultModel result) {
+                                      if (result.type == ResultType.success) {
+                                        CustomFlushbar.success(
+                                                message:
+                                                    "Lernpack von veröffentlichten entfernt!")
+                                            .show(context);
+                                        widget.reload();
+                                      } else {
+                                        CustomFlushbar.error(
+                                                message:
+                                                    "Dafür hast du keine Rechte")
+                                            .show(context);
+                                      }
+                                    });
+                                  },
+                                  icon: const Icon(Icons.publish),
+                                ),
+                              )
+                            : LebenswikiButtons.iconButton.roundEdgesWhite(
+                                callback: () async {
+                                  await packApi
+                                      .publishPack(widget.pack.id)
+                                      .then((ResultModel result) {
+                                    if (result.type == ResultType.success) {
+                                      CustomFlushbar.success(
+                                              message:
+                                                  "Lernpack veröffentlicht!")
+                                          .show(context);
+                                      widget.reload();
+                                    } else {
+                                      CustomFlushbar.error(
+                                              message:
+                                                  "Dafür hast du keine Rechte")
+                                          .show(context);
+                                    }
+                                  });
+                                },
+                                icon: const Icon(Icons.publish),
+                              ),
                       ),
                     ),
                     Positioned.fill(
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: LebenswikiButtons.iconButton.roundEdgesWhite(
-                          callback: () {
-                            //TODO add popup "Do you really want to delete pack?"
-                            packApi
-                                .deletePack(widget.pack.id)
-                                .then((ResultModel result) {
-                              if (result.type == ResultType.success) {
-                                CustomFlushbar.success(
-                                        message: "Lernpack gelöscht")
-                                    .show(context);
-                              } else {
-                                CustomFlushbar.error(
-                                        message:
-                                            "Lernpack konnte nicht gelöscht werden")
-                                    .show(context);
+                          callback: () async {
+                            await showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (BuildContext context) => AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0)),
+                                title: const Text("Lernpack löschen"),
+                                content: const Text(
+                                    "Willst du das Lernpack wirklich löschen?"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(true),
+                                      child: const Text("Löschen")),
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      child: const Text("Abbrechen")),
+                                ],
+                              ),
+                            ).then((confirmed) {
+                              if (confirmed) {
+                                packApi
+                                    .deletePack(widget.pack.id)
+                                    .then((ResultModel result) {
+                                  if (result.type == ResultType.success) {
+                                    CustomFlushbar.success(
+                                            message: "Lernpack gelöscht")
+                                        .show(context);
+                                  } else {
+                                    CustomFlushbar.error(
+                                            message:
+                                                "Lernpack konnte nicht gelöscht werden")
+                                        .show(context);
+                                  }
+                                  widget.reload();
+                                });
                               }
-                              widget.reload();
                             });
                           },
-                          icon: Icons.delete,
+                          icon: const Icon(Icons.delete),
                         ),
                       ),
                     ),
@@ -125,10 +178,6 @@ class _PackCardEditState extends State<PackCardEdit> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          /*CreatorInfo(
-                            isComment: false,
-                            packData: widget.packData,
-                          ),*/
                           const SizedBox(height: 5),
                           Text(
                             widget.pack.title,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/report_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/alert_dialog/components/report_popup.dart';
@@ -12,6 +13,7 @@ import 'package:lebenswiki_app/features/common/components/buttons/vote_button.da
 import 'package:lebenswiki_app/features/common/components/cards/creator_info.dart';
 import 'package:lebenswiki_app/features/common/helpers/reaction_functions.dart';
 import 'package:lebenswiki_app/features/shorts/views/short_comment_view.dart';
+import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
 import 'package:lebenswiki_app/models/block_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
@@ -48,6 +50,7 @@ class _ShortCardState extends ConsumerState<ShortCard> {
       onPressed: () => widget.inCommentView ? null : _navigateToCommentView(),
       topPadding: 20.0,
       horizontalPadding: 20.0,
+      isOwn: widget.short.creator.id == user.id,
       child: Stack(
         children: [
           Positioned.fill(
@@ -92,6 +95,8 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                   isBookmarked: widget.short.bookmarkedByUser,
                   bookmarkCallback: () => _bookmarkCallback(),
                   reportCallback: () => _reportCallback(),
+                  deleteSelf: () => _deleteSelf(),
+                  isOwn: widget.short.creator.id == user.id,
                 ),
                 icon: const Icon(Icons.more_horiz_outlined),
               ),
@@ -178,12 +183,37 @@ class _ShortCardState extends ConsumerState<ShortCard> {
     );
   }
 
-  void _bookmarkCallback() {
-    widget.short.bookmarkedByUser
-        ? shortApi.unbookmarkShort(widget.short.id)
-        : shortApi.bookmarkShort(widget.short.id);
-    widget.short.toggleBookmarked(user);
+  void _bookmarkCallback() async {
+    ResultModel bookMarkResult = widget.short.bookmarkedByUser
+        ? await shortApi.unbookmarkShort(widget.short.id)
+        : await shortApi.bookmarkShort(widget.short.id);
+    if (bookMarkResult.type == ResultType.success) {
+      CustomFlushbar.success(
+              message: widget.short.bookmarkedByUser
+                  ? "Short von gespeicherten Lernpacks entfernt"
+                  : "Short gespeichert")
+          .show(context);
+      widget.short.toggleBookmarked(user);
+    } else {
+      CustomFlushbar.error(
+              message: widget.short.bookmarkedByUser
+                  ? "Short konnte nicht von gespeicherten Lernpacks entfernt werden"
+                  : "Short konnte nicht gespeichert werden")
+          .show(context);
+    }
     setState(() {});
+  }
+
+  void _deleteSelf() async {
+    ResultModel result = await shortApi.deleteShort(id: widget.short.id);
+    ref.watch(reloadProvider).reload();
+    if (result.type == ResultType.success) {
+      CustomFlushbar.success(message: "Dein Short wurde erfolgreich gelöscht")
+          .show(context);
+    } else {
+      CustomFlushbar.error(message: "Dein Short konnte nicht gelöscht werden")
+          .show(context);
+    }
   }
 
   void _reportCallback() => showDialog(

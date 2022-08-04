@@ -49,20 +49,29 @@ class _PackFeedState extends ConsumerState<PackFeed> {
         );
 
         return PackFeedView(
-            categories: categories, packListHelper: packListHelper);
+          categories: categories,
+          packListHelper: packListHelper,
+          refresh: _refresh,
+        );
       }),
     );
+  }
+
+  void _refresh() {
+    setState(() {});
   }
 }
 
 class PackFeedView extends ConsumerStatefulWidget {
   final List<ContentCategory> categories;
   final PackListHelper packListHelper;
+  final Function refresh;
 
   const PackFeedView({
     Key? key,
     required this.categories,
     required this.packListHelper,
+    required this.refresh,
   }) : super(key: key);
 
   @override
@@ -116,17 +125,22 @@ class _PackFeedViewState extends ConsumerState<PackFeedView> {
           currentPacks.isEmpty
               ? const Center(child: Text("Es wurden keine packs gefunden"))
               : Expanded(
-                  child: ListView.builder(
-                    addAutomaticKeepAlives: true,
-                    shrinkWrap: true,
-                    itemCount: currentPacks.length,
-                    itemBuilder: ((context, index) {
-                      Pack pack = currentPacks[index];
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      widget.refresh();
+                    },
+                    child: ListView.builder(
+                      addAutomaticKeepAlives: true,
+                      shrinkWrap: true,
+                      itemCount: currentPacks.length,
+                      itemBuilder: ((context, index) {
+                        Pack pack = currentPacks[index];
 
-                      return PackCard(
-                        pack: pack,
-                      );
-                    }),
+                        return PackCard(
+                          pack: pack,
+                        );
+                      }),
+                    ),
                   ),
                 ),
         ],

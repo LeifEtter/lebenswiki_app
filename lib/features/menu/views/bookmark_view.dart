@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
@@ -74,8 +73,6 @@ class _BookmarkFeedState extends ConsumerState<BookmarkFeed>
                   categories: categories,
                   blockedList: blockedList,
                 );
-
-                log("after packs init");
 
                 return Expanded(
                   child: Column(

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/buttons.dart';
 import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/features/common/components/tab_bar.dart';
+import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/features/menu/views/your_shorts_view.dart';
@@ -185,7 +186,6 @@ class _CreateShortState extends ConsumerState<CreateShort> {
     );
   }
 
-  //TODO implement succesfull popup
   void createCallback({
     required User user,
     required List<ContentCategory> categories,
@@ -201,7 +201,7 @@ class _CreateShortState extends ConsumerState<CreateShort> {
       creationDate: DateTime.now(),
     ))
         .then(
-      (_) {
+      (_) async {
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -210,6 +210,7 @@ class _CreateShortState extends ConsumerState<CreateShort> {
             ),
           ),
         );
+        CustomFlushbar.success(message: "Short erstellt!").show(context);
       },
     );
   }
