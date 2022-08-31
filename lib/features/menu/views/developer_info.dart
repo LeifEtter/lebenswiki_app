@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/buttons.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
+import 'package:lebenswiki_app/features/menu/views/feedback_view.dart';
 
 class DeveloperInfoView extends StatefulWidget {
   const DeveloperInfoView({Key? key}) : super(key: key);
@@ -45,13 +46,10 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   "Evangelische Akademie Loccum",
                   textAlign: TextAlign.start,
-                  style: TextStyle(
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: _title(),
                 ),
                 const Divider(),
                 Row(
@@ -87,15 +85,12 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             "Kontakt",
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: _subtitle(),
                           ),
-                          Text("+49 (0) 5766 81-0 \n"
+                          const Text("+49 (0) 5766 81-0 \n"
                               "eal@evlka.de \n"),
                         ],
                       ),
@@ -105,14 +100,11 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                 const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       "Lebenswiki",
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: _title(),
                     ),
                   ],
                 ),
@@ -124,15 +116,12 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             "Anschrift",
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: _subtitle(),
                           ),
-                          Text(
+                          const Text(
                             "Max Brenner \n"
                             "Lohmühlenstraße 65 \n"
                             "12435 Berlin \n",
@@ -150,15 +139,12 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             "Kontakt",
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: _subtitle(),
                           ),
-                          Text("+49 (0) 171 517-3435 \n"
+                          const Text("+49 (0) 171 517-3435 \n"
                               "lebenswiki@gmail.com \n"),
                         ],
                       ),
@@ -171,29 +157,10 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       "Feedback Formular",
-                      style: TextStyle(
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: _title(),
                     ),
-                    //TODO Finish feedback form
-                    /*Padding(
-                      padding: const EdgeInsets.only(
-                          left: 30.0, right: 30.0, top: 25.0),
-                      child: AuthInputBiography(
-                        child: TextFormField(
-                          controller: _feedbackController,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.all(10.0),
-                          ),
-                          minLines: 5,
-                          maxLines: 10,
-                        ),
-                      ),
-                    ),*/
                     const SizedBox(height: 10.0),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -204,9 +171,14 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                                 LebenswikiButtons.textButton.blueButtonNormal(
                               text: "Feedback abschicken",
                               callback: () {
-                                userApi.createFeedback(
+                                /*userApi.createFeedback(
                                     feedback:
-                                        _feedbackController.text.toString());
+                                        _feedbackController.text.toString());*/
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: ((context) =>
+                                            const FeedbackScreen())));
                               },
                             ),
                           ),
@@ -223,4 +195,14 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
       ),
     ));
   }
+
+  TextStyle _title() => const TextStyle(
+        fontSize: 25.0,
+        fontWeight: FontWeight.w500,
+      );
+
+  TextStyle _subtitle() => const TextStyle(
+        fontSize: 20.0,
+        fontWeight: FontWeight.w500,
+      );
 }

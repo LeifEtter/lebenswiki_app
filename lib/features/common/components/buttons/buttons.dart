@@ -6,7 +6,6 @@ import 'package:lebenswiki_app/repository/text_styles.dart';
 class LebenswikiButtons {
   static LebenswikiTextButton textButton = LebenswikiTextButton();
   static LebenswikiIconButton iconButton = LebenswikiIconButton();
-  static LebenswikiTextIconButton textIconButton = LebenswikiTextIconButton();
 }
 
 class LebenswikiTextButton {
@@ -37,7 +36,7 @@ class LebenswikiTextButton {
     required String text,
     required Function callback,
   }) {
-    return blueButton(
+    return normal(
       backgroundColor: const Color.fromRGBO(115, 148, 192, 1),
       textColor: Colors.white,
       text: text,
@@ -49,7 +48,7 @@ class LebenswikiTextButton {
     required String text,
     required Function callback,
   }) {
-    return blueButton(
+    return normal(
       backgroundColor: Colors.transparent,
       textColor: const Color.fromRGBO(115, 148, 192, 1),
       text: text,
@@ -57,7 +56,7 @@ class LebenswikiTextButton {
     );
   }
 
-  Widget blueButton({
+  Widget normal({
     required Color backgroundColor,
     required Color textColor,
     required String text,
@@ -66,8 +65,8 @@ class LebenswikiTextButton {
     return Container(
       height: 43,
       decoration: BoxDecoration(
-        color: backgroundColor, //Color.fromRGBO(115, 148, 192, 1),
-        borderRadius: BorderRadius.circular(15.0),
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(10.0),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -79,7 +78,7 @@ class LebenswikiTextButton {
                 fontWeight: FontWeight.w600,
                 color: textColor,
                 fontSize: 14,
-              ), //Colors.white
+              ),
             ),
             onPressed: () {
               callback();
@@ -117,5 +116,3 @@ class LebenswikiIconButton {
         ),
       );
 }
-
-class LebenswikiTextIconButton {}
