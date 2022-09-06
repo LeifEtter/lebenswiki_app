@@ -5,6 +5,7 @@ class CustomColors {
   static HexColor get offBlack => HexColor("#1E1E1E");
   static HexColor get darkGrey => HexColor("#9B9B9B");
   static HexColor get blue => HexColor("#90B1D8");
+  static HexColor get whiteOverlay => HexColor("#F5F5F5");
 
   //Background Colors
   static HexColor get lightGrey => HexColor("#F1F1F1");

@@ -6,7 +6,7 @@ ThemeData buildTheme(brightness) => ThemeData(
       brightness: brightness,
       textTheme: TextTheme(
         headlineLarge: TextStyle(
-          fontSize: 20.0,
+          fontSize: 22.0,
           fontWeight: FontWeight.w600,
           color: CustomColors.textBlack,
         ),
@@ -20,13 +20,18 @@ ThemeData buildTheme(brightness) => ThemeData(
           fontWeight: FontWeight.w600,
           color: CustomColors.offBlack,
         ),
+        labelSmall: TextStyle(
+          fontSize: 14.0,
+          fontWeight: FontWeight.w400,
+          color: CustomColors.offBlack,
+        ),
         bodyMedium: TextStyle(
           fontSize: 16.0,
           fontWeight: FontWeight.w400,
           color: CustomColors.textGrey,
         ),
         bodySmall: const TextStyle(
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: FontWeight.w400,
         ),
       ),

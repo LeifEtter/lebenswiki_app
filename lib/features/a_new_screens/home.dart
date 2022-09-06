@@ -1,7 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/features/a_new_common/examples.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/cards.dart';
 import 'package:lebenswiki_app/features/a_new_common/extensions.dart';
 import 'package:lebenswiki_app/features/packs/helper/pack_list_helper.dart';
@@ -54,6 +53,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
         enableInfiniteScroll: false,
         padEnds: false,
         height: height,
+        viewportFraction: 0.75,
       );
 
   Widget packSection({
@@ -72,10 +72,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
             options: standardOptions(height: isReading ? 200 : 250),
             items: List.generate(
                 packs.length,
-                (index) => NewPackCard(
-                      progressValue: 0,
-                      isStarted: isReading,
-                      pack: packs[index],
+                (index) => Padding(
+                      padding: EdgeInsets.only(
+                          left: 20, right: index == packs.length - 1 ? 20 : 0),
+                      child: NewPackCard(
+                        progressValue: 0,
+                        isStarted: isReading,
+                        pack: packs[index],
+                      ),
                     )),
           ),
         ],
