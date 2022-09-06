@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
 import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
@@ -7,13 +8,15 @@ import 'package:lebenswiki_app/features/routing/routes.dart';
 import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
-import 'package:lebenswiki_app/repository/colors.dart';
 
 Widget dialAddButton(context) {
   return SpeedDial(
-    backgroundColor: LebenswikiColors.blue,
+    iconTheme: const IconThemeData(
+      size: 40,
+    ),
+    backgroundColor: CustomColors.blue,
     direction: SpeedDialDirection.up,
-    icon: Icons.add,
+    icon: Icons.add_rounded,
     children: [
       SpeedDialChild(
         label: "Lernpack Erstellen",

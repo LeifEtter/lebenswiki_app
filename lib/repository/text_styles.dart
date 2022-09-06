@@ -39,7 +39,7 @@ class LebenswikiTextStyles {
   );
 
   static ShortContent shortContent = ShortContent();
-  static MenuBar menuBar = MenuBar();
+  static MenuBarStyles menuBar = MenuBarStyles();
   static CategoryBar categoryBar = CategoryBar();
   static AuthenticationContent authenticationContent = AuthenticationContent();
 }
@@ -57,7 +57,7 @@ class ShortContent {
       );
 }
 
-class MenuBar {
+class MenuBarStyles {
   TextStyle get menuText => const TextStyle(
         fontSize: 18.0,
         fontWeight: FontWeight.w500,

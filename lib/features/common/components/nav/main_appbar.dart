@@ -10,7 +10,6 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AppBar(
       backgroundColor: Colors.white,
-      elevation: 0,
       titleSpacing: 10,
       title: const Padding(
         padding: EdgeInsets.only(top: 0),
@@ -52,3 +51,5 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
+
+

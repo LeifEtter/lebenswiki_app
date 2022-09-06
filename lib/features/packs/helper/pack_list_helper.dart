@@ -5,6 +5,9 @@ class PackListHelper {
   List<Pack> packs = [];
   List<Pack> queriedPacks = [];
   Map<int, List<Pack>> categorizedPacks = {};
+  List<Pack> startedPacks = [];
+  List<Pack> recommendedPacks = [];
+  List<Pack> newArticles = [];
 
   PackListHelper({
     required this.packs,
@@ -15,6 +18,9 @@ class PackListHelper {
     filterShortsForBlocked(blockedList);
     initDisplayParams(currentUserId);
     initCategorizedShorts(categories);
+    initRecommendedPacks();
+    initStartedPacks();
+    initNewArticles();
     queriedPacks = packs;
   }
 
@@ -48,6 +54,18 @@ class PackListHelper {
         categorizedPacks[pack.categories.first.id]!.add(pack);
       }
     }
+  }
+
+  void initStartedPacks() {
+    startedPacks = packs;
+  }
+
+  void initRecommendedPacks() {
+    recommendedPacks = packs;
+  }
+
+  void initNewArticles() {
+    newArticles = packs;
   }
 
   void queryShorts(String query) {

@@ -18,17 +18,25 @@ class Pack {
   List<Map> reactions = [];
   late DateTime creationDate;
 
-  Pack({
-    required this.title,
-    required this.description,
-    required this.pages,
-    required this.categories,
-    required this.titleImage,
-    this.published = false,
-    required this.creatorId,
-    this.bookmarks = const [],
-    this.reactions = const [],
-  }) {
+  //New Params
+  String? initiative;
+  int? readTime;
+  int? claps;
+
+  Pack(
+      {required this.title,
+      required this.description,
+      required this.pages,
+      required this.categories,
+      required this.titleImage,
+      this.published = false,
+      this.creator,
+      required this.creatorId,
+      this.bookmarks = const [],
+      this.reactions = const [],
+      this.initiative,
+      this.readTime,
+      this.claps}) {
     creationDate = DateTime.now();
   }
 
