@@ -1,3 +1,4 @@
+import 'package:lebenswiki_app/features/a_new_wrappers/main_wrapper.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 
@@ -8,13 +9,11 @@ class ShortListHelper {
 
   ShortListHelper({
     required this.shorts,
-    required int currentUserId,
-    required List<ContentCategory> categories,
-    required List<int> blockedList,
+    required HelperData helperData,
   }) {
-    filterShortsForBlocked(blockedList);
-    initDisplayParams(currentUserId);
-    initCategorizedShorts(categories);
+    filterShortsForBlocked(helperData.blockedIdList);
+    initDisplayParams(helperData.currentUserId);
+    initCategorizedShorts(helperData.categories);
     queriedShorts = shorts;
   }
 

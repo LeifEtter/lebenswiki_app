@@ -47,7 +47,7 @@ class BlockedListNotifier extends ChangeNotifier {
 
   List<Block> get blockedList => _blockedList ?? [];
   List<int> get blockedIdList => _blockedIdList ?? [99999999];
-
+  
   void setBlockedList(List<Block> newBlocks) {
     _blockedList = newBlocks;
     _setBlockedIdList();

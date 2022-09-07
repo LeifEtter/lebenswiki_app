@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/token/token_handler.dart';
 import 'package:lebenswiki_app/features/a_new_common/theme.dart';
-import 'package:lebenswiki_app/features/a_new_screens/wrapper.dart';
+import 'package:lebenswiki_app/features/a_new_wrappers/main_wrapper.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/routing/router.dart';
 import 'package:lebenswiki_app/features/routing/routing_constants.dart';
@@ -62,6 +62,7 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
     if (isValid) {
       //In case data has changed set Providers again
       ProviderHelper.resetSessionProviders(ref);
+
       await ProviderHelper.getDataAndSetSessionProviders(ref);
       return true;
     } else {

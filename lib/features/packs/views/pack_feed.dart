@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/features/a_new_wrappers/main_wrapper.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/common/components/tab_bar.dart';
 import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
@@ -24,10 +25,12 @@ class _PackFeedState extends ConsumerState<PackFeed> {
 
   @override
   Widget build(BuildContext context) {
-    final List<ContentCategory> categories =
-        ref.read(categoryProvider).categories;
-    final int userId = ref.read(userProvider).user.id;
-    final List<int> blockedList = ref.watch(blockedListProvider).blockedIdList;
+    List<ContentCategory> categories = ref.read(categoryProvider).categories;
+    HelperData helperData = HelperData(
+      categories: categories,
+      blockedIdList: ref.read(blockedListProvider).blockedIdList,
+      currentUserId: ref.read(userProvider).user.id,
+    );
     return FutureBuilder(
       future: packApi.getAllPacks(),
       builder: ((BuildContext context, AsyncSnapshot snapshot) {
@@ -43,9 +46,7 @@ class _PackFeedState extends ConsumerState<PackFeed> {
 
         PackListHelper packListHelper = PackListHelper(
           packs: _packList,
-          currentUserId: userId,
-          categories: categories,
-          blockedList: blockedList,
+          helperData: helperData,
         );
 
         return PackFeedView(

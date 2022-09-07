@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/features/a_new_wrappers/main_wrapper.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/common/components/tab_bar.dart';
 import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
@@ -25,10 +26,12 @@ class _ShortFeedState extends ConsumerState<ShortFeed> {
   @override
   Widget build(BuildContext context) {
     ref.watch(reloadProvider);
-    final List<ContentCategory> categories =
-        ref.read(categoryProvider).categories;
-    final int userId = ref.read(userProvider).user.id;
-    final List<int> blockedList = ref.watch(blockedListProvider).blockedIdList;
+    List<ContentCategory> categories = ref.read(categoryProvider).categories;
+    HelperData helperData = HelperData(
+      categories: categories,
+      blockedIdList: ref.read(blockedListProvider).blockedIdList,
+      currentUserId: ref.read(userProvider).user.id,
+    );
     return FutureBuilder(
       future: shortApi.getAllShorts(),
       builder: ((BuildContext context, AsyncSnapshot snapshot) {
@@ -43,12 +46,8 @@ class _ShortFeedState extends ConsumerState<ShortFeed> {
 
         List<Short> _shortList = List<Short>.from(result.responseList);
 
-        ShortListHelper shortListHelper = ShortListHelper(
-          shorts: _shortList,
-          currentUserId: userId,
-          categories: categories,
-          blockedList: blockedList,
-        );
+        ShortListHelper shortListHelper =
+            ShortListHelper(shorts: _shortList, helperData: helperData);
 
         return ShortFeedView(
           categories: categories,

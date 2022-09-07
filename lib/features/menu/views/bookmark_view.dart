@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/features/a_new_wrappers/main_wrapper.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 import 'package:lebenswiki_app/features/common/components/tab_bar.dart';
@@ -43,10 +44,11 @@ class _BookmarkFeedState extends ConsumerState<BookmarkFeed>
 
   @override
   Widget build(BuildContext context) {
-    final User user = ref.read(userProvider).user;
-    final List<ContentCategory> categories =
-        ref.read(categoryProvider).categories;
-    final List<int> blockedList = ref.read(blockedListProvider).blockedIdList;
+    HelperData helperData = HelperData(
+      categories: ref.read(categoryProvider).categories,
+      blockedIdList: ref.read(blockedListProvider).blockedIdList,
+      currentUserId: ref.read(userProvider).user.id,
+    );
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -62,16 +64,12 @@ class _BookmarkFeedState extends ConsumerState<BookmarkFeed>
 
                 ShortListHelper shortListHelper = ShortListHelper(
                   shorts: snapshot.data["shorts"],
-                  currentUserId: user.id,
-                  categories: categories,
-                  blockedList: blockedList,
+                  helperData: helperData,
                 );
 
                 PackListHelper packListHelper = PackListHelper(
                   packs: snapshot.data["packs"],
-                  currentUserId: user.id,
-                  categories: categories,
-                  blockedList: blockedList,
+                  helperData: helperData,
                 );
 
                 return Expanded(

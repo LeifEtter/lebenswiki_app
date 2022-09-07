@@ -27,6 +27,7 @@ dependencies:
   carousel_slider: ^4.1.1
   google_nav_bar: ^5.0.6
   emojis: ^0.9.9
+  either_dart: ^0.2.0
 
 dev_dependencies:
   flutter_test:

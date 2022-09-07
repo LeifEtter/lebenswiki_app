@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/features/a_new_widget_repo/cards.dart';
+import 'package:lebenswiki_app/features/a_new_widget_repo/pack_card.dart';
 import 'package:lebenswiki_app/features/a_new_common/extensions.dart';
 import 'package:lebenswiki_app/features/packs/helper/pack_list_helper.dart';
 
@@ -74,7 +74,8 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 packs.length,
                 (index) => Padding(
                       padding: EdgeInsets.only(
-                          left: 20, right: index == packs.length - 1 ? 20 : 0),
+                          left: index == 0 ? 20 : 10,
+                          right: index == packs.length + 1 ? 20 : 10),
                       child: NewPackCard(
                         progressValue: 0,
                         isStarted: isReading,

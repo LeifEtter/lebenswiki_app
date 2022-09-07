@@ -3,6 +3,7 @@ import 'package:hexcolor/hexcolor.dart';
 class CustomColors {
   //General Colors
   static HexColor get offBlack => HexColor("#1E1E1E");
+  static HexColor get mediumGrey => HexColor("#D7D7D7");
   static HexColor get darkGrey => HexColor("#9B9B9B");
   static HexColor get blue => HexColor("#90B1D8");
   static HexColor get whiteOverlay => HexColor("#F5F5F5");
