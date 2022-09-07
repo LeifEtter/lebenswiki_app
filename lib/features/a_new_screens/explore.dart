@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/pack_card.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
-import 'package:lebenswiki_app/features/a_new_widget_repo/short_card.dart';
 import 'package:lebenswiki_app/features/packs/helper/pack_list_helper.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/features/shorts/helper/short_list_helper.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
-import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/features/a_new_common/extensions.dart';
 
 class ExploreView extends ConsumerStatefulWidget {
@@ -78,7 +76,7 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
           style: Theme.of(context).textTheme.headlineLarge,
         ).addPadding(),
         CarouselSlider(
-          items: [
+          items: const [
             /*NewShortCard(
               short: ,
             ),*/

@@ -28,11 +28,11 @@ class _NewShortCardState extends ConsumerState<NewShortCard> {
         children: [
           Row(
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 backgroundImage:
                     NetworkImage("http://source.unsplash.com/3JmfENcL24M"),
               ),
-              Text("Clara Brauer"),
+              const Text("Clara Brauer"),
               InfoLabel(
                 text: "Finanzen",
                 backgroundColor: CustomColors.mediumGrey,

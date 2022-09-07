@@ -13,9 +13,7 @@ import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
 import 'package:lebenswiki_app/features/shorts/helper/short_list_helper.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
-import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
-import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
 class BookmarkFeed extends ConsumerStatefulWidget {
