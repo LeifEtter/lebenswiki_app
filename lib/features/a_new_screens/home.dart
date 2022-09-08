@@ -28,18 +28,21 @@ class _HomeViewState extends ConsumerState<HomeView> {
     return ListView(
       children: [
         packSection(
+          heroParent: "home-continue",
           title: "Continue Reading",
           packs: widget.packHelper.startedPacks,
           isReading: true,
         ),
         const SizedBox(height: 10),
         packSection(
+          heroParent: "home-recommended",
           title: "Recommended For You",
           packs: widget.packHelper.recommendedPacks,
           isReading: false,
         ),
         const SizedBox(height: 10),
         packSection(
+          heroParent: "home-new",
           title: "New Articles",
           packs: widget.packHelper.newArticles,
           isReading: false,
@@ -57,6 +60,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
       );
 
   Widget packSection({
+    required String heroParent,
     required String title,
     required List packs,
     required bool isReading,
@@ -77,6 +81,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                           left: index == 0 ? 20 : 10,
                           right: index == packs.length + 1 ? 20 : 10),
                       child: NewPackCard(
+                        heroParent: heroParent,
                         progressValue: 0,
                         isStarted: isReading,
                         pack: packs[index],

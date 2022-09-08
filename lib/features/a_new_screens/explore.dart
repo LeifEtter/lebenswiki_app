@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/pack_card.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
+import 'package:lebenswiki_app/features/a_new_widget_repo/short_card.dart';
 import 'package:lebenswiki_app/features/packs/helper/pack_list_helper.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/features/shorts/helper/short_list_helper.dart';
+import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/features/a_new_common/extensions.dart';
 
@@ -59,9 +61,13 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
               const SizedBox(height: 20),
               CarouselSlider(
                 items: List<Widget>.from(
-                  widget.packHelper.categorizedPacks[_selectedCategory]!.map(
-                      (Pack pack) => NewPackCard(
-                          progressValue: 0, isStarted: false, pack: pack)),
+                  widget.packHelper.categorizedPacks[_selectedCategory]!
+                      .map((Pack pack) => NewPackCard(
+                            heroParent: "explore-categories",
+                            progressValue: 0,
+                            isStarted: false,
+                            pack: pack,
+                          )),
                 ),
                 options: CarouselOptions(
                   enableInfiniteScroll: false,
@@ -76,12 +82,16 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
           style: Theme.of(context).textTheme.headlineLarge,
         ).addPadding(),
         CarouselSlider(
-          items: const [
-            /*NewShortCard(
-              short: ,
-            ),*/
-          ],
-          options: CarouselOptions(),
+          items: List<Widget>.from(widget.shortHelper.shorts.map(
+            (Short short) => Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: NewShortCard(short: short),
+            ),
+          )),
+          options: CarouselOptions(
+            height: 230,
+            enableInfiniteScroll: false,
+          ),
         ),
       ],
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/features/a_new_common/labels.dart';
+import 'package:lebenswiki_app/features/a_new_screens/view_pack.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:emojis/emoji.dart';
@@ -7,6 +8,7 @@ import 'package:lebenswiki_app/features/a_new_common/theme.dart';
 import 'package:intl/intl.dart';
 
 class NewPackCard extends StatelessWidget {
+  final String heroParent;
   final int progressValue;
   final bool isStarted;
   final Pack pack;
@@ -16,85 +18,98 @@ class NewPackCard extends StatelessWidget {
     required this.progressValue,
     required this.isStarted,
     required this.pack,
+    required this.heroParent,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0),
-        color: CustomColors.lightGrey,
-      ),
-      child: Column(
-        children: [
-          Flexible(
-            flex: 50,
-            fit: FlexFit.tight,
-            child: Stack(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(15.0),
-                      topRight: Radius.circular(15.0),
-                    ),
-                    child: Image.network(
-                      pack.titleImage,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Wrap(
-                      alignment: WrapAlignment.end,
-                      runSpacing: 5.0,
-                      children: [
-                        InfoLabel(
-                          text: pack.categories[0].categoryName,
-                          backgroundColor: CustomColors.whiteOverlay,
+    return GestureDetector(
+      onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: ((context) => ViewPack(
+                    pack: pack,
+                    heroName: "$heroParent-${pack.id}-hero",
+                  )))),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+          color: CustomColors.lightGrey,
+        ),
+        child: Column(
+          children: [
+            Flexible(
+              flex: 50,
+              fit: FlexFit.tight,
+              child: Stack(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(15.0),
+                        topRight: Radius.circular(15.0),
+                      ),
+                      child: Hero(
+                        tag: "$heroParent-${pack.id}-hero",
+                        child: Image.network(
+                          pack.titleImage,
+                          fit: BoxFit.cover,
                         ),
-                        InfoLabel(
-                            text: "5 Minute Read",
-                            backgroundColor: CustomColors.whiteOverlay),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: Wrap(
+                        alignment: WrapAlignment.end,
+                        runSpacing: 5.0,
+                        children: [
+                          InfoLabel(
+                            text: pack.categories[0].categoryName,
+                            backgroundColor: CustomColors.whiteOverlay,
+                          ),
+                          InfoLabel(
+                              text: "5 Minute Read",
+                              backgroundColor: CustomColors.whiteOverlay),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Flexible(
-            flex: 50,
-            child: SizedBox(
-              width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 15, top: 15, right: 5, bottom: 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      pack.title,
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    Text(
-                      "by ${pack.creator!.name} for ${pack.initiative}",
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    Expanded(child: Container()),
-                    !isStarted
-                        ? _buildInfoBar(context)
-                        : _buildProgressRow(context),
-                  ],
+            Flexible(
+              flex: 50,
+              child: SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 15, top: 15, right: 5, bottom: 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        pack.title,
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                      Text(
+                        "by ${pack.creator!.name} for ${pack.initiative}",
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      Expanded(child: Container()),
+                      !isStarted
+                          ? _buildInfoBar(context)
+                          : _buildProgressRow(context),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
