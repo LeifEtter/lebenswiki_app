@@ -16,7 +16,6 @@ import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/features/shorts/helper/short_list_helper.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
-import 'package:lebenswiki_app/features/shorts/views/short_feed.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
@@ -99,7 +98,7 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
         bottom: false,
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
-            List<Widget> appBars = [appBar()];
+            List<Widget> appBars = [appBar(showMenu: _showMenu)];
             if (_showSearch) {
               appBars.add(SearchBar(
                 onChange: () {},
@@ -170,4 +169,72 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
           _showSearch = false;
         }
       });
+
+  void _showMenu() => showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(25.0),
+      ),
+      context: context,
+      builder: (context) {
+        return Container(
+          height: 400,
+          padding: const EdgeInsets.all(30.0),
+          child: Column(
+            children: [
+              _buildMenuTile(
+                text: "Profil",
+                icon: Icons.person_outline_rounded,
+              ),
+              _buildMenuTile(
+                text: "Gespeichert",
+                icon: Icons.bookmark_outline,
+              ),
+              _buildMenuTile(
+                text: "Hilfe",
+                icon: Icons.help_outline_rounded,
+              ),
+              _buildMenuTile(
+                text: "Kontakt",
+                icon: Icons.phone_outlined,
+              ),
+              _buildMenuTile(
+                text: "Ausloggen",
+                icon: Icons.logout,
+              ),
+            ],
+          ),
+        );
+      });
+
+  Widget _buildMenuTile({required String text, required IconData icon}) =>
+      Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Icon(
+                icon,
+                size: 30,
+              ),
+              const SizedBox(width: 20),
+              Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          const Padding(
+            padding: EdgeInsets.only(
+              top: 10,
+              left: 40,
+            ),
+            child: Divider(
+              thickness: 1,
+            ),
+          ),
+        ],
+      );
 }

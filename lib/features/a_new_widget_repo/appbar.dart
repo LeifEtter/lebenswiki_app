@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
-SliverAppBar appBar() {
+SliverAppBar appBar({required Function showMenu}) {
   return SliverAppBar(
     systemOverlayStyle: SystemUiOverlayStyle.dark,
     floating: true,
@@ -28,9 +28,9 @@ SliverAppBar appBar() {
         padding: const EdgeInsets.only(right: 5.0),
         child: IconButton(
           iconSize: 30,
-          onPressed: () {},
+          onPressed: () => showMenu(),
           icon: const Icon(
-            Icons.menu,
+            Icons.more_vert_rounded,
             color: Colors.black,
           ),
         ),
