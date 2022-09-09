@@ -27,12 +27,22 @@ ThemeData buildTheme(brightness) => ThemeData(
         ),
         bodyMedium: TextStyle(
           fontSize: 16.0,
-          fontWeight: FontWeight.w400,
-          color: CustomColors.textGrey,
+          fontWeight: FontWeight.w300,
+          color: CustomColors.offBlack,
         ),
         bodySmall: const TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w400,
+        ),
+        displayLarge: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: CustomColors.offBlack,
+        ),
+        displaySmall: TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 13,
+          color: CustomColors.offBlack,
         ),
       ),
     );

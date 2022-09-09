@@ -15,4 +15,5 @@ class CustomColors {
   static HexColor get textBlack => HexColor("#272833");
   static HexColor get textGrey => HexColor("#646464");
   static HexColor get blueText => HexColor("#577EAC");
+  static HexColor get textMediumGrey => HexColor("#777777");
 }

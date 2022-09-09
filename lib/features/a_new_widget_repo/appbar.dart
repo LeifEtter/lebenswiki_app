@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
 SliverAppBar appBar() {
   return SliverAppBar(
+    systemOverlayStyle: SystemUiOverlayStyle.dark,
     floating: true,
     title: const Padding(
       padding: EdgeInsets.only(top: 0),

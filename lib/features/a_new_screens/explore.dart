@@ -85,7 +85,10 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
           items: List<Widget>.from(widget.shortHelper.shorts.map(
             (Short short) => Padding(
               padding: const EdgeInsets.only(right: 20),
-              child: NewShortCard(short: short),
+              child: NewShortCard(
+                short: short,
+                inSlider: true,
+              ),
             ),
           )),
           options: CarouselOptions(

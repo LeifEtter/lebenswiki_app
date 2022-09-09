@@ -2,6 +2,7 @@ import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/features/a_new_screens/community.dart';
 import 'package:lebenswiki_app/features/a_new_screens/explore.dart';
 import 'package:lebenswiki_app/features/a_new_screens/home.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/appbar.dart';
@@ -128,7 +129,9 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
                           packHelper: right["packHelper"],
                           shortHelper: right["shortHelper"],
                         ),
-                        const ShortFeed(),
+                        CommunityView(
+                          shortHelper: right["shortHelper"],
+                        ),
                       ],
                     );
                   },
