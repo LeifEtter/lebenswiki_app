@@ -1,13 +1,16 @@
+import 'package:animate_icons/animate_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/features/a_new_common/labels.dart';
 import 'package:lebenswiki_app/features/a_new_screens/view_pack.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
+import 'package:lebenswiki_app/features/a_new_widget_repo/lw.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:emojis/emoji.dart';
 import 'package:lebenswiki_app/features/a_new_common/theme.dart';
 import 'package:intl/intl.dart';
+import 'package:lebenswiki_app/repository/shadows.dart';
 
-class NewPackCard extends StatelessWidget {
+class NewPackCard extends StatefulWidget {
   final String heroParent;
   final int progressValue;
   final bool isStarted;
@@ -22,14 +25,21 @@ class NewPackCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<NewPackCard> createState() => _NewPackCardState();
+}
+
+class _NewPackCardState extends State<NewPackCard> {
+  final AnimateIconController animateIconController = AnimateIconController();
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
               builder: ((context) => ViewPack(
-                    pack: pack,
-                    heroName: "$heroParent-${pack.id}-hero",
+                    pack: widget.pack,
+                    heroName: "${widget.heroParent}-${widget.pack.id}-hero",
                   )))),
       child: Container(
         decoration: BoxDecoration(
@@ -51,9 +61,9 @@ class NewPackCard extends StatelessWidget {
                         topRight: Radius.circular(15.0),
                       ),
                       child: Hero(
-                        tag: "$heroParent-${pack.id}-hero",
+                        tag: "${widget.heroParent}-${widget.pack.id}-hero",
                         child: Image.network(
-                          pack.titleImage,
+                          widget.pack.titleImage,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -66,14 +76,20 @@ class NewPackCard extends StatelessWidget {
                       child: Wrap(
                         alignment: WrapAlignment.end,
                         runSpacing: 5.0,
+                        spacing: 8,
                         children: [
                           InfoLabel(
-                            text: pack.categories[0].categoryName,
+                            text: widget.pack.categories[0].categoryName,
                             backgroundColor: CustomColors.whiteOverlay,
                           ),
                           InfoLabel(
-                              text: "5 Minute Read",
-                              backgroundColor: CustomColors.whiteOverlay),
+                            icon: const Icon(
+                              Icons.schedule,
+                              size: 18,
+                            ),
+                            text: "' 5",
+                            backgroundColor: CustomColors.whiteOverlay,
+                          ),
                         ],
                       ),
                     ),
@@ -92,15 +108,15 @@ class NewPackCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        pack.title,
+                        widget.pack.title,
                         style: Theme.of(context).textTheme.labelMedium,
                       ),
                       Text(
-                        "by ${pack.creator!.name} for ${pack.initiative}",
+                        "by ${widget.pack.creator!.name} for ${widget.pack.initiative}",
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       Expanded(child: Container()),
-                      !isStarted
+                      !widget.isStarted
                           ? _buildInfoBar(context)
                           : _buildProgressRow(context),
                     ],
@@ -119,15 +135,41 @@ class NewPackCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-                "${DateFormat.MMMd().format(pack.creationDate)}  |  ${Emoji.byName("clapping hands")} ${pack.claps}  |  "),
-            const Padding(
-              padding: EdgeInsets.only(top: 2.0),
-              child: Icon(Icons.mode_comment, size: 15),
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 7.0, horizontal: 10.0),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.white,
+                  boxShadow: [LebenswikiShadows.fancyShadow]),
+              child: Row(
+                children: [
+                  Text(DateFormat.MMMd().format(widget.pack.creationDate)),
+                  _buildVerticalDivider(horizontalPadding: 8),
+                  Text(
+                      "${Emoji.byName("clapping hands")} ${widget.pack.claps}"),
+                  _buildVerticalDivider(horizontalPadding: 8),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 2.0),
+                    child: Icon(Icons.mode_comment, size: 15),
+                  ),
+                  const SizedBox(width: 5),
+                  const Text("10"),
+                ],
+              ),
             ),
-            const Text(" "),
             const Spacer(),
-            const Icon(Icons.bookmark_outline, size: 30.0),
+            AnimateIcons(
+              size: 32,
+              startIconColor: CustomColors.offBlack,
+              endIconColor: CustomColors.offBlack,
+              startIcon: Icons.bookmark_add_outlined,
+              endIcon: Icons.bookmark_added,
+              onStartIconPress: () => true,
+              onEndIconPress: () => true,
+              duration: const Duration(milliseconds: 400),
+              controller: animateIconController,
+            ),
           ],
         ),
       );
@@ -136,7 +178,7 @@ class NewPackCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("$progressValue% fertig",
+          Text("${widget.progressValue}% fertig",
               style: Theme.of(context).textTheme.blueLabel),
           IconButton(
             onPressed: () {},
@@ -146,5 +188,14 @@ class NewPackCard extends StatelessWidget {
             ),
           ),
         ],
+      );
+
+  Widget _buildVerticalDivider({required double horizontalPadding}) => Padding(
+        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+        child: Container(
+          color: CustomColors.lightGrey,
+          width: 2,
+          height: 25,
+        ),
       );
 }
