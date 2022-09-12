@@ -10,10 +10,11 @@ class TopNavIOS extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
+        SizedBox(
+          width: 50,
           child: IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -21,16 +22,12 @@ class TopNavIOS extends StatelessWidget {
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
           ),
         ),
-        Align(
-          alignment: Alignment.center,
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+        Text(
+          title,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Container(),
+        Container(
+          width: 50,
         ),
       ],
     );

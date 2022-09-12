@@ -166,7 +166,7 @@ class _NewPackCardState extends State<NewPackCard> {
               endIcon: Icons.bookmark_added,
               onStartIconPress: () => true,
               onEndIconPress: () => true,
-              duration: const Duration(milliseconds: 400),
+              duration: const Duration(milliseconds: 200),
               controller: animateIconController,
             ),
           ],

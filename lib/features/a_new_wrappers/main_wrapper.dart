@@ -3,14 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/a_new_screens/community.dart';
+import 'package:lebenswiki_app/features/a_new_screens/contact.dart';
 import 'package:lebenswiki_app/features/a_new_screens/explore.dart';
 import 'package:lebenswiki_app/features/a_new_screens/home.dart';
 import 'package:lebenswiki_app/features/a_new_screens/profile.dart';
+import 'package:lebenswiki_app/features/a_new_screens/saved.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/appbar.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/add_button.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/common/components/nav/bottom_nav_bar.dart';
 import 'package:lebenswiki_app/features/menu/components/menu_bar.dart';
+import 'package:lebenswiki_app/features/menu/views/developer_info.dart';
 import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/features/packs/helper/pack_list_helper.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
@@ -183,22 +186,27 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
           child: Column(
             children: [
               _buildMenuTile(
+                endpoint: const ProfileView(),
                 text: "Profil",
                 icon: Icons.person_outline_rounded,
               ),
               _buildMenuTile(
+                endpoint: const SavedView(),
                 text: "Gespeichert",
                 icon: Icons.bookmark_outline,
               ),
               _buildMenuTile(
+                endpoint: const ContactView(),
                 text: "Hilfe",
                 icon: Icons.help_outline_rounded,
               ),
               _buildMenuTile(
+                endpoint: const DeveloperInfoView(),
                 text: "Kontakt",
                 icon: Icons.phone_outlined,
               ),
               _buildMenuTile(
+                endpoint: const ProfileView(),
                 text: "Ausloggen",
                 icon: Icons.logout,
               ),
@@ -207,13 +215,19 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
         );
       });
 
-  Widget _buildMenuTile({required String text, required IconData icon}) =>
+  //Refactor to new routing
+  Widget _buildMenuTile({
+    required String text,
+    required IconData icon,
+    required Widget endpoint,
+  }) =>
       InkWell(
         onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ProfileView(),
-            )),
+          context,
+          MaterialPageRoute(
+            builder: (context) => endpoint,
+          ),
+        ),
         child: Column(
           children: [
             Row(
