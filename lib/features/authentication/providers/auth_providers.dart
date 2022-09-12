@@ -70,7 +70,7 @@ class FormNotifier extends ChangeNotifier {
     if (val != null && val.isValidName) {
       _name = ValidationModel(val, null);
     } else {
-      _name = ValidationModel(null, 'Bitte gib einen Namen an');
+      _name = ValidationModel(null, 'Bitte gib einen Vollständigen Namen an');
     }
     notifyListeners();
   }
@@ -144,6 +144,10 @@ class FormNotifier extends ChangeNotifier {
         _biography.value != null &&
         _name.value != null &&
         _profileImage.value != null;
+  }
+
+  bool get validateForSimpleProfileUpdate {
+    return _name.value != null && _biography.value != null;
   }
 
   void handleApiError(String errorMessage) {

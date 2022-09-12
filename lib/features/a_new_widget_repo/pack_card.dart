@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/features/a_new_common/labels.dart';
 import 'package:lebenswiki_app/features/a_new_screens/view_pack.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
-import 'package:lebenswiki_app/features/a_new_widget_repo/lw.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:emojis/emoji.dart';
 import 'package:lebenswiki_app/features/a_new_common/theme.dart';

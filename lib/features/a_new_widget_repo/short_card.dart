@@ -4,7 +4,6 @@ import 'package:lebenswiki_app/features/a_new_common/labels.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:intl/intl.dart';
-import 'package:emojis/emoji.dart';
 import 'package:emojis/emojis.dart';
 
 class NewShortCard extends ConsumerStatefulWidget {
@@ -44,6 +43,7 @@ class _NewShortCardState extends ConsumerState<NewShortCard> {
                 widget.short.creator.name.split(' ')[0],
                 style: Theme.of(context).textTheme.bodySmall,
               ),
+              const SizedBox(width: 10),
               InfoLabel(
                 text: "Finanzen",
                 backgroundColor: CustomColors.mediumGrey,
@@ -59,7 +59,7 @@ class _NewShortCardState extends ConsumerState<NewShortCard> {
             padding: const EdgeInsets.only(top: 10, left: 5),
             child: Text(widget.short.content),
           ),
-          widget.inSlider ? Spacer() : Container(),
+          widget.inSlider ? const Spacer() : Container(),
           const SizedBox(height: 10),
           _buildInfoBar(context),
         ],

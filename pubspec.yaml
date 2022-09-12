@@ -41,35 +41,10 @@ flutter:
   generate: true
 
   assets:
-    - assets/icons/person_verified.png
-    - assets/icons/community.png
-    - assets/icons/search.png
-    - assets/icons/bookmark.png
-    - assets/icons/bookmark_filled.png
-    - assets/icons/lebenswiki_icon.png
-    - assets/icons/upvote.png
-    - assets/icons/downvote.png
-    - assets/icons/profile_icon.png
-    - assets/icons/share_icon.png
-    - assets/emojis/catheart.png
-    - assets/emojis/clap.png
-    - assets/emojis/happy.png
-    - assets/emojis/heart.png
-    - assets/emojis/heartsmiley.png
-    - assets/emojis/laughing.png
-    - assets/emojis/money.png
-    - assets/emojis/thinking.png
-    - assets/emojis/thumbsup.png
-    - assets/emojis/add_reaction.png
-    - assets/icons/verified_person_filled.png
-    - assets/icons/community_filled.png
-    - assets/images/zins_graph.png
-    - assets/images/investieren_pack_image.png
-    - assets/images/BMFSFJ_logo.png
-    - assets/images/default_profile_image.jpg
-    - assets/images/jugendstrategie-logo.png
-    - assets/images/pack_placeholder_image.jpg
-    - assets/icons/clapping.png
+    - assets/icons/
+    - assets/emojis/
+    - assets/images/
+    - assets/avatars/
 
   fonts:
     - family: Outfit

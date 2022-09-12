@@ -21,7 +21,7 @@ class LWButtons {
           color: color ?? CustomColors.offBlack,
         ),
         child: TextButton(
-          onPressed: action(),
+          onPressed: () => action(),
           child: Padding(
             padding: EdgeInsets.all(verticalPadding),
             child: Text(

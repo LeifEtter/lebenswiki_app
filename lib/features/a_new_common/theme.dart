@@ -44,6 +44,11 @@ ThemeData buildTheme(brightness) => ThemeData(
           fontSize: 13,
           color: CustomColors.offBlack,
         ),
+        titleMedium: TextStyle(
+          color: CustomColors.offBlack,
+          fontWeight: FontWeight.w500,
+          fontSize: 18,
+        ),
       ),
     );
 

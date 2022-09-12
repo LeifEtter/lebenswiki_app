@@ -5,6 +5,7 @@ import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/a_new_screens/community.dart';
 import 'package:lebenswiki_app/features/a_new_screens/explore.dart';
 import 'package:lebenswiki_app/features/a_new_screens/home.dart';
+import 'package:lebenswiki_app/features/a_new_screens/profile.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/appbar.dart';
 import 'package:lebenswiki_app/features/common/components/buttons/add_button.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
@@ -207,34 +208,41 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
       });
 
   Widget _buildMenuTile({required String text, required IconData icon}) =>
-      Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Icon(
-                icon,
-                size: 30,
-              ),
-              const SizedBox(width: 20),
-              Text(
-                text,
-                style: const TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w500,
+      InkWell(
+        onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ProfileView(),
+            )),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  icon,
+                  size: 30,
                 ),
+                const SizedBox(width: 20),
+                Text(
+                  text,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+            const Padding(
+              padding: EdgeInsets.only(
+                top: 10,
+                left: 40,
               ),
-            ],
-          ),
-          const Padding(
-            padding: EdgeInsets.only(
-              top: 10,
-              left: 40,
+              child: Divider(
+                thickness: 1,
+              ),
             ),
-            child: Divider(
-              thickness: 1,
-            ),
-          ),
-        ],
+          ],
+        ),
       );
 }

@@ -67,7 +67,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                   paddingTop: 5,
                   hintText: "Vorname Nachname",
                   errorText: _formProvider.name.error,
-                  iconData: Icons.person,
+                  icon: const Icon(Icons.person),
                   onChanged: _formProvider.validateName,
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(
@@ -81,7 +81,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                 hintText: "Email Adresse",
                 onChanged: _formProvider.validateEmail,
                 errorText: _formProvider.email.error,
-                iconData: Icons.local_post_office,
+                icon: const Icon(Icons.local_post_office),
               ),
               Visibility(
                 visible: isSignUp ? true : false,
@@ -91,7 +91,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                   hintText: "Biography",
                   onChanged: _formProvider.validateBiography,
                   errorText: _formProvider.biography.error,
-                  iconData: Icons.note_alt_rounded,
+                  icon: const Icon(Icons.note_alt_rounded),
                 ),
               ),
               CustomInputField(
@@ -99,7 +99,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                 hintText: "Passwort",
                 onChanged: _formProvider.validatePassword,
                 errorText: _formProvider.password.error,
-                iconData: Icons.key,
+                icon: const Icon(Icons.key),
                 isPassword: true,
               ),
               Visibility(
@@ -109,7 +109,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                   hintText: "Passwort Wiederholen",
                   onChanged: _formProvider.validateRepeatPassword,
                   errorText: _formProvider.repeatPassword.error,
-                  iconData: Icons.key,
+                  icon: const Icon(Icons.key),
                   isPassword: true,
                 ),
               ),
@@ -139,7 +139,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                   hintText: "Profilbild",
                   errorText: _formProvider.profileImage.error,
                   onChanged: _formProvider.validateProfileImage,
-                  iconData: Icons.image,
+                  icon: const Icon(Icons.image),
                 ),
               ),
               Consumer(

@@ -7,12 +7,15 @@ class CustomInputField extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final Function(String?)? onChanged;
   final String? errorText;
-  final IconData iconData;
+  final Icon? icon;
   final bool? enabled;
   final double paddingTop;
   final bool isPassword;
   final String? initialValue;
   final bool isMultiline;
+  final bool hasShadow;
+  final double borderRadius;
+  final Color backgroundColor;
 
   const CustomInputField({
     Key? key,
@@ -21,12 +24,15 @@ class CustomInputField extends StatefulWidget {
     this.validator,
     this.inputFormatters,
     this.onChanged,
-    required this.iconData,
+    this.icon,
     this.enabled = true,
     this.paddingTop = 0,
     this.isPassword = false,
     this.initialValue,
     this.isMultiline = false,
+    this.hasShadow = true,
+    this.borderRadius = 15.0,
+    this.backgroundColor = Colors.white,
   }) : super(key: key);
 
   @override
@@ -50,6 +56,9 @@ class _CustomInputFieldState extends State<CustomInputField> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           customFormFieldStyling(
+              borderRadius: widget.borderRadius,
+              backgroundColor: widget.backgroundColor,
+              hasShadow: widget.hasShadow,
               child: !widget.isMultiline
                   ? TextFormField(
                       initialValue: widget.initialValue ?? "",
@@ -59,8 +68,9 @@ class _CustomInputFieldState extends State<CustomInputField> {
                       inputFormatters: widget.inputFormatters,
                       enabled: widget.enabled,
                       decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.only(left: 15, top: 0),
                         hintText: widget.hintText,
-                        prefixIcon: Icon(widget.iconData),
+                        prefixIcon: widget.icon,
                         suffixIcon: widget.isPassword
                             ? IconButton(
                                 icon: Icon(obscure
@@ -79,8 +89,10 @@ class _CustomInputFieldState extends State<CustomInputField> {
                       initialValue: widget.initialValue ?? "",
                       onChanged: widget.onChanged,
                       decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 10),
                         hintText: widget.hintText,
-                        prefixIcon: Icon(widget.iconData),
+                        prefixIcon: widget.icon,
                         border: InputBorder.none,
                       ),
                     )),
@@ -102,11 +114,16 @@ class _CustomInputFieldState extends State<CustomInputField> {
   }
 }
 
-Widget customFormFieldStyling({required Widget child}) {
+Widget customFormFieldStyling({
+  required Widget child,
+  required double borderRadius,
+  required Color backgroundColor,
+  required bool hasShadow,
+}) {
   return PhysicalModel(
-    color: Colors.white,
-    elevation: 3.0,
+    color: backgroundColor,
+    elevation: hasShadow ? 3.0 : 0,
     child: child,
-    borderRadius: BorderRadius.circular(15.0),
+    borderRadius: BorderRadius.circular(borderRadius),
   );
 }
