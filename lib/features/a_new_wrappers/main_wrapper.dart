@@ -24,6 +24,36 @@ import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
+class SearchQueryNotifier extends ChangeNotifier {
+  SearchQueryNotifier({this.query = ""});
+  String query;
+
+  void setQuery(String newQuery) {
+    query = newQuery;
+    notifyListeners();
+  }
+}
+
+final queryProvider = ChangeNotifierProvider((ref) => SearchQueryNotifier());
+
+class SearchStateNotifier extends ChangeNotifier {
+  SearchStateNotifier({this.isSearching = false});
+
+  bool isSearching;
+
+  void checkChange({required String text}) {
+    bool newSearchState = false;
+    if (text != "") newSearchState = true;
+    if (newSearchState != isSearching) {
+      isSearching = newSearchState;
+      notifyListeners();
+    }
+  }
+}
+
+final searchStateProvider =
+    ChangeNotifierProvider((ref) => SearchStateNotifier());
+
 class HelperData {
   final int currentUserId;
   final List<ContentCategory> categories;
@@ -61,6 +91,7 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
   late TabController tabController;
   final TextEditingController searchController = TextEditingController();
   bool _showSearch = false;
+  bool _isSearching = false;
   int _currentIndex = 0;
 
   @override
@@ -105,7 +136,12 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
             List<Widget> appBars = [appBar(showMenu: _showMenu)];
             if (_showSearch) {
               appBars.add(SearchBar(
-                onChange: () {},
+                onChange: (String text) {
+                  //TODO implement setState only for explore widget
+                  setState(() {
+                    text == "" ? _isSearching = false : _isSearching = true;
+                  });
+                },
                 searchController: searchController,
               ));
             }
@@ -123,20 +159,28 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
                     return Text(left.error);
                   },
                   (right) {
-                    return TabBarView(
-                      controller: tabController,
-                      children: [
-                        HomeView(packHelper: right["packHelper"]),
-                        ExploreView(
-                          categories: categories,
-                          packHelper: right["packHelper"],
-                          shortHelper: right["shortHelper"],
-                        ),
-                        CommunityView(
-                          shortHelper: right["shortHelper"],
-                        ),
-                      ],
-                    );
+                    return _isSearching
+                        ? ListView(
+                            shrinkWrap: true,
+                            children: [],
+                          )
+                        : TabBarView(
+                            controller: tabController,
+                            children: [
+                              HomeView(packHelper: right["packHelper"]),
+                              Consumer(builder: (context, ref, child) {
+                                bool isSearching =
+                                    ref.watch(searchStateProvider).isSearching;
+                                return ExploreView(
+                                  isSearching: isSearching,
+                                  categories: categories,
+                                  packHelper: right["packHelper"],
+                                  shortHelper: right["shortHelper"],
+                                );
+                              }),
+                              CommunityView(shortHelper: right["shortHelper"]),
+                            ],
+                          );
                   },
                 );
               }),
