@@ -44,7 +44,6 @@ class _ExploreViewState extends State<ExploreView> {
 
   @override
   Widget build(BuildContext context) {
-    print("Full zpdate");
     if (widget.isSearching) {
       return ListView(
         shrinkWrap: true,

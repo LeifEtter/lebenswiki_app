@@ -5,6 +5,7 @@ import 'package:lebenswiki_app/features/a_new_common/extensions.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/short_card.dart';
 import 'package:lebenswiki_app/features/shorts/helper/short_list_helper.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
+import 'package:lebenswiki_app/features/testing/components/border.dart';
 
 class CommunityView extends ConsumerStatefulWidget {
   final ShortListHelper shortHelper;
@@ -31,9 +32,10 @@ class _CommunityViewState extends ConsumerState<CommunityView> {
           items: List<Widget>.from(widget.shortHelper.shorts.map(
             (Short short) => Padding(
               padding: const EdgeInsets.only(right: 20),
-              child: NewShortCard(
-                short: short,
-                inSlider: true,
+              child: Column(
+                children: [
+                  NewShortCard(short: short),
+                ],
               ),
             ),
           )),
