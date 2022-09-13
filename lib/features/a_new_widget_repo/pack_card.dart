@@ -1,15 +1,22 @@
 import 'package:animate_icons/animate_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/a_new_common/labels.dart';
 import 'package:lebenswiki_app/features/a_new_screens/view_pack.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
+import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
 import 'package:emojis/emoji.dart';
 import 'package:lebenswiki_app/features/a_new_common/theme.dart';
 import 'package:intl/intl.dart';
+import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
+import 'package:lebenswiki_app/models/enums.dart';
+import 'package:lebenswiki_app/models/user_model.dart';
+import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
-class NewPackCard extends StatefulWidget {
+class NewPackCard extends ConsumerStatefulWidget {
   final String heroParent;
   final int progressValue;
   final bool isStarted;
@@ -24,14 +31,17 @@ class NewPackCard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<NewPackCard> createState() => _NewPackCardState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _NewPackCardState();
 }
 
-class _NewPackCardState extends State<NewPackCard> {
+class _NewPackCardState extends ConsumerState<NewPackCard> {
   final AnimateIconController animateIconController = AnimateIconController();
+  final PackApi packApi = PackApi();
+  late User user;
 
   @override
   Widget build(BuildContext context) {
+    user = ref.watch(userProvider).user;
     return GestureDetector(
       onTap: () => Navigator.push(
           context,
@@ -158,35 +168,45 @@ class _NewPackCardState extends State<NewPackCard> {
               ),
             ),
             const Spacer(),
-            AnimateIcons(
+            IconButton(
+              iconSize: 30,
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: widget.pack.bookmarkedByUser
+                    ? const Icon(Icons.bookmark_added)
+                    : const Icon(Icons.bookmark_add_outlined),
+              ),
+              onPressed: () => _bookmarkCallback(),
+            ),
+            /*AnimateIcons(
               size: 32,
               startIconColor: CustomColors.offBlack,
               endIconColor: CustomColors.offBlack,
-              startIcon: Icons.bookmark_add_outlined,
-              endIcon: Icons.bookmark_added,
+              startIcon: widget.pack.bookmarkedByUser
+                  ? Icons.bookmark_added
+                  : Icons.bookmark_add_outlined,
+              endIcon: widget.pack.bookmarkedByUser
+                  ? Icons.bookmark_add_outlined
+                  : Icons.bookmark_added,
               onStartIconPress: () => true,
               onEndIconPress: () => true,
               duration: const Duration(milliseconds: 200),
               controller: animateIconController,
-            ),
+            ),*/
           ],
         ),
       );
 
-  Widget _buildProgressRow(context) => Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text("${widget.progressValue}% fertig",
-              style: Theme.of(context).textTheme.blueLabel),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.bookmark_outline,
-              size: 30,
-            ),
-          ),
-        ],
+  Widget _buildProgressRow(context) => Padding(
+        padding: const EdgeInsets.only(bottom: 10.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("${widget.progressValue}% fertig",
+                style: Theme.of(context).textTheme.blueLabel),
+          ],
+        ),
       );
 
   Widget _buildVerticalDivider({required double horizontalPadding}) => Padding(
@@ -197,4 +217,25 @@ class _NewPackCardState extends State<NewPackCard> {
           height: 25,
         ),
       );
+
+  void _bookmarkCallback() async {
+    ResultModel bookMarkResult = widget.pack.bookmarkedByUser
+        ? await packApi.unbookmarkPack(widget.pack.id)
+        : await packApi.bookmarkPack(widget.pack.id);
+    if (bookMarkResult.type == ResultType.success) {
+      CustomFlushbar.success(
+              message: widget.pack.bookmarkedByUser
+                  ? "Lernpack von gespeicherten Lernpacks entfernt"
+                  : "Lernpack gespeichert")
+          .show(context);
+      widget.pack.toggleBookmarked(user);
+    } else {
+      CustomFlushbar.error(
+              message: widget.pack.bookmarkedByUser
+                  ? "Lernpack konnte nicht von gespeicherten Lernpacks entfernt werden"
+                  : "Lernpack konnte nicht gespeichert werden")
+          .show(context);
+    }
+    setState(() {});
+  }
 }

@@ -5,7 +5,6 @@ import 'package:lebenswiki_app/features/a_new_common/extensions.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/short_card.dart';
 import 'package:lebenswiki_app/features/shorts/helper/short_list_helper.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
-import 'package:lebenswiki_app/features/testing/components/border.dart';
 
 class CommunityView extends ConsumerStatefulWidget {
   final ShortListHelper shortHelper;
