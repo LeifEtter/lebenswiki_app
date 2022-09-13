@@ -80,36 +80,42 @@ class _SavedViewState extends ConsumerState<SavedView> {
                       return Expanded(
                         child: TabBarView(
                           children: [
-                            ListView.builder(
-                              padding: const EdgeInsets.all(20.0),
-                              shrinkWrap: true,
-                              itemCount: packHelper.packs.length,
-                              itemBuilder: (context, index) => Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10.0),
-                                child: SizedBox(
-                                  height: 280,
-                                  child: NewPackCard(
-                                    progressValue: 0,
-                                    isStarted: false,
-                                    pack: packHelper.packs[index],
-                                    heroParent: "saved-packs",
+                            packHelper.packs.isEmpty
+                                ? _buildEmptyText(
+                                    "Du hast noch keine Packs gespeichert")
+                                : ListView.builder(
+                                    padding: const EdgeInsets.all(20.0),
+                                    shrinkWrap: true,
+                                    itemCount: packHelper.packs.length,
+                                    itemBuilder: (context, index) => Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10.0),
+                                      child: SizedBox(
+                                        height: 280,
+                                        child: NewPackCard(
+                                          progressValue: 0,
+                                          isStarted: false,
+                                          pack: packHelper.packs[index],
+                                          heroParent: "saved-packs",
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                            ListView.builder(
-                              padding: const EdgeInsets.all(20.0),
-                              shrinkWrap: true,
-                              itemCount: shortHelper.shorts.length,
-                              itemBuilder: (context, index) => Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10.0),
-                                child: NewShortCard(
-                                  short: shortHelper.shorts[index],
-                                ),
-                              ),
-                            ),
+                            shortHelper.shorts.isEmpty
+                                ? _buildEmptyText(
+                                    "Du hast noch keine Shorts gespeichert")
+                                : ListView.builder(
+                                    padding: const EdgeInsets.all(20.0),
+                                    shrinkWrap: true,
+                                    itemCount: shortHelper.shorts.length,
+                                    itemBuilder: (context, index) => Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10.0),
+                                      child: NewShortCard(
+                                        short: shortHelper.shorts[index],
+                                      ),
+                                    ),
+                                  ),
                           ],
                         ),
                       );
@@ -123,6 +129,24 @@ class _SavedViewState extends ConsumerState<SavedView> {
       ),
     );
   }
+
+  Widget _buildEmptyText(text) => Column(
+        children: [
+          const SizedBox(height: 100),
+          Icon(
+            Icons.info_outline_rounded,
+            color: CustomColors.darkGrey,
+            size: 40,
+          ),
+          Text(
+            text,
+            style: TextStyle(
+              color: CustomColors.darkGrey,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      );
 
   Future<Either<CustomError, Map>> _getPacksAndShorts({
     required HelperData helperData,
