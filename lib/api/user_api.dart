@@ -76,24 +76,18 @@ class UserApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> getUserData() async {
+  Future<Either<CustomError, User>> getUserData() async {
     Response res = await get(
       Uri.parse("$serverIp/users/profile"),
       headers: await requestHeader(),
     );
-    Map decodedBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.user,
-        responseItem: User.forProvider(
-          decodedBody["user"],
-        ),
-      );
+      User user = User.forProvider(jsonDecode(res.body)["user"]);
+      return Right(user);
     } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message: "Benutzer nicht gefunden",
+      apiErrorHandler.logRes(res);
+      return const Left(
+        CustomError(error: "Konnte benutzer daten nicht abfragen"),
       );
     }
   }

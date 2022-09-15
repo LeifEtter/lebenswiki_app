@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/features/a_new_screens/contact.dart';
+import 'package:lebenswiki_app/features/a_new_screens/profile.dart';
 import 'package:lebenswiki_app/features/a_new_screens/saved.dart';
 import 'package:lebenswiki_app/features/menu/views/developer_info.dart';
 import 'package:lebenswiki_app/features/routing/routing_constants.dart';
@@ -36,6 +37,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case developerViewRoute:
       return MaterialPageRoute(
         builder: (context) => const DeveloperInfoView(),
+      );
+    case profileViewRoute:
+      return MaterialPageRoute(
+        builder: (context) => const ProfileView(),
       );
     case savedViewRoute:
       return MaterialPageRoute(builder: (context) => const SavedView());

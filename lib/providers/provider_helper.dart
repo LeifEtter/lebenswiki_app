@@ -1,7 +1,9 @@
+import 'package:either_dart/either.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/misc_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
+import 'package:lebenswiki_app/features/a_new_common/other.dart';
 import 'package:lebenswiki_app/models/block_model.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
@@ -23,8 +25,8 @@ class ProviderHelper {
         List<ContentCategory>.from(categoriesResult.responseList);
 
     //Get and save profile
-    ResultModel profileResult = await UserApi().getUserData();
-    User user = profileResult.responseItem;
+    Either<CustomError, User> profileResult = await UserApi().getUserData();
+    User user = profileResult.right;
 
     //Get Blocks
     ResultModel blockedResult = await UserApi().getBlockedUsers();

@@ -3,26 +3,19 @@ import 'package:either_dart/either.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/a_new_common/hacks.dart';
 import 'package:lebenswiki_app/features/a_new_common/other.dart';
 import 'package:lebenswiki_app/features/a_new_common/top_nav.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/lw.dart';
-import 'package:lebenswiki_app/features/authentication/components/custom_form_field.dart';
-import 'package:lebenswiki_app/features/authentication/providers/auth_providers.dart';
+import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
-import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
-import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
 class ProfileView extends ConsumerStatefulWidget {
-  final User user;
-
   const ProfileView({
-    required this.user,
     Key? key,
   }) : super(key: key);
 
@@ -51,142 +44,162 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
 
   @override
   void initState() {
-    nameController.text = widget.user.name;
-    biographyController.text = widget.user.biography;
-    chosenAvatar = widget.user.profileImage;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-            child: ListView(
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                const TopNavIOS(title: "Profil"),
-                const SizedBox(height: 160),
-                ExpandablePageView(
-                  controller: pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    ListView(
-                      shrinkWrap: true,
-                      children: [
-                        S.h20(),
-                        Center(
-                          child: Text(
-                            widget.user.name,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
+    print("Rebuilding whole widget");
+    return FutureBuilder(
+      future: UserApi().getUserData(),
+      builder: (BuildContext context,
+          AsyncSnapshot<Either<CustomError, User>> snapshot) {
+        if (LoadingHelper.isLoading(snapshot)) {
+          return LoadingHelper.loadingIndicator();
+        }
+        return snapshot.data!.fold(
+          (left) => Text(left.error),
+          (user) {
+            nameController.text = user.name;
+            biographyController.text = user.biography;
+            chosenAvatar = user.profileImage;
+            return StatefulBuilder(
+              builder: (context, setInnerState) {
+                return Scaffold(
+                  body: Stack(
+                    children: [
+                      Container(
+                        padding:
+                            const EdgeInsets.only(left: 20, right: 20, top: 10),
+                        child: ListView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: [
+                            const TopNavIOS(title: "Profil"),
+                            const SizedBox(height: 160),
+                            ExpandablePageView(
+                              controller: pageController,
+                              physics: const NeverScrollableScrollPhysics(),
+                              children: [
+                                _buildShowProfile(user),
+                                _buildEditProfile(setInnerState, user: user),
+                              ],
+                            ),
+                          ],
                         ),
-                        S.h10(),
-                        Center(
-                          child: Text(
-                            widget.user.biography,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ),
-                        S.h20(),
-                        LW.buttons.normal(
-                          borderRadius: 10,
-                          color: CustomColors.lightGrey,
-                          text: "Profil Bearbeiten",
-                          textColor: CustomColors.offBlack,
-                          action: () => pageController.animateToPage(1,
-                              duration: const Duration(milliseconds: 200),
-                              curve: Curves.easeInOut),
-                        ),
-                        S.h40(),
-                        const Divider(),
-                        _buildLinkTile(
-                            text: "Account Einstellungen", onPressed: () {}),
-                        const Divider(),
-                        _buildLinkTile(
-                            text: "Privacy Policy", onPressed: () {}),
-                        const Divider(),
-                        _buildLinkTile(text: "Deine Shorts", onPressed: () {}),
-                      ],
-                    ),
-                    ListView(
-                      padding: const EdgeInsets.only(bottom: 50),
-                      shrinkWrap: true,
-                      children: [
-                        TextButton(
-                            onPressed: () => setState(() {
-                                  isPickingAvatar = true;
-                                }),
-                            child: Text(
-                              "Profilbild ändern",
-                              style: TextStyle(
-                                color: CustomColors.blue,
-                              ),
-                            )),
-                        S.h20(),
-                        Text(
-                          "Name",
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        S.h10(),
-                        singleInputField(controller: nameController),
-                        S.h20(),
-                        Text(
-                          "Biografie",
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        S.h10(),
-                        singleInputField(
-                            controller: biographyController, isMultiline: true),
-                        S.h20(),
-                        LW.buttons.normal(
-                          text: "Speichern",
-                          action: () async {
-                            Either<CustomError, String> updateResult =
-                                await UserApi().updateProfile(
-                                    user: User(
-                              profileImage: chosenAvatar,
-                              name: nameController.text,
-                              email: widget.user.email,
-                              biography: biographyController.text,
-                            ));
-
-                            updateResult.fold(
-                                (left) =>
-                                    CustomFlushbar.error(message: left.error)
-                                        .show(context),
-                                (right) =>
-                                    CustomFlushbar.success(message: right)
-                                        .show(context));
-
-                            pageController.animateToPage(0,
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeInOut);
-                          },
-                          color: CustomColors.blue,
-                          borderRadius: 15,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Visibility(
-            visible: isPickingAvatar,
-            child: _buildAvatarPicker(),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 530),
-            child: Center(child: _buildAvatar()),
-          ),
-        ],
-      ),
+                      ),
+                      Visibility(
+                        visible: isPickingAvatar,
+                        child: _buildAvatarPicker(setInnerState),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 530),
+                        child: Center(child: _buildAvatar()),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
+
+  Widget _buildShowProfile(User user) => ListView(
+        shrinkWrap: true,
+        children: [
+          S.h20(),
+          Center(
+            child: Text(
+              user.name,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ),
+          S.h10(),
+          Center(
+            child: Text(
+              user.biography,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+          S.h20(),
+          LW.buttons.normal(
+            borderRadius: 10,
+            color: CustomColors.lightGrey,
+            text: "Profil Bearbeiten",
+            textColor: CustomColors.offBlack,
+            action: () => pageController.animateToPage(1,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut),
+          ),
+          S.h40(),
+          const Divider(),
+          _buildLinkTile(text: "Account Einstellungen", onPressed: () {}),
+          const Divider(),
+          _buildLinkTile(text: "Privacy Policy", onPressed: () {}),
+          const Divider(),
+          _buildLinkTile(text: "Deine Shorts", onPressed: () {}),
+        ],
+      );
+
+  Widget _buildEditProfile(Function setInnerState, {required User user}) =>
+      ListView(
+        padding: const EdgeInsets.only(bottom: 50),
+        shrinkWrap: true,
+        children: [
+          TextButton(
+              onPressed: () => setInnerState(() {
+                    isPickingAvatar = true;
+                  }),
+              child: Text(
+                "Profilbild ändern",
+                style: TextStyle(
+                  color: CustomColors.blue,
+                ),
+              )),
+          S.h20(),
+          Text(
+            "Name",
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          S.h10(),
+          singleInputField(controller: nameController),
+          S.h20(),
+          Text(
+            "Biografie",
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          S.h10(),
+          singleInputField(controller: biographyController, isMultiline: true),
+          S.h20(),
+          LW.buttons.normal(
+            text: "Speichern",
+            action: () async {
+              Either<CustomError, String> updateResult =
+                  await UserApi().updateProfile(
+                      user: User(
+                profileImage: chosenAvatar,
+                name: nameController.text,
+                biography: biographyController.text,
+                email: user.email,
+              ));
+
+              updateResult.fold(
+                  (left) =>
+                      CustomFlushbar.error(message: left.error).show(context),
+                  (right) =>
+                      CustomFlushbar.success(message: right).show(context));
+              setState(() {});
+              pageController.animateToPage(0,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut);
+            },
+            color: CustomColors.blue,
+            borderRadius: 15,
+          ),
+        ],
+      );
 
   Widget singleInputField({
     required TextEditingController controller,
@@ -222,30 +235,6 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
         ),
       );
 
-  Widget _buildSingleAvatar(
-    BuildContext context, {
-    required String avatarName,
-  }) {
-    return GestureDetector(
-      onTap: () => setState(() {
-        chosenAvatar = "assets/avatars/$avatarName";
-        isPickingAvatar = false;
-      }),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50),
-          boxShadow: [LebenswikiShadows.cardShadow],
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: AssetImage(
-              "assets/avatars/$avatarName",
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildLinkTile({required String text, required Function onPressed}) =>
       Row(
         children: [
@@ -262,7 +251,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
         ],
       );
 
-  Widget _buildAvatarPicker() => GestureDetector(
+  Widget _buildAvatarPicker(Function setInnerState) => GestureDetector(
         onTap: () => setState(() {
           isPickingAvatar = false;
         }),
@@ -292,7 +281,8 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                   child: GridView(
                     padding: const EdgeInsets.all(20),
                     children: profileAvatars
-                        .map((String avatarName) => _buildSingleAvatar(context,
+                        .map((String avatarName) => _buildSingleAvatar(
+                            context, setInnerState,
                             avatarName: avatarName + ".png"))
                         .toList(),
                     gridDelegate:
@@ -309,4 +299,29 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
           ),
         ),
       );
+
+  Widget _buildSingleAvatar(
+    BuildContext context,
+    Function setInnerState, {
+    required String avatarName,
+  }) {
+    return GestureDetector(
+      onTap: () => setInnerState(() {
+        chosenAvatar = "assets/avatars/$avatarName";
+        isPickingAvatar = false;
+      }),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          boxShadow: [LebenswikiShadows.cardShadow],
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: AssetImage(
+              "assets/avatars/$avatarName",
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

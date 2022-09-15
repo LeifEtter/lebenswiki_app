@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/features/a_new_screens/profile.dart';
 import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
-import 'package:lebenswiki_app/providers/providers.dart';
 
 void showBottomMenuForNavigation(BuildContext context, WidgetRef ref) =>
     showModalBottomSheet(
@@ -17,11 +15,7 @@ void showBottomMenuForNavigation(BuildContext context, WidgetRef ref) =>
             child: Column(
               children: [
                 buildMenuTile(
-                  onPress: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              ProfileView(user: ref.watch(userProvider).user))),
+                  onPress: () => Navigator.pushNamed(context, '/profile'),
                   text: "Profil",
                   icon: Icons.person_outline_rounded,
                 ),
