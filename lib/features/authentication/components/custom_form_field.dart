@@ -68,8 +68,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
                       inputFormatters: widget.inputFormatters,
                       enabled: widget.enabled,
                       decoration: InputDecoration(
-                        contentPadding:
-                            const EdgeInsets.only(left: 15, top: 12),
+                        contentPadding: const EdgeInsets.only(left: 15),
                         hintText: widget.hintText,
                         prefixIcon: widget.icon,
                         suffixIcon: widget.isPassword

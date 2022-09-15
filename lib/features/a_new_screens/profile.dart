@@ -1,19 +1,28 @@
 import 'dart:ui';
+import 'package:either_dart/either.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/api/user_api.dart';
 import 'package:lebenswiki_app/features/a_new_common/hacks.dart';
+import 'package:lebenswiki_app/features/a_new_common/other.dart';
 import 'package:lebenswiki_app/features/a_new_common/top_nav.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/lw.dart';
 import 'package:lebenswiki_app/features/authentication/components/custom_form_field.dart';
 import 'package:lebenswiki_app/features/authentication/providers/auth_providers.dart';
+import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
+import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
 class ProfileView extends ConsumerStatefulWidget {
+  final User user;
+
   const ProfileView({
+    required this.user,
     Key? key,
   }) : super(key: key);
 
@@ -35,12 +44,21 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
     "009-weasel",
   ];
   bool isPickingAvatar = false;
-  late FormNotifier _formProvider;
+  TextEditingController nameController = TextEditingController();
+  TextEditingController biographyController = TextEditingController();
+
+  late String chosenAvatar;
+
+  @override
+  void initState() {
+    nameController.text = widget.user.name;
+    biographyController.text = widget.user.biography;
+    chosenAvatar = widget.user.profileImage;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    User user = ref.read(userProvider).user;
-    _formProvider = ref.watch(formProvider);
     return Scaffold(
       body: Stack(
         children: [
@@ -50,8 +68,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 const TopNavIOS(title: "Profil"),
-                S.h100(),
-                S.h90(),
+                const SizedBox(height: 160),
                 ExpandablePageView(
                   controller: pageController,
                   physics: const NeverScrollableScrollPhysics(),
@@ -59,16 +76,17 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                     ListView(
                       shrinkWrap: true,
                       children: [
+                        S.h20(),
                         Center(
                           child: Text(
-                            "Fritz Haber",
+                            widget.user.name,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ),
                         S.h10(),
                         Center(
                           child: Text(
-                            user.biography,
+                            widget.user.biography,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ),
@@ -113,34 +131,36 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         S.h10(),
-                        CustomInputField(
-                          hasShadow: false,
-                          hintText: "Vorname Nachname",
-                          errorText: _formProvider.name.error,
-                          onChanged: _formProvider.validateName,
-                          borderRadius: 10.0,
-                          backgroundColor: CustomColors.lightGrey,
-                        ),
+                        singleInputField(controller: nameController),
                         S.h20(),
                         Text(
                           "Biografie",
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         S.h10(),
-                        CustomInputField(
-                          hasShadow: false,
-                          hintText: "Biografie",
-                          errorText: _formProvider.biography.error,
-                          onChanged: _formProvider.validateBiography,
-                          borderRadius: 10.0,
-                          isMultiline: true,
-                          backgroundColor: CustomColors.lightGrey,
-                        ),
+                        singleInputField(
+                            controller: biographyController, isMultiline: true),
                         S.h20(),
                         LW.buttons.normal(
                           text: "Speichern",
-                          action: () {
-                            //Speichern
+                          action: () async {
+                            Either<CustomError, String> updateResult =
+                                await UserApi().updateProfile(
+                                    user: User(
+                              profileImage: chosenAvatar,
+                              name: nameController.text,
+                              email: widget.user.email,
+                              biography: biographyController.text,
+                            ));
+
+                            updateResult.fold(
+                                (left) =>
+                                    CustomFlushbar.error(message: left.error)
+                                        .show(context),
+                                (right) =>
+                                    CustomFlushbar.success(message: right)
+                                        .show(context));
+
                             pageController.animateToPage(0,
                                 duration: const Duration(milliseconds: 200),
                                 curve: Curves.easeInOut);
@@ -161,23 +181,43 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 530),
-            child: Center(child: _buildAvatar(user: user)),
+            child: Center(child: _buildAvatar()),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildAvatar({required User user}) => Container(
+  Widget singleInputField({
+    required TextEditingController controller,
+    bool isMultiline = false,
+  }) =>
+      Container(
+        decoration: BoxDecoration(
+          color: CustomColors.lightGrey,
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: TextFormField(
+          minLines: isMultiline ? 3 : 1,
+          maxLines: isMultiline ? 5 : 1,
+          controller: controller,
+          decoration: const InputDecoration(
+            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            border: InputBorder.none,
+          ),
+        ),
+      );
+
+  Widget _buildAvatar() => Container(
         width: 130,
         height: 130,
         decoration: BoxDecoration(
           boxShadow: [LebenswikiShadows.cardShadow],
           shape: BoxShape.circle,
-          image: user.profileImage.startsWith("assets/")
-              ? DecorationImage(image: AssetImage(user.profileImage))
+          image: chosenAvatar.startsWith("assets/")
+              ? DecorationImage(image: AssetImage(chosenAvatar))
               : DecorationImage(
-                  image: NetworkImage(user.profileImage),
+                  image: NetworkImage(chosenAvatar),
                 ),
         ),
       );
@@ -186,13 +226,11 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
     BuildContext context, {
     required String avatarName,
   }) {
-    User user = ref.read(userProvider).user;
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          user.profileImage = "assets/avatars/$avatarName";
-        });
-      },
+      onTap: () => setState(() {
+        chosenAvatar = "assets/avatars/$avatarName";
+        isPickingAvatar = false;
+      }),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),

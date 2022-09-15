@@ -1,3 +1,4 @@
+import 'package:lebenswiki_app/features/comments/models/comment_model.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_content_models.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
@@ -16,6 +17,7 @@ class Pack {
   List<PackPage> pages = [];
   List<User> bookmarks = [];
   List<Map> reactions = [];
+  List<Comment> comments = [];
   late DateTime creationDate;
 
   //New Params
@@ -23,20 +25,22 @@ class Pack {
   int? readTime;
   int? claps;
 
-  Pack(
-      {required this.title,
-      required this.description,
-      required this.pages,
-      required this.categories,
-      required this.titleImage,
-      this.published = false,
-      this.creator,
-      required this.creatorId,
-      this.bookmarks = const [],
-      this.reactions = const [],
-      this.initiative,
-      this.readTime,
-      this.claps}) {
+  Pack({
+    required this.title,
+    required this.description,
+    required this.pages,
+    required this.categories,
+    required this.titleImage,
+    this.published = false,
+    this.creator,
+    required this.creatorId,
+    this.bookmarks = const [],
+    this.reactions = const [],
+    this.initiative,
+    this.readTime,
+    this.claps,
+    this.comments = const [],
+  }) {
     creationDate = DateTime.now();
   }
 
@@ -81,7 +85,9 @@ class Pack {
             : [],
         creationDate = DateTime.parse(json["creationDate"]),
         pages = List<PackPage>.from(
-            json["pages"].map((page) => PackPage.fromResponse(page)));
+            json["pages"].map((page) => PackPage.fromResponse(page))),
+        comments = List<Comment>.from(
+          json["comments"].map((comment) => Comment.forPack(comment)));
 
   void initializeDisplayParams(int currentUserId) {
     _initHasBookmarked(currentUserId);

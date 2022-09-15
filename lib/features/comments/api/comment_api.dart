@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:either_dart/either.dart';
 import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/features/a_new_common/other.dart';
 import 'package:lebenswiki_app/features/comments/models/comment_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 
@@ -13,7 +15,7 @@ class CommentApi extends BaseApi {
     apiErrorHandler = ApiErrorHandler();
   }
 
-  Future<ResultModel> createCommentShort({
+  Future<Either<CustomError, String>> createCommentShort({
     required int id,
     required String comment,
   }) =>
@@ -23,46 +25,34 @@ class CommentApi extends BaseApi {
           errorMessage: "Couldn't comment on short",
           comment: comment);
 
-  Future<ResultModel> createCommentPack({
+  Future<Either<CustomError, String>> createCommentPack({
     required int id,
     required String comment,
   }) =>
       _createComment(
-          url: "comments/create/packs/$id",
+          url: "comments/create/pack/$id",
           successMessage: "Commented on pack successfully",
           errorMessage: "Couldn't comment on pack",
           comment: comment);
 
-  Future<ResultModel> _createComment({
+  Future<Either<CustomError, String>> _createComment({
     required String url,
     required String successMessage,
     required String errorMessage,
     required String comment,
   }) async {
-    ResultModel result = ResultModel(
-      type: ResultType.failure,
-      message: errorMessage,
-    );
-    await post(
+    Response res = await post(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
       body: jsonEncode({"comment": comment}),
-    ).then((Response res) {
-      if (statusIsSuccess(res.statusCode)) {
-        Map body = jsonDecode(res.body);
-        Comment comment = Comment.forShort(body["comment"]);
-        result = ResultModel(
-          type: ResultType.success,
-          message: successMessage,
-          responseItem: comment,
-        );
-      } else {
-        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      }
-    }).catchError((error) {
-      apiErrorHandler.handleAndLog(reponseData: error);
-    });
-    return result;
+    );
+
+    if (statusIsSuccess(res.statusCode)) {
+      return Right("success");
+    } else {
+      apiErrorHandler.logRes(res);
+      return const Left(CustomError(error: "Du konntest nicht kommentieren"));
+    }
   }
 
   Future<ResultModel> addCommentReaction({

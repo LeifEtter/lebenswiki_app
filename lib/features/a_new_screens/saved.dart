@@ -1,21 +1,17 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/features/a_anew_services/pack_short_service.dart';
+import 'package:lebenswiki_app/features/a_new_common/other.dart';
 import 'package:lebenswiki_app/features/a_new_common/top_nav.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/pack_card.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/short_card.dart';
 import 'package:lebenswiki_app/features/a_new_wrappers/main_wrapper.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
-import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/features/packs/helper/pack_list_helper.dart';
-import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
-import 'package:lebenswiki_app/features/shorts/api/short_api.dart';
 import 'package:lebenswiki_app/features/shorts/helper/short_list_helper.dart';
-import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
-import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
 class SavedView extends ConsumerStatefulWidget {
@@ -64,7 +60,8 @@ class _SavedViewState extends ConsumerState<SavedView> {
                 ),
               ),
               FutureBuilder(
-                future: _getPacksAndShorts(helperData: helperData),
+                future: PackShortService.getPacksAndShortsForBookmarks(
+                    helperData: helperData),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (LoadingHelper.isLoading(snapshot)) {
                     return LoadingHelper.loadingIndicator();
@@ -147,24 +144,4 @@ class _SavedViewState extends ConsumerState<SavedView> {
           ),
         ],
       );
-
-  Future<Either<CustomError, Map>> _getPacksAndShorts({
-    required HelperData helperData,
-  }) async {
-    ResultModel shortsResult = await ShortApi().getBookmarkedShorts();
-    ResultModel packsResult = await PackApi().getBookmarkedPacks();
-    if (shortsResult.type != ResultType.failure &&
-        packsResult.type != ResultType.failure) {
-      return Right({
-        "shortHelper": ShortListHelper(
-            shorts: List<Short>.from(shortsResult.responseList),
-            helperData: helperData),
-        "packHelper": PackListHelper(
-            packs: List<Pack>.from(packsResult.responseList),
-            helperData: helperData),
-      });
-    } else {
-      return const Left(CustomError(error: "Etwas ist schiefgelaufen"));
-    }
-  }
 }

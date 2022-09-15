@@ -70,13 +70,17 @@ class Comment {
   factory Comment.forPack(Map<String, dynamic> json) => Comment(
         id: json["id"],
         content: json["commentResponse"],
-        creator: User.forContent(json["creator"]),
+        creator: json["creator"] != null
+            ? User.forContent(json["creator"])
+            : User(name: "Placeholder"),
         creatorId: json["creatorId"],
-        parentId: json["packsCommentId"],
+        parentId: json["packAsCommentId"],
         creationDate: DateTime.parse(json["creationDate"]),
         reactions: List<Map>.from(json["reactions"]),
-        reports: List<Report>.from(
-            json["reportedComment"].map((report) => Report.forContent(report))),
+        reports: json["reportedComment"] != null
+            ? List<Report>.from(json["reportedComment"]
+                .map((report) => Report.forContent(report)))
+            : [],
         upVote: json["upVote"] != null
             ? List<User>.from(json["upVote"].map((user) => User.forId(user)))
             : [],

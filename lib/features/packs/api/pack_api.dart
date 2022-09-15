@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:either_dart/either.dart';
 import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
 import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/features/a_new_common/other.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
@@ -12,6 +14,20 @@ class PackApi extends BaseApi {
 
   PackApi() {
     apiErrorHandler = ApiErrorHandler();
+  }
+
+  Future<Either<CustomError, Pack>> getPackById({required int id}) async {
+    Response res = await get(
+      Uri.parse("$serverIp/packs/pack/$id"),
+      headers: await requestHeader(),
+    );
+    if (statusIsSuccess(res.statusCode)) {
+      Pack pack = Pack.fromJson(jsonDecode(res.body)["pack"]);
+      return Right(pack);
+    } else {
+      apiErrorHandler.logRes(res);
+      return const Left(CustomError(error: "Irgendwas ist schiefgelaufen"));
+    }
   }
 
   Future<ResultModel> createPack({required Pack pack}) async {

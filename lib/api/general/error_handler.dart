@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:http/http.dart';
+
 class ApiErrorHandler {
   ApiErrorHandler();
 
@@ -8,5 +10,9 @@ class ApiErrorHandler {
   }) {
     log("API Error: $reponseData");
     return "Error";
+  }
+
+  logRes(Response res) {
+    log("API Error: ${res.body}");
   }
 }

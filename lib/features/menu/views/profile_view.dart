@@ -160,7 +160,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
             LebenswikiButtons.textButton.authenticationButton(
               text: "Passwort Speichern",
               color: Colors.blue,
-              onPress: () => changePassword(),
+              onPress: () => /*changePassword()*/ {},
             ),
             const SizedBox(height: 20),
           ],
@@ -186,7 +186,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
 
     User newUser = _formProvider.convertToUser();
 
-    await userApi.updateProfile(user: newUser).then((ResultModel result) async {
+    /*await userApi.updateProfile(user: newUser).then((ResultModel result) async {
       if (result.type == ResultType.success) {
         if (emailEdited()) {
           CustomFlushbar.success(
@@ -209,7 +209,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
         CustomFlushbar.error(message: "Profil konnte nicht geändert werden")
             .show(context);
       }
-    });
+    });*/
   }
 
   void changePassword() {

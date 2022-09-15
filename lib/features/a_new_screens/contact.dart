@@ -1,9 +1,13 @@
+import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/api/misc_api.dart';
 import 'package:lebenswiki_app/features/a_new_common/hacks.dart';
+import 'package:lebenswiki_app/features/a_new_common/other.dart';
 import 'package:lebenswiki_app/features/a_new_common/top_nav.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/lw.dart';
+import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
 
 class ContactView extends ConsumerStatefulWidget {
@@ -80,7 +84,15 @@ class _ContactViewState extends ConsumerState<ContactView> {
             LW.buttons.normal(
               borderRadius: 10.0,
               text: "Einreichen",
-              action: () {},
+              action: () async {
+                Either<CustomError, String> feedbackResult = await MiscApi()
+                    .createFeedback(feedback: submissionController.text);
+                feedbackResult.fold(
+                  (left) =>
+                      CustomFlushbar.error(message: left.error).show(context),
+                  (right) => CustomFlushbar.info(message: right).show(context),
+                );
+              },
             ),
           ],
         ),

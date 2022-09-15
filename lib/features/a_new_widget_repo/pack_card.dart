@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/a_new_common/labels.dart';
+import 'package:lebenswiki_app/features/a_new_screens/comment_view.dart';
 import 'package:lebenswiki_app/features/a_new_screens/view_pack.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
 import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
@@ -11,6 +12,7 @@ import 'package:emojis/emoji.dart';
 import 'package:lebenswiki_app/features/a_new_common/theme.dart';
 import 'package:intl/intl.dart';
 import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
+import 'package:lebenswiki_app/features/testing/components/border.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
@@ -145,25 +147,57 @@ class _NewPackCardState extends ConsumerState<NewPackCard> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 7.0, horizontal: 10.0),
+              width: 170,
+              height: 35,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   color: Colors.white,
                   boxShadow: [LebenswikiShadows.fancyShadow]),
               child: Row(
                 children: [
-                  Text(DateFormat.MMMd().format(widget.pack.creationDate)),
-                  _buildVerticalDivider(horizontalPadding: 8),
-                  Text(
-                      "${Emoji.byName("clapping hands")} ${widget.pack.claps}"),
-                  _buildVerticalDivider(horizontalPadding: 8),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 2.0),
-                    child: Icon(Icons.mode_comment, size: 15),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                          DateFormat.MMMd().format(widget.pack.creationDate)),
+                    ),
                   ),
-                  const SizedBox(width: 5),
-                  const Text("10"),
+                  _buildVerticalDivider(horizontalPadding: 0),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                          "${Emoji.byName("clapping hands")} ${widget.pack.claps}"),
+                    ),
+                  ),
+                  _buildVerticalDivider(horizontalPadding: 0),
+                  Expanded(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CommentView(
+                                  isShort: false, id: widget.pack.id!))),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(top: 2.0),
+                                child: Icon(
+                                  Icons.mode_comment,
+                                  size: 15,
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                              Text(widget.pack.comments.length.toString()),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

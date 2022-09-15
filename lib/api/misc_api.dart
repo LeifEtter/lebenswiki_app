@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:either_dart/either.dart';
 import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/features/a_new_common/other.dart';
 import 'package:lebenswiki_app/models/category_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 
@@ -36,6 +38,25 @@ class MiscApi extends BaseApi {
         type: ResultType.failure,
         message: "Keine Kategorien gefunden",
       );
+    }
+  }
+
+  Future<Either<CustomError, String>> createFeedback(
+      {required String feedback}) async {
+    Response res = await post(
+      Uri.parse("$serverIp/feedbacks/create"),
+      headers: await requestHeader(),
+      body: jsonEncode({
+        "text": feedback,
+      }),
+    );
+    if (statusIsSuccess(res.statusCode)) {
+      return const Right("Feedback erfolgreich verschickt");
+    } else {
+      apiErrorHandler.logRes(res);
+      return const Left(CustomError(
+        error: "Feedback konnte nicht verschickt werden",
+      ));
     }
   }
 }

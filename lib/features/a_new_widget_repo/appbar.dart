@@ -2,11 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/features/a_new_providers/new_providers.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
 import 'package:lebenswiki_app/features/a_new_wrappers/main_wrapper.dart';
 import 'package:lebenswiki_app/repository/text_styles.dart';
 
-SliverAppBar appBar({required Function showMenu}) {
+SliverAppBar appBar(context, {required Function onPress}) {
   return SliverAppBar(
     systemOverlayStyle: SystemUiOverlayStyle.dark,
     floating: true,
@@ -17,6 +18,7 @@ SliverAppBar appBar({required Function showMenu}) {
         style: LebenswikiTextStyles.logoText,
       ),
     ),
+    elevation: 0,
     leadingWidth: 55,
     leading: Padding(
       padding: const EdgeInsets.only(left: 20.0),
@@ -29,7 +31,7 @@ SliverAppBar appBar({required Function showMenu}) {
         padding: const EdgeInsets.only(right: 5.0),
         child: IconButton(
           iconSize: 30,
-          onPressed: () => showMenu(),
+          onPressed: () => onPress(),
           icon: const Icon(
             Icons.more_vert_rounded,
             color: Colors.black,
@@ -42,12 +44,10 @@ SliverAppBar appBar({required Function showMenu}) {
 }
 
 class SearchBar extends ConsumerStatefulWidget {
-  final Function onChange;
   final TextEditingController searchController;
 
   const SearchBar({
     Key? key,
-    required this.onChange,
     required this.searchController,
   }) : super(key: key);
 

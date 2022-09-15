@@ -190,7 +190,7 @@ class _ShortCommentViewState extends ConsumerState<ShortCommentView> {
                   ),
                   IconButton(
                     onPressed: () async {
-                      Navigator.pop(context);
+                      /*Navigator.pop(context);
                       await CommentApi()
                           .createCommentShort(
                         id: widget.short.id,
@@ -201,7 +201,7 @@ class _ShortCommentViewState extends ConsumerState<ShortCommentView> {
                         comment.creator = user;
                         widget.commentListHelper.comments.add(comment);
                         setState(() {});
-                      });
+                      });*/
                     },
                     icon: const Icon(Icons.send),
                     color: Colors.blueAccent,

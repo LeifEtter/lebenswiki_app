@@ -140,8 +140,7 @@ class FormNotifier extends ChangeNotifier {
   }
 
   bool get validateForProfileUpdate {
-    return _email.value != null &&
-        _biography.value != null &&
+    return _biography.value != null &&
         _name.value != null &&
         _profileImage.value != null;
   }

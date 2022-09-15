@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/features/a_new_providers/new_providers.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/pack_card.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/short_card.dart';
@@ -85,16 +86,17 @@ class _ExploreViewState extends State<ExploreView> {
             // Sort throguh categorized packs
             return Column(
               children: queriedPacks
-                  .map((Pack pack) => Container(
+                  .map((Pack pack) => SizedBox(
                         height: 250,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10.0, horizontal: 20.0),
                           child: NewPackCard(
-                              progressValue: 0,
-                              isStarted: false,
-                              pack: pack,
-                              heroParent: "queried"),
+                            progressValue: 0,
+                            isStarted: false,
+                            pack: pack,
+                            heroParent: "queried",
+                          ),
                         ),
                       ))
                   .toList(),
@@ -133,11 +135,14 @@ class _ExploreViewState extends State<ExploreView> {
                 CarouselSlider(
                   items: List<Widget>.from(
                     widget.packHelper.categorizedPacks[_selectedCategory]!
-                        .map((Pack pack) => NewPackCard(
-                              heroParent: "explore-categories",
-                              progressValue: 0,
-                              isStarted: false,
-                              pack: pack,
+                        .map((Pack pack) => Padding(
+                              padding: const EdgeInsets.only(right: 20),
+                              child: NewPackCard(
+                                heroParent: "explore-categories",
+                                progressValue: 0,
+                                isStarted: false,
+                                pack: pack,
+                              ),
                             )),
                   ),
                   options: CarouselOptions(

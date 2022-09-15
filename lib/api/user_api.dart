@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:either_dart/either.dart';
 import 'package:http/http.dart';
 import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
+import 'package:lebenswiki_app/features/a_new_common/other.dart';
 import 'package:lebenswiki_app/models/block_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
@@ -119,7 +121,7 @@ class UserApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> updateProfile({
+  Future<Either<CustomError, String>> updateProfile({
     required User user,
   }) async {
     Response res = await put(
@@ -133,14 +135,11 @@ class UserApi extends BaseApi {
       }),
     );
     if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-          type: ResultType.success, message: "Profil erfolgreich geändert");
+      return const Right("Profil erfolgreich geändert");
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message: "Profil konnte nicht geändert werden",
-      );
+      return const Left(
+          CustomError(error: "Profil konnte nicht geändert werden"));
     }
   }
 
