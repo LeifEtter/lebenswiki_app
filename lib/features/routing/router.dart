@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/features/a_new_screens/contact.dart';
+import 'package:lebenswiki_app/features/a_new_screens/saved.dart';
+import 'package:lebenswiki_app/features/menu/views/developer_info.dart';
 import 'package:lebenswiki_app/features/routing/routing_constants.dart';
 import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/features/authentication/views/authentication_view.dart';
@@ -26,6 +29,16 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case authenticationViewRoute:
       return MaterialPageRoute(
           builder: (context) => const AuthenticationView());
+    case contactViewRoute:
+      return MaterialPageRoute(
+        builder: (context) => const ContactView(),
+      );
+    case developerViewRoute:
+      return MaterialPageRoute(
+        builder: (context) => const DeveloperInfoView(),
+      );
+    case savedViewRoute:
+      return MaterialPageRoute(builder: (context) => const SavedView());
     default:
       return MaterialPageRoute(builder: (context) => const AuthWrapper());
   }

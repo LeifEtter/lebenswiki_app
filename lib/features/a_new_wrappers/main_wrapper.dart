@@ -74,7 +74,8 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
-              appBar(context, onPress: () => showBottomMenu(context, ref)),
+              appBar(context,
+                  onPress: () => showBottomMenuForNavigation(context, ref)),
               if (_showSearch) SearchBar(searchController: searchController)
             ];
           },

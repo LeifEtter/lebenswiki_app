@@ -5,7 +5,6 @@ import 'package:lebenswiki_app/api/general/base_api.dart';
 import 'package:lebenswiki_app/api/general/error_handler.dart';
 import 'package:lebenswiki_app/api/general/result_model_api.dart';
 import 'package:lebenswiki_app/features/a_new_common/other.dart';
-import 'package:lebenswiki_app/features/comments/models/comment_model.dart';
 import 'package:lebenswiki_app/models/enums.dart';
 
 class CommentApi extends BaseApi {
@@ -122,28 +121,18 @@ class CommentApi extends BaseApi {
     return result;
   }
 
-  Future<ResultModel> deleteComment({
+  Future<Either<CustomError, String>> deleteComment({
     required int id,
   }) async {
-    ResultModel result = ResultModel(
-      type: ResultType.failure,
-      message: "Couldn't delete comment",
-    );
-    await delete(
+    Response res = await delete(
       Uri.parse("$serverIp/comments/delete/$id"),
       headers: await requestHeader(),
-    ).then((Response res) {
-      if (statusIsSuccess(res.statusCode)) {
-        result = ResultModel(
-          type: ResultType.success,
-          message: "Comment successfully deleted",
-        );
-      } else {
-        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      }
-    }).catchError((error) {
-      apiErrorHandler.handleAndLog(reponseData: error);
-    });
-    return result;
+    );
+    if (statusIsSuccess(res.statusCode)) {
+      return const Right("Dein Kommentar wurde glöscht.");
+    } else {
+      return const Left(
+          CustomError(error: "Dein Kommentar konnte nicht gelöscht werden"));
+    }
   }
 }

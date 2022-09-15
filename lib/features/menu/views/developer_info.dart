@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/api/user_api.dart';
-import 'package:lebenswiki_app/features/common/components/buttons/buttons.dart';
-import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
-import 'package:lebenswiki_app/features/menu/views/feedback_view.dart';
+import 'package:lebenswiki_app/features/a_new_common/top_nav.dart';
 
 class DeveloperInfoView extends StatefulWidget {
   const DeveloperInfoView({Key? key}) : super(key: key);
@@ -21,7 +19,7 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
         body: SafeArea(
       child: ListView(
         children: [
-          const TopNav(pageName: "Kontakt/Feedback", backName: "Menu"),
+          const TopNavIOS(title: "Über Uns"),
           const SizedBox(
             height: 20.0,
           ),
@@ -154,39 +152,6 @@ class _DeveloperInfoViewState extends State<DeveloperInfoView> {
                 const SizedBox(height: 10),
                 const Divider(),
                 const SizedBox(height: 10),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Feedback Formular",
-                      style: _title(),
-                    ),
-                    const SizedBox(height: 10.0),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child:
-                                LebenswikiButtons.textButton.blueButtonNormal(
-                              text: "Feedback abschicken",
-                              callback: () {
-                                /*userApi.createFeedback(
-                                    feedback:
-                                        _feedbackController.text.toString());*/
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: ((context) =>
-                                            const FeedbackScreen())));
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
                 const SizedBox(height: 30.0),
               ],
             ),

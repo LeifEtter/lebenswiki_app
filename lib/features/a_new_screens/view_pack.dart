@@ -6,7 +6,6 @@ import 'package:lebenswiki_app/features/a_new_common/labels.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/lw.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
-import 'package:lebenswiki_app/features/testing/components/border.dart';
 
 class ViewPack extends ConsumerStatefulWidget {
   final Pack pack;
@@ -52,15 +51,17 @@ class _ViewPackState extends ConsumerState<ViewPack> {
               return [
                 SliverAppBar(
                   leadingWidth: 75,
-                  leading: FloatingActionButton(
-                    backgroundColor: const Color.fromRGBO(255, 255, 255, 0.8),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      color: CustomColors.offBlack,
-                      size: 28,
+                  toolbarHeight: 70,
+                  leading: Padding(
+                    padding: const EdgeInsets.only(bottom: 10, left: 10),
+                    child: FloatingActionButton(
+                      backgroundColor: const Color.fromRGBO(255, 255, 255, 0.8),
+                      onPressed: () => Navigator.pop(context),
+                      child: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: CustomColors.offBlack,
+                        size: 28,
+                      ),
                     ),
                   ),
                   systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -74,7 +75,7 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                       tag: widget.heroName,
                       child: Image.network(
                         widget.pack.titleImage,
-                        fit: BoxFit.fitWidth,
+                        fit: BoxFit.cover,
                       ),
                     ),
                     title: AnimatedOpacity(

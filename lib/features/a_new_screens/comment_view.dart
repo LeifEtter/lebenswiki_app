@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/features/a_new_common/other.dart';
 import 'package:lebenswiki_app/features/a_new_common/top_nav.dart';
+import 'package:lebenswiki_app/features/a_new_widget_repo/bottom_menu.dart';
 import 'package:lebenswiki_app/features/a_new_widget_repo/colors.dart';
 import 'package:lebenswiki_app/features/comments/api/comment_api.dart';
 import 'package:lebenswiki_app/features/comments/models/comment_model.dart';
@@ -10,9 +11,7 @@ import 'package:lebenswiki_app/features/common/components/custom_card.dart';
 import 'package:lebenswiki_app/features/common/components/is_loading.dart';
 import 'package:lebenswiki_app/features/packs/api/pack_api.dart';
 import 'package:lebenswiki_app/features/packs/models/pack_model.dart';
-import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
 import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
-import 'package:lebenswiki_app/features/testing/components/border.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
@@ -155,29 +154,17 @@ class _CommentViewState extends ConsumerState<CommentView> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(
-                              constraints: const BoxConstraints(),
-                              padding: EdgeInsets.zero,
-                              icon: const Icon(Icons.comment_outlined),
-                              iconSize: 23,
-                              onPressed: () {},
-                              color: CustomColors.textMediumGrey,
+                            _buildIconActionButton(
+                              icon: Icons.comment_outlined,
+                              onPress: () {},
                             ),
-                            IconButton(
-                              constraints: const BoxConstraints(),
-                              padding: EdgeInsets.zero,
-                              icon: const Icon(Icons.thumb_up_alt_outlined),
-                              iconSize: 23,
-                              onPressed: () {},
-                              color: CustomColors.textMediumGrey,
+                            _buildIconActionButton(
+                              icon: Icons.thumb_up_alt_outlined,
+                              onPress: () {},
                             ),
-                            IconButton(
-                              constraints: const BoxConstraints(),
-                              padding: EdgeInsets.zero,
-                              icon: const Icon(Icons.thumb_down_alt_outlined),
-                              iconSize: 23,
-                              onPressed: () {},
-                              color: CustomColors.textMediumGrey,
+                            _buildIconActionButton(
+                              icon: Icons.thumb_down_alt_outlined,
+                              onPress: () {},
                             ),
                           ],
                         ),
@@ -185,7 +172,14 @@ class _CommentViewState extends ConsumerState<CommentView> {
                     ],
                   ),
                 ),
-                const Icon(Icons.more_horiz_outlined),
+                IconButton(
+                  onPressed: () => showBottomMenuForCommentActions(
+                    context,
+                    ownComment: comment.creator.id == user.id,
+                    comment: comment,
+                  ),
+                  icon: const Icon(Icons.more_horiz_outlined),
+                ),
               ],
             ),
           ),
@@ -195,6 +189,19 @@ class _CommentViewState extends ConsumerState<CommentView> {
             width: double.infinity,
           ),
         ],
+      );
+
+  Widget _buildIconActionButton({
+    required IconData icon,
+    required Function onPress,
+  }) =>
+      IconButton(
+        constraints: const BoxConstraints(),
+        padding: EdgeInsets.zero,
+        icon: Icon(icon),
+        iconSize: 23,
+        onPressed: () => onPress(),
+        color: CustomColors.textMediumGrey,
       );
 
   void _openCommentField() => showModalBottomSheet(
@@ -232,9 +239,10 @@ class _CommentViewState extends ConsumerState<CommentView> {
                       Either<CustomError, String> commentResult =
                           await CommentApi().createCommentPack(
                               id: widget.id, comment: commentController.text);
-                      commentResult.fold(
-                          (left) => CustomFlushbar.error(message: left.error)
-                              .show(context), (right) {
+                      commentResult.fold((left) {
+                        CustomFlushbar.error(message: left.error).show(context);
+                      }, (right) {
+                        Navigator.pop(context);
                         CustomFlushbar.success(message: right).show(context);
                         commentController.text = "";
                       });
@@ -245,6 +253,52 @@ class _CommentViewState extends ConsumerState<CommentView> {
                 ],
               ),
             ),
+          ),
+        ),
+      );
+
+  void showBottomMenuForCommentActions(BuildContext context,
+          {bool ownComment = false, required Comment comment}) =>
+      showModalBottomSheet(
+        context: context,
+        builder: (context) => Container(
+          height: 400,
+          padding: const EdgeInsets.all(30.0),
+          child: Column(
+            children: [
+              ownComment
+                  ? buildMenuTile(
+                      text: "Kommentar Löschen",
+                      icon: Icons.delete,
+                      onPress: () async {
+                        await CommentApi().deleteComment(id: comment.id).fold(
+                          (left) {
+                            Navigator.pop(context);
+                            CustomFlushbar.error(message: left.error)
+                                .show(context);
+                          },
+                          (right) {
+                            Navigator.pop(context);
+                            CustomFlushbar.success(message: right)
+                                .show(context);
+                          },
+                        );
+                        setState(() {});
+                      },
+                    )
+                  : buildMenuTile(
+                      text: "Kommentar Melden",
+                      icon: Icons.flag,
+                      onPress: () {},
+                    ),
+              buildMenuTile(
+                text: "Kommentieren",
+                icon: Icons.comment_outlined,
+                onPress: () {
+                  //TODO kommentieren auf kommentar implementieren
+                },
+              ),
+            ],
           ),
         ),
       );

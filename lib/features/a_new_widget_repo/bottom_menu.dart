@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/features/a_new_screens/contact.dart';
 import 'package:lebenswiki_app/features/a_new_screens/profile.dart';
-import 'package:lebenswiki_app/features/a_new_screens/saved.dart';
-import 'package:lebenswiki_app/features/menu/views/developer_info.dart';
+import 'package:lebenswiki_app/features/authentication/helpers/authentication_functions.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
-void showBottomMenu(BuildContext context, WidgetRef ref) =>
+void showBottomMenuForNavigation(BuildContext context, WidgetRef ref) =>
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(25.0),
@@ -18,33 +16,32 @@ void showBottomMenu(BuildContext context, WidgetRef ref) =>
             padding: const EdgeInsets.all(30.0),
             child: Column(
               children: [
-                _buildMenuTile(
-                  context,
-                  endpoint: ProfileView(user: ref.watch(userProvider).user),
+                buildMenuTile(
+                  onPress: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ProfileView(user: ref.watch(userProvider).user))),
                   text: "Profil",
                   icon: Icons.person_outline_rounded,
                 ),
-                _buildMenuTile(
-                  context,
-                  endpoint: const SavedView(),
+                buildMenuTile(
+                  onPress: () => Navigator.pushNamed(context, '/saved'),
                   text: "Gespeichert",
                   icon: Icons.bookmark_outline,
                 ),
-                _buildMenuTile(
-                  context,
-                  endpoint: const ContactView(),
+                buildMenuTile(
+                  onPress: () => Navigator.pushNamed(context, '/contact'),
                   text: "Hilfe",
                   icon: Icons.help_outline_rounded,
                 ),
-                _buildMenuTile(
-                  context,
-                  endpoint: const DeveloperInfoView(),
-                  text: "Kontakt",
+                buildMenuTile(
+                  onPress: () => Navigator.pushNamed(context, '/developer'),
+                  text: "Über uns",
                   icon: Icons.phone_outlined,
                 ),
-                _buildMenuTile(
-                  context,
-                  endpoint: ProfileView(user: ref.watch(userProvider).user),
+                buildMenuTile(
+                  onPress: () => Authentication.logout(context, ref),
                   text: "Ausloggen",
                   icon: Icons.logout,
                 ),
@@ -54,19 +51,13 @@ void showBottomMenu(BuildContext context, WidgetRef ref) =>
         });
 
 //Refactor to new routing
-Widget _buildMenuTile(
-  BuildContext context, {
+Widget buildMenuTile({
   required String text,
   required IconData icon,
-  required Widget endpoint,
+  required Function onPress,
 }) =>
     InkWell(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => endpoint,
-        ),
-      ),
+      onTap: () => onPress(),
       child: Column(
         children: [
           Row(

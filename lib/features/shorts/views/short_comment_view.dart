@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/api/general/result_model_api.dart';
-import 'package:lebenswiki_app/features/comments/api/comment_api.dart';
 import 'package:lebenswiki_app/features/comments/components/comment_card.dart';
 import 'package:lebenswiki_app/features/comments/helper/comment_list_helper.dart';
 import 'package:lebenswiki_app/features/comments/models/comment_model.dart';
@@ -9,8 +7,6 @@ import 'package:lebenswiki_app/features/common/components/custom_card.dart';
 import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
 import 'package:lebenswiki_app/features/shorts/components/short_card.dart';
 import 'package:lebenswiki_app/features/shorts/models/short_model.dart';
-import 'package:lebenswiki_app/features/snackbar/components/custom_flushbar.dart';
-import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 
@@ -214,7 +210,7 @@ class _ShortCommentViewState extends ConsumerState<ShortCommentView> {
       );
 
   void _commentDeleteSelfCallback(int id) async {
-    ResultModel result = await CommentApi().deleteComment(id: id);
+    /*ResultModel result = await CommentApi().deleteComment(id: id);
     if (result.type == ResultType.success) {
       widget.short.comments.removeWhere((Comment comment) => comment.id == id);
       widget.commentListHelper.comments
@@ -224,6 +220,6 @@ class _ShortCommentViewState extends ConsumerState<ShortCommentView> {
       CustomFlushbar.error(message: "Kommentar konnte nicht gelöscht werden")
           .show(context);
     }
-    setState(() {});
+    setState(() {});*/
   }
 }

@@ -61,6 +61,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
               hasShadow: widget.hasShadow,
               child: !widget.isMultiline
                   ? TextFormField(
+                      textAlignVertical: TextAlignVertical.center,
                       initialValue: widget.initialValue ?? "",
                       obscureText: obscure,
                       onChanged: widget.onChanged,

@@ -17,6 +17,7 @@ import 'package:lebenswiki_app/models/enums.dart';
 import 'package:lebenswiki_app/models/user_model.dart';
 import 'package:lebenswiki_app/providers/providers.dart';
 import 'package:lebenswiki_app/repository/shadows.dart';
+import 'package:emojis/emoji.dart';
 
 class NewPackCard extends ConsumerStatefulWidget {
   final String heroParent;
@@ -146,60 +147,29 @@ class _NewPackCardState extends ConsumerState<NewPackCard> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              width: 170,
-              height: 35,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.white,
-                  boxShadow: [LebenswikiShadows.fancyShadow]),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                          DateFormat.MMMd().format(widget.pack.creationDate)),
-                    ),
+            InfoBar(
+              items: [
+                InfoItem.forText(
+                  text: DateFormat.MMMd().format(widget.pack.creationDate),
+                ),
+                InfoItem.forIconLabel(
+                  onPress: () {},
+                  emoji: Emoji.byName("clapping hands").toString(),
+                  indicator: "0",
+                ),
+                InfoItem.forIconLabel(
+                  onPress: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CommentView(
+                              isShort: false, id: widget.pack.id!))),
+                  icon: const Icon(
+                    Icons.mode_comment,
+                    size: 20,
                   ),
-                  _buildVerticalDivider(horizontalPadding: 0),
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                          "${Emoji.byName("clapping hands")} ${widget.pack.claps}"),
-                    ),
-                  ),
-                  _buildVerticalDivider(horizontalPadding: 0),
-                  Expanded(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CommentView(
-                                  isShort: false, id: widget.pack.id!))),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(top: 2.0),
-                                child: Icon(
-                                  Icons.mode_comment,
-                                  size: 15,
-                                ),
-                              ),
-                              const SizedBox(width: 5),
-                              Text(widget.pack.comments.length.toString()),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                  indicator: widget.pack.comments.length.toString(),
+                ),
+              ],
             ),
             const Spacer(),
             IconButton(
@@ -240,15 +210,6 @@ class _NewPackCardState extends ConsumerState<NewPackCard> {
             Text("${widget.progressValue}% fertig",
                 style: Theme.of(context).textTheme.blueLabel),
           ],
-        ),
-      );
-
-  Widget _buildVerticalDivider({required double horizontalPadding}) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-        child: Container(
-          color: CustomColors.lightGrey,
-          width: 2,
-          height: 25,
         ),
       );
 
