@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:lebenswiki_app/presentation/widgets/colors.dart';
+import 'package:lebenswiki_app/repository/constants/colors.dart';
 
 class LWButtons {
   const LWButtons();

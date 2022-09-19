@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:lebenswiki_app/presentation/widgets/labels.dart';
-import 'package:lebenswiki_app/presentation/widgets/colors.dart';
+import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
+import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/widgets/lw.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
 

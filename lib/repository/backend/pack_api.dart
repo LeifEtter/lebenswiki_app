@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:either_dart/either.dart';
+import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/repository/backend/base_api.dart';
 import 'package:lebenswiki_app/repository/backend/error_handler.dart';
 import 'package:http/http.dart';
 import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
-import 'package:lebenswiki_app/presentation/widgets/other.dart';
+import 'package:lebenswiki_app/presentation/widgets/common/other.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';

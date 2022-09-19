@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/presentation/widgets/labels.dart';
-import 'package:lebenswiki_app/presentation/widgets/colors.dart';
+import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
+import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/domain/models/short_model.dart';
 import 'package:intl/intl.dart';
 import 'package:emojis/emoji.dart';

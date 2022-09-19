@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/presentation/widgets/custom_safe_area.dart';
+/*import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/presentation/widgets/common/custom_safe_area.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/repository/constants/shadows.dart';
 
@@ -99,7 +99,7 @@ class _OnboardingViewState extends State<OnboardingView> {
             ),
             AnimatedContainer(
               decoration: BoxDecoration(
-                color: LebenswikiColors.blue,
+                color: CustomColors.blue,
                 borderRadius: BorderRadius.circular(10.0),
               ),
               height: 20,
@@ -284,7 +284,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: LebenswikiColors.blue,
+                          color: CustomColors.blue,
                           borderRadius: BorderRadius.circular(15.0),
                         ),
                         child: TextButton(
@@ -317,7 +317,7 @@ class _OnboardingViewState extends State<OnboardingView> {
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25.0),
-                  color: LebenswikiColors.blue,
+                  color: CustomColors.blue,
                   boxShadow: [LebenswikiShadows.fancyShadow]),
               child: TextButton(
                 child: const Padding(
@@ -362,4 +362,4 @@ class _OnboardingViewState extends State<OnboardingView> {
     _pageController.previousPage(
         duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
   }
-}
+}*/

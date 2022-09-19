@@ -2,17 +2,19 @@ import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/application/pack_short_service.dart';
+import 'package:lebenswiki_app/domain/models/error_model.dart';
+import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/presentation/widgets/other.dart';
+import 'package:lebenswiki_app/presentation/widgets/common/other.dart';
 import 'package:lebenswiki_app/presentation/providers/new_providers.dart';
 import 'package:lebenswiki_app/presentation/screens/community.dart';
 import 'package:lebenswiki_app/presentation/screens/explore.dart';
 import 'package:lebenswiki_app/presentation/screens/home.dart';
-import 'package:lebenswiki_app/presentation/widgets/appbar.dart';
-import 'package:lebenswiki_app/presentation/widgets/bottom_menu.dart';
-import 'package:lebenswiki_app/presentation/widgets/add_button.dart';
+import 'package:lebenswiki_app/presentation/widgets/navigation/appbar.dart';
+import 'package:lebenswiki_app/presentation/widgets/navigation/bottom_menu.dart';
+import 'package:lebenswiki_app/presentation/widgets/buttons/add_button.dart';
 import 'package:lebenswiki_app/application/loading_helper.dart';
-import 'package:lebenswiki_app/presentation/widgets/bottom_nav_bar.dart';
+import 'package:lebenswiki_app/presentation/widgets/navigation/bottom_nav_bar.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
 
 class NavBarWrapper extends ConsumerStatefulWidget {

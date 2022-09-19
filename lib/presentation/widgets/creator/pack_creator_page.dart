@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:lebenswiki_app/presentation/widgets/styling_edit.dart';
-import 'package:lebenswiki_app/presentation/widgets/pack_editor_components.dart';
-import 'package:lebenswiki_app/presentation/widgets/border.dart';
+import 'package:lebenswiki_app/presentation/widgets/creator/styling_edit.dart';
+import 'package:lebenswiki_app/presentation/widgets/creator/pack_editor_components.dart';
+import 'package:lebenswiki_app/presentation/widgets/common/border.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
 

@@ -1,18 +1,19 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/presentation/widgets/other.dart';
-import 'package:lebenswiki_app/presentation/widgets/top_nav.dart';
-import 'package:lebenswiki_app/presentation/widgets/bottom_menu.dart';
-import 'package:lebenswiki_app/presentation/widgets/colors.dart';
+import 'package:lebenswiki_app/presentation/widgets/common/other.dart';
+import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
+import 'package:lebenswiki_app/presentation/widgets/navigation/bottom_menu.dart';
+import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/repository/backend/comment_api.dart';
 import 'package:lebenswiki_app/domain/models/comment_model.dart';
-import 'package:lebenswiki_app/presentation/widgets/custom_card.dart';
+import 'package:lebenswiki_app/presentation/widgets/cards/custom_card.dart';
 import 'package:lebenswiki_app/application/loading_helper.dart';
 import 'package:lebenswiki_app/repository/backend/pack_api.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
-import 'package:lebenswiki_app/presentation/widgets/custom_flushbar.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';
 
 class CommentView extends ConsumerStatefulWidget {

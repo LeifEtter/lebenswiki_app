@@ -1,13 +1,14 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/repository/backend/misc_api.dart';
-import 'package:lebenswiki_app/presentation/widgets/hacks.dart';
-import 'package:lebenswiki_app/presentation/widgets/other.dart';
-import 'package:lebenswiki_app/presentation/widgets/top_nav.dart';
-import 'package:lebenswiki_app/presentation/widgets/colors.dart';
+import 'package:lebenswiki_app/presentation/widgets/common/hacks.dart';
+import 'package:lebenswiki_app/presentation/widgets/common/other.dart';
+import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
+import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/widgets/lw.dart';
-import 'package:lebenswiki_app/presentation/widgets/custom_flushbar.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/repository/constants/shadows.dart';
 
 class ContactView extends ConsumerStatefulWidget {

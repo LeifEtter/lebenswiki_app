@@ -4,13 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
 import 'package:lebenswiki_app/repository/backend/user_api.dart';
 import 'package:lebenswiki_app/main_wrapper.dart';
-import 'package:lebenswiki_app/presentation/widgets/custom_form_field.dart';
+import 'package:lebenswiki_app/presentation/widgets/input/custom_form_field.dart';
 import 'package:lebenswiki_app/application/authentication_functions.dart';
 import 'package:lebenswiki_app/presentation/providers/auth_providers.dart';
-import 'package:lebenswiki_app/presentation/widgets/buttons_to_refactor.dart';
-import 'package:lebenswiki_app/presentation/widgets/custom_flushbar.dart';
-import 'package:lebenswiki_app/repository/constants/text_styles.dart';
-import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 
 //TODO upload profile pictures to firebase storage
@@ -56,8 +52,6 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
               Center(
                 child: Text(
                   isSignUp ? "Registrieren" : "Login",
-                  style: LebenswikiTextStyles
-                      .authenticationContent.authenticationTitle,
                 ),
               ),
               const SizedBox(height: 30.0),
@@ -144,11 +138,13 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
               ),
               Consumer(
                 builder: (context, WidgetRef ref, child) {
-                  return Padding(
+                  //TODO Return Auth button new
+                  return Container();
+                  /*return Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: LebenswikiButtons.textButton.authenticationButton(
                       text: isSignUp ? "Registrieren" : "Einloggen",
-                      color: LebenswikiColors.createPackButton,
+                      color: CustomColors.blue,
                       onPress: () async {
                         if (isSignUp) {
                           if (await _register()) {
@@ -171,7 +167,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                         }
                       },
                     ),
-                  );
+                  );*/
                 },
               ),
               Padding(

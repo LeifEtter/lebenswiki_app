@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/repository/backend/user_api.dart';
-import 'package:lebenswiki_app/presentation/widgets/top_nav.dart';
+import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 
 class DeveloperInfoView extends StatefulWidget {
   const DeveloperInfoView({Key? key}) : super(key: key);
@@ -11,7 +11,6 @@ class DeveloperInfoView extends StatefulWidget {
 
 class _DeveloperInfoViewState extends State<DeveloperInfoView> {
   final UserApi userApi = UserApi();
-  final TextEditingController _feedbackController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

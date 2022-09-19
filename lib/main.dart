@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/presentation/providers/provider_helper.dart';
 import 'package:lebenswiki_app/repository/backend/token_handler.dart';
-import 'package:lebenswiki_app/presentation/widgets/theme.dart';
+import 'package:lebenswiki_app/presentation/widgets/common/theme.dart';
 import 'package:lebenswiki_app/main_wrapper.dart';
 import 'package:lebenswiki_app/application/loading_helper.dart';
 import 'package:lebenswiki_app/router.dart';

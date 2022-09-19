@@ -1,4 +1,5 @@
-import 'package:lebenswiki_app/presentation/widgets/other.dart';
+import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
+import 'package:lebenswiki_app/presentation/widgets/common/other.dart';
 import 'package:lebenswiki_app/main_wrapper.dart';
 import 'package:lebenswiki_app/domain/models/short_model.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';

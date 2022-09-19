@@ -1,8 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/presentation/widgets/pack_card.dart';
-import 'package:lebenswiki_app/presentation/widgets/extensions.dart';
+import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
+import 'package:lebenswiki_app/presentation/widgets/common/extensions.dart';
 import 'package:lebenswiki_app/application/pack_list_helper.dart';
 
 class HomeView extends ConsumerStatefulWidget {

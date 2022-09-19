@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/presentation/providers/new_providers.dart';
-import 'package:lebenswiki_app/presentation/widgets/colors.dart';
-import 'package:lebenswiki_app/main_wrapper.dart';
-import 'package:lebenswiki_app/repository/constants/text_styles.dart';
+import 'package:lebenswiki_app/repository/constants/colors.dart';
 
 SliverAppBar appBar(context, {required Function onPress}) {
   return SliverAppBar(
@@ -15,7 +13,6 @@ SliverAppBar appBar(context, {required Function onPress}) {
       padding: EdgeInsets.only(top: 0),
       child: Text(
         "Lebenswiki",
-        style: LebenswikiTextStyles.logoText,
       ),
     ),
     elevation: 0,

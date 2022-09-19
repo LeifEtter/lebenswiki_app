@@ -47,6 +47,4 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     default:
       return MaterialPageRoute(builder: (context) => const AuthWrapper());
   }
-
-  //return MaterialPageRoute(builder: (context) => AuthenticationWrapper());
 }

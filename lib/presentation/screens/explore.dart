@@ -2,16 +2,16 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/presentation/providers/new_providers.dart';
-import 'package:lebenswiki_app/presentation/widgets/pack_card.dart';
-import 'package:lebenswiki_app/presentation/widgets/colors.dart';
-import 'package:lebenswiki_app/presentation/widgets/short_card.dart';
+import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
+import 'package:lebenswiki_app/repository/constants/colors.dart';
+import 'package:lebenswiki_app/presentation/widgets/cards/short_card.dart';
 import 'package:lebenswiki_app/main_wrapper.dart';
 import 'package:lebenswiki_app/application/pack_list_helper.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/application/short_list_helper.dart';
 import 'package:lebenswiki_app/domain/models/short_model.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
-import 'package:lebenswiki_app/presentation/widgets/extensions.dart';
+import 'package:lebenswiki_app/presentation/widgets/common/extensions.dart';
 
 class ExploreView extends StatefulWidget {
   final PackListHelper packHelper;

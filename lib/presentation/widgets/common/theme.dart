@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/presentation/widgets/colors.dart';
+import 'package:lebenswiki_app/repository/constants/colors.dart';
 
 ThemeData buildTheme(brightness) => ThemeData(
       fontFamily: "Outfit",

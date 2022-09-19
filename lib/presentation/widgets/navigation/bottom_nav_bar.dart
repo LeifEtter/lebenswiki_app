@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/presentation/widgets/colors.dart';
+import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:lebenswiki_app/repository/constants/shadows.dart';
 
