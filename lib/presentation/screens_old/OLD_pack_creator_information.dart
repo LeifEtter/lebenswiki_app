@@ -1,0 +1,215 @@
+/*import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/features/common/components/tab_bar.dart';
+import 'package:lebenswiki_app/repository/backend/pack_api.dart';
+import 'package:lebenswiki_app/domain/models/category_model.dart';
+import 'package:lebenswiki_app/domain/models/pack_model.dart';
+import 'package:lebenswiki_app/presentation/screens/pack_creator_overview.dart';
+import 'package:lebenswiki_app/presentation/screens/your_creator_packs.dart';
+import 'package:lebenswiki_app/features/common/components/nav/top_nav.dart';
+import 'package:lebenswiki_app/providers/providers.dart';
+import 'package:lebenswiki_app/repository/constants/shadows.dart';
+
+//TODO add unsplash image
+//TODO add own image upload
+//TODO enable choosing multiple categories
+
+class PackCreatorInformation extends ConsumerStatefulWidget {
+  final Pack pack;
+
+  const PackCreatorInformation({
+    Key? key,
+    required this.pack,
+  }) : super(key: key);
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _EditorSettingsState();
+}
+
+class _EditorSettingsState extends ConsumerState<PackCreatorInformation> {
+  late Pack pack;
+  late List<ContentCategory> categories;
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController imageLinkController = TextEditingController();
+  int currentCategory = 0;
+
+  @override
+  void initState() {
+    pack = widget.pack;
+    titleController.text = pack.title;
+    descriptionController.text = pack.description;
+    imageLinkController.text = pack.titleImage;
+    if (pack.categories.isNotEmpty) {
+      currentCategory = pack.categories.first.id - 1;
+    }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<ContentCategory> categoriesPreFilter =
+        ref.watch(categoryProvider).categories;
+    categories = _removeNew(categoriesPreFilter);
+    return Scaffold(
+      body: ListView(
+        padding: const EdgeInsets.only(top: 0),
+        children: [
+          TopNavCustom(
+            pageName: "Informationen",
+            backName: "Deine Packs",
+            nextName: "Weiter",
+            previousCallback: _previousPage,
+            nextCallback: _nextPage,
+          ),
+          DefaultTabController(
+            length: categories.length,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+                  Text(
+                    "Kategorie",
+                    style: _labelStyle(),
+                  ),
+                  const SizedBox(height: 20.0),
+                  DefaultTabController(
+                    initialIndex: currentCategory,
+                    length: categories.length,
+                    child: buildTabBar(
+                        categories: categories,
+                        callback: (int value) {
+                          currentCategory = value;
+                        }),
+                  ),
+                  const SizedBox(height: 20),
+                  Text("Titel", style: _labelStyle()),
+                  const SizedBox(height: 20),
+                  Container(
+                    height: 50,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    decoration: _inputStyle(),
+                    child: TextField(
+                      controller: titleController,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.all(15.0),
+                        hintText: "Titel",
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  Text(
+                    "Beschreibung",
+                    style: _labelStyle(),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    decoration: _inputStyle(),
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: TextField(
+                      controller: descriptionController,
+                      minLines: 3,
+                      maxLines: 5,
+                      keyboardType: TextInputType.multiline,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.all(15.0),
+                        hintText: "Schreibe eine kurze Beschreibung",
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  Text("Bild", style: _labelStyle()),
+                  const SizedBox(height: 20),
+                  Container(
+                    height: 50,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    decoration: _inputStyle(),
+                    child: TextField(
+                      controller: imageLinkController,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.all(15.0),
+                        hintText: "Link für Bild",
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  List<ContentCategory> _removeNew(List<ContentCategory> result) {
+    return result
+        .where((ContentCategory cat) => cat.categoryName != "Neu")
+        .toList();
+  }
+
+  BoxDecoration _inputStyle() {
+    return BoxDecoration(
+      boxShadow: [
+        LebenswikiShadows.fancyShadow,
+      ],
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(15.0),
+    );
+  }
+
+  TextStyle _labelStyle() {
+    return const TextStyle(
+      fontSize: 20.0,
+      fontWeight: FontWeight.w600,
+      color: Colors.black54,
+    );
+  }
+
+  //TODO improve routing
+  void _nextPage() async {
+    _saveInfo();
+    await PackApi().updatePack(id: pack.id!, pack: pack);
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: ((context) => PackCreatorOverview(pack: pack))));
+  }
+
+  void _previousPage() async {
+    _saveInfo();
+    await PackApi().updatePack(id: pack.id!, pack: pack);
+
+    Navigator.push(context, _backRoute());
+  }
+
+  void _saveInfo() {
+    pack.description = descriptionController.text;
+    pack.title = titleController.text;
+    pack.titleImage = imageLinkController.text;
+    pack.categories = [categories[currentCategory]];
+  }
+
+  Route _backRoute() {
+    return PageRouteBuilder(
+        pageBuilder: ((context, animation, secondaryAnimation) =>
+            const YourCreatorPacks()),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(-1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.ease;
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        });
+  }
+}*/

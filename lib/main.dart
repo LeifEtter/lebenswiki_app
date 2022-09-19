@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/api/token/token_handler.dart';
-import 'package:lebenswiki_app/features/a_new_common/theme.dart';
-import 'package:lebenswiki_app/features/a_new_wrappers/main_wrapper.dart';
-import 'package:lebenswiki_app/features/common/components/is_loading.dart';
-import 'package:lebenswiki_app/features/routing/router.dart';
-import 'package:lebenswiki_app/features/routing/routing_constants.dart';
-import 'package:lebenswiki_app/features/authentication/views/authentication_view.dart';
+import 'package:lebenswiki_app/presentation/providers/provider_helper.dart';
+import 'package:lebenswiki_app/repository/backend/token_handler.dart';
+import 'package:lebenswiki_app/presentation/widgets/theme.dart';
+import 'package:lebenswiki_app/main_wrapper.dart';
+import 'package:lebenswiki_app/application/loading_helper.dart';
+import 'package:lebenswiki_app/router.dart';
+import 'package:lebenswiki_app/repository/constants/routing_constants.dart';
+import 'package:lebenswiki_app/presentation/screens/authentication_view.dart';
 import 'package:flutter/services.dart';
-import 'package:lebenswiki_app/providers/provider_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
