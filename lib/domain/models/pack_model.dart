@@ -60,12 +60,13 @@ class Pack {
   Map<String, dynamic> toJson() => {
         'title': title,
         'description': description,
+        'initiative': initiative,
         'titleImage': titleImage,
-        'published': published,
         'categories': categories.isNotEmpty ? [categories.first.id] : [],
         'pages': List<dynamic>.from(
           pages.map((PackPage page) => page.toJson()),
         ),
+        'readTime': readTime,
       };
 
   Pack.fromJson(Map json)
@@ -87,7 +88,7 @@ class Pack {
         pages = List<PackPage>.from(
             json["pages"].map((page) => PackPage.fromResponse(page))),
         comments = List<Comment>.from(
-          json["comments"].map((comment) => Comment.forPack(comment)));
+            json["comments"].map((comment) => Comment.forPack(comment)));
 
   void initializeDisplayParams(int currentUserId) {
     _initHasBookmarked(currentUserId);

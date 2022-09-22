@@ -29,6 +29,11 @@ dependencies:
   emojis: ^0.9.9
   either_dart: ^0.2.0
   animate_icons: ^2.0.0
+  firebase_core: ^1.22.0
+  firebase_storage: ^10.3.8
+  path: ^1.8.1
+  image_picker: ^0.8.5+3
+  permission_handler: ^10.0.1
 
 dev_dependencies:
   flutter_test:

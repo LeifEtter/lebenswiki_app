@@ -6,21 +6,21 @@ import 'package:lebenswiki_app/domain/models/short_model.dart';
 import 'package:intl/intl.dart';
 import 'package:emojis/emoji.dart';
 
-class NewShortCard extends ConsumerStatefulWidget {
+class ShortCard extends ConsumerStatefulWidget {
   final Short short;
   final bool inSlider;
 
-  const NewShortCard({
+  const ShortCard({
     Key? key,
     required this.short,
     this.inSlider = false,
   }) : super(key: key);
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _NewShortCardState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ShortCardState();
 }
 
-class _NewShortCardState extends ConsumerState<NewShortCard> {
+class _ShortCardState extends ConsumerState<ShortCard> {
   @override
   Widget build(BuildContext context) {
     return Container(

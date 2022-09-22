@@ -7,11 +7,14 @@ import 'package:lebenswiki_app/main_wrapper.dart';
 import 'package:lebenswiki_app/application/loading_helper.dart';
 import 'package:lebenswiki_app/router.dart';
 import 'package:lebenswiki_app/repository/constants/routing_constants.dart';
-import 'package:lebenswiki_app/presentation/screens/authentication_view.dart';
+import 'package:lebenswiki_app/presentation/screens/other/authentication.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(

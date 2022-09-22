@@ -5,7 +5,6 @@ import 'package:lebenswiki_app/repository/backend/base_api.dart';
 import 'package:lebenswiki_app/repository/backend/error_handler.dart';
 import 'package:http/http.dart';
 import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
-import 'package:lebenswiki_app/presentation/widgets/common/other.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
@@ -31,24 +30,21 @@ class PackApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> createPack({required Pack pack}) async {
+  Future<Either<CustomError, int>> createPack({required Pack pack}) async {
+    print(pack.initiative);
     Response res = await post(
       Uri.parse("$serverIp/packs/create"),
       headers: await requestHeader(),
       body: jsonEncode(pack.toJson()),
     );
+
     if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "Lernpack erfolgreich erstellt!",
-        responseItem: jsonDecode(res.body)["pack"]["id"],
-      );
+      int id = jsonDecode(res.body)["pack"]["id"];
+      return Right(id);
     } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message: "Das Lernpack konnte nicht erstellt werden",
-      );
+      apiErrorHandler.logRes(res);
+      return const Left(
+          CustomError(error: "Pack konnte nicht erstellt werden"));
     }
   }
 

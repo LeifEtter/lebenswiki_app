@@ -5,7 +5,6 @@ import 'package:lebenswiki_app/presentation/providers/new_providers.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/short_card.dart';
-import 'package:lebenswiki_app/main_wrapper.dart';
 import 'package:lebenswiki_app/application/pack_list_helper.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/application/short_list_helper.dart';
@@ -91,7 +90,7 @@ class _ExploreViewState extends State<ExploreView> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10.0, horizontal: 20.0),
-                          child: NewPackCard(
+                          child: PackCard(
                             progressValue: 0,
                             isStarted: false,
                             pack: pack,
@@ -137,7 +136,7 @@ class _ExploreViewState extends State<ExploreView> {
                     widget.packHelper.categorizedPacks[_selectedCategory]!
                         .map((Pack pack) => Padding(
                               padding: const EdgeInsets.only(right: 20),
-                              child: NewPackCard(
+                              child: PackCard(
                                 heroParent: "explore-categories",
                                 progressValue: 0,
                                 isStarted: false,
@@ -161,7 +160,7 @@ class _ExploreViewState extends State<ExploreView> {
             items: List<Widget>.from(widget.shortHelper.shorts.map(
               (Short short) => Padding(
                 padding: const EdgeInsets.only(right: 20),
-                child: NewShortCard(
+                child: ShortCard(
                   short: short,
                   inSlider: true,
                 ),

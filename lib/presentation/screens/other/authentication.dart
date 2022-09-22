@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
+import 'package:lebenswiki_app/presentation/widgets/lw.dart';
 import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
 import 'package:lebenswiki_app/repository/backend/user_api.dart';
 import 'package:lebenswiki_app/main_wrapper.dart';
@@ -8,6 +10,7 @@ import 'package:lebenswiki_app/presentation/widgets/input/custom_form_field.dart
 import 'package:lebenswiki_app/application/authentication_functions.dart';
 import 'package:lebenswiki_app/presentation/providers/auth_providers.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
+import 'package:lebenswiki_app/repository/constants/colors.dart';
 
 //TODO upload profile pictures to firebase storage
 class AuthenticationView extends ConsumerStatefulWidget {
@@ -136,38 +139,28 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                   icon: const Icon(Icons.image),
                 ),
               ),
-              Consumer(
-                builder: (context, WidgetRef ref, child) {
-                  //TODO Return Auth button new
-                  return Container();
-                  /*return Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: LebenswikiButtons.textButton.authenticationButton(
-                      text: isSignUp ? "Registrieren" : "Einloggen",
-                      color: CustomColors.blue,
-                      onPress: () async {
-                        if (isSignUp) {
-                          if (await _register()) {
-                            CustomFlushbar.success(
-                                    message: "Erfolgreich registriert")
-                                .show(context);
-                            toggleSignIn();
-                          } else {
-                            CustomFlushbar.error(
-                                message: "Registrierung fehlgeschlagen");
-                          }
-                        } else {
-                          if (await _login()) {
-                            navigateFeed();
-                          } else {
-                            CustomFlushbar.error(
-                                    message: "Login fehlgeschlagen")
-                                .show(context);
-                          }
-                        }
-                      },
-                    ),
-                  );*/
+              LW.buttons.normal(
+                borderRadius: 15,
+                text: isSignUp ? "Registrieren" : "Einloggen",
+                color: CustomColors.blue,
+                action: () async {
+                  if (isSignUp) {
+                    if (await register()) {
+                      CustomFlushbar.success(message: "Erfolgreich registriert")
+                          .show(context);
+                      toggleSignIn();
+                    } else {
+                      CustomFlushbar.error(
+                          message: "Registrierung fehlgeschlagen");
+                    }
+                  } else {
+                    if (await login()) {
+                      navigateFeed();
+                    } else {
+                      CustomFlushbar.error(message: "Login fehlgeschlagen")
+                          .show(context);
+                    }
+                  }
                 },
               ),
               Padding(
@@ -202,14 +195,14 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
     );
   }
 
-  Future<bool> _register() async {
+  Future<bool> register() async {
     if (!_formProvider.validateForRegister) return false;
 
     ResultModel result = await Authentication.register(_formProvider);
     return result.type == ResultType.failure ? false : true;
   }
 
-  Future<bool> _login() async {
+  Future<bool> login() async {
     if (!_formProvider.validateForLogin) return false;
 
     ResultModel result = await Authentication.login(_formProvider, ref);

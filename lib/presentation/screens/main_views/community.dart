@@ -33,7 +33,7 @@ class _CommunityViewState extends ConsumerState<CommunityView> {
               padding: const EdgeInsets.only(right: 20),
               child: Column(
                 children: [
-                  NewShortCard(short: short),
+                  ShortCard(short: short),
                 ],
               ),
             ),
@@ -53,7 +53,7 @@ class _CommunityViewState extends ConsumerState<CommunityView> {
             .map((Short short) => Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
-                  child: NewShortCard(short: short),
+                  child: ShortCard(short: short),
                 ))
             .toList(),
       ],

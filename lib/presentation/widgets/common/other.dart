@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/domain/models/category_model.dart';
-
-
 
 class CheckData {
   static bool imageIsLocal(String image) {

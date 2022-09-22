@@ -5,7 +5,6 @@ import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/repository/backend/base_api.dart';
 import 'package:lebenswiki_app/repository/backend/error_handler.dart';
 import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
-import 'package:lebenswiki_app/presentation/widgets/common/other.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 

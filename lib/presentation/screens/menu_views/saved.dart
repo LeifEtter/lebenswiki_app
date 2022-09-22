@@ -5,12 +5,10 @@ import 'package:lebenswiki_app/application/pack_short_service.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/presentation/widgets/common/other.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/short_card.dart';
-import 'package:lebenswiki_app/main_wrapper.dart';
 import 'package:lebenswiki_app/application/loading_helper.dart';
 import 'package:lebenswiki_app/application/pack_list_helper.dart';
 import 'package:lebenswiki_app/application/short_list_helper.dart';
@@ -91,7 +89,7 @@ class _SavedViewState extends ConsumerState<SavedView> {
                                           vertical: 10.0),
                                       child: SizedBox(
                                         height: 280,
-                                        child: NewPackCard(
+                                        child: PackCard(
                                           progressValue: 0,
                                           isStarted: false,
                                           pack: packHelper.packs[index],
@@ -110,7 +108,7 @@ class _SavedViewState extends ConsumerState<SavedView> {
                                     itemBuilder: (context, index) => Padding(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 10.0),
-                                      child: NewShortCard(
+                                      child: ShortCard(
                                         short: shortHelper.shorts[index],
                                       ),
                                     ),

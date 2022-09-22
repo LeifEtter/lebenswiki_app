@@ -80,7 +80,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                       padding: EdgeInsets.only(
                           left: index == 0 ? 20 : 10,
                           right: index == packs.length + 1 ? 20 : 10),
-                      child: NewPackCard(
+                      child: PackCard(
                         heroParent: heroParent,
                         progressValue: 0,
                         isStarted: isReading,

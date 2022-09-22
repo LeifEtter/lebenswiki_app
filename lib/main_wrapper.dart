@@ -1,21 +1,21 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:lebenswiki_app/application/pack_short_service.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/presentation/widgets/common/other.dart';
-import 'package:lebenswiki_app/presentation/providers/new_providers.dart';
-import 'package:lebenswiki_app/presentation/screens/community.dart';
-import 'package:lebenswiki_app/presentation/screens/explore.dart';
-import 'package:lebenswiki_app/presentation/screens/home.dart';
+import 'package:lebenswiki_app/presentation/screens/main_views/community.dart';
+import 'package:lebenswiki_app/presentation/screens/main_views/explore.dart';
+import 'package:lebenswiki_app/presentation/screens/main_views/home.dart';
+import 'package:lebenswiki_app/presentation/screens/pack_specific_views/pack_creator_information.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/appbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/bottom_menu.dart';
-import 'package:lebenswiki_app/presentation/widgets/buttons/add_button.dart';
 import 'package:lebenswiki_app/application/loading_helper.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/bottom_nav_bar.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
+import 'package:lebenswiki_app/repository/constants/colors.dart';
 
 class NavBarWrapper extends ConsumerStatefulWidget {
   final int initialTab;
@@ -61,7 +61,7 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
       currentUserId: ref.read(userProvider).user.id,
     );
     return Scaffold(
-      floatingActionButton: dialAddButton(context),
+      floatingActionButton: _buildAddButton(),
       backgroundColor: Colors.white,
       extendBody: true,
       bottomNavigationBar: CustomBottomBar(
@@ -116,6 +116,32 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
       ),
     );
   }
+
+  Widget _buildAddButton() => SpeedDial(
+        iconTheme: const IconThemeData(size: 40),
+        backgroundColor: CustomColors.blue,
+        direction: SpeedDialDirection.up,
+        icon: Icons.add_rounded,
+        children: [
+          SpeedDialChild(
+            label: "Lernpack Erstellen",
+            child: const Icon(Icons.comment),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CreatorPackInfo(),
+              ),
+            ),
+          ),
+          SpeedDialChild(
+            label: "Short Erstellen",
+            child: const Icon(Icons.add),
+            onTap: () {
+              //TODO Implement create short route
+            },
+          ),
+        ],
+      );
 
   void _updateIndex(int newIndex) => setState(() {
         _currentIndex = newIndex;

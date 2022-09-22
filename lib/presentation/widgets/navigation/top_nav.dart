@@ -1,35 +1,62 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TopNavIOS extends StatelessWidget {
   final String title;
+  final String? nextTitle;
+  final Function? nextFunction;
 
   const TopNavIOS({
     Key? key,
     required this.title,
+    this.nextTitle,
+    this.nextFunction,
+  }) : super(key: key);
+
+  const TopNavIOS.withNextButton({
+    Key? key,
+    required this.title,
+    required this.nextTitle,
+    required this.nextFunction,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        SizedBox(
-          width: 50,
-          child: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.arrow_back_ios_new_rounded),
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: SizedBox(
+              width: 50,
+              child: IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded),
+              ),
+            ),
           ),
-        ),
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        Container(
-          width: 50,
-        ),
-      ],
+          Align(
+            alignment: Alignment.center,
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: nextTitle != null
+                ? CupertinoButton(
+                    child: Text(nextTitle!),
+                    onPressed: () => nextFunction!(),
+                  )
+                : Container(
+                    width: 50,
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }

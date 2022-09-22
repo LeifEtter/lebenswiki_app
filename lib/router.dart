@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/presentation/screens/contact.dart';
-import 'package:lebenswiki_app/presentation/screens/profile.dart';
-import 'package:lebenswiki_app/presentation/screens/saved.dart';
-import 'package:lebenswiki_app/presentation/screens/developer_info.dart';
+import 'package:lebenswiki_app/presentation/screens/menu_views/contact.dart';
+import 'package:lebenswiki_app/presentation/screens/menu_views/profile.dart';
+import 'package:lebenswiki_app/presentation/screens/menu_views/saved.dart';
+import 'package:lebenswiki_app/presentation/screens/menu_views/about_us.dart';
 import 'package:lebenswiki_app/repository/constants/routing_constants.dart';
 import 'package:lebenswiki_app/main.dart';
-import 'package:lebenswiki_app/presentation/screens/authentication_view.dart';
+import 'package:lebenswiki_app/presentation/screens/other/authentication.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -36,7 +36,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       );
     case developerViewRoute:
       return MaterialPageRoute(
-        builder: (context) => const DeveloperInfoView(),
+        builder: (context) => const AboutUsView(),
       );
     case profileViewRoute:
       return MaterialPageRoute(

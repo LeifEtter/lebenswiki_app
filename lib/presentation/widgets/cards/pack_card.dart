@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
-import 'package:lebenswiki_app/presentation/screens/comment_view.dart';
-import 'package:lebenswiki_app/presentation/screens/view_pack.dart';
+import 'package:lebenswiki_app/presentation/screens/other/comments.dart';
+import 'package:lebenswiki_app/presentation/screens/pack_specific_views/view_pack.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/repository/backend/pack_api.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
@@ -16,13 +16,13 @@ import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar
 import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';
 
-class NewPackCard extends ConsumerStatefulWidget {
+class PackCard extends ConsumerStatefulWidget {
   final String heroParent;
   final int progressValue;
   final bool isStarted;
   final Pack pack;
 
-  const NewPackCard({
+  const PackCard({
     Key? key,
     required this.progressValue,
     required this.isStarted,
@@ -31,10 +31,10 @@ class NewPackCard extends ConsumerStatefulWidget {
   }) : super(key: key);
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _NewPackCardState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _PackCardState();
 }
 
-class _NewPackCardState extends ConsumerState<NewPackCard> {
+class _PackCardState extends ConsumerState<PackCard> {
   final AnimateIconController animateIconController = AnimateIconController();
   final PackApi packApi = PackApi();
   late User user;

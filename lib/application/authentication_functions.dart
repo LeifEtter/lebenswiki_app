@@ -22,7 +22,7 @@ class Authentication {
     await UserApi().register(user).then((ResultModel registerResult) {
       result = registerResult;
     }).catchError((error) {
-      log(error);
+      log(error.toString());
       result = ResultModel(
           type: ResultType.failure, message: "Something went wrong");
     });

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/repository/backend/user_api.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 
-class DeveloperInfoView extends StatefulWidget {
-  const DeveloperInfoView({Key? key}) : super(key: key);
+class AboutUsView extends StatefulWidget {
+  const AboutUsView({Key? key}) : super(key: key);
 
   @override
-  _DeveloperInfoViewState createState() => _DeveloperInfoViewState();
+  _AboutUsViewState createState() => _AboutUsViewState();
 }
 
-class _DeveloperInfoViewState extends State<DeveloperInfoView> {
+class _AboutUsViewState extends State<AboutUsView> {
   final UserApi userApi = UserApi();
 
   @override

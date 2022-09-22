@@ -12,7 +12,7 @@ class _OnboardingViewState extends ConsumerState<OnboardingView> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      children: [],
+      children: const [],
     );
   }
 }

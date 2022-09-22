@@ -5,7 +5,6 @@ import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
 import 'package:lebenswiki_app/repository/backend/misc_api.dart';
 import 'package:lebenswiki_app/repository/backend/user_api.dart';
-import 'package:lebenswiki_app/presentation/widgets/common/other.dart';
 import 'package:lebenswiki_app/domain/models/block_model.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';

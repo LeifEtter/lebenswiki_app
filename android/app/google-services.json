@@ -29,6 +29,13 @@
             {
               "client_id": "944865578599-ma6ukm55ct7b0vne922beknb50vcenen.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "944865578599-2b11ko7ohup56li2acaqhuj34i2vlk7u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lebenswikiApp"
+              }
             }
           ]
         }

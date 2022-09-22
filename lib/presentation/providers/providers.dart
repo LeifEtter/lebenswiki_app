@@ -4,6 +4,36 @@ import 'package:lebenswiki_app/domain/models/block_model.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';
 
+class SearchQueryNotifier extends ChangeNotifier {
+  SearchQueryNotifier({this.query = ""});
+  String query;
+
+  void setQuery(String newQuery) {
+    query = newQuery;
+    notifyListeners();
+  }
+}
+
+final queryProvider = ChangeNotifierProvider((ref) => SearchQueryNotifier());
+
+class SearchStateNotifier extends ChangeNotifier {
+  SearchStateNotifier({this.isSearching = false});
+
+  bool isSearching;
+
+  void checkChange({required String text}) {
+    bool newSearchState = false;
+    if (text != "") newSearchState = true;
+    if (newSearchState != isSearching) {
+      isSearching = newSearchState;
+      notifyListeners();
+    }
+  }
+}
+
+final searchStateProvider =
+    ChangeNotifierProvider((ref) => SearchStateNotifier());
+
 class UserNotifier extends ChangeNotifier {
   User? _user;
 
@@ -47,7 +77,7 @@ class BlockedListNotifier extends ChangeNotifier {
 
   List<Block> get blockedList => _blockedList ?? [];
   List<int> get blockedIdList => _blockedIdList ?? [99999999];
-  
+
   void setBlockedList(List<Block> newBlocks) {
     _blockedList = newBlocks;
     _setBlockedIdList();
@@ -72,36 +102,6 @@ class BlockedListNotifier extends ChangeNotifier {
 
 final blockedListProvider =
     ChangeNotifierProvider(((ref) => BlockedListNotifier()));
-
-class SearchNotifier extends ChangeNotifier {
-  bool _active = false;
-  String _query = "";
-
-  bool get active => _active;
-  String get query => _query;
-
-  void toggleActive() {
-    _active = !_active;
-    notifyListeners();
-  }
-
-  void switchActiveOff() {
-    _active = false;
-    notifyListeners();
-  }
-
-  void switchActiveOn() {
-    _active = true;
-    notifyListeners();
-  }
-
-  void updateQuery(String newQuery) {
-    _query = newQuery;
-    notifyListeners();
-  }
-}
-
-final searchProvider = ChangeNotifierProvider((ref) => SearchNotifier());
 
 class ReloadNotifier extends ChangeNotifier {
   void reload() {

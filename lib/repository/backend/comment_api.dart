@@ -5,7 +5,6 @@ import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/repository/backend/base_api.dart';
 import 'package:lebenswiki_app/repository/backend/error_handler.dart';
 import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
-import 'package:lebenswiki_app/presentation/widgets/common/other.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 
 class CommentApi extends BaseApi {
@@ -49,7 +48,7 @@ class CommentApi extends BaseApi {
     );
 
     if (statusIsSuccess(res.statusCode)) {
-      return Right("success");
+      return const Right("success");
     } else {
       apiErrorHandler.logRes(res);
       return const Left(CustomError(error: "Du konntest nicht kommentieren"));
