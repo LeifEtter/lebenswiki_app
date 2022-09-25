@@ -85,6 +85,8 @@ class Pack {
             ? List<User>.from(json["bookmarks"].map((user) => User.forId(user)))
             : [],
         creationDate = DateTime.parse(json["creationDate"]),
+        initiative = json["initiative"],
+        readTime = json["readTime"],
         pages = List<PackPage>.from(
             json["pages"].map((page) => PackPage.fromResponse(page))),
         comments = List<Comment>.from(

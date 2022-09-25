@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:either_dart/either.dart';
+import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/repository/backend/base_api.dart';
 import 'package:lebenswiki_app/repository/backend/error_handler.dart';
 import 'package:http/http.dart';
@@ -61,7 +63,8 @@ class ShortApi extends BaseApi {
     return result;
   }
 
-  Future<ResultModel> getShortsByCategory({required ContentCategory category}) {
+  Future<Either<CustomError, List<Short>>> getShortsByCategory(
+      {required ContentCategory category}) {
     return category.categoryName != "Neu"
         ? _getShorts(
             url: "categories/shorts/${category.id}",
@@ -69,50 +72,45 @@ class ShortApi extends BaseApi {
         : getAllShorts();
   }
 
-  Future<ResultModel> getAllShorts() => _getShorts(
+  Future<Either<CustomError, List<Short>>> getAllShorts() => _getShorts(
       url: "shorts/", errorMessage: "Es wurden keine shorts gefunden");
 
-  Future<ResultModel> getOwnPublishedShorts() => _getShorts(
-      url: "shorts/published",
-      errorMessage: "Du hast noch keine shorts veröffentlicht");
+  Future<Either<CustomError, List<Short>>> getOwnPublishedShorts() =>
+      _getShorts(
+          url: "shorts/published",
+          errorMessage: "Du hast noch keine shorts veröffentlicht");
 
   //TODO implement correct root
-  Future<ResultModel> getOthersPublishedShorts() => _getShorts(
-      url: "shorts/published",
-      errorMessage: "Dieser Benutzer hat noch keine shorts veröffentlicht");
+  Future<Either<CustomError, List<Short>>> getOthersPublishedShorts() =>
+      _getShorts(
+          url: "shorts/published",
+          errorMessage: "Dieser Benutzer hat noch keine shorts veröffentlicht");
 
-  Future<ResultModel> getBookmarkedShorts() => _getShorts(
+  Future<Either<CustomError, List<Short>>> getBookmarkedShorts() => _getShorts(
       url: "shorts/bookmarks",
       errorMessage: "Du hast keine shorts gespeichert");
 
-  Future<ResultModel> getCreatorsDraftShorts() => _getShorts(
+  Future<Either<CustomError, List<Short>>> getCreatorsDraftShorts() =>
+      _getShorts(
         url: "shorts/unpublished",
         errorMessage: "Du hast keine shorts entworfen",
       );
 
-  Future<ResultModel> _getShorts({url, errorMessage}) async {
-    ResultModel result = ResultModel(
-        type: ResultType.failure, message: errorMessage, responseList: []);
-    await get(
+  Future<Either<CustomError, List<Short>>> _getShorts(
+      {url, errorMessage}) async {
+    Response res = await get(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
-    ).then((res) {
-      Map body = jsonDecode(res.body);
-      if (statusIsSuccess(res.statusCode)) {
-        List<Short> shorts = List<Short>.from(
-            body["shorts"].map((short) => Short.fromJson(short)).toList());
-        result = ResultModel(
-          type: ResultType.shortList,
-          responseList: shorts,
-          message: errorMessage,
-        );
-      } else {
-        apiErrorHandler.handleAndLog(reponseData: body);
-      }
-    }).catchError((error) {
-      apiErrorHandler.handleAndLog(reponseData: error);
-    });
-    return result;
+    );
+    if (statusIsSuccess(res.statusCode)) {
+      List<Short> shorts = List<Short>.from(jsonDecode(res.body)["shorts"]
+          .map((short) => Short.fromJson(short))
+          .toList());
+      return Right(shorts);
+    } else {
+      apiErrorHandler.logRes(res);
+      return const Left(CustomError(error: "Keine Shorts gefunden"));
+    }
   }
 
   Future<ResultModel> upvoteShort(id) => _interactShort(

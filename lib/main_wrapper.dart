@@ -5,11 +5,13 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:lebenswiki_app/application/pack_short_service.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
+import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/main_views/community.dart';
 import 'package:lebenswiki_app/presentation/screens/main_views/explore.dart';
 import 'package:lebenswiki_app/presentation/screens/main_views/home.dart';
-import 'package:lebenswiki_app/presentation/screens/pack_specific_views/pack_creator_information.dart';
+import 'package:lebenswiki_app/presentation/screens/pack_specific_views/creator_information.dart';
+import 'package:lebenswiki_app/presentation/screens/pack_specific_views/creator_overview.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/appbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/bottom_menu.dart';
 import 'package:lebenswiki_app/application/loading_helper.dart';
@@ -136,9 +138,7 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
           SpeedDialChild(
             label: "Short Erstellen",
             child: const Icon(Icons.add),
-            onTap: () {
-              //TODO Implement create short route
-            },
+            onTap: () {},
           ),
         ],
       );

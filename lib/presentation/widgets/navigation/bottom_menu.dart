@@ -25,6 +25,11 @@ void showBottomMenuForNavigation(BuildContext context, WidgetRef ref) =>
                   icon: Icons.bookmark_outline,
                 ),
                 buildMenuTile(
+                  onPress: () => Navigator.pushNamed(context, '/created'),
+                  text: "Erstellt",
+                  icon: Icons.design_services_outlined,
+                ),
+                buildMenuTile(
                   onPress: () => Navigator.pushNamed(context, '/contact'),
                   text: "Hilfe",
                   icon: Icons.help_outline_rounded,

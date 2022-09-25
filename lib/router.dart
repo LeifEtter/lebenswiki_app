@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/presentation/screens/menu_views/contact.dart';
+import 'package:lebenswiki_app/presentation/screens/menu_views/created.dart';
 import 'package:lebenswiki_app/presentation/screens/menu_views/profile.dart';
 import 'package:lebenswiki_app/presentation/screens/menu_views/saved.dart';
 import 'package:lebenswiki_app/presentation/screens/menu_views/about_us.dart';
@@ -44,6 +45,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       );
     case savedViewRoute:
       return MaterialPageRoute(builder: (context) => const SavedView());
+    case createdViewRoute:
+      return MaterialPageRoute(builder: (context) => const CreatedView());
     default:
       return MaterialPageRoute(builder: (context) => const AuthWrapper());
   }

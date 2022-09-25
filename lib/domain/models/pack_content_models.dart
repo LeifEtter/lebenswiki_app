@@ -43,7 +43,7 @@ class PackPageItem {
 }
 
 class PackPage {
-  final int pageNumber;
+  int pageNumber;
   final List<PackPageItem> items;
 
   PackPage({

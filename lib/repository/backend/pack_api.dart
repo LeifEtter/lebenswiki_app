@@ -31,7 +31,6 @@ class PackApi extends BaseApi {
   }
 
   Future<Either<CustomError, int>> createPack({required Pack pack}) async {
-    print(pack.initiative);
     Response res = await post(
       Uri.parse("$serverIp/packs/create"),
       headers: await requestHeader(),
@@ -48,7 +47,8 @@ class PackApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> getPacksByCategory({required ContentCategory category}) {
+  Future<Either<CustomError, List<Pack>>> getPacksByCategory(
+      {required ContentCategory category}) {
     return category.categoryName != "Neu"
         ? getPacks(
             url: "categories/packs/${category.id}",
@@ -56,52 +56,44 @@ class PackApi extends BaseApi {
         : getAllPacks();
   }
 
-  Future<ResultModel> getOwnPublishedpacks() => getPacks(
+  Future<Either<CustomError, List<Pack>>> getOwnPublishedpacks() => getPacks(
       url: "packs/published",
       errorMessage: "Du hast noch keine packs veröffentlicht");
 
-  Future<ResultModel> getOwnUnpublishedPacks() => getPacks(
+  Future<Either<CustomError, List<Pack>>> getOwnUnpublishedPacks() => getPacks(
         url: "packs/unpublished",
         errorMessage: "Du hast noch keine Lernpacks entworfen",
       );
 
-  Future<ResultModel> getOthersPublishedpacks() => getPacks(
+  Future<Either<CustomError, List<Pack>>> getOthersPublishedpacks() => getPacks(
       url: "packs/published",
       errorMessage: "Dieser Benutzer hat noch keine packs veröffentlicht");
 
-  Future<ResultModel> getAllPacks() => getPacks(
+  Future<Either<CustomError, List<Pack>>> getAllPacks() => getPacks(
       url: "packs/", errorMessage: "Es wurden keine Lernpacks gefunden");
 
-  Future<ResultModel> getBookmarkedPacks() => getPacks(
+  Future<Either<CustomError, List<Pack>>> getBookmarkedPacks() => getPacks(
       url: "packs/bookmarks",
       errorMessage: "Du hast keine Lernpacks gespeichert");
 
-  Future<ResultModel> getCreatorsDraftPacks() => getPacks(
+  Future<Either<CustomError, List<Pack>>> getCreatorsDraftPacks() => getPacks(
       url: "packs/unpublished", errorMessage: "Du hast keine packs entworfen");
 
-  Future<ResultModel> getPacks({url, errorMessage}) async {
-    ResultModel result = ResultModel(
-        type: ResultType.failure, message: errorMessage, responseList: []);
-    await get(
+  Future<Either<CustomError, List<Pack>>> getPacks({url, errorMessage}) async {
+    Response res = await get(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
-    ).then((res) {
-      Map body = jsonDecode(res.body);
-      if (statusIsSuccess(res.statusCode)) {
-        List<Pack> packs = List<Pack>.from(
-            body["packs"].map((pack) => Pack.fromJson(pack)).toList());
-        result = ResultModel(
-          type: ResultType.shortList,
-          responseList: packs,
-          message: errorMessage,
-        );
-      } else {
-        apiErrorHandler.handleAndLog(reponseData: body);
-      }
-    }).catchError((error) {
-      apiErrorHandler.handleAndLog(reponseData: error);
-    });
-    return result;
+    );
+
+    if (statusIsSuccess(res.statusCode)) {
+      List<Pack> packs = List<Pack>.from(jsonDecode(res.body)["packs"]
+          .map((pack) => Pack.fromJson(pack))
+          .toList());
+      return Right(packs);
+    } else {
+      apiErrorHandler.logRes(res);
+      return const Left(CustomError(error: "Konnte kein Packs finden"));
+    }
   }
 
   Future<ResultModel> upvotePack(id) => _interactPack(
@@ -189,50 +181,47 @@ class PackApi extends BaseApi {
     return result;
   }
 
-  Future<ResultModel> reactPack(id, reaction) => _updatePackData(
-      url: "packs/reaction/$id",
-      successMessage: "Successfully added Reaction",
-      errorMessage: "Couldn't Add Reaction",
-      requestBody: {"reaction": reaction});
+  Future<Either<CustomError, String>> reactPack(id, reaction) =>
+      _updatePackData(
+          url: "packs/reaction/$id",
+          successMessage: "Successfully added Reaction",
+          errorMessage: "Couldn't Add Reaction",
+          requestBody: {"reaction": reaction});
 
-  Future<ResultModel> unReactPack(id, reaction) => _updatePackData(
-      url: "packs/reaction/remove/$id",
-      successMessage: "Successfully Removed Reaction",
-      errorMessage: "Couldn't Remove Reaction",
-      requestBody: {"reaction": reaction});
+  Future<Either<CustomError, String>> unReactPack(id, reaction) =>
+      _updatePackData(
+          url: "packs/reaction/remove/$id",
+          successMessage: "Successfully Removed Reaction",
+          errorMessage: "Couldn't Remove Reaction",
+          requestBody: {"reaction": reaction});
 
-  Future<ResultModel> updatePack({required int id, required Pack pack}) =>
+  Future<Either<CustomError, String>> updatePack(
+          {required int id, required Pack pack}) =>
       _updatePackData(
           url: "packs/update/$id",
           successMessage: "Pack updated Successfully",
           errorMessage: "Pack couldn't be updated",
           requestBody: pack.toJson());
 
-  Future<ResultModel> _updatePackData({
+  Future<Either<CustomError, String>> _updatePackData({
     required String url,
     required String successMessage,
     required String errorMessage,
     required Map requestBody,
   }) async {
-    ResultModel result = ResultModel(
-        type: ResultType.failure, message: errorMessage, responseList: []);
-    await put(
+    Response res = await put(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
       body: jsonEncode(requestBody),
-    ).then((Response res) {
-      if (statusIsSuccess(res.statusCode)) {
-        result = ResultModel(
-          type: ResultType.success,
-          message: successMessage,
-        );
-      } else {
-        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      }
-    }).catchError((error) {
-      apiErrorHandler.handleAndLog(reponseData: error);
-    });
-    return result;
+    );
+
+    if (statusIsSuccess(res.statusCode)) {
+      return const Right("Pack Gespeichert");
+    } else {
+      apiErrorHandler.logRes(res);
+      return const Left(
+          CustomError(error: "Pack konnte nicht gespeichert werden."));
+    }
   }
 
   Future<ResultModel> publishPack(id) => _interactPackPatch(

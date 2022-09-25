@@ -1,7 +1,9 @@
 import 'package:animate_icons/animate_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/screens/pack_specific_views/creator_overview.dart';
 import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
 import 'package:lebenswiki_app/presentation/screens/other/comments.dart';
@@ -21,6 +23,8 @@ class PackCard extends ConsumerStatefulWidget {
   final int progressValue;
   final bool isStarted;
   final Pack pack;
+  final bool isDraftView;
+  final Function? navigateTo;
 
   const PackCard({
     Key? key,
@@ -28,6 +32,8 @@ class PackCard extends ConsumerStatefulWidget {
     required this.isStarted,
     required this.pack,
     required this.heroParent,
+    this.isDraftView = false,
+    this.navigateTo,
   }) : super(key: key);
 
   @override
@@ -38,6 +44,12 @@ class _PackCardState extends ConsumerState<PackCard> {
   final AnimateIconController animateIconController = AnimateIconController();
   final PackApi packApi = PackApi();
   late User user;
+  late bool isPublished;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +64,9 @@ class _PackCardState extends ConsumerState<PackCard> {
                   )))),
       child: Container(
         decoration: BoxDecoration(
+          /*border: widget.isPublished
+              ? Border.all(width: 3, color: Colors.green.shade300)
+              : null,*/
           borderRadius: BorderRadius.circular(15.0),
           color: CustomColors.lightGrey,
         ),
@@ -66,8 +81,8 @@ class _PackCardState extends ConsumerState<PackCard> {
                     width: double.infinity,
                     child: ClipRRect(
                       borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(15.0),
-                        topRight: Radius.circular(15.0),
+                        topLeft: Radius.circular(12.0),
+                        topRight: Radius.circular(12.0),
                       ),
                       child: Hero(
                         tag: "${widget.heroParent}-${widget.pack.id}-hero",
@@ -99,10 +114,62 @@ class _PackCardState extends ConsumerState<PackCard> {
                             text: "' 5",
                             backgroundColor: CustomColors.whiteOverlay,
                           ),
+                          widget.isDraftView
+                              ? SpeedDial(
+                                  elevation: 10,
+                                  direction: SpeedDialDirection.down,
+                                  backgroundColor: CustomColors.lightGrey,
+                                  buttonSize: const Size(50, 50),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  child: Icon(
+                                    Icons.settings,
+                                    color: CustomColors.textBlack,
+                                    size: 28,
+                                  ),
+                                  children: [
+                                    SpeedDialChild(
+                                      child:
+                                          const Icon(Icons.edit_note_outlined),
+                                      label: "Informationen Bearbeiten",
+                                    ),
+                                    SpeedDialChild(
+                                      onTap: () {
+                                        widget.navigateTo!();
+                                      },
+                                      child: const Icon(
+                                        Icons.edit_outlined,
+                                      ),
+                                      label: "Inhalt Bearbeiten",
+                                    ),
+                                    SpeedDialChild(
+                                      child: const Icon(Icons.publish_outlined),
+                                      label: "Pack Veröffentlichen",
+                                    ),
+                                    SpeedDialChild(
+                                      child: const Icon(Icons.delete_outline),
+                                      label: "Pack Löschen",
+                                    ),
+                                  ],
+                                )
+                              : Container(),
                         ],
                       ),
                     ),
                   ),
+                  /*widget.isPublished
+                      ? Align(
+                          alignment: Alignment.topLeft,
+                          child: Container(
+                            height: 40,
+                            child: InfoLabel(
+                                borderRadius: 13.0,
+                                text: "Published",
+                                backgroundColor: Colors.green.shade300),
+                          ),
+                        )
+                      : Container(),*/
                 ],
               ),
             ),
@@ -177,16 +244,18 @@ class _PackCardState extends ConsumerState<PackCard> {
             ],
           ),
           const Spacer(),
-          IconButton(
-            iconSize: 30,
-            icon: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: widget.pack.bookmarkedByUser
-                  ? const Icon(Icons.bookmark_added)
-                  : const Icon(Icons.bookmark_add_outlined),
-            ),
-            onPressed: () => _bookmarkCallback(),
-          ),
+          widget.isDraftView
+              ? Container()
+              : IconButton(
+                  iconSize: 30,
+                  icon: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: widget.pack.bookmarkedByUser
+                        ? const Icon(Icons.bookmark_added)
+                        : const Icon(Icons.bookmark_add_outlined),
+                  ),
+                  onPressed: () => _bookmarkCallback(),
+                ),
         ],
       );
 

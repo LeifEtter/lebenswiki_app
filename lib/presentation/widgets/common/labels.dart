@@ -6,14 +6,16 @@ class InfoLabel extends StatelessWidget {
   final Color backgroundColor;
   final double fontSize;
   final Icon? icon;
+  final double? borderRadius;
 
-  const InfoLabel({
-    Key? key,
-    required this.text,
-    required this.backgroundColor,
-    this.fontSize = 13,
-    this.icon,
-  }) : super(key: key);
+  const InfoLabel(
+      {Key? key,
+      required this.text,
+      required this.backgroundColor,
+      this.fontSize = 13,
+      this.icon,
+      this.borderRadius})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class InfoLabel extends StatelessWidget {
         ],
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(borderRadius ?? 15.0),
         color: backgroundColor,
       ),
     );

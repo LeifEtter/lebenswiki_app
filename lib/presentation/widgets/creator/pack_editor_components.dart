@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class PackEditorComponents {
   static Widget iconButton({
+    required Color backgroundColor,
     required IconData icon,
     required Function callback,
     required String label,
