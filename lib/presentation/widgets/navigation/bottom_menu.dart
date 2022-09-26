@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/application/authentication_functions.dart';
+import 'package:lebenswiki_app/application/auth/authentication_functions.dart';
 
 void showBottomMenuForNavigation(BuildContext context, WidgetRef ref) =>
     showModalBottomSheet(

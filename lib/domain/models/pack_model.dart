@@ -92,6 +92,25 @@ class Pack {
         comments = List<Comment>.from(
             json["comments"].map((comment) => Comment.forPack(comment)));
 
+  void initControllers() {
+    for (PackPage page in pages) {
+      page.initControllers();
+    }
+  }
+
+  void save() {
+    for (PackPage page in pages) {
+      page.save();
+    }
+  }
+
+  bool isSaved() {
+    for (PackPage page in pages) {
+      if (!page.isSaved()) return false;
+    }
+    return true;
+  }
+
   void initializeDisplayParams(int currentUserId) {
     _initHasBookmarked(currentUserId);
     _generateReactionMap();

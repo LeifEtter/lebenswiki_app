@@ -13,6 +13,23 @@ class PackPageItemInput {
   PackPageItemInput.fromResponse(Map json) : value = json["value"];
 
   Map<String, dynamic> toJson() => {"value": value};
+
+  void initController() {
+    controller = TextEditingController();
+    controller!.text = value;
+  }
+
+  void save() {
+    if (controller != null) {
+      value = controller!.text;
+    }
+  }
+
+  bool isSaved() {
+    if (controller == null) return false;
+    if (controller!.text != value) return false;
+    return true;
+  }
 }
 
 class PackPageItem {
@@ -40,6 +57,28 @@ class PackPageItem {
         headContent = PackPageItemInput(value: json["headContent"]["value"]),
         bodyContent = List<PackPageItemInput>.from(json["bodyContent"]
             .map((input) => PackPageItemInput.fromResponse(input)));
+
+  void initControllers() {
+    headContent.initController();
+    for (PackPageItemInput input in bodyContent) {
+      input.initController();
+    }
+  }
+
+  void save() {
+    headContent.save();
+    for (PackPageItemInput input in bodyContent) {
+      input.save();
+    }
+  }
+
+  bool isSaved() {
+    if (!headContent.isSaved()) return false;
+    for (PackPageItemInput input in bodyContent) {
+      if (!input.isSaved()) return false;
+    }
+    return true;
+  }
 }
 
 class PackPage {
@@ -62,4 +101,22 @@ class PackPage {
         "items":
             List<dynamic>.from(items.map((PackPageItem item) => item.toJson())),
       };
+  void initControllers() {
+    for (PackPageItem item in items) {
+      item.initControllers();
+    }
+  }
+
+  void save() {
+    for (PackPageItem item in items) {
+      item.save();
+    }
+  }
+
+  bool isSaved() {
+    for (PackPageItem item in items) {
+      if (!item.isSaved()) return false;
+    }
+    return true;
+  }
 }

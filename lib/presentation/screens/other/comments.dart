@@ -10,7 +10,7 @@ import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/repository/backend/comment_api.dart';
 import 'package:lebenswiki_app/domain/models/comment_model.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/custom_card.dart';
-import 'package:lebenswiki_app/application/loading_helper.dart';
+import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/repository/backend/pack_api.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';

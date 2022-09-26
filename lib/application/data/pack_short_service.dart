@@ -2,9 +2,9 @@ import 'package:either_dart/either.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
 import 'package:lebenswiki_app/repository/backend/pack_api.dart';
-import 'package:lebenswiki_app/application/pack_list_helper.dart';
+import 'package:lebenswiki_app/application/data/pack_list_helper.dart';
 import 'package:lebenswiki_app/repository/backend/short_api.dart';
-import 'package:lebenswiki_app/application/short_list_helper.dart';
+import 'package:lebenswiki_app/application/data/short_list_helper.dart';
 
 class PackShortService {
   static Future<Either<CustomError, Map>> getPacksAndShorts({

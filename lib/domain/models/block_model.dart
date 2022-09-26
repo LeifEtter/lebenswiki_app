@@ -1,4 +1,4 @@
-import 'package:lebenswiki_app/application/date_helper.dart';
+import 'package:lebenswiki_app/application/other/date_helper.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';
 
 class Block {

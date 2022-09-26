@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:either_dart/either.dart';
-import 'package:lebenswiki_app/application/image_helper.dart';
-import 'package:lebenswiki_app/application/loading_helper.dart';
+import 'package:lebenswiki_app/application/other/image_helper.dart';
+import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';

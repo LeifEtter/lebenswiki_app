@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:lebenswiki_app/application/date_helper.dart';
+import 'package:lebenswiki_app/application/other/date_helper.dart';
 import 'package:lebenswiki_app/domain/models/comment_model.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/domain/models/short_model.dart';

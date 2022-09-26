@@ -4,7 +4,7 @@ import 'package:lebenswiki_app/presentation/providers/provider_helper.dart';
 import 'package:lebenswiki_app/repository/backend/token_handler.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/theme.dart';
 import 'package:lebenswiki_app/main_wrapper.dart';
-import 'package:lebenswiki_app/application/loading_helper.dart';
+import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/router.dart';
 import 'package:lebenswiki_app/repository/constants/routing_constants.dart';
 import 'package:lebenswiki_app/presentation/screens/other/authentication.dart';

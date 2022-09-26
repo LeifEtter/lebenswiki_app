@@ -6,29 +6,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lebenswiki_app/application/image_helper.dart';
+import 'package:lebenswiki_app/application/other/image_helper.dart';
+import 'package:lebenswiki_app/application/data/pack_conversion.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/widgets/creator/styling_edit.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
-import 'package:lebenswiki_app/repository/constants/shadows.dart';
 
 class PageOverview extends ConsumerStatefulWidget {
   final PackPage page;
-  final Function saveCallback;
   final int selfIndex;
   final Function deleteSelf;
-  final Function saveSelf;
 
   const PageOverview({
     Key? key,
     required this.page,
-    required this.saveCallback,
     required this.selfIndex,
     required this.deleteSelf,
-    required this.saveSelf,
   }) : super(key: key);
 
   @override
@@ -44,7 +40,7 @@ class _PageOverviewState extends ConsumerState<PageOverview> {
   @override
   void initState() {
     page = widget.page;
-    _initializeControllers();
+    page.initControllers();
     super.initState();
   }
 
@@ -72,8 +68,25 @@ class _PageOverviewState extends ConsumerState<PageOverview> {
         return Row(
           children: [
             Expanded(
-                child:
-                    _showSingleEditableItem(context, page.items[index], index)),
+                child: PackConversion.itemToWidget(
+              context,
+              item: page.items[index],
+              reload: () => setState(() {}),
+              index: index,
+              removeSelf: () => setState(() {
+                TextEditingController newController = TextEditingController();
+                newController.text = "";
+                page.items[index].bodyContent.add(
+                  PackPageItemInput(
+                    value: "",
+                    controller: newController,
+                  ),
+                );
+              }),
+              save: () => _save(),
+              uploadCallback: (BuildContext context, PackPageItem item) =>
+                  upload(context, item),
+            )),
             IconButton(
               icon: const Icon(Icons.delete),
               color: Colors.red.shade400,
@@ -88,158 +101,8 @@ class _PageOverviewState extends ConsumerState<PageOverview> {
     );
   }
 
-  Widget _showSingleEditableItem(
-      BuildContext context, PackPageItem item, int index) {
-    switch (item.type) {
-      case ItemType.list:
-        return Column(
-          children: [
-            Container(
-              //decoration: PackEditorStyling.standardInput(),
-              child: TextFormField(
-                onEditingComplete: _save,
-                controller: item.headContent.controller,
-                /*decoration: PackEditorStyling.standardDecoration(
-                      "Listen Titel eingeben")*/
-              ),
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Column(
-                children: List.generate(item.bodyContent.length, (index) {
-                  //Set Current input item
-                  PackPageItemInput currentInput = item.bodyContent[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            //decoration: PackEditorStyling.standardInput(),
-                            child: TextFormField(
-                              onEditingComplete: _save,
-                              controller: currentInput.controller,
-                              /*decoration: PackEditorStyling.standardDecoration(
-                                  "Listen Element eingeben"),*/
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          color: Colors.red.shade200,
-                          onPressed: () {
-                            item.bodyContent.removeAt(index);
-                            setState(() {});
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () {
-                setState(() {
-                  TextEditingController newController = TextEditingController();
-                  newController.text = "";
-                  page.items[index].bodyContent.add(
-                    PackPageItemInput(
-                      value: "",
-                      controller: newController,
-                    ),
-                  );
-                });
-              },
-            ),
-          ],
-        );
-      case ItemType.title:
-        return Container(
-          child: TextFormField(
-            onEditingComplete: _save,
-            controller: item.headContent.controller,
-            //decoration: PackEditorStyling.standardDecoration("Titel eingeben"),
-          ),
-        );
-      case ItemType.image:
-        return GestureDetector(
-          onTap: () => upload(context, item),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0),
-              boxShadow: [LebenswikiShadows.fancyShadow],
-              color: Colors.white,
-              image: item.headContent.value.isNotEmpty
-                  ? DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(
-                        item.headContent.value,
-                      ))
-                  : null,
-            ),
-            width: double.infinity,
-            height: 200,
-            child: item.headContent.value.isNotEmpty
-                ? Center(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: const Color.fromRGBO(255, 255, 255, 0.6),
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      child: Text(
-                        "Bild Ändern",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    ),
-                  )
-                : Center(
-                    child: Text(
-                    "Wähle ein Bild",
-                    style: Theme.of(context).textTheme.labelSmall,
-                  )),
-          ),
-        );
-      case ItemType.text:
-        return Container(
-          //decoration: PackEditorStyling.standardInput(),
-          child: TextFormField(
-            onEditingComplete: _save,
-            keyboardType: TextInputType.multiline,
-            maxLines: null,
-            minLines: 3,
-            controller: item.headContent.controller,
-            //decoration: PackEditorStyling.standardDecoration("Text eingeben"),
-          ),
-        );
-      default:
-        return Container();
-    }
-  }
-
-  //Add Controllers for
-  void _initializeControllers() {
-    //Loop through all page items
-    for (int x = 0; x < page.items.length; x++) {
-      PackPageItem item = page.items[x];
-      item.headContent.controller = TextEditingController();
-      item.headContent.controller!.text = item.headContent.value;
-
-      for (int y = 0; y < item.bodyContent.length; y++) {
-        item.bodyContent[y].controller = TextEditingController();
-        item.bodyContent[y].controller!.text = item.bodyContent[y].value;
-      }
-    }
-
-    setState(() {});
-  }
-
   void _save() {
-    widget.saveSelf(widget.selfIndex);
+    widget.page.save();
     setState(() {});
   }
 
@@ -273,7 +136,7 @@ class _PageOverviewState extends ConsumerState<PageOverview> {
                   ));
                   setState(() {
                     _save();
-                    _initializeControllers();
+                    page.initControllers();
                   });
                 },
               ))

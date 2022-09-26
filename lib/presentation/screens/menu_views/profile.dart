@@ -9,7 +9,7 @@ import 'package:lebenswiki_app/presentation/widgets/common/hacks.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/widgets/lw.dart';
-import 'package:lebenswiki_app/application/loading_helper.dart';
+import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';
 import 'package:lebenswiki_app/repository/constants/shadows.dart';

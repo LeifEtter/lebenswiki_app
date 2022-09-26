@@ -1,9 +1,10 @@
 import 'package:either_dart/either.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
+import 'package:lebenswiki_app/presentation/screens/pack_specific_views/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/creator/pack_creator_page.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
+import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav_appbar.dart';
 import 'package:lebenswiki_app/repository/backend/pack_api.dart';
 import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
@@ -43,32 +44,20 @@ class _CreatorOverviewState extends State<CreatorOverview> {
     return DefaultTabController(
       length: pageViewPages.length,
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 2,
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: Colors.black,
-            ),
-          ),
-          backgroundColor: Colors.white,
-          title: const Text(
-            "Seiten Bearbeiten",
-            style: TextStyle(
-              color: Colors.black,
-            ),
-          ),
-          actions: [
-            CupertinoButton(
-              child: const Text("Speichern"),
-              onPressed: () {
-                _saveCallback();
-                _saveToServer();
-                setState(() {});
-              },
-            )
-          ],
+        appBar: TopNavIOSAppBar(
+          appBar: AppBar(),
+          rightAction: () {
+            pack.save();
+            _saveToServer();
+            setState(() {});
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PackViewerStarted(pack: pack),
+                ));
+          },
+          rightText: pack.isSaved() ? "Vorschau" : "Speichern",
+          title: "Seiten Bearbeiten",
         ),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(color: Colors.white, boxShadow: [
@@ -96,8 +85,6 @@ class _CreatorOverviewState extends State<CreatorOverview> {
       pack.pages.length,
       ((index) => PageOverview(
             page: pack.pages[index],
-            saveCallback: _saveCallback,
-            saveSelf: _saveSelectedPageCallback,
             selfIndex: index,
             deleteSelf: _deletePage,
           )),
@@ -110,17 +97,6 @@ class _CreatorOverviewState extends State<CreatorOverview> {
     }
   }
 
-  void _saveCallback() {
-    for (PackPage page in pack.pages) {
-      for (PackPageItem item in page.items) {
-        item.headContent.value = item.headContent.controller!.text;
-        for (PackPageItemInput item in item.bodyContent) {
-          item.value = item.controller!.text;
-        }
-      }
-    }
-  }
-
   void _saveToServer() async {
     Either<CustomError, String> updateResult =
         await PackApi().updatePack(id: pack.id!, pack: pack);
@@ -129,30 +105,6 @@ class _CreatorOverviewState extends State<CreatorOverview> {
     }, (right) {
       CustomFlushbar.success(message: right).show(context);
     });
-  }
-
-  bool isPackSaved() {
-    for (PackPage page in pack.pages) {
-      for (PackPageItem item in page.items) {
-        item.headContent.value = item.headContent.controller!.text;
-        for (PackPageItemInput item in item.bodyContent) {
-          if (item.value != item.controller!.text) {
-            return false;
-          }
-        }
-      }
-    }
-    return true;
-  }
-
-  void _saveSelectedPageCallback(toSaveIndex) {
-    PackPage pageToSave = pack.pages[toSaveIndex];
-    for (PackPageItem item in pageToSave.items) {
-      item.headContent.value = item.headContent.controller!.text;
-      for (PackPageItemInput item in item.bodyContent) {
-        item.value = item.controller!.text;
-      }
-    }
   }
 
   void _deletePage(int index) {
@@ -202,7 +154,6 @@ class _CreatorOverviewState extends State<CreatorOverview> {
             padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
             child: GestureDetector(
               onTap: () {
-                _saveCallback();
                 if (index == pack.pages.length) {
                   pack.pages.add(PackPage(pageNumber: index + 1, items: []));
                 }

@@ -2,7 +2,7 @@ import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:lebenswiki_app/application/pack_short_service.dart';
+import 'package:lebenswiki_app/application/data/pack_short_service.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
@@ -14,7 +14,7 @@ import 'package:lebenswiki_app/presentation/screens/pack_specific_views/creator_
 import 'package:lebenswiki_app/presentation/screens/pack_specific_views/creator_overview.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/appbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/bottom_menu.dart';
-import 'package:lebenswiki_app/application/loading_helper.dart';
+import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/bottom_nav_bar.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';

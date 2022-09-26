@@ -1,7 +1,7 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/application/pack_short_service.dart';
+import 'package:lebenswiki_app/application/data/pack_short_service.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
@@ -11,9 +11,9 @@ import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/short_card.dart';
-import 'package:lebenswiki_app/application/loading_helper.dart';
-import 'package:lebenswiki_app/application/pack_list_helper.dart';
-import 'package:lebenswiki_app/application/short_list_helper.dart';
+import 'package:lebenswiki_app/application/other/loading_helper.dart';
+import 'package:lebenswiki_app/application/data/pack_list_helper.dart';
+import 'package:lebenswiki_app/application/data/short_list_helper.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
 
 class CreatedView extends ConsumerStatefulWidget {

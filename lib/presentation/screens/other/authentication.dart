@@ -7,7 +7,7 @@ import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
 import 'package:lebenswiki_app/repository/backend/user_api.dart';
 import 'package:lebenswiki_app/main_wrapper.dart';
 import 'package:lebenswiki_app/presentation/widgets/input/custom_form_field.dart';
-import 'package:lebenswiki_app/application/authentication_functions.dart';
+import 'package:lebenswiki_app/application/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/presentation/providers/auth_providers.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';

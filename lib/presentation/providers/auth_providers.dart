@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/application/string_validation_extensions.dart';
+import 'package:lebenswiki_app/application/auth/string_validation_extensions.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';
 import 'package:lebenswiki_app/repository/constants/image_repo.dart';
 

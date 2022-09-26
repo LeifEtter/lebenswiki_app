@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/extensions.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/short_card.dart';
-import 'package:lebenswiki_app/application/short_list_helper.dart';
+import 'package:lebenswiki_app/application/data/short_list_helper.dart';
 import 'package:lebenswiki_app/domain/models/short_model.dart';
 
 class CommunityView extends ConsumerStatefulWidget {
@@ -44,7 +44,6 @@ class _CommunityViewState extends ConsumerState<CommunityView> {
             enableInfiniteScroll: false,
           ),
         ),
-        const SizedBox(height: 20),
         Text(
           "Alle Shorts",
           style: Theme.of(context).textTheme.headlineLarge,
