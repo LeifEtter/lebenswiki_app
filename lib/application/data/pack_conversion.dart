@@ -3,6 +3,17 @@ import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
 import 'package:lebenswiki_app/repository/constants/shadows.dart';
 
+class PackComponentStyling {
+  static titleContainerDecoration() => const BoxDecoration();
+  static titleTextStyle() => const TextStyle();
+
+  static textContainerDecoration() => const BoxDecoration();
+  static textTextStyle() => const TextStyle();
+
+  static listTitleContainerDecoration() => const BoxDecoration();
+  static listTitleTextStyle() => const TextStyle();
+}
+
 class PackConversion {
   static itemToWidget(
     BuildContext context, {
@@ -18,7 +29,7 @@ class PackConversion {
         return Column(
           children: [
             Container(
-              //decoration: PackEditorStyling.standardInput(),
+              decoration: PackComponentStyling.listTitleContainerDecoration(),
               child: TextFormField(
                 onEditingComplete: () => save(),
                 controller: item.headContent.controller,

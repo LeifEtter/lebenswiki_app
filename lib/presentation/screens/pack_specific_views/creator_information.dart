@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:either_dart/either.dart';
 import 'package:lebenswiki_app/application/other/image_helper.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
@@ -74,7 +73,7 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
           TopNavIOS.withNextButton(
             title: "Erstelle ein Pack",
             nextTitle: "Speichern",
-            nextFunction: () => save(),
+            nextFunction: () => update(),
           ),
           ListView(
             padding: const EdgeInsets.only(left: 20, right: 20, bottom: 100),
@@ -218,7 +217,7 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
     );
   }
 
-  void save() async {
+  void update() async {
     if (_titleController.text.isEmpty) {
       errorTitle = "Schreibe hier deinen Titel";
     }
@@ -238,7 +237,7 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
       description: _descriptionController.text,
       titleImage: _chosenImageLink ??
           "https://firebasestorage.googleapis.com/v0/b/lebenswiki-db.appspot.com/o/defaultImages%2Fpack_placeholder_image.jpg?alt=media&token=d61d13f9-0b5b-4f62-9d3e-c76a637392af",
-      pages: [],
+      pages: widget.pack != null ? widget.pack!.pages : [],
       creatorId: user.id,
       creator: user,
       initiative: _initiativeController.text,
@@ -250,12 +249,19 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
       readTime: 0,
     );
 
-    await PackApi().createPack(pack: newPack).fold((left) {
-      CustomFlushbar.error(message: left.error);
-    }, (right) {
-      CustomFlushbar.success(message: "Pack wurde erstellt, id $right")
-          .show(context);
-    });
+    widget.pack == null
+        ? await PackApi().createPack(pack: newPack).fold((left) {
+            CustomFlushbar.error(message: left.error);
+          }, (right) {
+            CustomFlushbar.success(message: "Pack wurde erstellt, id $right")
+                .show(context);
+          })
+        : await PackApi().updatePack(id: widget.pack!.id!, pack: newPack).fold(
+            (left) {
+            CustomFlushbar.error(message: left.error).show(context);
+          }, (right) {
+            CustomFlushbar.success(message: right).show(context);
+          });
     return;
   }
 }

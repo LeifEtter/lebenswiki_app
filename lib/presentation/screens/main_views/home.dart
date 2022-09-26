@@ -1,9 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/extensions.dart';
 import 'package:lebenswiki_app/application/data/pack_list_helper.dart';
+import 'package:lebenswiki_app/repository/backend/read_api.dart';
 
 class HomeView extends ConsumerStatefulWidget {
   final PackListHelper packHelper;
@@ -25,31 +27,39 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        packSection(
-          heroParent: "home-continue",
-          title: "Continue Reading",
-          packs: widget.packHelper.startedPacks,
-          isReading: true,
-        ),
-        const SizedBox(height: 10),
-        packSection(
-          heroParent: "home-recommended",
-          title: "Recommended For You",
-          packs: widget.packHelper.recommendedPacks,
-          isReading: false,
-        ),
-        const SizedBox(height: 10),
-        packSection(
-          heroParent: "home-new",
-          title: "New Articles",
-          packs: widget.packHelper.newArticles,
-          isReading: false,
-        ),
-        const SizedBox(height: 50),
-      ],
-    );
+    return FutureBuilder(
+        future: ReadApi().getAll(),
+        builder: (context, snapshot) {
+          if (LoadingHelper.isLoading(snapshot)) {
+            return LoadingHelper.loadingIndicator();
+          }
+
+          return ListView(
+            children: [
+              packSection(
+                heroParent: "home-continue",
+                title: "Continue Reading",
+                packs: widget.packHelper.startedPacks,
+                isReading: true,
+              ),
+              const SizedBox(height: 10),
+              packSection(
+                heroParent: "home-recommended",
+                title: "Recommended For You",
+                packs: widget.packHelper.recommendedPacks,
+                isReading: false,
+              ),
+              const SizedBox(height: 10),
+              packSection(
+                heroParent: "home-new",
+                title: "New Articles",
+                packs: widget.packHelper.newArticles,
+                isReading: false,
+              ),
+              const SizedBox(height: 50),
+            ],
+          );
+        });
   }
 
   CarouselOptions standardOptions({required double height}) => CarouselOptions(

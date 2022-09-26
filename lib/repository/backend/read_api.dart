@@ -19,8 +19,10 @@ class ReadApi extends BaseApi {
       headers: await requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
-      List<Read> reads =
-          jsonDecode(res.body)["reads"].map((read) => Read.fromJson(read));
+      List<Map> readList = List<Map>.from(jsonDecode(res.body)["reads"]);
+      List<Read> reads = readList.map((read) {
+        return Read.fromJson(read);
+      }).toList();
       return Right(reads);
     } else {
       apiErrorHandler.logRes(res);

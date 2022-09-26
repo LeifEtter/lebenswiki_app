@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/application/auth/authentication_functions.dart';
 
-void showBottomMenuForNavigation(BuildContext context, WidgetRef ref) =>
+void showBottomMenuForNavigation(
+        BuildContext context, WidgetRef ref, Function reload) =>
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(25.0),
@@ -15,27 +16,42 @@ void showBottomMenuForNavigation(BuildContext context, WidgetRef ref) =>
             child: Column(
               children: [
                 buildMenuTile(
-                  onPress: () => Navigator.pushNamed(context, '/profile'),
+                  onPress: () async {
+                    await Navigator.pushNamed(context, '/profile');
+                    reload();
+                  },
                   text: "Profil",
                   icon: Icons.person_outline_rounded,
                 ),
                 buildMenuTile(
-                  onPress: () => Navigator.pushNamed(context, '/saved'),
+                  onPress: () async {
+                    await Navigator.pushNamed(context, '/saved');
+                    reload();
+                  },
                   text: "Gespeichert",
                   icon: Icons.bookmark_outline,
                 ),
                 buildMenuTile(
-                  onPress: () => Navigator.pushNamed(context, '/created'),
+                  onPress: () async {
+                    await Navigator.pushNamed(context, '/created');
+                    reload();
+                  },
                   text: "Erstellt",
                   icon: Icons.design_services_outlined,
                 ),
                 buildMenuTile(
-                  onPress: () => Navigator.pushNamed(context, '/contact'),
+                  onPress: () async {
+                    await Navigator.pushNamed(context, '/contact');
+                    reload();
+                  },
                   text: "Hilfe",
                   icon: Icons.help_outline_rounded,
                 ),
                 buildMenuTile(
-                  onPress: () => Navigator.pushNamed(context, '/developer'),
+                  onPress: () async {
+                    await Navigator.pushNamed(context, '/developer');
+                    reload();
+                  },
                   text: "Über uns",
                   icon: Icons.phone_outlined,
                 ),
@@ -49,7 +65,6 @@ void showBottomMenuForNavigation(BuildContext context, WidgetRef ref) =>
           );
         });
 
-//Refactor to new routing
 Widget buildMenuTile({
   required String text,
   required IconData icon,

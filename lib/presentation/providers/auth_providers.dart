@@ -80,7 +80,6 @@ class FormNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  //TODO generate Regex for profile image (validate that val is link)
   void validateProfileImage(String? val) {
     _profileImage = ValidationModel(val, null);
     notifyListeners();

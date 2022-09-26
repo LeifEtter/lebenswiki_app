@@ -28,8 +28,8 @@ class RoundAvatar extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         image: CheckData.imageIsLocal(image)
-            ? DecorationImage(image: AssetImage(image))
-            : DecorationImage(image: NetworkImage(image)),
+            ? DecorationImage(image: AssetImage(image), fit: BoxFit.cover)
+            : DecorationImage(image: NetworkImage(image), fit: BoxFit.cover),
       ),
     );
   }

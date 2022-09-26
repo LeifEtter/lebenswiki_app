@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:path/path.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class ImageHelper {
   //TODO Compress image before upload

@@ -2,16 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 
-//TODO Add Eval Options
-/*class PackEvalOptions {
-  double titleSize;
-  double 
-
-  const PackEvalOptions({
-
-  });
-}*/
-
 class PackEvalService {
   Widget evalItem({required PackPageItem item}) {
     switch (item.type) {

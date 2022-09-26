@@ -12,7 +12,7 @@ import 'package:lebenswiki_app/presentation/providers/auth_providers.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 
-//TODO upload profile pictures to firebase storage
+//TODO Add profile pick upload
 class AuthenticationView extends ConsumerStatefulWidget {
   const AuthenticationView({Key? key}) : super(key: key);
 

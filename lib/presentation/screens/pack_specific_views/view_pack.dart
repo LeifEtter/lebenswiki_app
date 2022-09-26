@@ -1,8 +1,13 @@
+import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:lebenswiki_app/domain/models/error_model.dart';
+import 'package:lebenswiki_app/presentation/screens/pack_specific_views/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
+import 'package:lebenswiki_app/repository/backend/read_api.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/widgets/lw.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
@@ -228,7 +233,18 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                     borderRadius: 15.0,
                     color: CustomColors.blue,
                     text: "Start Learning",
-                    action: () {},
+                    action: () async {
+                      Future<Either<CustomError, String>> readResult =
+                          ReadApi().create(packId: widget.pack.id!);
+                      readResult.fold((left) {
+                        CustomFlushbar.error(message: left.error).show(context);
+                      },
+                          (right) => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PackViewerStarted(id: widget.pack.id!))));
+                    },
                   ),
                 ],
               ),

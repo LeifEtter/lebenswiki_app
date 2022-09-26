@@ -49,7 +49,6 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    print("Rebuilding whole widget");
     return FutureBuilder(
       future: UserApi().getUserData(),
       builder: (BuildContext context,
@@ -228,10 +227,10 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
           boxShadow: [LebenswikiShadows.cardShadow],
           shape: BoxShape.circle,
           image: chosenAvatar.startsWith("assets/")
-              ? DecorationImage(image: AssetImage(chosenAvatar))
+              ? DecorationImage(
+                  image: AssetImage(chosenAvatar), fit: BoxFit.cover)
               : DecorationImage(
-                  image: NetworkImage(chosenAvatar),
-                ),
+                  image: NetworkImage(chosenAvatar), fit: BoxFit.cover),
         ),
       );
 

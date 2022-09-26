@@ -53,7 +53,7 @@ class _CreatorOverviewState extends State<CreatorOverview> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PackViewerStarted(pack: pack),
+                  builder: (context) => PackViewerStarted(id: pack.id!),
                 ));
           },
           rightText: pack.isSaved() ? "Vorschau" : "Speichern",

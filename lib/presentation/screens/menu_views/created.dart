@@ -6,8 +6,10 @@ import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/screens/pack_specific_views/creator_information.dart';
 import 'package:lebenswiki_app/presentation/screens/pack_specific_views/creator_overview.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
+import 'package:lebenswiki_app/repository/backend/pack_api.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/short_card.dart';
@@ -94,7 +96,7 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                                           width: 300,
                                           height: 250,
                                           child: PackCard(
-                                            navigateTo: () async {
+                                            navigateEditor: () async {
                                               await Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
@@ -102,6 +104,21 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                                                           CreatorOverview(
                                                               pack:
                                                                   currentPack)));
+                                              setState(() {});
+                                            },
+                                            navigateInformation: () async {
+                                              await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          CreatorPackInfo(
+                                                              pack:
+                                                                  currentPack)));
+                                              setState(() {});
+                                            },
+                                            deletePack: () async {
+                                              await PackApi()
+                                                  .deletePack(currentPack.id);
                                               setState(() {});
                                             },
                                             isDraftView: true,

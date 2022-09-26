@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/presentation/screens/pack_specific_views/creator_overview.dart';
+import 'package:lebenswiki_app/presentation/screens/pack_specific_views/creator_information.dart';
 import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
 import 'package:lebenswiki_app/presentation/screens/other/comments.dart';
@@ -24,7 +24,10 @@ class PackCard extends ConsumerStatefulWidget {
   final bool isStarted;
   final Pack pack;
   final bool isDraftView;
-  final Function? navigateTo;
+  final Function? navigateEditor;
+  final Function? navigateInformation;
+  final Function? navigateView;
+  final Function? deletePack;
 
   const PackCard({
     Key? key,
@@ -33,7 +36,10 @@ class PackCard extends ConsumerStatefulWidget {
     required this.pack,
     required this.heroParent,
     this.isDraftView = false,
-    this.navigateTo,
+    this.navigateEditor,
+    this.navigateInformation,
+    this.navigateView,
+    this.deletePack,
   }) : super(key: key);
 
   @override
@@ -130,14 +136,14 @@ class _PackCardState extends ConsumerState<PackCard> {
                                   ),
                                   children: [
                                     SpeedDialChild(
+                                      onTap: () =>
+                                          widget.navigateInformation!(),
                                       child:
                                           const Icon(Icons.edit_note_outlined),
                                       label: "Informationen Bearbeiten",
                                     ),
                                     SpeedDialChild(
-                                      onTap: () {
-                                        widget.navigateTo!();
-                                      },
+                                      onTap: () => widget.navigateEditor!(),
                                       child: const Icon(
                                         Icons.edit_outlined,
                                       ),
@@ -148,6 +154,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                                       label: "Pack Veröffentlichen",
                                     ),
                                     SpeedDialChild(
+                                      onTap: () => widget.deletePack!(),
                                       child: const Icon(Icons.delete_outline),
                                       label: "Pack Löschen",
                                     ),
@@ -158,7 +165,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                       ),
                     ),
                   ),
-                  /*widget.isPublished
+                  (widget.pack.published && widget.pack.creatorId == user.id)
                       ? Align(
                           alignment: Alignment.topLeft,
                           child: Container(
@@ -169,7 +176,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                                 backgroundColor: Colors.green.shade300),
                           ),
                         )
-                      : Container(),*/
+                      : Container(),
                 ],
               ),
             ),

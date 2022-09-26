@@ -4,7 +4,6 @@ import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/domain/models/short_model.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';
 
-//TODO refactor response model to be more specific
 class ResultModel {
   ResultType type;
   List responseList;
