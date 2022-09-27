@@ -1,4 +1,5 @@
 import 'package:animate_icons/animate_icons.dart';
+import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -25,10 +26,6 @@ class PackCard extends ConsumerStatefulWidget {
   final bool isStarted;
   final Pack pack;
   final bool isDraftView;
-  final Function? navigateEditor;
-  final Function? navigateInformation;
-  final Function? navigateView;
-  final Function? deletePack;
 
   const PackCard({
     Key? key,
@@ -37,10 +34,6 @@ class PackCard extends ConsumerStatefulWidget {
     required this.pack,
     required this.heroParent,
     this.isDraftView = false,
-    this.navigateEditor,
-    this.navigateInformation,
-    this.navigateView,
-    this.deletePack,
   }) : super(key: key);
 
   @override
@@ -122,45 +115,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                             backgroundColor: CustomColors.whiteOverlay,
                           ),
                           widget.isDraftView
-                              ? SpeedDial(
-                                  elevation: 10,
-                                  direction: SpeedDialDirection.down,
-                                  backgroundColor: CustomColors.lightGrey,
-                                  buttonSize: const Size(50, 50),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  ),
-                                  child: Icon(
-                                    Icons.settings,
-                                    color: CustomColors.textBlack,
-                                    size: 28,
-                                  ),
-                                  children: [
-                                    SpeedDialChild(
-                                      onTap: () =>
-                                          widget.navigateInformation!(),
-                                      child:
-                                          const Icon(Icons.edit_note_outlined),
-                                      label: "Informationen Bearbeiten",
-                                    ),
-                                    SpeedDialChild(
-                                      onTap: () => widget.navigateEditor!(),
-                                      child: const Icon(
-                                        Icons.edit_outlined,
-                                      ),
-                                      label: "Inhalt Bearbeiten",
-                                    ),
-                                    SpeedDialChild(
-                                      child: const Icon(Icons.publish_outlined),
-                                      label: "Pack Veröffentlichen",
-                                    ),
-                                    SpeedDialChild(
-                                      onTap: () => widget.deletePack!(),
-                                      child: const Icon(Icons.delete_outline),
-                                      label: "Pack Löschen",
-                                    ),
-                                  ],
-                                )
+                              ? Container(width: 50)
                               : Container(),
                         ],
                       ),
@@ -287,23 +242,19 @@ class _PackCardState extends ConsumerState<PackCard> {
       );
 
   void _bookmarkCallback() async {
-    ResultModel bookMarkResult = widget.pack.bookmarkedByUser
-        ? await packApi.unbookmarkPack(widget.pack.id)
-        : await packApi.bookmarkPack(widget.pack.id);
-    if (bookMarkResult.type == ResultType.success) {
-      CustomFlushbar.success(
-              message: widget.pack.bookmarkedByUser
-                  ? "Lernpack von gespeicherten Lernpacks entfernt"
-                  : "Lernpack gespeichert")
-          .show(context);
-      widget.pack.toggleBookmarked(user);
-    } else {
-      CustomFlushbar.error(
-              message: widget.pack.bookmarkedByUser
-                  ? "Lernpack konnte nicht von gespeicherten Lernpacks entfernt werden"
-                  : "Lernpack konnte nicht gespeichert werden")
-          .show(context);
-    }
+    widget.pack.bookmarkedByUser
+        ? await packApi.unbookmarkPack(widget.pack.id).fold((left) {
+            CustomFlushbar.error(message: left.error).show(context);
+          }, (right) {
+            CustomFlushbar.success(message: right).show(context);
+            widget.pack.toggleBookmarked(user);
+          })
+        : await packApi.bookmarkPack(widget.pack.id).fold((left) {
+            CustomFlushbar.error(message: left.error).show(context);
+          }, (right) {
+            CustomFlushbar.success(message: right).show(context);
+            widget.pack.toggleBookmarked(user);
+          });
     setState(() {});
   }
 }

@@ -1,6 +1,7 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:lebenswiki_app/application/data/pack_short_service.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
@@ -8,6 +9,7 @@ import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/pack_specific_views/creator_information.dart';
 import 'package:lebenswiki_app/presentation/screens/pack_specific_views/creator_overview.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/repository/backend/pack_api.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
@@ -17,6 +19,7 @@ import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/application/data/pack_list_helper.dart';
 import 'package:lebenswiki_app/application/data/short_list_helper.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
+import 'package:path/path.dart';
 
 class CreatedView extends ConsumerStatefulWidget {
   const CreatedView({
@@ -95,37 +98,21 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                                         child: SizedBox(
                                           width: 300,
                                           height: 250,
-                                          child: PackCard(
-                                            navigateEditor: () async {
-                                              await Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          CreatorOverview(
-                                                              pack:
-                                                                  currentPack)));
-                                              setState(() {});
-                                            },
-                                            navigateInformation: () async {
-                                              await Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          CreatorPackInfo(
-                                                              pack:
-                                                                  currentPack)));
-                                              setState(() {});
-                                            },
-                                            deletePack: () async {
-                                              await PackApi()
-                                                  .deletePack(currentPack.id);
-                                              setState(() {});
-                                            },
-                                            isDraftView: true,
-                                            progressValue: 0,
-                                            isStarted: false,
-                                            pack: currentPack,
-                                            heroParent: "created-packs",
+                                          child: Stack(
+                                            children: [
+                                              PackCard(
+                                                isDraftView: true,
+                                                progressValue: 0,
+                                                isStarted: false,
+                                                pack: currentPack,
+                                                heroParent: "created-packs",
+                                              ),
+                                              Align(
+                                                alignment: Alignment.topRight,
+                                                child: _buildActionMenu(context,
+                                                    currentPack: currentPack),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       );
@@ -159,6 +146,125 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
       ),
     );
   }
+
+  Widget _buildActionMenu(context, {required Pack currentPack}) => SpeedDial(
+        elevation: 10,
+        direction: SpeedDialDirection.down,
+        backgroundColor: CustomColors.lightGrey,
+        buttonSize: const Size(50, 50),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Icon(
+          Icons.settings,
+          color: CustomColors.textBlack,
+          size: 28,
+        ),
+        children: [
+          SpeedDialChild(
+            onTap: () async {
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          CreatorPackInfo(pack: currentPack)));
+              setState(() {});
+            },
+            child: const Icon(Icons.edit_note_outlined),
+            label: "Informationen Bearbeiten",
+          ),
+          SpeedDialChild(
+            onTap: () async {
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          CreatorOverview(pack: currentPack)));
+              setState(() {});
+            },
+            child: const Icon(
+              Icons.edit_outlined,
+            ),
+            label: "Inhalt Bearbeiten",
+          ),
+          currentPack.published
+              ? SpeedDialChild(
+                  onTap: () async {
+                    await PackApi().unpublishPack(currentPack.id).fold((left) {
+                      CustomFlushbar.error(message: left.error).show(context);
+                    }, (right) {
+                      CustomFlushbar.success(message: right).show(context);
+                    });
+                    setState(() {});
+                  },
+                  label: "Pack Privat Machen",
+                  child: const Icon(Icons.public_off_rounded))
+              : SpeedDialChild(
+                  onTap: () async {
+                    await PackApi().publishPack(currentPack.id).fold((left) {
+                      CustomFlushbar.error(message: left.error).show(context);
+                    }, (right) {
+                      CustomFlushbar.success(message: right).show(context);
+                    });
+                    setState(() {});
+                  },
+                  child: const Icon(Icons.publish_outlined),
+                  label: "Pack Veröffentlichen",
+                ),
+          SpeedDialChild(
+            onTap: () async {
+              await showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: Text("Pack Löschen"),
+                        content:
+                            Text("Willst du dieses Pack wirklich löschen?"),
+                        actions: [
+                          TextButton(
+                            onPressed: () async {
+                              await PackApi().deletePack(currentPack.id).fold(
+                                (left) {
+                                  Navigator.pop(context);
+                                  CustomFlushbar.error(message: left.error)
+                                      .show(context);
+                                },
+                                (right) {
+                                  Navigator.pop(context);
+                                  CustomFlushbar.success(message: right)
+                                      .show(context);
+                                },
+                              );
+                            },
+                            child: const Text(
+                              "Löschen",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              "Abbrechen",
+                              style: TextStyle(
+                                color: CustomColors.blue,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ));
+
+              setState(() {});
+            },
+            child: const Icon(Icons.delete_outline),
+            label: "Pack Löschen",
+          ),
+        ],
+      );
 
   Widget _buildEmptyText(text) => Column(
         children: [

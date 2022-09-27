@@ -96,89 +96,76 @@ class PackApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> upvotePack(id) => _interactPack(
+  Future<Either<CustomError, String>> upvotePack(id) => _interactPack(
       url: "packs/upvote/$id",
       successMessage: "Successfully Upvoted Pack",
       errorMessage: "Couldn't Upvote Pack");
 
-  Future<ResultModel> downvotePack(id) => _interactPack(
+  Future<Either<CustomError, String>> downvotePack(id) => _interactPack(
       url: "packs/downvote/$id",
       successMessage: "Successfully Downvoted Pack",
       errorMessage: "Couldn't Downvote Pack");
 
-  Future<ResultModel> removeUpvotePack(id) => _interactPack(
+  Future<Either<CustomError, String>> removeUpvotePack(id) => _interactPack(
       url: "packs/upvote/remove/$id",
       successMessage: "Successfully Removed Upvote from Pack",
       errorMessage: "Couldn't Remove Upvote Pack");
 
-  Future<ResultModel> removeDownvotePack(id) => _interactPack(
+  Future<Either<CustomError, String>> removeDownvotePack(id) => _interactPack(
       url: "packs/downvote/remove/$id",
       successMessage: "Successfully Removed Downvote Pack",
       errorMessage: "Couldn't Remove Downvote Pack");
 
-  Future<ResultModel> bookmarkPack(id) => _interactPack(
+  Future<Either<CustomError, String>> bookmarkPack(id) => _interactPack(
       url: "packs/bookmark/$id",
-      successMessage: "Successfully Bookmarked Pack",
-      errorMessage: "Couldn't bookmark Pack");
+      successMessage: "Pack erfolgreich Gespeichert",
+      errorMessage: "Konnte Pack nicht speichern");
 
-  Future<ResultModel> unbookmarkPack(id) => _interactPack(
+  Future<Either<CustomError, String>> unbookmarkPack(id) => _interactPack(
       url: "packs/unbookmark/$id",
-      successMessage: "Successfully Removed Pack from Bookmarks",
-      errorMessage: "Couldn't remove Pack from bookmarks");
+      successMessage: "Pack erfolgreich von gespeicherten Packs entfernt",
+      errorMessage:
+          "Pack konnte nicht von gespeicherten Packs entfernt werden");
 
-  Future<ResultModel> deletePack(id) => _interactPackDelete(
+  Future<Either<CustomError, String>> deletePack(id) => _interactPackDelete(
       url: "packs/delete/$id",
       successMessage: "Pack successfully deleted",
       errorMessage: "Couldn't delete Pack");
 
-  Future<ResultModel> _interactPack({
+  Future<Either<CustomError, String>> _interactPack({
     required String url,
     required String successMessage,
     required String errorMessage,
   }) async {
-    ResultModel result = ResultModel(
-        type: ResultType.failure, message: errorMessage, responseList: []);
-    await put(
+    Response res = await put(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
-    ).then((Response res) {
-      if (statusIsSuccess(res.statusCode)) {
-        result = ResultModel(
-          type: ResultType.success,
-          message: successMessage,
-        );
-      } else {
-        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      }
-    }).catchError((error) {
-      apiErrorHandler.handleAndLog(reponseData: error);
-    });
-    return result;
+    );
+
+    if (statusIsSuccess(res.statusCode)) {
+      return Right(successMessage);
+    } else {
+      apiErrorHandler.logRes(res);
+      return Left(CustomError(error: errorMessage));
+    }
   }
 
-  Future<ResultModel> _interactPackDelete({
+  Future<Either<CustomError, String>> _interactPackDelete({
     required String url,
     required String successMessage,
     required String errorMessage,
   }) async {
-    ResultModel result = ResultModel(
-        type: ResultType.failure, message: errorMessage, responseList: []);
-    await delete(
+    Response res = await delete(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
-    ).then((Response res) {
-      if (statusIsSuccess(res.statusCode)) {
-        result = ResultModel(
-          type: ResultType.success,
-          message: successMessage,
-        );
-      } else {
-        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      }
-    }).catchError((error) {
-      apiErrorHandler.handleAndLog(reponseData: error);
-    });
-    return result;
+    );
+
+    if (statusIsSuccess(res.statusCode)) {
+      return Right(successMessage);
+    } else {
+      apiErrorHandler.logRes(res);
+      return Left(CustomError(error: errorMessage));
+    }
   }
 
   Future<Either<CustomError, String>> reactPack(id, reaction) =>
@@ -224,38 +211,30 @@ class PackApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> publishPack(id) => _interactPackPatch(
+  Future<Either<CustomError, String>> publishPack(id) => _interactPackPatch(
       url: "packs/publish/$id",
-      successMessage: "Successfully Published Pack",
-      errorMessage: "Coldn't publish Pack");
+      successMessage: "Pack Veröffentlicht",
+      errorMessage: "Pack konnte nicht veröffentlicht werden");
 
-  Future<ResultModel> unpublishPack(id) => _interactPackPatch(
+  Future<Either<CustomError, String>> unpublishPack(id) => _interactPackPatch(
       url: "packs/unpublish/$id",
-      successMessage: "Successfully Unpublished Pack",
-      errorMessage: "Coldn't Unpublish Pack");
+      successMessage: "Pack Privat gemacht",
+      errorMessage: "Pack konnte nicht privat gemacht werden");
 
-  Future<ResultModel> _interactPackPatch({
+  Future<Either<CustomError, String>> _interactPackPatch({
     required String url,
     required String successMessage,
     required String errorMessage,
   }) async {
-    ResultModel result = ResultModel(
-        type: ResultType.failure, message: errorMessage, responseList: []);
-    await patch(
+    Response res = await patch(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
-    ).then((Response res) {
-      if (statusIsSuccess(res.statusCode)) {
-        result = ResultModel(
-          type: ResultType.success,
-          message: successMessage,
-        );
-      } else {
-        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      }
-    }).catchError((error) {
-      apiErrorHandler.handleAndLog(reponseData: error);
-    });
-    return result;
+    );
+    if (statusIsSuccess(res.statusCode)) {
+      return Right(successMessage);
+    } else {
+      apiErrorHandler.logRes(res);
+      return Left(CustomError(error: errorMessage));
+    }
   }
 }
