@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
+import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/pack_specific_views/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
@@ -27,6 +28,7 @@ class ViewPack extends ConsumerStatefulWidget {
 }
 
 class _ViewPackState extends ConsumerState<ViewPack> {
+  late String profileImage;
   double opacity = 0;
 
   @override
@@ -44,6 +46,7 @@ class _ViewPackState extends ConsumerState<ViewPack> {
 
   @override
   Widget build(BuildContext context) {
+    profileImage = ref.watch(userProvider).user.profileImage;
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -144,11 +147,17 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                   const SizedBox(height: 15),
                   Row(
                     children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        backgroundImage:
-                            NetworkImage(widget.pack.creator!.profileImage),
-                      ),
+                      profileImage.startsWith('assets/')
+                          ? CircleAvatar(
+                              backgroundColor: Colors.white,
+                              backgroundImage:
+                                  AssetImage(widget.pack.creator!.profileImage),
+                            )
+                          : CircleAvatar(
+                              backgroundColor: Colors.white,
+                              backgroundImage: NetworkImage(
+                                  widget.pack.creator!.profileImage),
+                            ),
                       const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

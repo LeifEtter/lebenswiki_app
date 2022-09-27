@@ -21,8 +21,11 @@ class ShortCard extends ConsumerStatefulWidget {
 }
 
 class _ShortCardState extends ConsumerState<ShortCard> {
+  late String profileImage;
+
   @override
   Widget build(BuildContext context) {
+    profileImage = widget.short.creator.profileImage;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.0),
@@ -34,10 +37,15 @@ class _ShortCardState extends ConsumerState<ShortCard> {
         children: [
           Row(
             children: [
-              CircleAvatar(
-                backgroundImage:
-                    NetworkImage(widget.short.creator.profileImage),
-              ),
+              profileImage.startsWith("assets/")
+                  ? CircleAvatar(
+                      backgroundImage:
+                          AssetImage(widget.short.creator.profileImage),
+                    )
+                  : CircleAvatar(
+                      backgroundImage:
+                          NetworkImage(widget.short.creator.profileImage),
+                    ),
               const SizedBox(width: 10),
               Text(
                 widget.short.creator.name.split(' ')[0],

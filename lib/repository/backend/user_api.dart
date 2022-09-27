@@ -9,6 +9,13 @@ import 'package:lebenswiki_app/domain/models/block_model.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';
 
+class UserTokenResponse {
+  final String token;
+  final User user;
+
+  UserTokenResponse({required this.token, required this.user});
+}
+
 class UserApi extends BaseApi {
   late ApiErrorHandler apiErrorHandler;
 
@@ -28,27 +35,22 @@ class UserApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> register(User user) async {
+  Future<Either<CustomError, String>> register(User user) async {
     Response res = await post(
       Uri.parse("$serverIp/users/register"),
       headers: await requestHeader(),
       body: jsonEncode(user),
     );
     if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        message: "Account erfolgreich erstellt",
-      );
+      return const Right("Erfolgreich");
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message: "Dein Account konnte nicht erstellt werden",
-      );
+      return const Left(
+          CustomError(error: "User acount konnte nicht erstellt werden"));
     }
   }
 
-  Future<ResultModel> login({
+  Future<Either<CustomError, UserTokenResponse>> login({
     required String email,
     required String password,
   }) async {
@@ -62,17 +64,14 @@ class UserApi extends BaseApi {
     );
     Map decodedBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
-      return ResultModel(
-        type: ResultType.success,
-        token: decodedBody["token"],
-        responseItem: User.forContent(decodedBody["user"]),
-      );
+      Map decoded = jsonDecode(res.body);
+      return Right(UserTokenResponse(
+        token: decoded["token"],
+        user: User.forContent(decoded["user"]),
+      ));
     } else {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      return ResultModel(
-        type: ResultType.failure,
-        message: decodedBody["error"]["errorMessage"],
-      );
+      return Left(CustomError(error: decodedBody["error"]["errorMessage"]));
     }
   }
 
@@ -134,6 +133,23 @@ class UserApi extends BaseApi {
       apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
       return const Left(
           CustomError(error: "Profil konnte nicht geändert werden"));
+    }
+  }
+
+  Future<Either<CustomError, String>> updateProfileImage(
+      {required String profileImage}) async {
+    Response res = await put(
+      Uri.parse("$serverIp/users/profile/update/image"),
+      headers: await requestHeader(),
+      body: jsonEncode({
+        "profileImage": profileImage,
+      }),
+    );
+    if (statusIsSuccess(res.statusCode)) {
+      return const Right("Erfolgreich");
+    } else {
+      apiErrorHandler.logRes(res);
+      return const Left(CustomError(error: "Irgendwas ist schiefgelaufen"));
     }
   }
 

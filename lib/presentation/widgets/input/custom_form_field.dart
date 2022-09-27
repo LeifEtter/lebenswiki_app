@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lebenswiki_app/repository/constants/colors.dart';
 
 class CustomInputField extends StatefulWidget {
   final String hintText;
@@ -71,6 +72,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.only(left: 15),
                         hintText: widget.hintText,
+                        hintStyle: TextStyle(color: CustomColors.darkGrey),
                         prefixIcon: widget.icon,
                         suffixIcon: widget.isPassword
                             ? IconButton(
@@ -90,6 +92,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
                       initialValue: widget.initialValue ?? "",
                       onChanged: widget.onChanged,
                       decoration: InputDecoration(
+                        hintStyle: TextStyle(color: CustomColors.darkGrey),
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 10),
                         hintText: widget.hintText,

@@ -84,6 +84,7 @@ class _CreatorOverviewState extends State<CreatorOverview> {
     pageViewPages = List.generate(
       pack.pages.length,
       ((index) => PageOverview(
+            packId: pack.id!,
             page: pack.pages[index],
             selfIndex: index,
             deleteSelf: _deletePage,

@@ -15,15 +15,12 @@ class FormNotifier extends ChangeNotifier {
   ValidationModel _email = ValidationModel(null, null);
   ValidationModel _password = ValidationModel(null, null);
   ValidationModel _biography = ValidationModel(null, null);
-  ValidationModel _profileImage =
-      ValidationModel(ImageRepo.standardProfileImage, null);
   ValidationModel _repeatPassword = ValidationModel(null, null);
   ValidationModel _oldPassword = ValidationModel(null, null);
   ValidationModel get name => _name;
   ValidationModel get email => _email;
   ValidationModel get password => _password;
   ValidationModel get biography => _biography;
-  ValidationModel get profileImage => _profileImage;
   ValidationModel get repeatPassword => _repeatPassword;
   ValidationModel get oldPassword => _oldPassword;
 
@@ -80,17 +77,11 @@ class FormNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void validateProfileImage(String? val) {
-    _profileImage = ValidationModel(val, null);
-    notifyListeners();
-  }
-
   void resetErrors() {
     _name.error = null;
     _email.error = null;
     _biography.error = null;
     _password.error = null;
-    _profileImage.error = null;
     _repeatPassword.error = null;
     _oldPassword.error = null;
     notifyListeners();
@@ -101,7 +92,6 @@ class FormNotifier extends ChangeNotifier {
     _email.value = user.email;
     _biography.value = user.biography;
     _password.value = user.password;
-    _profileImage.value = user.profileImage;
   }
 
   User convertToUser() => User(
@@ -109,7 +99,7 @@ class FormNotifier extends ChangeNotifier {
         email: _email.value,
         biography: _biography.value ?? "",
         password: password.value,
-        profileImage: profileImage.value ?? "",
+        profileImage: ImageRepo.standardProfileImage,
       );
 
   bool get validateForRegister {
@@ -118,11 +108,9 @@ class FormNotifier extends ChangeNotifier {
     validatePassword(_password.value);
     validateRepeatPassword(_repeatPassword.value);
     validateBiography(_biography.value);
-    validateProfileImage(_profileImage.value);
     return _email.value != null &&
         _password.value != null &&
         _name.value != null &&
-        _profileImage.value != null &&
         _repeatPassword.value != null;
   }
 
@@ -139,9 +127,7 @@ class FormNotifier extends ChangeNotifier {
   }
 
   bool get validateForProfileUpdate {
-    return _biography.value != null &&
-        _name.value != null &&
-        _profileImage.value != null;
+    return _biography.value != null && _name.value != null;
   }
 
   bool get validateForSimpleProfileUpdate {

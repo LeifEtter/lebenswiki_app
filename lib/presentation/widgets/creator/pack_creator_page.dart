@@ -16,12 +16,14 @@ import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 
 class PageOverview extends ConsumerStatefulWidget {
+  final int packId;
   final PackPage page;
   final int selfIndex;
   final Function deleteSelf;
 
   const PageOverview({
     Key? key,
+    required this.packId,
     required this.page,
     required this.selfIndex,
     required this.deleteSelf,
@@ -153,6 +155,7 @@ class _PageOverviewState extends ConsumerState<PageOverview> {
       await storage.refFromURL(item.headContent.value).delete();
     }
     Either<CustomError, String> result = await ImageHelper.uploadImage(context,
+        pathToStore: "pack_images/${widget.packId}/",
         chosenImage: File(pickedFile.path),
         userId: ref.read(userProvider).user.id,
         storage: storage);

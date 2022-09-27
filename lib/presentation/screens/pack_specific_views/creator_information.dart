@@ -73,7 +73,7 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
           TopNavIOS.withNextButton(
             title: "Erstelle ein Pack",
             nextTitle: "Speichern",
-            nextFunction: () => update(),
+            nextFunction: () => update(context),
           ),
           ListView(
             padding: const EdgeInsets.only(left: 20, right: 20, bottom: 100),
@@ -200,8 +200,13 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
     if (_chosenImageLink != null) {
       await storage.refFromURL(_chosenImageLink!).delete();
     }
-    Either<CustomError, String> result = await ImageHelper.uploadImage(context,
-        chosenImage: File(pickedFile.path), userId: user.id, storage: storage);
+    Either<CustomError, String> result = await ImageHelper.uploadImage(
+      context,
+      pathToStore: "user_images/${user.id}/",
+      chosenImage: File(pickedFile.path),
+      userId: user.id,
+      storage: storage,
+    );
     result.fold(
       (left) {
         CustomFlushbar.error(message: left.error).show(context);
@@ -217,7 +222,7 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
     );
   }
 
-  void update() async {
+  void update(context) async {
     if (_titleController.text.isEmpty) {
       errorTitle = "Schreibe hier deinen Titel";
     }
@@ -253,13 +258,15 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
         ? await PackApi().createPack(pack: newPack).fold((left) {
             CustomFlushbar.error(message: left.error);
           }, (right) {
-            CustomFlushbar.success(message: "Pack wurde erstellt, id $right")
+            Navigator.pushNamed(context, '/created');
+            CustomFlushbar.success(message: "Pack wurde erstellt")
                 .show(context);
           })
         : await PackApi().updatePack(id: widget.pack!.id!, pack: newPack).fold(
             (left) {
             CustomFlushbar.error(message: left.error).show(context);
           }, (right) {
+            Navigator.pop(context);
             CustomFlushbar.success(message: right).show(context);
           });
     return;
