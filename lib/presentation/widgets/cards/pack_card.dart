@@ -3,6 +3,7 @@ import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/screens/pack_specific_views/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
 import 'package:lebenswiki_app/presentation/screens/other/comments.dart';
 import 'package:lebenswiki_app/presentation/screens/pack_specific_views/view_pack.dart';
@@ -51,13 +52,22 @@ class _PackCardState extends ConsumerState<PackCard> {
   Widget build(BuildContext context) {
     user = ref.watch(userProvider).user;
     return GestureDetector(
-      onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: ((context) => ViewPack(
-                    pack: widget.pack,
-                    heroName: "${widget.heroParent}-${widget.pack.id}-hero",
-                  )))),
+      onTap: () {
+        widget.isStarted
+            ? Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        PackViewerStarted(id: widget.pack.id!)))
+            : Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: ((context) => ViewPack(
+                          pack: widget.pack,
+                          heroName:
+                              "${widget.heroParent}-${widget.pack.id}-hero",
+                        ))));
+      },
       child: Container(
         decoration: BoxDecoration(
           border: (widget.pack.published && widget.pack.creatorId == user.id)

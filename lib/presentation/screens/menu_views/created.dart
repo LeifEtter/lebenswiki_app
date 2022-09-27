@@ -19,7 +19,6 @@ import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/application/data/pack_list_helper.dart';
 import 'package:lebenswiki_app/application/data/short_list_helper.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
-import 'package:path/path.dart';
 
 class CreatedView extends ConsumerStatefulWidget {
   const CreatedView({
@@ -216,9 +215,9 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
               await showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                        title: Text("Pack Löschen"),
-                        content:
-                            Text("Willst du dieses Pack wirklich löschen?"),
+                        title: const Text("Pack Löschen"),
+                        content: const Text(
+                            "Willst du dieses Pack wirklich löschen?"),
                         actions: [
                           TextButton(
                             onPressed: () async {

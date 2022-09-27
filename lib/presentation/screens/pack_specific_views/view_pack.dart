@@ -46,7 +46,7 @@ class _ViewPackState extends ConsumerState<ViewPack> {
 
   @override
   Widget build(BuildContext context) {
-    profileImage = ref.watch(userProvider).user.profileImage;
+    profileImage = widget.pack.creator!.profileImage;
     return Container(
       color: Colors.white,
       child: SafeArea(

@@ -48,7 +48,8 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
               (right) {
                 initPages(right);
                 return StatefulBuilder(
-                    builder: (context, setState) => PageView(children: pages));
+                  builder: (context, setState) => PageView(children: pages),
+                );
               },
             );
           }),

@@ -1,7 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
+import 'package:lebenswiki_app/domain/models/error_model.dart';
+import 'package:lebenswiki_app/domain/models/pack_model.dart';
+import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/extensions.dart';
 import 'package:lebenswiki_app/application/data/pack_list_helper.dart';
@@ -29,19 +33,29 @@ class _HomeViewState extends ConsumerState<HomeView> {
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: ReadApi().getAll(),
-        builder: (context, snapshot) {
+        builder: (BuildContext context,
+            AsyncSnapshot<Either<CustomError, List<Read>>> snapshot) {
           if (LoadingHelper.isLoading(snapshot)) {
             return LoadingHelper.loadingIndicator();
           }
+          if (snapshot.data!.isLeft) {
+            return const Center(child: Text("Something went wrong"));
+          }
+
+          List<Read> reads = snapshot.data!.right;
+          List<Pack> startedPacks =
+              reads.map((Read read) => read.pack).toList();
 
           return ListView(
             children: [
-              packSection(
-                heroParent: "home-continue",
-                title: "Continue Reading",
-                packs: widget.packHelper.startedPacks,
-                isReading: true,
-              ),
+              startedPacks.isNotEmpty
+                  ? packSection(
+                      heroParent: "home-continue",
+                      title: "Continue Reading",
+                      packs: startedPacks,
+                      isReading: true,
+                    )
+                  : Container(),
               const SizedBox(height: 10),
               packSection(
                 heroParent: "home-recommended",
