@@ -7,15 +7,17 @@ class InfoLabel extends StatelessWidget {
   final double fontSize;
   final Icon? icon;
   final double? borderRadius;
+  final TextStyle? textStyle;
 
-  const InfoLabel(
-      {Key? key,
-      required this.text,
-      required this.backgroundColor,
-      this.fontSize = 13,
-      this.icon,
-      this.borderRadius})
-      : super(key: key);
+  const InfoLabel({
+    Key? key,
+    required this.text,
+    required this.backgroundColor,
+    this.fontSize = 13,
+    this.icon,
+    this.borderRadius,
+    this.textStyle,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +29,11 @@ class InfoLabel extends StatelessWidget {
           icon ?? Container(),
           Text(
             text,
-            style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                  letterSpacing: 0.5,
-                  fontSize: fontSize,
-                ),
+            style: textStyle ??
+                Theme.of(context).textTheme.labelSmall!.copyWith(
+                      letterSpacing: 0.5,
+                      fontSize: fontSize,
+                    ),
           ),
         ],
       ),

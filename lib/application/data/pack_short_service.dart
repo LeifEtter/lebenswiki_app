@@ -1,6 +1,8 @@
 import 'package:either_dart/either.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
+import 'package:lebenswiki_app/domain/models/pack_model.dart';
+import 'package:lebenswiki_app/domain/models/short_model.dart';
 import 'package:lebenswiki_app/repository/backend/pack_api.dart';
 import 'package:lebenswiki_app/application/data/pack_list_helper.dart';
 import 'package:lebenswiki_app/repository/backend/short_api.dart';
@@ -59,12 +61,23 @@ class PackShortService {
     ShortListHelper? shortHelper;
     PackListHelper? packHelper;
 
-    await PackApi().getCreatorsDraftPacks().fold((left) {}, (right) {
-      packHelper = PackListHelper(packs: right, helperData: helperData);
+    List<Pack> packs = [];
+    List<Short> shorts = [];
+
+    await PackApi().getOwnPublishedpacks().fold((left) {}, (right) {
+      packs.addAll(right);
     });
     await ShortApi().getCreatorsDraftShorts().fold((left) {}, (right) {
-      shortHelper = ShortListHelper(shorts: right, helperData: helperData);
+      shorts.addAll(right);
     });
+    await PackApi().getOwnUnpublishedPacks().fold((left) {}, (right) {
+      packs.addAll(right);
+    });
+    await ShortApi().getCreatorsDraftShorts().fold((left) {}, (right) {
+      shorts.addAll(right);
+    });
+    packHelper = PackListHelper(packs: packs, helperData: helperData);
+    shortHelper = ShortListHelper(shorts: shorts, helperData: helperData);
 
     if (shortHelper == null || packHelper == null) {
       return const Left(CustomError(error: "Something went wrong"));

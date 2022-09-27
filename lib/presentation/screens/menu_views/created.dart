@@ -42,7 +42,7 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
           length: 2,
           child: Column(
             children: [
-              const TopNavIOS(title: "Gespeichert"),
+              const TopNavIOS(title: "Erstellt"),
               SizedBox(
                 height: 50,
                 child: TabBar(

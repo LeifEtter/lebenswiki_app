@@ -17,6 +17,7 @@ import 'package:intl/intl.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';
+import 'package:lebenswiki_app/repository/constants/shadows.dart';
 
 class PackCard extends ConsumerStatefulWidget {
   final String heroParent;
@@ -70,9 +71,9 @@ class _PackCardState extends ConsumerState<PackCard> {
                   )))),
       child: Container(
         decoration: BoxDecoration(
-          /*border: widget.isPublished
-              ? Border.all(width: 3, color: Colors.green.shade300)
-              : null,*/
+          border: (widget.pack.published && widget.pack.creatorId == user.id)
+              ? Border.all(width: 3, color: Colors.green.shade200)
+              : null,
           borderRadius: BorderRadius.circular(15.0),
           color: CustomColors.lightGrey,
         ),
@@ -170,10 +171,17 @@ class _PackCardState extends ConsumerState<PackCard> {
                           alignment: Alignment.topLeft,
                           child: Container(
                             height: 40,
+                            decoration: BoxDecoration(
+                                boxShadow: [LebenswikiShadows.fancyShadow]),
                             child: InfoLabel(
-                                borderRadius: 13.0,
-                                text: "Published",
-                                backgroundColor: Colors.green.shade300),
+                                textStyle: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                  color: CustomColors.offBlack,
+                                ),
+                                borderRadius: 10.0,
+                                text: "VERÖFFENTLICHT",
+                                backgroundColor: Colors.green.shade200),
                           ),
                         )
                       : Container(),
