@@ -2,10 +2,7 @@ import 'package:animate_icons/animate_icons.dart';
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/presentation/screens/pack_specific_views/creator_information.dart';
-import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
 import 'package:lebenswiki_app/presentation/screens/other/comments.dart';
 import 'package:lebenswiki_app/presentation/screens/pack_specific_views/view_pack.dart';
@@ -16,7 +13,6 @@ import 'package:emojis/emoji.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/theme.dart';
 import 'package:intl/intl.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
-import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';
 import 'package:lebenswiki_app/repository/constants/shadows.dart';
 
