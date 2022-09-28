@@ -101,8 +101,6 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                                             children: [
                                               PackCard(
                                                 isDraftView: true,
-                                                progressValue: 0,
-                                                isStarted: false,
                                                 pack: currentPack,
                                                 heroParent: "created-packs",
                                               ),

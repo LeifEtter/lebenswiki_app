@@ -6,17 +6,19 @@ import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
+import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav_appbar.dart';
 import 'package:flutter_rounded_progress_bar/rounded_progress_bar_style.dart';
 import 'package:flutter_rounded_progress_bar/flutter_rounded_progress_bar.dart';
 import 'package:lebenswiki_app/repository/backend/pack_api.dart';
+import 'package:lebenswiki_app/repository/backend/read_api.dart';
 
 class PackViewerStarted extends ConsumerStatefulWidget {
-  final int id;
+  final Read read;
 
   const PackViewerStarted({
     Key? key,
-    required this.id,
+    required this.read,
   }) : super(key: key);
 
   @override
@@ -25,7 +27,15 @@ class PackViewerStarted extends ConsumerStatefulWidget {
 }
 
 class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
+  int progressValue = 0;
   List<ListView> pages = [];
+
+  @override
+  void initState() {
+    progressValue = widget.read.progress;
+    initPages(widget.read.pack);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,24 +45,12 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
         rightText: "",
         rightAction: () {},
         appBar: AppBar(),
+        leftAction: () =>
+            ReadApi().update(id: widget.read.id, newProgress: progressValue),
       ),
-      body: FutureBuilder(
-          future: PackApi().getPackById(id: widget.id),
-          builder: (BuildContext context,
-              AsyncSnapshot<Either<CustomError, Pack>> snapshot) {
-            if (LoadingHelper.isLoading(snapshot)) {
-              return LoadingHelper.loadingIndicator();
-            }
-            return snapshot.data!.fold(
-              (left) => const Center(child: Text("Something went wrong")),
-              (right) {
-                initPages(right);
-                return StatefulBuilder(
-                  builder: (context, setState) => PageView(children: pages),
-                );
-              },
-            );
-          }),
+      body: PageView(
+        children: pages,
+      ),
       bottomNavigationBar: SizedBox(
         child: RoundedProgressBar(
           style: RoundedProgressBarStyle(),

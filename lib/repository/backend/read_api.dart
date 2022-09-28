@@ -30,13 +30,13 @@ class ReadApi extends BaseApi {
     }
   }
 
-  Future<Either<CustomError, String>> create({required int packId}) async {
+  Future<Either<CustomError, Read>> create({required int packId}) async {
     Response res = await post(
       Uri.parse("$serverIp/reads/create/$packId"),
       headers: await requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {
-      return const Right("Pack Gestarted");
+      return Right(Read.fromJson(jsonDecode(res.body)["read"]));
     } else {
       apiErrorHandler.logRes(res);
       return const Left(CustomError(error: "Irgendwas ist schiefgelaufen"));
@@ -45,7 +45,7 @@ class ReadApi extends BaseApi {
 
   Future<Either<CustomError, String>> update(
       {required int id, required int newProgress}) async {
-    Response res = await post(
+    Response res = await put(
       Uri.parse("$serverIp/reads/update/$id"),
       headers: await requestHeader(),
       body: jsonEncode({

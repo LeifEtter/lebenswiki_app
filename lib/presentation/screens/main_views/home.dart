@@ -43,16 +43,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
           }
 
           List<Read> reads = snapshot.data!.right;
-          List<Pack> startedPacks =
-              reads.map((Read read) => read.pack).toList();
 
           return ListView(
             children: [
-              startedPacks.isNotEmpty
-                  ? packSection(
+              reads.isNotEmpty
+                  ? readSection(
                       heroParent: "home-continue",
                       title: "Continue Reading",
-                      packs: startedPacks,
+                      reads: reads,
                       isReading: true,
                     )
                   : Container(),
@@ -106,9 +104,37 @@ class _HomeViewState extends ConsumerState<HomeView> {
                           right: index == packs.length + 1 ? 20 : 10),
                       child: PackCard(
                         heroParent: heroParent,
-                        progressValue: 0,
-                        isStarted: isReading,
                         pack: packs[index],
+                      ),
+                    )),
+          ),
+        ],
+      );
+
+  Widget readSection({
+    required String heroParent,
+    required String title,
+    required List<Read> reads,
+    required bool isReading,
+  }) =>
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.headlineLarge,
+          ).addPadding(),
+          CarouselSlider(
+            options: standardOptions(height: isReading ? 200 : 250),
+            items: List.generate(
+                reads.length,
+                (index) => Padding(
+                      padding: EdgeInsets.only(
+                          left: index == 0 ? 20 : 10,
+                          right: index == reads.length + 1 ? 20 : 10),
+                      child: PackCard(
+                        heroParent: heroParent,
+                        read: reads[index],
                       ),
                     )),
           ),

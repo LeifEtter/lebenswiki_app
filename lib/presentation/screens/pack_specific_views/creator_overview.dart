@@ -50,11 +50,12 @@ class _CreatorOverviewState extends State<CreatorOverview> {
             pack.save();
             _saveToServer();
             setState(() {});
-            Navigator.push(
+            //TODO implement navigating to pack viewer without passing read
+            /*Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => PackViewerStarted(id: pack.id!),
-                ));
+                ));*/
           },
           rightText: pack.isSaved() ? "Vorschau" : "Speichern",
           title: "Seiten Bearbeiten",

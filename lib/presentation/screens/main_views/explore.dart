@@ -91,8 +91,6 @@ class _ExploreViewState extends State<ExploreView> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 10.0, horizontal: 20.0),
                           child: PackCard(
-                            progressValue: 0,
-                            isStarted: false,
                             pack: pack,
                             heroParent: "queried",
                           ),
@@ -138,8 +136,6 @@ class _ExploreViewState extends State<ExploreView> {
                               padding: const EdgeInsets.only(right: 20),
                               child: PackCard(
                                 heroParent: "explore-categories",
-                                progressValue: 0,
-                                isStarted: false,
                                 pack: pack,
                               ),
                             )),
