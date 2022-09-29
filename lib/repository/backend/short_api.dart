@@ -35,26 +35,18 @@ class ShortApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> deleteShort({required int id}) async {
-    ResultModel result = ResultModel(
-      type: ResultType.success,
-    );
-    await delete(
+  Future<Either<CustomError, String>> deleteShort({required int id}) async {
+    Response res = await delete(
       Uri.parse("$serverIp/shorts/delete/$id"),
       headers: await requestHeader(),
-    ).then((Response res) {
-      if (statusIsSuccess(res.statusCode)) {
-        result = ResultModel(
-          type: ResultType.success,
-          message: "Short Erfolgreich Gelöscht",
-        );
-      } else {
-        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      }
-    }).catchError((error) {
-      apiErrorHandler.handleAndLog(reponseData: error);
-    });
-    return result;
+    );
+
+    if (statusIsSuccess(res.statusCode)) {
+      return const Right("Short wurde gelöscht");
+    } else {
+      return const Left(
+          CustomError(error: "Short konnte nicht gelöscht werden"));
+    }
   }
 
   Future<Either<CustomError, List<Short>>> getShortsByCategory(
@@ -107,68 +99,62 @@ class ShortApi extends BaseApi {
     }
   }
 
-  Future<ResultModel> upvoteShort(id) => _interactShort(
+  Future<Either<CustomError, String>> upvoteShort(id) => _interactShort(
       url: "shorts/upvote/$id",
       successMessage: "Successfully Upvoted Short",
       errorMessage: "Couldn't Upvote Short");
 
-  Future<ResultModel> downvoteShort(id) => _interactShort(
+  Future<Either<CustomError, String>> downvoteShort(id) => _interactShort(
       url: "shorts/downvote/$id",
       successMessage: "Successfully Downvoted Short",
       errorMessage: "Couldn't Downvote Short");
 
-  Future<ResultModel> removeUpvoteShort(id) => _interactShort(
+  Future<Either<CustomError, String>> removeUpvoteShort(id) => _interactShort(
       url: "shorts/upvote/remove/$id",
       successMessage: "Successfully Removed Upvote from Short",
       errorMessage: "Couldn't Remove Upvote Short");
 
-  Future<ResultModel> removeDownvoteShort(id) => _interactShort(
+  Future<Either<CustomError, String>> removeDownvoteShort(id) => _interactShort(
       url: "shorts/downvote/remove/$id",
       successMessage: "Successfully Removed Downvote Short",
       errorMessage: "Couldn't Remove Downvote Short");
 
-  Future<ResultModel> bookmarkShort(id) => _interactShort(
+  Future<Either<CustomError, String>> bookmarkShort(id) => _interactShort(
       url: "shorts/bookmark/$id",
       successMessage: "Successfully Bookmarked Short",
       errorMessage: "Couldn't bookmark Short");
 
-  Future<ResultModel> unbookmarkShort(id) => _interactShort(
+  Future<Either<CustomError, String>> unbookmarkShort(id) => _interactShort(
       url: "shorts/unbookmark/$id",
       successMessage: "Successfully Removed Short from Bookmarks",
       errorMessage: "Couldn't remove Short from bookmarks");
 
-  Future<ResultModel> publishShort(id) => _interactShort(
+  Future<Either<CustomError, String>> publishShort(id) => _interactShort(
       url: "shorts/publish/$id",
       successMessage: "Successfully Published Short",
       errorMessage: "Coldn't publish Short");
 
-  Future<ResultModel> unpublishShort(id) => _interactShort(
+  Future<Either<CustomError, String>> unpublishShort(id) => _interactShort(
       url: "shorts/unpublish/$id",
       successMessage: "Successfully Unpublished Short",
       errorMessage: "Coldn't Unpublish Short");
 
-  Future<ResultModel> _interactShort({
+  Future<Either<CustomError, String>> _interactShort({
     required String url,
     required String successMessage,
     required String errorMessage,
   }) async {
-    ResultModel result = ResultModel(type: ResultType.failure);
-    await put(
+    Response res = await put(
       Uri.parse("$serverIp/$url"),
       headers: await requestHeader(),
-    ).then((Response res) {
-      if (statusIsSuccess(res.statusCode)) {
-        result = ResultModel(
-          type: ResultType.success,
-          message: successMessage,
-        );
-      } else {
-        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      }
-    }).catchError((error) {
-      apiErrorHandler.handleAndLog(reponseData: error);
-    });
-    return result;
+    );
+
+    if (statusIsSuccess(res.statusCode)) {
+      return Right(successMessage);
+    } else {
+      apiErrorHandler.logRes(res);
+      return Left(CustomError(error: errorMessage));
+    }
   }
 
   Future<ResultModel> reactShort(id, reaction) => _updateShortData(

@@ -38,7 +38,7 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
   final TextEditingController searchController = TextEditingController();
   bool _showSearch = false;
   int _currentIndex = 0;
-  bool _showShortCreation = false;
+  //bool _showShortCreation = false;
 
   @override
   void initState() {

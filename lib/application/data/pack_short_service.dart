@@ -67,7 +67,7 @@ class PackShortService {
     await PackApi().getOwnPublishedpacks().fold((left) {}, (right) {
       packs.addAll(right);
     });
-    await ShortApi().getCreatorsDraftShorts().fold((left) {}, (right) {
+    await ShortApi().getOwnPublishedShorts().fold((left) {}, (right) {
       shorts.addAll(right);
     });
     await PackApi().getOwnUnpublishedPacks().fold((left) {}, (right) {
