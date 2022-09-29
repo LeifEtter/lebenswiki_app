@@ -67,7 +67,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                 MaterialPageRoute(
                     builder: (context) => PackViewerStarted(
                           read: widget.read!,
-                          heroName: "",
+                          heroName: "${widget.heroParent}-${pack.id}-hero",
                         )))
             : await Navigator.push(
                 context,
