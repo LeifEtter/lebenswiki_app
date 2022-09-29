@@ -16,29 +16,23 @@ class ShortApi extends BaseApi {
     apiErrorHandler = ApiErrorHandler();
   }
 
-  Future<ResultModel> createShort({required Short short}) async {
-    ResultModel result = ResultModel(
-      type: ResultType.failure,
-    );
-    await post(
-      Uri.parse("$serverIp/shorts/create"),
-      headers: await requestHeader(),
-      body: jsonEncode({
-        "title": short.title,
-        "categories": [short.categories.first.id],
-        "content": short.content,
-      }),
-    ).then((Response res) {
-      if (statusIsSuccess(res.statusCode)) {
-        result = ResultModel(
-          type: ResultType.success,
-          message: "Short Erfolgreich Erstellt",
-        );
-      } else {
-        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
-      }
-    });
-    return result;
+  Future<Either<CustomError, String>> createShort(
+      {required Short short}) async {
+    Response res = await post(Uri.parse("$serverIp/shorts/create"),
+        headers: await requestHeader(),
+        body: jsonEncode({
+          "title": short.title,
+          "categories": [short.categories.first.id],
+          "content": short.content,
+        }));
+
+    if (statusIsSuccess(res.statusCode)) {
+      return const Right("Short wurde Erstellt");
+    } else {
+      apiErrorHandler.logRes(res);
+      return const Left(
+          CustomError(error: "Short konnten nicht Erstellt werden"));
+    }
   }
 
   Future<ResultModel> deleteShort({required int id}) async {

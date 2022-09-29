@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
-import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/extensions.dart';
