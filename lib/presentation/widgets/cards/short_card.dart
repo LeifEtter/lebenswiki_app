@@ -1,8 +1,11 @@
+import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
+import 'package:lebenswiki_app/repository/backend/short_api.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/domain/models/short_model.dart';
 import 'package:intl/intl.dart';
@@ -13,12 +16,14 @@ class ShortCard extends ConsumerStatefulWidget {
   final Short short;
   final bool inSlider;
   final bool isPublished;
+  final bool isDraftView;
 
   const ShortCard({
     Key? key,
     required this.short,
     this.inSlider = false,
     this.isPublished = false,
+    this.isDraftView = false,
   }) : super(key: key);
 
   @override
@@ -26,22 +31,23 @@ class ShortCard extends ConsumerStatefulWidget {
 }
 
 class _ShortCardState extends ConsumerState<ShortCard> {
-  late int userId;
+  late User user;
   late String profileImage;
 
   @override
   Widget build(BuildContext context) {
     profileImage = widget.short.creator.profileImage;
-    userId = ref.read(userProvider).user.id;
+    user = ref.read(userProvider).user;
     return Stack(
       children: [
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
             color: CustomColors.lightGrey,
-            border: (widget.short.published && widget.short.creatorId == userId)
-                ? Border.all(width: 2, color: Colors.green.shade300)
-                : null,
+            border:
+                (widget.short.published && widget.short.creatorId == user.id)
+                    ? Border.all(width: 2, color: Colors.green.shade300)
+                    : null,
           ),
           padding: const EdgeInsets.all(15.0),
           child: Column(
@@ -69,10 +75,18 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                     backgroundColor: CustomColors.mediumGrey,
                   ),
                   const Spacer(),
-                  const Icon(
-                    Icons.bookmark_outline_rounded,
-                    size: 30,
-                  ),
+                  widget.isDraftView
+                      ? Container()
+                      : IconButton(
+                          iconSize: 30,
+                          icon: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 200),
+                            child: widget.short.bookmarkedByUser
+                                ? const Icon(Icons.bookmark_added)
+                                : const Icon(Icons.bookmark_add_outlined),
+                          ),
+                          onPressed: () => _bookmarkCallback(),
+                        ),
                 ],
               ),
               Padding(
@@ -104,7 +118,7 @@ class _ShortCardState extends ConsumerState<ShortCard> {
             ],
           ),
         ),
-        (widget.short.published && widget.short.creatorId == userId)
+        (widget.short.published && widget.short.creatorId == user.id)
             ? Align(
                 alignment: Alignment.topLeft,
                 child: Container(
@@ -125,5 +139,22 @@ class _ShortCardState extends ConsumerState<ShortCard> {
             : Container(),
       ],
     );
+  }
+
+  void _bookmarkCallback() async {
+    widget.short.bookmarkedByUser
+        ? await ShortApi().unbookmarkShort(widget.short.id).fold((left) {
+            CustomFlushbar.error(message: left.error).show(context);
+          }, (right) {
+            CustomFlushbar.success(message: right).show(context);
+            widget.short.toggleBookmarked(user);
+          })
+        : await ShortApi().bookmarkShort(widget.short.id).fold((left) {
+            CustomFlushbar.error(message: left.error).show(context);
+          }, (right) {
+            CustomFlushbar.success(message: right).show(context);
+            widget.short.toggleBookmarked(user);
+          });
+    setState(() {});
   }
 }

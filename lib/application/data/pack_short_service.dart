@@ -79,13 +79,9 @@ class PackShortService {
     packHelper = PackListHelper(packs: packs, helperData: helperData);
     shortHelper = ShortListHelper(shorts: shorts, helperData: helperData);
 
-    if (shortHelper == null || packHelper == null) {
-      return const Left(CustomError(error: "Something went wrong"));
-    } else {
-      return Right({
-        "shortHelper": shortHelper,
-        "packHelper": packHelper,
-      });
-    }
+    return Right({
+      "shortHelper": shortHelper,
+      "packHelper": packHelper,
+    });
   }
 }
