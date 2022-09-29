@@ -18,6 +18,7 @@ class Pack {
   List<User> bookmarks = [];
   List<Map> reactions = [];
   List<Comment> comments = [];
+  String imageIdentifier = "something";
   late DateTime creationDate;
 
   //New Params
@@ -67,6 +68,7 @@ class Pack {
           pages.map((PackPage page) => page.toJson()),
         ),
         'readTime': readTime,
+        'imageIdentifier': "something",
       };
 
   Pack.fromJson(Map json)

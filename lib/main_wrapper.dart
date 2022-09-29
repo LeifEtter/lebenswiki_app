@@ -9,7 +9,7 @@ import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/main_views/community.dart';
 import 'package:lebenswiki_app/presentation/screens/main_views/explore.dart';
 import 'package:lebenswiki_app/presentation/screens/main_views/home.dart';
-import 'package:lebenswiki_app/presentation/screens/pack_specific_views/creator_information.dart';
+import 'package:lebenswiki_app/presentation/screens/packs/creator_information.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/appbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/bottom_menu.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
@@ -60,6 +60,7 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
       blockedIdList: ref.read(blockedListProvider).blockedIdList,
       currentUserId: ref.read(userProvider).user.id,
     );
+    ref.watch(reloadProvider);
     return Scaffold(
       floatingActionButton: _buildAddButton(),
       backgroundColor: Colors.white,

@@ -163,13 +163,14 @@ class PackConversion {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            ListView.builder(
-              padding: const EdgeInsets.only(left: 10.0, top: 5.0),
-              shrinkWrap: true,
-              itemCount: item.bodyContent.length,
-              itemBuilder: (BuildContext context, int index) {
-                return buildListItem(item.bodyContent[index].value);
-              },
+            Padding(
+              padding: const EdgeInsets.only(left: 7, top: 4),
+              child: Column(
+                children: item.bodyContent
+                    .map(
+                        (PackPageItemInput input) => buildListItem(input.value))
+                    .toList(),
+              ),
             ),
             const SizedBox(height: 10),
           ],

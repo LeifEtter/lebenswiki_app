@@ -1,7 +1,7 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
-import 'package:lebenswiki_app/presentation/screens/pack_specific_views/view_pack_started.dart';
+import 'package:lebenswiki_app/presentation/screens/packs/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/creator/pack_creator_page.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav_appbar.dart';

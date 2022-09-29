@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/presentation/screens/pack_specific_views/view_pack_started.dart';
+import 'package:lebenswiki_app/presentation/screens/packs/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
 import 'package:lebenswiki_app/presentation/screens/other/comments.dart';
-import 'package:lebenswiki_app/presentation/screens/pack_specific_views/view_pack.dart';
+import 'package:lebenswiki_app/presentation/screens/packs/view_pack.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/repository/backend/pack_api.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
@@ -43,11 +43,16 @@ class _PackCardState extends ConsumerState<PackCard> {
   late User user;
   late bool isPublished;
   bool isReading = false;
+  late int progressPercentage;
 
   @override
   void initState() {
     pack = widget.pack ?? widget.read!.pack;
     if (widget.read != null) isReading = true;
+    if (widget.read != null) {
+      progressPercentage =
+          ((widget.read!.progress / pack.pages.length) * 100).round();
+    }
     super.initState();
   }
 
@@ -55,20 +60,24 @@ class _PackCardState extends ConsumerState<PackCard> {
   Widget build(BuildContext context) {
     user = ref.watch(userProvider).user;
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         isReading
-            ? Navigator.push(
+            ? await Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        PackViewerStarted(read: widget.read!)))
-            : Navigator.push(
+                    builder: (context) => PackViewerStarted(
+                          read: widget.read!,
+                          heroName: "",
+                        )))
+            : await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: ((context) => ViewPack(
                           pack: pack,
                           heroName: "${widget.heroParent}-${pack.id}-hero",
                         ))));
+
+        ref.read(reloadProvider).reload();
       },
       child: Container(
         decoration: BoxDecoration(
@@ -243,7 +252,7 @@ class _PackCardState extends ConsumerState<PackCard> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("${widget.read!.progress}% fertig",
+            Text("${progressPercentage}% fertig",
                 style: Theme.of(context).textTheme.blueLabel),
           ],
         ),
