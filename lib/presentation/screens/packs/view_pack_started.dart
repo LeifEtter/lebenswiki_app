@@ -5,7 +5,6 @@ import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/sliver_appbar.dart';
-import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav_appbar.dart';
 import 'package:lebenswiki_app/repository/backend/read_api.dart';
 
 class PackViewerStarted extends ConsumerStatefulWidget {
@@ -50,14 +49,6 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      /*appBar: TopNavIOSAppBar(
-        title: "Pack Vorschau",
-        rightText: "",
-        rightAction: () {},
-        appBar: AppBar(),
-        leftAction: () => ReadApi()
-            .update(id: widget.read.pack.id!, newProgress: currentIndex + 1),
-      ),*/
       body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
@@ -65,6 +56,8 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
                 heroName: widget.heroName,
                 titleImage: widget.read.pack.titleImage,
                 categoryName: widget.read.pack.categories[0].categoryName,
+                backFunction: () => ReadApi().update(
+                    id: widget.read.pack.id!, newProgress: currentIndex + 1),
               )
             ];
           },
@@ -80,15 +73,6 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
               children: pages,
             ),
           )),
-      /*body: PageView(
-        onPageChanged: (int newIndex) {
-          setState(() {
-            currentIndex = newIndex;
-          });
-        },
-        controller: pageController,
-        children: pages,
-      ),*/
       bottomNavigationBar: SizedBox(
         height: 80,
         child: Column(

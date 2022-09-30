@@ -7,12 +7,14 @@ class ViewerAppBar extends StatefulWidget {
   final String heroName;
   final String titleImage;
   final String categoryName;
+  final Function? backFunction;
 
   const ViewerAppBar({
     Key? key,
     required this.heroName,
     required this.titleImage,
     required this.categoryName,
+    this.backFunction,
   }) : super(key: key);
 
   @override
@@ -37,7 +39,10 @@ class _ViewerAppBarState extends State<ViewerAppBar> {
         padding: const EdgeInsets.only(bottom: 10, left: 10),
         child: FloatingActionButton(
           backgroundColor: const Color.fromRGBO(255, 255, 255, 0.8),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () async {
+            await widget.backFunction?.call();
+            Navigator.pop(context);
+          },
           child: Icon(
             Icons.arrow_back_ios_new_rounded,
             color: CustomColors.offBlack,
