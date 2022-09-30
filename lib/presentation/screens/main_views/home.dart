@@ -1,7 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
+import 'package:lebenswiki_app/domain/models/error_model.dart';
+import 'package:lebenswiki_app/domain/models/read_model.dart';
+import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/extensions.dart';
 import 'package:lebenswiki_app/application/data/pack_list_helper.dart';
@@ -27,39 +31,52 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: ReadApi().getAll(),
-        builder: (context, snapshot) {
-          if (LoadingHelper.isLoading(snapshot)) {
-            return LoadingHelper.loadingIndicator();
-          }
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.read(reloadProvider).reload();
+      },
+      child: FutureBuilder(
+          future: ReadApi().getAll(),
+          builder: (BuildContext context,
+              AsyncSnapshot<Either<CustomError, List<Read>>> snapshot) {
+            if (LoadingHelper.isLoading(snapshot)) {
+              return LoadingHelper.loadingIndicator();
+            }
+            if (snapshot.data!.isLeft) {
+              return const Center(child: Text("Something went wrong"));
+            }
 
-          return ListView(
-            children: [
-              packSection(
-                heroParent: "home-continue",
-                title: "Continue Reading",
-                packs: widget.packHelper.startedPacks,
-                isReading: true,
-              ),
-              const SizedBox(height: 10),
-              packSection(
-                heroParent: "home-recommended",
-                title: "Recommended For You",
-                packs: widget.packHelper.recommendedPacks,
-                isReading: false,
-              ),
-              const SizedBox(height: 10),
-              packSection(
-                heroParent: "home-new",
-                title: "New Articles",
-                packs: widget.packHelper.newArticles,
-                isReading: false,
-              ),
-              const SizedBox(height: 50),
-            ],
-          );
-        });
+            List<Read> reads = snapshot.data!.right;
+
+            return ListView(
+              children: [
+                reads.isNotEmpty
+                    ? readSection(
+                        heroParent: "home-continue",
+                        title: "Continue Reading",
+                        reads: reads,
+                        isReading: true,
+                      )
+                    : Container(),
+                const SizedBox(height: 10),
+                packSection(
+                  heroParent: "home-recommended",
+                  title: "Recommended For You",
+                  packs: widget.packHelper.recommendedPacks,
+                  isReading: false,
+                ),
+                const SizedBox(height: 10),
+                packSection(
+                  heroParent: "home-new",
+                  title: "New Articles",
+                  packs: widget.packHelper.newArticles,
+                  isReading: false,
+                ),
+                const SizedBox(height: 50),
+              ],
+            );
+          }),
+    );
   }
 
   CarouselOptions standardOptions({required double height}) => CarouselOptions(
@@ -92,9 +109,37 @@ class _HomeViewState extends ConsumerState<HomeView> {
                           right: index == packs.length + 1 ? 20 : 10),
                       child: PackCard(
                         heroParent: heroParent,
-                        progressValue: 0,
-                        isStarted: isReading,
                         pack: packs[index],
+                      ),
+                    )),
+          ),
+        ],
+      );
+
+  Widget readSection({
+    required String heroParent,
+    required String title,
+    required List<Read> reads,
+    required bool isReading,
+  }) =>
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.headlineLarge,
+          ).addPadding(),
+          CarouselSlider(
+            options: standardOptions(height: isReading ? 200 : 250),
+            items: List.generate(
+                reads.length,
+                (index) => Padding(
+                      padding: EdgeInsets.only(
+                          left: index == 0 ? 20 : 10,
+                          right: index == reads.length + 1 ? 20 : 10),
+                      child: PackCard(
+                        heroParent: heroParent,
+                        read: reads[index],
                       ),
                     )),
           ),

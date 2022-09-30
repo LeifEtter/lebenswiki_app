@@ -2,10 +2,12 @@ import 'package:animate_icons/animate_icons.dart';
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/screens/packs/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
 import 'package:lebenswiki_app/presentation/screens/other/comments.dart';
-import 'package:lebenswiki_app/presentation/screens/pack_specific_views/view_pack.dart';
+import 'package:lebenswiki_app/presentation/screens/packs/view_pack.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/repository/backend/pack_api.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
@@ -18,16 +20,14 @@ import 'package:lebenswiki_app/repository/constants/shadows.dart';
 
 class PackCard extends ConsumerStatefulWidget {
   final String heroParent;
-  final int progressValue;
-  final bool isStarted;
-  final Pack pack;
+  final Pack? pack;
+  final Read? read;
   final bool isDraftView;
 
   const PackCard({
     Key? key,
-    required this.progressValue,
-    required this.isStarted,
-    required this.pack,
+    this.pack,
+    this.read,
     required this.heroParent,
     this.isDraftView = false,
   }) : super(key: key);
@@ -39,11 +39,21 @@ class PackCard extends ConsumerStatefulWidget {
 class _PackCardState extends ConsumerState<PackCard> {
   final AnimateIconController animateIconController = AnimateIconController();
   final PackApi packApi = PackApi();
+  late Pack pack;
   late User user;
   late bool isPublished;
+  bool isReading = false;
+  late int progressPercentage;
 
   @override
   void initState() {
+    pack = widget.pack ?? widget.read!.pack;
+    if (widget.read != null) isReading = true;
+    if (widget.read != null) {
+      /*progressPercentage =
+          ((widget.read!.progress / pack.pages.length) * 100).round();*/
+      progressPercentage = 50;
+    }
     super.initState();
   }
 
@@ -51,16 +61,28 @@ class _PackCardState extends ConsumerState<PackCard> {
   Widget build(BuildContext context) {
     user = ref.watch(userProvider).user;
     return GestureDetector(
-      onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: ((context) => ViewPack(
-                    pack: widget.pack,
-                    heroName: "${widget.heroParent}-${widget.pack.id}-hero",
-                  )))),
+      onTap: () async {
+        isReading || widget.isDraftView
+            ? await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PackViewerStarted(
+                          read: widget.read!,
+                          heroName: "${widget.heroParent}-${pack.id}-hero",
+                        )))
+            : await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: ((context) => ViewPack(
+                          pack: pack,
+                          heroName: "${widget.heroParent}-${pack.id}-hero",
+                        ))));
+
+        ref.read(reloadProvider).reload();
+      },
       child: Container(
         decoration: BoxDecoration(
-          border: (widget.pack.published && widget.pack.creatorId == user.id)
+          border: (pack.published && pack.creatorId == user.id)
               ? Border.all(width: 3, color: Colors.green.shade200)
               : null,
           borderRadius: BorderRadius.circular(15.0),
@@ -81,9 +103,9 @@ class _PackCardState extends ConsumerState<PackCard> {
                         topRight: Radius.circular(12.0),
                       ),
                       child: Hero(
-                        tag: "${widget.heroParent}-${widget.pack.id}-hero",
+                        tag: "${widget.heroParent}-${pack.id}-hero",
                         child: Image.network(
-                          widget.pack.titleImage,
+                          pack.titleImage,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -99,7 +121,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                         spacing: 8,
                         children: [
                           InfoLabel(
-                            text: widget.pack.categories[0].categoryName,
+                            text: pack.categories[0].categoryName,
                             backgroundColor: CustomColors.whiteOverlay,
                           ),
                           InfoLabel(
@@ -117,7 +139,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                       ),
                     ),
                   ),
-                  (widget.pack.published && widget.pack.creatorId == user.id)
+                  (pack.published && pack.creatorId == user.id)
                       ? Align(
                           alignment: Alignment.topLeft,
                           child: Container(
@@ -152,19 +174,19 @@ class _PackCardState extends ConsumerState<PackCard> {
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: Text(
-                          widget.pack.title,
+                          pack.title,
                           style: Theme.of(context).textTheme.labelMedium,
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: Text(
-                          "by ${widget.pack.creator!.name} for ${widget.pack.initiative}",
+                          "by ${pack.creator!.name} for ${pack.initiative}",
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
                       Expanded(child: Container()),
-                      !widget.isStarted
+                      !isReading
                           ? _buildInfoBar(context)
                           : Padding(
                               padding: const EdgeInsets.only(left: 10),
@@ -188,7 +210,7 @@ class _PackCardState extends ConsumerState<PackCard> {
             height: 50,
             items: [
               InfoItem.forText(
-                text: DateFormat.MMMd().format(widget.pack.creationDate),
+                text: DateFormat.MMMd().format(pack.creationDate),
               ),
               InfoItem.forIconLabel(
                 onPress: () {},
@@ -200,12 +222,12 @@ class _PackCardState extends ConsumerState<PackCard> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            CommentView(isShort: false, id: widget.pack.id!))),
+                            CommentView(isShort: false, id: pack.id!))),
                 icon: const Icon(
                   Icons.mode_comment,
                   size: 15,
                 ),
-                indicator: widget.pack.comments.length.toString(),
+                indicator: pack.comments.length.toString(),
               ),
             ],
           ),
@@ -216,7 +238,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                   iconSize: 30,
                   icon: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 200),
-                    child: widget.pack.bookmarkedByUser
+                    child: pack.bookmarkedByUser
                         ? const Icon(Icons.bookmark_added)
                         : const Icon(Icons.bookmark_add_outlined),
                   ),
@@ -231,25 +253,25 @@ class _PackCardState extends ConsumerState<PackCard> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("${widget.progressValue}% fertig",
+            Text("${progressPercentage}% fertig",
                 style: Theme.of(context).textTheme.blueLabel),
           ],
         ),
       );
 
   void _bookmarkCallback() async {
-    widget.pack.bookmarkedByUser
-        ? await packApi.unbookmarkPack(widget.pack.id).fold((left) {
+    pack.bookmarkedByUser
+        ? await packApi.unbookmarkPack(pack.id).fold((left) {
             CustomFlushbar.error(message: left.error).show(context);
           }, (right) {
             CustomFlushbar.success(message: right).show(context);
-            widget.pack.toggleBookmarked(user);
+            pack.toggleBookmarked(user);
           })
-        : await packApi.bookmarkPack(widget.pack.id).fold((left) {
+        : await packApi.bookmarkPack(pack.id).fold((left) {
             CustomFlushbar.error(message: left.error).show(context);
           }, (right) {
             CustomFlushbar.success(message: right).show(context);
-            widget.pack.toggleBookmarked(user);
+            pack.toggleBookmarked(user);
           });
     setState(() {});
   }

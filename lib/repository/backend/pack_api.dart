@@ -57,7 +57,7 @@ class PackApi extends BaseApi {
   }
 
   Future<Either<CustomError, List<Pack>>> getOwnPublishedpacks() => getPacks(
-      url: "packs/published",
+      url: "packs/creator",
       errorMessage: "Du hast noch keine packs veröffentlicht");
 
   Future<Either<CustomError, List<Pack>>> getOwnUnpublishedPacks() => getPacks(

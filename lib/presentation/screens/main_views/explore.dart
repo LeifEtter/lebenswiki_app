@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/presentation/providers/new_providers.dart';
+import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/short_card.dart';
@@ -12,7 +12,7 @@ import 'package:lebenswiki_app/domain/models/short_model.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/extensions.dart';
 
-class ExploreView extends StatefulWidget {
+class ExploreView extends ConsumerStatefulWidget {
   final PackListHelper packHelper;
   final ShortListHelper shortHelper;
   final List<ContentCategory> categories;
@@ -27,10 +27,10 @@ class ExploreView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<ExploreView> createState() => _ExploreViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ExploreViewState();
 }
 
-class _ExploreViewState extends State<ExploreView> {
+class _ExploreViewState extends ConsumerState<ExploreView> {
   int _selectedCategory = 0;
   late List<bool> selectedCategories;
 
@@ -45,63 +45,67 @@ class _ExploreViewState extends State<ExploreView> {
   @override
   Widget build(BuildContext context) {
     if (widget.isSearching) {
-      return ListView(
-        shrinkWrap: true,
-        children: [
-          Center(
-            child: Wrap(
-                spacing: 5.0,
-                runSpacing: 10.0,
-                children: List.generate(widget.categories.length, (int index) {
-                  return _buildCatButton(
-                    isSelected: selectedCategories[index],
-                    name: widget.categories[index].categoryName,
-                    onSelect: () => setState(() {
-                      selectedCategories[index] = !selectedCategories[index];
-                    }),
-                  );
-                })),
-          ),
-          Consumer(builder: (context, ref, child) {
-            String query = ref.watch(queryProvider).query;
-            List<Pack> catPacks = [];
-            if (selectedCategories[0]) {
-              catPacks.addAll(widget.packHelper.categorizedPacks[0]!);
-            } else {
-              for (int i = 0; i < selectedCategories.length; i++) {
-                if (selectedCategories[i] == true) {
-                  catPacks.addAll(widget.packHelper.categorizedPacks[i]!);
+      return RefreshIndicator(
+        onRefresh: () async {
+          ref.read(reloadProvider).reload();
+        },
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            Center(
+              child: Wrap(
+                  spacing: 5.0,
+                  runSpacing: 10.0,
+                  children:
+                      List.generate(widget.categories.length, (int index) {
+                    return _buildCatButton(
+                      isSelected: selectedCategories[index],
+                      name: widget.categories[index].categoryName,
+                      onSelect: () => setState(() {
+                        selectedCategories[index] = !selectedCategories[index];
+                      }),
+                    );
+                  })),
+            ),
+            Consumer(builder: (context, ref, child) {
+              String query = ref.watch(queryProvider).query;
+              List<Pack> catPacks = [];
+              if (selectedCategories[0]) {
+                catPacks.addAll(widget.packHelper.categorizedPacks[0]!);
+              } else {
+                for (int i = 0; i < selectedCategories.length; i++) {
+                  if (selectedCategories[i] == true) {
+                    catPacks.addAll(widget.packHelper.categorizedPacks[i]!);
+                  }
                 }
               }
-            }
 
-            List<Pack> queriedPacks = catPacks
-                .where((Pack pack) =>
-                    pack.title.toLowerCase().contains(query.toLowerCase()) ||
-                    pack.description
-                        .toLowerCase()
-                        .contains(query.toLowerCase()))
-                .toList();
-            // Sort throguh categorized packs
-            return Column(
-              children: queriedPacks
-                  .map((Pack pack) => SizedBox(
-                        height: 250,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 20.0),
-                          child: PackCard(
-                            progressValue: 0,
-                            isStarted: false,
-                            pack: pack,
-                            heroParent: "queried",
+              List<Pack> queriedPacks = catPacks
+                  .where((Pack pack) =>
+                      pack.title.toLowerCase().contains(query.toLowerCase()) ||
+                      pack.description
+                          .toLowerCase()
+                          .contains(query.toLowerCase()))
+                  .toList();
+              // Sort throguh categorized packs
+              return Column(
+                children: queriedPacks
+                    .map((Pack pack) => SizedBox(
+                          height: 250,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 20.0),
+                            child: PackCard(
+                              pack: pack,
+                              heroParent: "queried",
+                            ),
                           ),
-                        ),
-                      ))
-                  .toList(),
-            );
-          }),
-        ],
+                        ))
+                    .toList(),
+              );
+            }),
+          ],
+        ),
       );
     } else {
       return ListView(
@@ -138,8 +142,6 @@ class _ExploreViewState extends State<ExploreView> {
                               padding: const EdgeInsets.only(right: 20),
                               child: PackCard(
                                 heroParent: "explore-categories",
-                                progressValue: 0,
-                                isStarted: false,
                                 pack: pack,
                               ),
                             )),

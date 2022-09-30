@@ -4,10 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
-import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/presentation/screens/pack_specific_views/view_pack_started.dart';
+import 'package:lebenswiki_app/domain/models/read_model.dart';
+import 'package:lebenswiki_app/presentation/screens/packs/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
+import 'package:lebenswiki_app/presentation/widgets/navigation/sliver_appbar.dart';
 import 'package:lebenswiki_app/repository/backend/read_api.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/widgets/lw.dart';
@@ -29,24 +30,15 @@ class ViewPack extends ConsumerStatefulWidget {
 
 class _ViewPackState extends ConsumerState<ViewPack> {
   late String profileImage;
-  double opacity = 0;
 
   @override
   void initState() {
-    fadeIn();
     super.initState();
-  }
-
-  void fadeIn() async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    setState(() {
-      opacity = 1;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    profileImage = ref.watch(userProvider).user.profileImage;
+    profileImage = widget.pack.creator!.profileImage;
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -57,80 +49,10 @@ class _ViewPackState extends ConsumerState<ViewPack> {
           body: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
-                SliverAppBar(
-                  leadingWidth: 75,
-                  toolbarHeight: 70,
-                  leading: Padding(
-                    padding: const EdgeInsets.only(bottom: 10, left: 10),
-                    child: FloatingActionButton(
-                      backgroundColor: const Color.fromRGBO(255, 255, 255, 0.8),
-                      onPressed: () => Navigator.pop(context),
-                      child: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        color: CustomColors.offBlack,
-                        size: 28,
-                      ),
-                    ),
-                  ),
-                  systemOverlayStyle: SystemUiOverlayStyle.light,
-                  elevation: 0,
-                  backgroundColor: const Color.fromRGBO(0, 0, 0, 0),
-                  pinned: false,
-                  expandedHeight: 250,
-                  flexibleSpace: FlexibleSpaceBar(
-                    titlePadding: const EdgeInsets.all(0),
-                    background: Hero(
-                      tag: widget.heroName,
-                      child: Image.network(
-                        widget.pack.titleImage,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    title: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 500),
-                      opacity: opacity,
-                      child: Container(
-                        height: 40,
-                        padding: const EdgeInsets.only(
-                          right: 20,
-                          top: 15,
-                          left: 10,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            InfoLabel(
-                              text: widget.pack.categories[0].categoryName,
-                              backgroundColor: CustomColors.lightGrey,
-                              fontSize: 8,
-                            ),
-                            const Spacer(),
-                            const Icon(
-                              Icons.file_upload_outlined,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 15),
-                            Image.asset(
-                              "assets/icons/clapping.png",
-                              width: 20,
-                              height: 20,
-                            ),
-                            const SizedBox(width: 15),
-                            const Icon(
-                              Icons.bookmark_add_outlined,
-                              size: 20,
-                            ),
-                          ],
-                        ),
-                        decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(15.0),
-                              topRight: Radius.circular(15.0),
-                            )),
-                      ),
-                    ),
-                  ),
+                ViewerAppBar(
+                  heroName: widget.heroName,
+                  titleImage: widget.pack.titleImage,
+                  categoryName: widget.pack.categories[0].categoryName,
                 )
               ];
             },
@@ -243,16 +165,18 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                     color: CustomColors.blue,
                     text: "Start Learning",
                     action: () async {
-                      Future<Either<CustomError, String>> readResult =
-                          ReadApi().create(packId: widget.pack.id!);
-                      readResult.fold((left) {
+                      await ReadApi().create(packId: widget.pack.id!).fold(
+                          (left) {
                         CustomFlushbar.error(message: left.error).show(context);
-                      },
-                          (right) => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      PackViewerStarted(id: widget.pack.id!))));
+                      }, (right) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PackViewerStarted(
+                                      read: right,
+                                      heroName: widget.heroName,
+                                    )));
+                      });
                     },
                   ),
                 ],

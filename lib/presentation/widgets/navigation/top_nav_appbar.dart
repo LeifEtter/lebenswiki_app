@@ -6,6 +6,7 @@ class TopNavIOSAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String rightText;
   final Function rightAction;
   final String title;
+  final Function? leftAction;
 
   const TopNavIOSAppBar({
     Key? key,
@@ -13,6 +14,7 @@ class TopNavIOSAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.rightText,
     required this.rightAction,
     required this.title,
+    this.leftAction,
   }) : super(
           key: key,
         );
@@ -22,7 +24,10 @@ class TopNavIOSAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       elevation: 2,
       leading: IconButton(
-        onPressed: () => Navigator.pop(context),
+        onPressed: () async {
+          await leftAction?.call();
+          Navigator.pop(context);
+        },
         icon: const Icon(
           Icons.arrow_back_ios_new_rounded,
           color: Colors.black,

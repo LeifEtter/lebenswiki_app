@@ -90,8 +90,6 @@ class _SavedViewState extends ConsumerState<SavedView> {
                                       child: SizedBox(
                                         height: 280,
                                         child: PackCard(
-                                          progressValue: 0,
-                                          isStarted: false,
                                           pack: packHelper.packs[index],
                                           heroParent: "saved-packs",
                                         ),

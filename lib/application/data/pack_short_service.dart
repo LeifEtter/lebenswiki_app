@@ -67,7 +67,7 @@ class PackShortService {
     await PackApi().getOwnPublishedpacks().fold((left) {}, (right) {
       packs.addAll(right);
     });
-    await ShortApi().getCreatorsDraftShorts().fold((left) {}, (right) {
+    await ShortApi().getOwnPublishedShorts().fold((left) {}, (right) {
       shorts.addAll(right);
     });
     await PackApi().getOwnUnpublishedPacks().fold((left) {}, (right) {
@@ -79,13 +79,9 @@ class PackShortService {
     packHelper = PackListHelper(packs: packs, helperData: helperData);
     shortHelper = ShortListHelper(shorts: shorts, helperData: helperData);
 
-    if (shortHelper == null || packHelper == null) {
-      return const Left(CustomError(error: "Something went wrong"));
-    } else {
-      return Right({
-        "shortHelper": shortHelper,
-        "packHelper": packHelper,
-      });
-    }
+    return Right({
+      "shortHelper": shortHelper,
+      "packHelper": packHelper,
+    });
   }
 }

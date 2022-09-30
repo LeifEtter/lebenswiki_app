@@ -6,12 +6,15 @@ import 'package:lebenswiki_app/application/data/pack_short_service.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
+import 'package:lebenswiki_app/domain/models/read_model.dart';
+import 'package:lebenswiki_app/domain/models/short_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/presentation/screens/pack_specific_views/creator_information.dart';
-import 'package:lebenswiki_app/presentation/screens/pack_specific_views/creator_overview.dart';
+import 'package:lebenswiki_app/presentation/screens/packs/creator_information.dart';
+import 'package:lebenswiki_app/presentation/screens/packs/creator_overview.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/repository/backend/pack_api.dart';
+import 'package:lebenswiki_app/repository/backend/short_api.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/short_card.dart';
@@ -19,7 +22,6 @@ import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/application/data/pack_list_helper.dart';
 import 'package:lebenswiki_app/application/data/short_list_helper.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
-import 'package:path/path.dart';
 
 class CreatedView extends ConsumerStatefulWidget {
   const CreatedView({
@@ -31,6 +33,8 @@ class CreatedView extends ConsumerStatefulWidget {
 }
 
 class _CreatedViewState extends ConsumerState<CreatedView> {
+  late int userId;
+
   @override
   Widget build(BuildContext context) {
     List<ContentCategory> categories = ref.read(categoryProvider).categories;
@@ -39,6 +43,7 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
       blockedIdList: ref.read(blockedListProvider).blockedIdList,
       currentUserId: ref.read(userProvider).user.id,
     );
+    userId = ref.read(userProvider).user.id;
     return Scaffold(
       body: SafeArea(
         child: DefaultTabController(
@@ -101,9 +106,13 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                                           child: Stack(
                                             children: [
                                               PackCard(
+                                                read: Read(
+                                                  pack: currentPack,
+                                                  packId: currentPack.id!,
+                                                  progress: 0,
+                                                  userId: userId,
+                                                ),
                                                 isDraftView: true,
-                                                progressValue: 0,
-                                                isStarted: false,
                                                 pack: currentPack,
                                                 heroParent: "created-packs",
                                               ),
@@ -128,8 +137,18 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                                     itemBuilder: (context, index) => Padding(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 10.0),
-                                      child: ShortCard(
-                                        short: shortHelper.shorts[index],
+                                      child: Stack(
+                                        children: [
+                                          ShortCard(
+                                            short: shortHelper.shorts[index],
+                                          ),
+                                          Align(
+                                            alignment: Alignment.topRight,
+                                            child: _buildActionMenuShorts(
+                                                currentShort:
+                                                    shortHelper.shorts[index]),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -213,51 +232,22 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                 ),
           SpeedDialChild(
             onTap: () async {
-              await showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                        title: Text("Pack Löschen"),
-                        content:
-                            Text("Willst du dieses Pack wirklich löschen?"),
-                        actions: [
-                          TextButton(
-                            onPressed: () async {
-                              await PackApi().deletePack(currentPack.id).fold(
-                                (left) {
-                                  Navigator.pop(context);
-                                  CustomFlushbar.error(message: left.error)
-                                      .show(context);
-                                },
-                                (right) {
-                                  Navigator.pop(context);
-                                  CustomFlushbar.success(message: right)
-                                      .show(context);
-                                },
-                              );
-                            },
-                            child: const Text(
-                              "Löschen",
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              "Abbrechen",
-                              style: TextStyle(
-                                color: CustomColors.blue,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ));
-
+              await _buildDeleteDialog(
+                onDelete: () async {
+                  await PackApi().deletePack(currentPack.id).fold(
+                    (left) {
+                      Navigator.pop(context);
+                      CustomFlushbar.error(message: left.error).show(context);
+                    },
+                    (right) {
+                      Navigator.pop(context);
+                      CustomFlushbar.success(message: right).show(context);
+                    },
+                  );
+                },
+                title: "Pack Löschen",
+                body: "Willst du dieses Pack wirklich löschen",
+              );
               setState(() {});
             },
             child: const Icon(Icons.delete_outline),
@@ -265,6 +255,72 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
           ),
         ],
       );
+
+  Widget _buildActionMenuShorts({required Short currentShort}) {
+    return SpeedDial(
+      elevation: 10,
+      direction: SpeedDialDirection.down,
+      backgroundColor: CustomColors.lightGrey,
+      buttonSize: const Size(50, 50),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      child: Icon(
+        Icons.settings,
+        color: CustomColors.textBlack,
+        size: 28,
+      ),
+      children: [
+        currentShort.published
+            ? SpeedDialChild(
+                onTap: () async {
+                  await ShortApi().unpublishShort(currentShort.id).fold((left) {
+                    CustomFlushbar.error(message: left.error).show(context);
+                  }, (right) {
+                    CustomFlushbar.success(message: right).show(context);
+                  });
+                  setState(() {});
+                },
+                label: "Short Privat Machen",
+                child: const Icon(Icons.public_off_rounded))
+            : SpeedDialChild(
+                onTap: () async {
+                  await ShortApi().publishShort(currentShort.id).fold((left) {
+                    CustomFlushbar.error(message: left.error).show(context);
+                  }, (right) {
+                    CustomFlushbar.success(message: right).show(context);
+                  });
+                  setState(() {});
+                },
+                child: const Icon(Icons.publish_outlined),
+                label: "Short Veröffentlichen",
+              ),
+        SpeedDialChild(
+          onTap: () async {
+            await _buildDeleteDialog(
+              onDelete: () async {
+                await ShortApi().deleteShort(id: currentShort.id).fold(
+                  (left) {
+                    Navigator.pop(context);
+                    CustomFlushbar.error(message: left.error).show(context);
+                  },
+                  (right) {
+                    Navigator.pop(context);
+                    CustomFlushbar.success(message: right).show(context);
+                  },
+                );
+              },
+              title: "Short Löschen",
+              body: "Willst du diesen Short wirklich löschen",
+            );
+            setState(() {});
+          },
+          child: const Icon(Icons.delete_outline),
+          label: "Short Löschen",
+        ),
+      ],
+    );
+  }
 
   Widget _buildEmptyText(text) => Column(
         children: [
@@ -283,4 +339,41 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
           ),
         ],
       );
+
+  Future _buildDeleteDialog({
+    required Function onDelete,
+    required String title,
+    required String body,
+  }) async {
+    await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(title),
+              content: Text(body),
+              actions: [
+                TextButton(
+                  onPressed: () => onDelete(),
+                  child: const Text(
+                    "Löschen",
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Abbrechen",
+                    style: TextStyle(
+                      color: CustomColors.blue,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ));
+  }
 }
