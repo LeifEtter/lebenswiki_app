@@ -47,7 +47,7 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
   String? _chosenImageLink;
   final ImagePicker _picker = ImagePicker();
 
-  String chosenCategory = "Neu";
+  String chosenCategory = "Beruf";
   late List<ContentCategory> categories;
   late User user;
 
@@ -66,6 +66,7 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
   @override
   Widget build(BuildContext context) {
     categories = ref.watch(categoryProvider).categories;
+    List<ContentCategory> categoriesWithoutNew = categories.skip(1).toList();
     user = ref.watch(userProvider).user;
     return Scaffold(
       body: ListView(
@@ -136,7 +137,7 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
                 onPress: (newCategory) => setState(() {
                   chosenCategory = newCategory;
                 }),
-                items: List<String>.from(categories
+                items: List<String>.from(categoriesWithoutNew
                     .map((ContentCategory cat) => cat.categoryName)
                     .toList()),
               ),
