@@ -5,12 +5,14 @@ class TopNavIOS extends StatelessWidget {
   final String title;
   final String? nextTitle;
   final Function? nextFunction;
+  final bool isPopMenu;
 
   const TopNavIOS({
     Key? key,
     required this.title,
     this.nextTitle,
     this.nextFunction,
+    this.isPopMenu = false,
   }) : super(key: key);
 
   const TopNavIOS.withNextButton({
@@ -18,6 +20,7 @@ class TopNavIOS extends StatelessWidget {
     required this.title,
     required this.nextTitle,
     required this.nextFunction,
+    this.isPopMenu = false,
   }) : super(key: key);
 
   @override
@@ -32,7 +35,13 @@ class TopNavIOS extends StatelessWidget {
             child: SizedBox(
               width: 50,
               child: IconButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  if (isPopMenu) {
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
                 icon: const Icon(Icons.arrow_back_ios_new_rounded),
               ),
             ),

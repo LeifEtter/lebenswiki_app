@@ -18,7 +18,7 @@ class Pack {
   List<User> bookmarks = [];
   List<Map> reactions = [];
   List<Comment> comments = [];
-  String imageIdentifier = "something";
+  String imageIdentifier;
   List<int> claps = [];
   late DateTime creationDate;
 
@@ -41,6 +41,7 @@ class Pack {
     this.readTime,
     this.claps = const [],
     this.comments = const [],
+    this.imageIdentifier = "something",
   }) {
     creationDate = DateTime.now();
   }
@@ -49,14 +50,6 @@ class Pack {
   bool bookmarkedByUser = false;
   bool reactedByUser = false;
   Map reactionMap = {};
-
-  Pack.initial({
-    this.creatorId = 0,
-    this.title = "Titel",
-    this.description = "Beschreibung",
-    this.titleImage = ImageRepo.packPlaceholderImage,
-    this.published = false,
-  });
 
   Map<String, dynamic> toJson() => {
         'title': title,
@@ -68,7 +61,7 @@ class Pack {
           pages.map((PackPage page) => page.toJson()),
         ),
         'readTime': readTime,
-        'imageIdentifier': "something",
+        'imageIdentifier': imageIdentifier,
       };
 
   Pack.fromJson(Map json)
@@ -93,7 +86,8 @@ class Pack {
             json["pages"].map((page) => PackPage.fromResponse(page))),
         comments = List<Comment>.from(
             json["comments"].map((comment) => Comment.forPack(comment))),
-        claps = List<int>.from(json["claps"].map((user) => user["id"]));
+        claps = List<int>.from(json["claps"].map((user) => user["id"])),
+        imageIdentifier = json["imageIdentifier"];
 
   void initControllers() {
     for (PackPage page in pages) {

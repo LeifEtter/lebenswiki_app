@@ -238,6 +238,8 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
       _initiativeController.text = "Keine Initiative";
     }
 
+    String imageIdentifier = DateTime.now().millisecondsSinceEpoch.toString();
+
     Pack newPack = Pack(
       title: _titleController.text,
       description: _descriptionController.text,
@@ -253,6 +255,7 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
             .first
       ],
       readTime: 0,
+      imageIdentifier: imageIdentifier,
     );
 
     widget.pack == null

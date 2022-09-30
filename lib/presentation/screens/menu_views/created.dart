@@ -50,7 +50,10 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
           length: 2,
           child: Column(
             children: [
-              const TopNavIOS(title: "Erstellt"),
+              const TopNavIOS(
+                title: "Erstellt",
+                isPopMenu: true,
+              ),
               SizedBox(
                 height: 50,
                 child: TabBar(

@@ -56,8 +56,13 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
                 heroName: widget.heroName,
                 titleImage: widget.read.pack.titleImage,
                 categoryName: widget.read.pack.categories[0].categoryName,
-                backFunction: () => ReadApi().update(
-                    id: widget.read.pack.id!, newProgress: currentIndex + 1),
+                backFunction: () {
+                  if (widget.read.id != 0) {
+                    ReadApi().update(
+                        id: widget.read.pack.id!,
+                        newProgress: currentIndex + 1);
+                  }
+                },
               )
             ];
           },
