@@ -1,4 +1,5 @@
 import 'package:either_dart/either.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -23,6 +24,13 @@ import 'package:lebenswiki_app/application/data/pack_list_helper.dart';
 import 'package:lebenswiki_app/application/data/short_list_helper.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
 
+class PackShortLists {
+  List<Pack> packs = [];
+  List<Short> shorts = [];
+
+  PackShortLists();
+}
+
 class CreatedView extends ConsumerStatefulWidget {
   const CreatedView({
     Key? key,
@@ -34,6 +42,7 @@ class CreatedView extends ConsumerStatefulWidget {
 
 class _CreatedViewState extends ConsumerState<CreatedView> {
   late int userId;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -75,31 +84,28 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                 ),
               ),
               FutureBuilder(
-                future: PackShortService.getPacksAndShortsForCreated(
-                    helperData: helperData),
+                future: getDraftShortsAndPacks(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (LoadingHelper.isLoading(snapshot)) {
                     return LoadingHelper.loadingIndicator();
                   }
-                  final Either<CustomError, Map> result = snapshot.data;
+                  final Either<CustomError, PackShortLists> result =
+                      snapshot.data;
                   return result.fold(
                     (left) => Text(left.error),
                     (right) {
-                      PackListHelper packHelper = right["packHelper"];
-                      ShortListHelper shortHelper = right["shortHelper"];
                       return Expanded(
                         child: TabBarView(
                           children: [
-                            packHelper.packs.isEmpty
+                            right.packs.isEmpty
                                 ? _buildEmptyText(
                                     "Du hast noch keine Packs gespeichert")
                                 : ListView.builder(
                                     padding: const EdgeInsets.all(30.0),
                                     shrinkWrap: true,
-                                    itemCount: packHelper.packs.length,
+                                    itemCount: right.packs.length,
                                     itemBuilder: (context, index) {
-                                      Pack currentPack =
-                                          packHelper.packs[index];
+                                      Pack currentPack = right.packs[index];
                                       return Padding(
                                         padding:
                                             const EdgeInsets.only(bottom: 40),
@@ -130,26 +136,26 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                                       );
                                     },
                                   ),
-                            shortHelper.shorts.isEmpty
+                            right.shorts.isEmpty
                                 ? _buildEmptyText(
                                     "Du hast noch keine Shorts gespeichert")
                                 : ListView.builder(
                                     padding: const EdgeInsets.all(20.0),
                                     shrinkWrap: true,
-                                    itemCount: shortHelper.shorts.length,
+                                    itemCount: right.shorts.length,
                                     itemBuilder: (context, index) => Padding(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 10.0),
                                       child: Stack(
                                         children: [
                                           ShortCard(
-                                            short: shortHelper.shorts[index],
+                                            short: right.shorts[index],
                                           ),
                                           Align(
                                             alignment: Alignment.topRight,
                                             child: _buildActionMenuShorts(
                                                 currentShort:
-                                                    shortHelper.shorts[index]),
+                                                    right.shorts[index]),
                                           ),
                                         ],
                                       ),
@@ -167,6 +173,23 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
         ),
       ),
     );
+  }
+
+  Future<Either<CustomError, PackShortLists>> getDraftShortsAndPacks() async {
+    PackShortLists result = PackShortLists();
+    await PackApi().getOwnPublishedpacks().fold((left) {}, (right) {
+      result.packs.addAll(right);
+    });
+    await ShortApi().getOwnPublishedShorts().fold((left) {}, (right) {
+      result.shorts.addAll(right);
+    });
+    await PackApi().getOwnUnpublishedPacks().fold((left) {}, (right) {
+      result.packs.addAll(right);
+    });
+    await ShortApi().getCreatorsDraftShorts().fold((left) {}, (right) {
+      result.shorts.addAll(right);
+    });
+    return Right(result);
   }
 
   Widget _buildActionMenu(context, {required Pack currentPack}) => SpeedDial(
@@ -242,7 +265,17 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                       Navigator.pop(context);
                       CustomFlushbar.error(message: left.error).show(context);
                     },
-                    (right) {
+                    (right) async {
+                      if (currentPack.imageIdentifier != "something") {
+                        await _storage
+                            .ref("pack_images/${currentPack.imageIdentifier}")
+                            .listAll()
+                            .then((ListResult itemsInDir) {
+                          itemsInDir.items.forEach((element) {
+                            _storage.ref(element.fullPath).delete();
+                          });
+                        });
+                      }
                       Navigator.pop(context);
                       CustomFlushbar.success(message: right).show(context);
                     },

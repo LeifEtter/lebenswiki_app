@@ -1,6 +1,8 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
+import 'package:lebenswiki_app/domain/models/read_model.dart';
+import 'package:lebenswiki_app/presentation/screens/packs/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/creator/pack_creator_page.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav_appbar.dart';
@@ -40,6 +42,7 @@ class _CreatorOverviewState extends State<CreatorOverview> {
   @override
   Widget build(BuildContext context) {
     _initalizePageViewPages();
+
     return DefaultTabController(
       length: pageViewPages.length,
       child: Scaffold(
@@ -49,12 +52,15 @@ class _CreatorOverviewState extends State<CreatorOverview> {
             pack.save();
             _saveToServer();
             setState(() {});
-            //TODO implement navigating to pack viewer without passing read
-            /*Navigator.push(
+            Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PackViewerStarted(id: pack.id!),
-                ));*/
+                  builder: (context) => PackViewerStarted(
+                    read: Read(
+                        id: 0, packId: widget.pack.id!, userId: 0, pack: pack),
+                    heroName: "",
+                  ),
+                ));
           },
           rightText: pack.isSaved() ? "Vorschau" : "Speichern",
           title: "Seiten Bearbeiten",
@@ -84,6 +90,7 @@ class _CreatorOverviewState extends State<CreatorOverview> {
     pageViewPages = List.generate(
       pack.pages.length,
       ((index) => PageOverview(
+            imageIdentifier: pack.imageIdentifier,
             packId: pack.id!,
             page: pack.pages[index],
             selfIndex: index,
