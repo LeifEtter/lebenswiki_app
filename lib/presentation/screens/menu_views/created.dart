@@ -6,6 +6,7 @@ import 'package:lebenswiki_app/application/data/pack_short_service.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
+import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/domain/models/short_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/packs/creator_information.dart';
@@ -32,6 +33,8 @@ class CreatedView extends ConsumerStatefulWidget {
 }
 
 class _CreatedViewState extends ConsumerState<CreatedView> {
+  late int userId;
+
   @override
   Widget build(BuildContext context) {
     List<ContentCategory> categories = ref.read(categoryProvider).categories;
@@ -40,6 +43,7 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
       blockedIdList: ref.read(blockedListProvider).blockedIdList,
       currentUserId: ref.read(userProvider).user.id,
     );
+    userId = ref.read(userProvider).user.id;
     return Scaffold(
       body: SafeArea(
         child: DefaultTabController(
@@ -102,6 +106,12 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                                           child: Stack(
                                             children: [
                                               PackCard(
+                                                read: Read(
+                                                  pack: currentPack,
+                                                  packId: currentPack.id!,
+                                                  progress: 0,
+                                                  userId: userId,
+                                                ),
                                                 isDraftView: true,
                                                 pack: currentPack,
                                                 heroParent: "created-packs",

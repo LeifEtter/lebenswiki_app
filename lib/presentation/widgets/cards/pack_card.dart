@@ -62,7 +62,7 @@ class _PackCardState extends ConsumerState<PackCard> {
     user = ref.watch(userProvider).user;
     return GestureDetector(
       onTap: () async {
-        isReading
+        isReading || widget.isDraftView
             ? await Navigator.push(
                 context,
                 MaterialPageRoute(
