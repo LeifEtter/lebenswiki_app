@@ -71,7 +71,7 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                   ),
                   const SizedBox(width: 10),
                   InfoLabel(
-                    text: "Finanzen",
+                    text: widget.short.categories[0].categoryName,
                     backgroundColor: CustomColors.mediumGrey,
                   ),
                   const Spacer(),

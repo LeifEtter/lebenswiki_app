@@ -28,7 +28,7 @@ class _ShortCreationViewState extends ConsumerState<ShortCreationView> {
   String? errorTitle;
   String? errorBody;
 
-  String chosenCategory = "Neu";
+  String chosenCategory = "Beruf";
   late List<ContentCategory> categories;
 
   @override
@@ -39,6 +39,7 @@ class _ShortCreationViewState extends ConsumerState<ShortCreationView> {
   @override
   Widget build(BuildContext context) {
     categories = ref.read(categoryProvider).categories;
+    List<ContentCategory> categoriesWithoutNew = categories.skip(1).toList();
     return Scaffold(
       body: ListView(
         padding: const EdgeInsets.only(top: 50),
@@ -74,7 +75,7 @@ class _ShortCreationViewState extends ConsumerState<ShortCreationView> {
                       onPress: (newCategory) => setState(() {
                         chosenCategory = newCategory;
                       }),
-                      items: List<String>.from(categories
+                      items: List<String>.from(categoriesWithoutNew
                           .map((ContentCategory cat) => cat.categoryName)
                           .toList()),
                     ),
