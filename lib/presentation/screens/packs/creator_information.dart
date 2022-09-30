@@ -51,6 +51,8 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
   late List<ContentCategory> categories;
   late User user;
 
+  late String _imageIdentifier;
+
   @override
   void initState() {
     if (widget.pack != null) {
@@ -59,7 +61,9 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
       _chosenImageLink = widget.pack!.titleImage;
       _initiativeController.text = widget.pack!.initiative ?? "";
       chosenCategory = widget.pack!.categories.first.categoryName;
+      _imageIdentifier = widget.pack!.imageIdentifier;
     }
+    _imageIdentifier = DateTime.now().millisecondsSinceEpoch.toString();
     super.initState();
   }
 
@@ -203,7 +207,7 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
     }
     Either<CustomError, String> result = await ImageHelper.uploadImage(
       context,
-      pathToStore: "user_images/${user.id}/",
+      pathToStore: "pack_images/$_imageIdentifier/",
       chosenImage: File(pickedFile.path),
       userId: user.id,
       storage: storage,
@@ -238,8 +242,6 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
       _initiativeController.text = "Keine Initiative";
     }
 
-    String imageIdentifier = DateTime.now().millisecondsSinceEpoch.toString();
-
     Pack newPack = Pack(
       title: _titleController.text,
       description: _descriptionController.text,
@@ -255,7 +257,7 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
             .first
       ],
       readTime: 0,
-      imageIdentifier: imageIdentifier,
+      imageIdentifier: _imageIdentifier,
     );
 
     widget.pack == null

@@ -17,6 +17,7 @@ import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar
 
 class PageOverview extends ConsumerStatefulWidget {
   final int packId;
+  final String imageIdentifier;
   final PackPage page;
   final int selfIndex;
   final Function deleteSelf;
@@ -24,6 +25,7 @@ class PageOverview extends ConsumerStatefulWidget {
   const PageOverview({
     Key? key,
     required this.packId,
+    required this.imageIdentifier,
     required this.page,
     required this.selfIndex,
     required this.deleteSelf,
@@ -154,11 +156,13 @@ class _PageOverviewState extends ConsumerState<PageOverview> {
     if (item.headContent.value.isNotEmpty) {
       await storage.refFromURL(item.headContent.value).delete();
     }
-    Either<CustomError, String> result = await ImageHelper.uploadImage(context,
-        pathToStore: "pack_images/${widget.packId}/",
-        chosenImage: File(pickedFile.path),
-        userId: ref.read(userProvider).user.id,
-        storage: storage);
+    Either<CustomError, String> result = await ImageHelper.uploadImage(
+      context,
+      pathToStore: "pack_images/${widget.imageIdentifier}/",
+      chosenImage: File(pickedFile.path),
+      userId: ref.read(userProvider).user.id,
+      storage: storage,
+    );
     result.fold(
       (left) {
         CustomFlushbar.error(message: left.error).show(context);

@@ -52,7 +52,6 @@ class _CreatorOverviewState extends State<CreatorOverview> {
             pack.save();
             _saveToServer();
             setState(() {});
-
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -91,6 +90,7 @@ class _CreatorOverviewState extends State<CreatorOverview> {
     pageViewPages = List.generate(
       pack.pages.length,
       ((index) => PageOverview(
+            imageIdentifier: pack.imageIdentifier,
             packId: pack.id!,
             page: pack.pages[index],
             selfIndex: index,
