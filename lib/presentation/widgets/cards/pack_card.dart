@@ -213,9 +213,26 @@ class _PackCardState extends ConsumerState<PackCard> {
                 text: DateFormat.MMMd().format(pack.creationDate),
               ),
               InfoItem.forIconLabel(
-                onPress: () {},
+                onPress: () async {
+                  pack.userHasClapped(userId: user.id)
+                      ? CustomFlushbar.error(
+                              message: "Du hast schon geklatscht")
+                          .show(context)
+                      : await PackApi().addClap(packId: pack.id!).fold(
+                          (left) {
+                            CustomFlushbar.error(message: left.error)
+                                .show(context);
+                          },
+                          (right) {
+                            CustomFlushbar.success(message: right)
+                                .show(context);
+                            pack.claps.add(user.id);
+                            setState(() {});
+                          },
+                        );
+                },
                 emoji: Emoji.byName("clapping hands").toString(),
-                indicator: "0",
+                indicator: pack.claps.length.toString(),
               ),
               InfoItem.forIconLabel(
                 onPress: () => Navigator.push(

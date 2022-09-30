@@ -237,4 +237,18 @@ class PackApi extends BaseApi {
       return Left(CustomError(error: errorMessage));
     }
   }
+
+  Future<Either<CustomError, String>> addClap({required int packId}) async {
+    Response res = await patch(
+      Uri.parse("$serverIp/packs/add-clap/$packId"),
+      headers: await requestHeader(),
+    );
+    if (statusIsSuccess(res.statusCode)) {
+      return const Right("Geklatscht!");
+    } else {
+      apiErrorHandler.logRes(res);
+      return const Left(
+          CustomError(error: "Ups, du kannst nicht mehr klatschen."));
+    }
+  }
 }

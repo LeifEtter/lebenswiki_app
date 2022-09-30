@@ -19,12 +19,12 @@ class Pack {
   List<Map> reactions = [];
   List<Comment> comments = [];
   String imageIdentifier = "something";
+  List<int> claps = [];
   late DateTime creationDate;
 
   //New Params
   String? initiative;
   int? readTime;
-  int? claps;
 
   Pack({
     required this.title,
@@ -39,7 +39,7 @@ class Pack {
     this.reactions = const [],
     this.initiative,
     this.readTime,
-    this.claps,
+    this.claps = const [],
     this.comments = const [],
   }) {
     creationDate = DateTime.now();
@@ -92,12 +92,17 @@ class Pack {
         pages = List<PackPage>.from(
             json["pages"].map((page) => PackPage.fromResponse(page))),
         comments = List<Comment>.from(
-            json["comments"].map((comment) => Comment.forPack(comment)));
+            json["comments"].map((comment) => Comment.forPack(comment))),
+        claps = List<int>.from(json["claps"].map((user) => user["id"]));
 
   void initControllers() {
     for (PackPage page in pages) {
       page.initControllers();
     }
+  }
+
+  bool userHasClapped({required int userId}) {
+    return claps.contains(userId) ? true : false;
   }
 
   void save() {
