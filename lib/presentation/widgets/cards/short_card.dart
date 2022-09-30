@@ -96,6 +96,7 @@ class _ShortCardState extends ConsumerState<ShortCard> {
               widget.inSlider ? const Spacer() : Container(),
               const SizedBox(height: 10),
               InfoBar(
+                width: 200,
                 items: [
                   InfoItem.forText(
                       text:
