@@ -115,7 +115,7 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
         child: ListView(
           children: [
             Text(
-              "Explore",
+              "Erkunden",
               style: Theme.of(context).textTheme.headlineLarge,
             ).addPadding(),
             DefaultTabController(
