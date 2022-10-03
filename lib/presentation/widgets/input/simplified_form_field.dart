@@ -60,6 +60,7 @@ class SimplifiedFormField extends StatelessWidget {
             ),
           ),
           TextFormField(
+            textCapitalization: TextCapitalization.sentences,
             maxLength: maxLength,
             controller: controller,
             minLines: minLines,
