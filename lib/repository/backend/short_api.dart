@@ -51,7 +51,7 @@ class ShortApi extends BaseApi {
 
   Future<Either<CustomError, Short>> getShortById({required int id}) async {
     Response res = await get(
-      Uri.parse("$serverIp/shorts"),
+      Uri.parse("$serverIp/shorts/$id"),
       headers: await requestHeader(),
     );
     if (statusIsSuccess(res.statusCode)) {

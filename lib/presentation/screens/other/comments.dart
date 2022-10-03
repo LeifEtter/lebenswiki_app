@@ -2,6 +2,7 @@ import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
+import 'package:lebenswiki_app/domain/models/short_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/other.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
@@ -51,14 +52,24 @@ class _CommentViewState extends ConsumerState<CommentView> {
           return snapshot.data!.fold(
             (CustomError left) => const Text("not found"),
             (right) {
-              Pack pack = right;
+              print(right);
+              Pack? pack;
+              Short? short;
+
+              widget.isShort ? short = right : pack = right;
+
               return Stack(
                 children: [
                   ListView(
                     children: [
-                      TopNavIOS(title: "Comments (${pack.comments.length})"),
-                      ...pack.comments.map<Widget>(
-                          (Comment comment) => _buildCommentCard(comment)),
+                      TopNavIOS(
+                          title:
+                              "Comments (${widget.isShort ? short!.comments.length : pack!.comments.length})"),
+                      ...widget.isShort
+                          ? short!.comments.map<Widget>(
+                              (Comment comment) => _buildCommentCard(comment))
+                          : pack!.comments.map<Widget>(
+                              (Comment comment) => _buildCommentCard(comment)),
                     ],
                   ),
                   Padding(
@@ -195,9 +206,12 @@ class _CommentViewState extends ConsumerState<CommentView> {
                   ),
                   IconButton(
                     onPressed: () async {
-                      Either<CustomError, String> commentResult =
-                          await CommentApi().createCommentPack(
+                      Either<CustomError, String> commentResult = widget.isShort
+                          ? await CommentApi().createCommentShort(
+                              id: widget.id, comment: commentController.text)
+                          : await CommentApi().createCommentPack(
                               id: widget.id, comment: commentController.text);
+
                       commentResult.fold((left) {
                         CustomFlushbar.error(message: left.error).show(context);
                       }, (right) {
