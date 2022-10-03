@@ -33,7 +33,7 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
   void initState() {
     progressValue = widget.read.progress;
 
-    initPages(widget.read.pack);
+    initPages(widget.read.pack!);
 
     if (progressValue == 0) {
       currentIndex = 0;
@@ -54,12 +54,12 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
             return [
               ViewerAppBar(
                 heroName: widget.heroName,
-                titleImage: widget.read.pack.titleImage,
-                categoryName: widget.read.pack.categories[0].categoryName,
+                titleImage: widget.read.pack!.titleImage,
+                categoryName: widget.read.pack!.categories[0].categoryName,
                 backFunction: () {
                   if (widget.read.id != 0) {
                     ReadApi().update(
-                        id: widget.read.pack.id!,
+                        id: widget.read.pack!.id!,
                         newProgress: currentIndex + 1);
                   }
                 },

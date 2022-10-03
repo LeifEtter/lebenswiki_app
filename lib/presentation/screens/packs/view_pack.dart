@@ -165,6 +165,7 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                           (left) {
                         CustomFlushbar.error(message: left.error).show(context);
                       }, (right) {
+                        right.pack = widget.pack;
                         Navigator.push(
                             context,
                             MaterialPageRoute(
