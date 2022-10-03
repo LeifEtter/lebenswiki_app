@@ -88,14 +88,40 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Icon(
-                      Icons.arrow_back_ios_rounded,
-                      size: 30,
+                    IconButton(
+                      disabledColor: Colors.black12,
+                      onPressed: currentIndex == 0
+                          ? null
+                          : () {
+                              pageController.previousPage(
+                                  duration: const Duration(milliseconds: 500),
+                                  curve: Curves.easeInOut);
+                              setState(() {
+                                currentIndex -= 1;
+                              });
+                            },
+                      icon: const Icon(
+                        Icons.arrow_back_ios_rounded,
+                        size: 30,
+                      ),
                     ),
                     Text("${currentIndex + 1} / ${pages.length}"),
-                    const Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 30,
+                    IconButton(
+                      disabledColor: Colors.black12,
+                      onPressed: currentIndex == pages.length - 1
+                          ? null
+                          : () {
+                              pageController.nextPage(
+                                  duration: const Duration(milliseconds: 500),
+                                  curve: Curves.easeInOut);
+                              setState(() {
+                                currentIndex += 1;
+                              });
+                            },
+                      icon: const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 30,
+                      ),
                     ),
                   ],
                 ),
