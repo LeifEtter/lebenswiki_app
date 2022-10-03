@@ -49,6 +49,19 @@ class ShortApi extends BaseApi {
     }
   }
 
+  Future<Either<CustomError, Short>> getShortById({required int id}) async {
+    Response res = await get(
+      Uri.parse("$serverIp/shorts"),
+      headers: await requestHeader(),
+    );
+    if (statusIsSuccess(res.statusCode)) {
+      return Right(Short.fromJson(jsonDecode(res.body)["short"]));
+    } else {
+      apiErrorHandler.logRes(res);
+      return const Left(CustomError(error: "Short wurde nicht gefunden"));
+    }
+  }
+
   Future<Either<CustomError, List<Short>>> getShortsByCategory(
       {required ContentCategory category}) {
     return category.categoryName != "Neu"

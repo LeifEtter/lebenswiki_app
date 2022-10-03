@@ -6,6 +6,7 @@ import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/other.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/bottom_menu.dart';
+import 'package:lebenswiki_app/repository/backend/short_api.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/repository/backend/comment_api.dart';
 import 'package:lebenswiki_app/domain/models/comment_model.dart';
@@ -40,7 +41,7 @@ class _CommentViewState extends ConsumerState<CommentView> {
     return Scaffold(
       body: FutureBuilder(
         future: widget.isShort
-            ? PackApi().getPackById(id: widget.id)
+            ? ShortApi().getShortById(id: widget.id)
             : PackApi().getPackById(id: widget.id),
         builder: (BuildContext context,
             AsyncSnapshot<Either<CustomError, dynamic>> snapshot) {
