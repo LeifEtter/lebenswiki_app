@@ -9,10 +9,15 @@ SliverAppBar appBar(context, {required Function onPress}) {
   return SliverAppBar(
     systemOverlayStyle: SystemUiOverlayStyle.dark,
     floating: true,
+    centerTitle: false,
     title: const Padding(
       padding: EdgeInsets.only(top: 0),
       child: Text(
         "Lebenswiki",
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 26,
+        ),
       ),
     ),
     elevation: 0,

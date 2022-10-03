@@ -10,7 +10,6 @@ import 'package:lebenswiki_app/repository/constants/routing_constants.dart';
 import 'package:lebenswiki_app/presentation/screens/other/authentication.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:path/path.dart';
 import 'firebase_options.dart';
 
 void main() async {
