@@ -53,7 +53,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 reads.isNotEmpty
                     ? readSection(
                         heroParent: "home-continue",
-                        title: "Continue Reading",
+                        title: "Weierlesen",
                         reads: reads,
                         isReading: true,
                       )
@@ -61,14 +61,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 const SizedBox(height: 10),
                 packSection(
                   heroParent: "home-recommended",
-                  title: "Recommended For You",
+                  title: "Für Dich Empfohlen",
                   packs: widget.packHelper.recommendedPacks,
                   isReading: false,
                 ),
                 const SizedBox(height: 10),
                 packSection(
                   heroParent: "home-new",
-                  title: "New Articles",
+                  title: "Neue Packs",
                   packs: widget.packHelper.newArticles,
                   isReading: false,
                 ),
