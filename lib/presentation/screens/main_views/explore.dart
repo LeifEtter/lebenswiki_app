@@ -45,9 +45,9 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
   @override
   Widget build(BuildContext context) {
     if (widget.isSearching) {
-      return RefreshIndicator(
-        onRefresh: () async {
-          ref.read(reloadProvider).reload();
+      return GestureDetector(
+        onPanDown: (details) {
+          FocusManager.instance.primaryFocus?.unfocus();
         },
         child: ListView(
           shrinkWrap: true,
@@ -108,72 +108,77 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
         ),
       );
     } else {
-      return ListView(
-        children: [
-          Text(
-            "Explore",
-            style: Theme.of(context).textTheme.headlineLarge,
-          ).addPadding(),
-          DefaultTabController(
-            length: widget.categories.length,
-            initialIndex: 0,
-            child: Column(
-              children: [
-                TabBar(
-                  padding: const EdgeInsets.only(left: 50),
-                  isScrollable: true,
-                  indicatorWeight: 4.0,
-                  indicatorColor: CustomColors.blue,
-                  labelColor: CustomColors.offBlack,
-                  unselectedLabelColor: CustomColors.darkGrey,
-                  tabs: widget.categories
-                      .map((ContentCategory cat) => Tab(
-                          child: Text(cat.categoryName,
-                              style: Theme.of(context).textTheme.labelLarge)))
-                      .toList(),
-                  onTap: (int newCategory) =>
-                      setState(() => _selectedCategory = newCategory),
-                ),
-                const SizedBox(height: 20),
-                CarouselSlider(
-                  items: List<Widget>.from(
-                    widget.packHelper.categorizedPacks[_selectedCategory]!
-                        .map((Pack pack) => Padding(
-                              padding: const EdgeInsets.only(right: 20),
-                              child: PackCard(
-                                heroParent: "explore-categories",
-                                pack: pack,
-                              ),
-                            )),
+      return RefreshIndicator(
+        onRefresh: () async {
+          ref.read(reloadProvider).reload();
+        },
+        child: ListView(
+          children: [
+            Text(
+              "Explore",
+              style: Theme.of(context).textTheme.headlineLarge,
+            ).addPadding(),
+            DefaultTabController(
+              length: widget.categories.length,
+              initialIndex: 0,
+              child: Column(
+                children: [
+                  TabBar(
+                    padding: const EdgeInsets.only(left: 50),
+                    isScrollable: true,
+                    indicatorWeight: 4.0,
+                    indicatorColor: CustomColors.blue,
+                    labelColor: CustomColors.offBlack,
+                    unselectedLabelColor: CustomColors.darkGrey,
+                    tabs: widget.categories
+                        .map((ContentCategory cat) => Tab(
+                            child: Text(cat.categoryName,
+                                style: Theme.of(context).textTheme.labelLarge)))
+                        .toList(),
+                    onTap: (int newCategory) =>
+                        setState(() => _selectedCategory = newCategory),
                   ),
-                  options: CarouselOptions(
-                    enableInfiniteScroll: false,
+                  const SizedBox(height: 20),
+                  CarouselSlider(
+                    items: List<Widget>.from(
+                      widget.packHelper.categorizedPacks[_selectedCategory]!
+                          .map((Pack pack) => Padding(
+                                padding: const EdgeInsets.only(right: 20),
+                                child: PackCard(
+                                  heroParent: "explore-categories",
+                                  pack: pack,
+                                ),
+                              )),
+                    ),
+                    options: CarouselOptions(
+                      enableInfiniteScroll: false,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            "Shorts",
-            style: Theme.of(context).textTheme.headlineLarge,
-          ).addPadding(),
-          CarouselSlider(
-            items: List<Widget>.from(widget.shortHelper.shorts.map(
-              (Short short) => Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: ShortCard(
-                  short: short,
-                  inSlider: true,
-                ),
+                ],
               ),
-            )),
-            options: CarouselOptions(
-              height: 230,
-              enableInfiniteScroll: false,
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+            Text(
+              "Shorts",
+              style: Theme.of(context).textTheme.headlineLarge,
+            ).addPadding(),
+            CarouselSlider(
+              items: List<Widget>.from(widget.shortHelper.shorts.map(
+                (Short short) => Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: ShortCard(
+                    short: short,
+                    inSlider: true,
+                  ),
+                ),
+              )),
+              options: CarouselOptions(
+                height: 230,
+                enableInfiniteScroll: false,
+              ),
+            ),
+          ],
+        ),
       );
     }
   }

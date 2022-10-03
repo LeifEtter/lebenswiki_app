@@ -10,6 +10,7 @@ import 'package:lebenswiki_app/repository/constants/routing_constants.dart';
 import 'package:lebenswiki_app/presentation/screens/other/authentication.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:path/path.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -27,11 +28,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Lebenswiki',
-      theme: buildTheme(Brightness.light),
-      onGenerateRoute: generateRoute,
-      initialRoute: authenticationWrapperRoute,
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: MaterialApp(
+        title: 'Lebenswiki',
+        theme: buildTheme(Brightness.light),
+        onGenerateRoute: generateRoute,
+        initialRoute: authenticationWrapperRoute,
+      ),
     );
   }
 }
