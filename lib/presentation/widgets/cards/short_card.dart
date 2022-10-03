@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/screens/other/comments.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/repository/backend/short_api.dart';
@@ -102,7 +103,11 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                       text:
                           DateFormat.MMMd().format(widget.short.creationDate)),
                   InfoItem.forIconLabel(
-                    onPress: () {},
+                    onPress: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CommentView(
+                                isShort: true, id: widget.short.id))),
                     icon: const Icon(
                       Icons.mode_comment,
                       size: 20,

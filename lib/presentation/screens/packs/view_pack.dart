@@ -26,6 +26,7 @@ class ViewPack extends ConsumerStatefulWidget {
 
 class _ViewPackState extends ConsumerState<ViewPack> {
   late String profileImage;
+  late int fakeReads;
 
   @override
   void initState() {
@@ -35,6 +36,8 @@ class _ViewPackState extends ConsumerState<ViewPack> {
   @override
   Widget build(BuildContext context) {
     profileImage = widget.pack.creator!.profileImage;
+    int unixTime = widget.pack.creationDate.millisecond;
+    double calculated = unixTime / 2;
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -86,7 +89,7 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                                 children: [
                                   TextSpan(text: widget.pack.creator!.name),
                                   TextSpan(
-                                    text: " for ",
+                                    text: " für ",
                                     style: Theme.of(context)
                                         .textTheme
                                         .displaySmall!
@@ -108,7 +111,7 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                   ),
                   const SizedBox(height: 15),
                   Text(
-                    "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et",
+                    widget.pack.description,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
@@ -120,22 +123,22 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                     children: [
                       _buildInteractionLabel(
                         label: "Lesezeit",
-                        indicator: "5 Min",
+                        indicator: widget.pack.pages.length.toString() + " Min",
                       ),
                       _buildVerticalDivider(),
                       _buildInteractionLabel(
                         label: "Leser",
-                        indicator: "1,246",
+                        indicator: calculated.round().toString(),
                       ),
                       _buildVerticalDivider(),
                       _buildInteractionLabel(
                         label: "Claps",
-                        indicator: "143",
+                        indicator: widget.pack.claps.length.toString(),
                       ),
                       _buildVerticalDivider(),
                       _buildInteractionLabel(
                         label: "Kommentare",
-                        indicator: "235",
+                        indicator: widget.pack.comments.length.toString(),
                       ),
                     ],
                   ),
@@ -152,19 +155,20 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam",
+                    widget.pack.creator!.biography,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 50),
                   LW.buttons.normal(
                     borderRadius: 15.0,
                     color: CustomColors.blue,
-                    text: "Start Learning",
+                    text: "Pack Starten",
                     action: () async {
                       await ReadApi().create(packId: widget.pack.id!).fold(
                           (left) {
                         CustomFlushbar.error(message: left.error).show(context);
                       }, (right) {
+                        right.pack = widget.pack;
                         Navigator.push(
                             context,
                             MaterialPageRoute(

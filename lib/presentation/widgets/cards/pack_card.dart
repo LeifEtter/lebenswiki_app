@@ -47,10 +47,10 @@ class _PackCardState extends ConsumerState<PackCard> {
 
   @override
   void initState() {
-    pack = widget.pack ?? widget.read!.pack;
+    pack = widget.pack ?? widget.read!.pack!;
     if (widget.read != null) isReading = true;
     if (widget.read != null) {
-      widget.read!.pack.pages.isEmpty
+      widget.read!.pack!.pages.isEmpty
           ? progressPercentage = 100
           : progressPercentage =
               ((widget.read!.progress / pack.pages.length) * 100).round();
