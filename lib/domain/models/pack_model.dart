@@ -81,8 +81,13 @@ class Pack {
         creationDate = DateTime.parse(json["creationDate"]),
         initiative = json["initiative"],
         readTime = json["readTime"],
-        pages = List<PackPage>.from(
-            json["pages"].map((page) => PackPage.fromResponse(page))),
+        //TODO Remove temp fix
+        pages = json["pages"].isEmpty
+            ? []
+            : json["pages"][0].runtimeType == String
+                ? []
+                : List<PackPage>.from(
+                    json["pages"].map((page) => PackPage.fromResponse(page))),
         comments = List<Comment>.from(
             json["comments"].map((comment) => Comment.forPack(comment))),
         claps = List<int>.from(json["claps"].map((user) => user["id"])),

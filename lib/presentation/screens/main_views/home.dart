@@ -42,6 +42,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
             if (LoadingHelper.isLoading(snapshot)) {
               return LoadingHelper.loadingIndicator();
             }
+
             if (snapshot.data!.isLeft) {
               return const Center(child: Text("Something went wrong"));
             }

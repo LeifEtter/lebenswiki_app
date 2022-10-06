@@ -4,6 +4,7 @@ import 'package:lebenswiki_app/presentation/screens/other/authentication.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/expand_row.dart';
 import 'package:lebenswiki_app/presentation/widgets/lw.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingViewStart extends ConsumerStatefulWidget {
   const OnboardingViewStart({Key? key}) : super(key: key);
@@ -88,7 +89,13 @@ class _OnboardingViewStartState extends ConsumerState<OnboardingViewStart> {
                 text: "Überspringen und als Gast fortfahren",
                 color: Colors.transparent,
                 textColor: CustomColors.offBlack,
-                action: () {},
+                action: () async {
+                  SharedPreferences _preferences =
+                      await SharedPreferences.getInstance();
+
+                  _preferences.setBool("onboardingFinished", true);
+                  
+                },
               ),
             ],
           ),

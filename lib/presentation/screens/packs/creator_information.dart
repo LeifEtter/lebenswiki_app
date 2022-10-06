@@ -63,6 +63,7 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
       chosenCategory = widget.pack!.categories.first.categoryName;
       _imageIdentifier = widget.pack!.imageIdentifier;
     }
+    print(_chosenImageLink);
     _imageIdentifier = DateTime.now().millisecondsSinceEpoch.toString();
     super.initState();
   }
@@ -202,7 +203,9 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
       setState(() => _imageIsLoading = false);
       return;
     }
-    if (_chosenImageLink != null) {
+    if (_chosenImageLink != null &&
+        _chosenImageLink !=
+            "https://firebasestorage.googleapis.com/v0/b/lebenswiki-db.appspot.com/o/defaultImages%2Fpack_placeholder_image.jpg?alt=media&token=d61d13f9-0b5b-4f62-9d3e-c76a637392af") {
       await storage.refFromURL(_chosenImageLink!).delete();
     }
     Either<CustomError, String> result = await ImageHelper.uploadImage(
