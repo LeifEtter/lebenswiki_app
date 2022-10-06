@@ -6,13 +6,13 @@ import 'package:lebenswiki_app/repository/backend/token_handler.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/theme.dart';
 import 'package:lebenswiki_app/main_wrapper.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
-import 'package:lebenswiki_app/router.dart';
+import 'package:lebenswiki_app/application/routing/router.dart';
 import 'package:lebenswiki_app/repository/constants/routing_constants.dart';
 import 'package:lebenswiki_app/presentation/screens/other/authentication.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'firebase_options.dart';
+import 'repository/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
