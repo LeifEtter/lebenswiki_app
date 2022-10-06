@@ -63,7 +63,6 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
       chosenCategory = widget.pack!.categories.first.categoryName;
       _imageIdentifier = widget.pack!.imageIdentifier;
     }
-    print(_chosenImageLink);
     _imageIdentifier = DateTime.now().millisecondsSinceEpoch.toString();
     super.initState();
   }

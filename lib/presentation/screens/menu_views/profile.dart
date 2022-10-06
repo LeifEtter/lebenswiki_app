@@ -13,6 +13,8 @@ import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';
 import 'package:lebenswiki_app/repository/constants/shadows.dart';
+import 'package:lebenswiki_app/repository/constants/uri_repo.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileView extends ConsumerStatefulWidget {
   const ProfileView({
@@ -136,9 +138,24 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
           const Divider(),
           _buildLinkTile(text: "Account Einstellungen", onPressed: () {}),
           const Divider(),
-          _buildLinkTile(text: "Privacy Policy", onPressed: () {}),
+          _buildLinkTile(
+              text: "Datenschutzerklärung",
+              onPressed: () async {
+                Uri _url = UriRepo.dataProtectionUrl;
+                await canLaunchUrl(_url)
+                    ? await launchUrl(_url)
+                    : throw 'Could not launch $_url';
+              }),
           const Divider(),
-          _buildLinkTile(text: "Deine Shorts", onPressed: () {}),
+          _buildLinkTile(
+            text: "Cookie-Richtlinie",
+            onPressed: () async {
+              Uri _url = UriRepo.cookieUrl;
+              await canLaunchUrl(_url)
+                  ? await launchUrl(_url)
+                  : throw 'Could not launch $_url';
+            },
+          ),
         ],
       );
 
@@ -238,7 +255,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
       Row(
         children: [
           TextButton(
-            onPressed: () {},
+            onPressed: () => onPressed(),
             child: Text(
               text,
               style: Theme.of(context)
