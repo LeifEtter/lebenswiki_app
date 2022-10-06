@@ -1,4 +1,6 @@
-/*import 'package:flutter/material.dart';
+// ignore_for_file: file_names
+
+/* import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
