@@ -12,6 +12,8 @@ import 'package:lebenswiki_app/application/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/presentation/providers/auth_providers.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/repository/constants/image_repo.dart';
+import 'package:lebenswiki_app/repository/constants/uri_repo.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AuthenticationView extends ConsumerStatefulWidget {
   const AuthenticationView({Key? key}) : super(key: key);
@@ -27,6 +29,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
   bool isAdminSignUp = false;
   bool isSignUp = false;
   final GlobalKey<FormState> _authFormKey = GlobalKey<FormState>();
+  bool acceptedToPolicy = false;
 
   void toggleSignIn() => setState(() {
         isSignUp = !isSignUp;
@@ -102,7 +105,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                   icon: const Icon(Icons.note_alt_rounded),
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: isSignUp ? 10 : 0),
               CustomInputField(
                 hasShadow: false,
                 backgroundColor: CustomColors.lightGrey,
@@ -149,6 +152,14 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                 action: () async {
                   if (isSignUp) {
                     if (!_formProvider.validateForRegister) return;
+                    if (!acceptedToPolicy) {
+                      CustomFlushbar.error(
+                              message:
+                                  "Du musst die AGB akzeptieren bevor du ein Account erstellen kannst")
+                          .show(context);
+                      return;
+                    }
+
                     await UserApi()
                         .register(_formProvider.convertToUser())
                         .fold((left) {
@@ -177,6 +188,58 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                     );
                   }
                 },
+              ),
+              Visibility(
+                visible: isSignUp,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 30,
+                      height: 15,
+                      child: Checkbox(
+                        value: acceptedToPolicy,
+                        onChanged: (newValue) => setState(() {
+                          acceptedToPolicy = newValue!;
+                        }),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        const Text(
+                          "Hiermit akzeptiere ich die",
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(0),
+                          child: SizedBox(
+                            width: 40,
+                            child: TextButton(
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.only(left: 0),
+                              ),
+                              onPressed: () async {
+                                Uri _url = UriRepo.termsAndConditions;
+                                await canLaunchUrl(_url)
+                                    ? await launchUrl(_url)
+                                    : throw 'Could not launch $_url';
+                              },
+                              child: Text(
+                                "AGB",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: CustomColors.blue,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
