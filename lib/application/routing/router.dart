@@ -45,12 +45,21 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         builder: (context) => const ProfileView(),
       );
     case savedViewRoute:
-      return MaterialPageRoute(builder: (context) => const SavedView());
+      return MaterialPageRoute(
+        builder: (context) => const SavedView(),
+      );
     case createdViewRoute:
-      return MaterialPageRoute(builder: (context) => const CreatedView());
+      return MaterialPageRoute(
+        builder: (context) => const CreatedView(),
+        settings: const RouteSettings(name: "/created"),
+      );
     case createShort:
-      return MaterialPageRoute(builder: (context) => const ShortCreationView());
+      return MaterialPageRoute(
+        builder: (context) => const ShortCreationView(),
+      );
     default:
-      return MaterialPageRoute(builder: (context) => const AuthWrapper());
+      return MaterialPageRoute(
+        builder: (context) => const AuthWrapper(),
+      );
   }
 }

@@ -275,7 +275,7 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
             (left) {
             CustomFlushbar.error(message: left.error).show(context);
           }, (right) {
-            Navigator.pop(context);
+            Navigator.popUntil(context, ModalRoute.withName('/created'));
             CustomFlushbar.success(message: right).show(context);
           });
     return;
