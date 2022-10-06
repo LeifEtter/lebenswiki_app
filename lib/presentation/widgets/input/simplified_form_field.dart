@@ -14,6 +14,7 @@ class SimplifiedFormField extends StatelessWidget {
   final int maxLines;
   final String? helperText;
   final int? maxLength;
+  final List<BoxShadow>? shadows;
 
   const SimplifiedFormField({
     Key? key,
@@ -29,6 +30,7 @@ class SimplifiedFormField extends StatelessWidget {
     this.maxLines = 1,
     this.helperText,
     this.maxLength,
+    this.shadows,
   }) : super(key: key);
 
   const SimplifiedFormField.multiline({
@@ -45,6 +47,7 @@ class SimplifiedFormField extends StatelessWidget {
     required this.maxLines,
     this.helperText,
     this.maxLength,
+    this.shadows,
   }) : super(key: key);
 
   @override
@@ -59,40 +62,47 @@ class SimplifiedFormField extends StatelessWidget {
                   Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 16),
             ),
           ),
-          TextFormField(
-            textCapitalization: TextCapitalization.sentences,
-            maxLength: maxLength,
-            controller: controller,
-            minLines: minLines,
-            maxLines: maxLines,
-            onChanged: (String newValue) => onChanged?.call(newValue),
-            decoration: InputDecoration(
-              helperText: helperText,
-              fillColor: color ?? Colors.white,
-              filled: true,
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(borderRadius ?? 0),
-                borderSide: BorderSide(color: CustomColors.darkGrey, width: 1),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(borderRadius ?? 0),
-                borderSide:
-                    const BorderSide(color: Colors.transparent, width: 0),
-              ),
-              errorText: errorText,
-              contentPadding: const EdgeInsets.all(15.0),
-              hintText: hintText,
-              focusedErrorBorder: UnderlineInputBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(borderRadius ?? 0),
-                    topRight: Radius.circular(borderRadius ?? 0),
-                  ),
-                  borderSide: const BorderSide(width: 2, color: Colors.red)),
-              errorBorder: OutlineInputBorder(
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(borderRadius ?? 0),
+              boxShadow: shadows,
+            ),
+            child: TextFormField(
+              textCapitalization: TextCapitalization.sentences,
+              maxLength: maxLength,
+              controller: controller,
+              minLines: minLines,
+              maxLines: maxLines,
+              onChanged: (String newValue) => onChanged?.call(newValue),
+              decoration: InputDecoration(
+                helperText: helperText,
+                fillColor: color ?? Colors.white,
+                filled: true,
+                focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(borderRadius ?? 0),
-                  borderSide: const BorderSide(width: 1, color: Colors.red)),
-              hintStyle: TextStyle(
-                color: hintColor ?? CustomColors.mediumGrey,
+                  borderSide:
+                      BorderSide(color: CustomColors.darkGrey, width: 1),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(borderRadius ?? 0),
+                  borderSide:
+                      const BorderSide(color: Colors.transparent, width: 0),
+                ),
+                errorText: errorText,
+                contentPadding: const EdgeInsets.all(15.0),
+                hintText: hintText,
+                focusedErrorBorder: UnderlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(borderRadius ?? 0),
+                      topRight: Radius.circular(borderRadius ?? 0),
+                    ),
+                    borderSide: const BorderSide(width: 2, color: Colors.red)),
+                errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(borderRadius ?? 0),
+                    borderSide: const BorderSide(width: 1, color: Colors.red)),
+                hintStyle: TextStyle(
+                  color: hintColor ?? CustomColors.mediumGrey,
+                ),
               ),
             ),
           ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 
 class LWButtons {
@@ -11,14 +10,16 @@ class LWButtons {
     double verticalPadding = 0.0,
     double fontSize = 15.0,
     FontWeight fontWeight = FontWeight.w500,
-    HexColor? color,
-    HexColor? textColor,
+    Color? color,
+    Color? textColor,
     double borderRadius = 0,
+    Border? border,
   }) =>
       Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(borderRadius),
           color: color ?? CustomColors.offBlack,
+          border: border,
         ),
         child: TextButton(
           onPressed: () => action(),

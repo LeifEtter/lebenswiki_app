@@ -49,14 +49,11 @@ class PackConversion {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Container(
-                            //decoration: PackEditorStyling.standardInput(),
-                            child: TextFormField(
-                              onEditingComplete: () => save(),
-                              controller: currentInput.controller,
-                              /*decoration: PackEditorStyling.standardDecoration(
-                                  "Listen Element eingeben"),*/
-                            ),
+                          child: TextFormField(
+                            onEditingComplete: () => save(),
+                            controller: currentInput.controller,
+                            /*decoration: PackEditorStyling.standardDecoration(
+                                "Listen Element eingeben"),*/
                           ),
                         ),
                         IconButton(
@@ -80,12 +77,10 @@ class PackConversion {
           ],
         );
       case ItemType.title:
-        return Container(
-          child: TextFormField(
-            onEditingComplete: () => save(),
-            controller: item.headContent.controller,
-            //decoration: PackEditorStyling.standardDecoration("Titel eingeben"),
-          ),
+        return TextFormField(
+          onEditingComplete: () => save(),
+          controller: item.headContent.controller,
+          //decoration: PackEditorStyling.standardDecoration("Titel eingeben"),
         );
       case ItemType.image:
         return GestureDetector(
@@ -112,16 +107,13 @@ class PackConversion {
           ),
         );
       case ItemType.text:
-        return Container(
-          //decoration: PackEditorStyling.standardInput(),
-          child: TextFormField(
-            onEditingComplete: () => save(),
-            keyboardType: TextInputType.multiline,
-            maxLines: null,
-            minLines: 3,
-            controller: item.headContent.controller,
-            //decoration: PackEditorStyling.standardDecoration("Text eingeben"),
-          ),
+        return TextFormField(
+          onEditingComplete: () => save(),
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
+          minLines: 3,
+          controller: item.headContent.controller,
+          //decoration: PackEditorStyling.standardDecoration("Text eingeben"),
         );
       default:
         return Container();

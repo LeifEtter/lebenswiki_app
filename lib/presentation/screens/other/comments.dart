@@ -52,7 +52,6 @@ class _CommentViewState extends ConsumerState<CommentView> {
           return snapshot.data!.fold(
             (CustomError left) => const Text("not found"),
             (right) {
-              print(right);
               Pack? pack;
               Short? short;
 
@@ -265,13 +264,13 @@ class _CommentViewState extends ConsumerState<CommentView> {
                       icon: Icons.flag,
                       onPress: () {},
                     ),
-              buildMenuTile(
+              /*buildMenuTile(
                 text: "Kommentieren",
                 icon: Icons.comment_outlined,
                 onPress: () {
-                  //TODO kommentieren auf kommentar implementieren
+                  //kommentieren auf kommentar implementieren
                 },
-              ),
+              ),*/
             ],
           ),
         ),

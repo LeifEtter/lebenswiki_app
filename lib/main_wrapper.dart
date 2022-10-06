@@ -16,7 +16,6 @@ import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/bottom_nav_bar.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
-import 'package:lebenswiki_app/repository/constants/shadows.dart';
 
 class NavBarWrapper extends ConsumerStatefulWidget {
   final int initialTab;
@@ -123,35 +122,10 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
                   }),
             ),
           ),
-          /*Visibility(
-            visible: _showShortCreation,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => setState(() {
-                _showShortCreation = false;
-              }),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaX: 1.5,
-                  sigmaY: 1.5,
-                ),
-                child: Center(child: _buildShortCreator()),
-              ),
-            ),
-          ),*/
         ],
       ),
     );
   }
-
-  Widget _buildShortCreator() => Container(
-        width: 300,
-        height: 300,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(15.0),
-            boxShadow: [LebenswikiShadows.fancyShadow]),
-      );
 
   Widget _buildAddButton() => SpeedDial(
         iconTheme: const IconThemeData(size: 40),

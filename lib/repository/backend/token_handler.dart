@@ -1,11 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:lebenswiki_app/repository/backend/authentication_api.dart';
 
-//TODO enable encrypt android
-/*  AndroidOptions _getAndroidOptions() => const AndroidOptions(
-        encryptedSharedPreferences: true,
-      );*/
-
 class TokenHandler {
   final storage = const FlutterSecureStorage();
 

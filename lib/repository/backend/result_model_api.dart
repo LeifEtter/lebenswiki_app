@@ -7,14 +7,12 @@ import 'package:lebenswiki_app/domain/models/user_model.dart';
 class ResultModel {
   ResultType type;
   List responseList;
-  var responseItem;
   String? message;
   String? token;
 
   ResultModel({
     required this.type,
     this.responseList = const [],
-    this.responseItem,
     this.message,
     this.token,
   });

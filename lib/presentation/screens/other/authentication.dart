@@ -13,7 +13,6 @@ import 'package:lebenswiki_app/presentation/providers/auth_providers.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/repository/constants/image_repo.dart';
 
-//TODO Add profile pick upload
 class AuthenticationView extends ConsumerStatefulWidget {
   const AuthenticationView({Key? key}) : super(key: key);
 
@@ -79,7 +78,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                   ],
                 ),
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               CustomInputField(
                 hasShadow: false,
                 backgroundColor: CustomColors.lightGrey,
@@ -89,7 +88,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                 errorText: _formProvider.email.error,
                 icon: const Icon(Icons.local_post_office),
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Visibility(
                 visible: isSignUp ? true : false,
                 child: CustomInputField(
@@ -114,7 +113,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                 icon: const Icon(Icons.key),
                 isPassword: true,
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Visibility(
                 visible: isSignUp,
                 child: CustomInputField(

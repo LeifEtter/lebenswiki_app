@@ -3,7 +3,6 @@ import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';
-import 'package:lebenswiki_app/repository/constants/image_repo.dart';
 
 class Pack {
   int? id;

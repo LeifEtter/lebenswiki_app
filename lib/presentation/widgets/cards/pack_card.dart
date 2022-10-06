@@ -271,7 +271,7 @@ class _PackCardState extends ConsumerState<PackCard> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("${progressPercentage}% fertig",
+            Text("$progressPercentage% fertig",
                 style: Theme.of(context).textTheme.blueLabel),
           ],
         ),

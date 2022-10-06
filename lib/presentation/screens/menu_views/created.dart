@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
-import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/domain/models/short_model.dart';
@@ -19,7 +18,6 @@ import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/short_card.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
-import 'package:lebenswiki_app/domain/models/category_model.dart';
 
 class PackShortLists {
   List<Pack> packs = [];
@@ -43,12 +41,6 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
 
   @override
   Widget build(BuildContext context) {
-    List<ContentCategory> categories = ref.read(categoryProvider).categories;
-    HelperData helperData = HelperData(
-      categories: categories,
-      blockedIdList: ref.read(blockedListProvider).blockedIdList,
-      currentUserId: ref.read(userProvider).user.id,
-    );
     userId = ref.read(userProvider).user.id;
     return Scaffold(
       body: SafeArea(
@@ -268,9 +260,9 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                             .ref("pack_images/${currentPack.imageIdentifier}")
                             .listAll()
                             .then((ListResult itemsInDir) {
-                          itemsInDir.items.forEach((element) {
-                            _storage.ref(element.fullPath).delete();
-                          });
+                          for (Reference item in itemsInDir.items) {
+                            _storage.ref(item.fullPath).delete();
+                          }
                         });
                       }
                       Navigator.pop(context);

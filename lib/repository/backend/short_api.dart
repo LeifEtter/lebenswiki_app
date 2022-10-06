@@ -79,7 +79,6 @@ class ShortApi extends BaseApi {
           url: "shorts/published",
           errorMessage: "Du hast noch keine shorts veröffentlicht");
 
-  //TODO implement correct root
   Future<Either<CustomError, List<Short>>> getOthersPublishedShorts() =>
       _getShorts(
           url: "shorts/published",

@@ -1,4 +1,5 @@
 import 'package:hexcolor/hexcolor.dart';
+import 'package:flutter/material.dart';
 
 class CustomColors {
   //General Colors
@@ -12,6 +13,21 @@ class CustomColors {
 
   //Background Colors
   static HexColor get lightGrey => HexColor("#F1F1F1");
+  //static LinearGradient? get blueGradientCombined => LinearGradient.lerp(blueGradient, blueGradient, blueGradient);
+  static LinearGradient get blueGradient => const LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Color.fromRGBO(130, 165, 207, 1.0),
+          Color.fromRGBO(136, 171, 213, 0.65),
+          Colors.white,
+        ],
+      );
+  
+  /*background: linear-gradient(204.48deg, rgba(129, 186, 252, 0.54) 12.89%, rgba(172, 209, 251, 0) 42.43%),
+  linear-gradient(158.07deg, #88ABD5 7.05%, rgba(136, 171, 213, 0) 70.95%),
+  linear-gradient(0deg, #B7CDE7, #B7CDE7),
+  linear-gradient(348deg, rgba(255, 255, 255, 0.88) 0.01%, rgba(255, 255, 255, 0) 50.16%);*/
 
   //Text Colors
   static HexColor get textBlack => HexColor("#272833");
