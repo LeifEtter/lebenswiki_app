@@ -66,7 +66,8 @@ class _ContactViewState extends ConsumerState<ContactView> {
                 feedbackResult.fold(
                   (left) =>
                       CustomFlushbar.error(message: left.error).show(context),
-                  (right) => CustomFlushbar.info(message: right).show(context),
+                  (right) =>
+                      CustomFlushbar.success(message: right).show(context),
                 );
               },
             ),
