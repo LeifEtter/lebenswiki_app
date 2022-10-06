@@ -20,8 +20,8 @@ class CommentApi extends BaseApi {
   }) =>
       _createComment(
         url: "comments/create/shorts/$id",
-        successMessage: "Commented on short successfully",
-        errorMessage: "Couldn't comment on short",
+        successMessage: "Erfolgreich Kommentiert",
+        errorMessage: "Kommentar konnte nicht erstellt werden",
         comment: comment,
       );
 
@@ -31,8 +31,8 @@ class CommentApi extends BaseApi {
   }) =>
       _createComment(
           url: "comments/create/pack/$id",
-          successMessage: "Commented on pack successfully",
-          errorMessage: "Couldn't comment on pack",
+          successMessage: "Erfolgreich Kommentiert",
+          errorMessage: "Kommentar konnte nicht erstellt werden",
           comment: comment);
 
   Future<Either<CustomError, String>> _createComment({
@@ -48,10 +48,10 @@ class CommentApi extends BaseApi {
     );
 
     if (statusIsSuccess(res.statusCode)) {
-      return const Right("success");
+      return Right(successMessage);
     } else {
       apiErrorHandler.logRes(res);
-      return const Left(CustomError(error: "Du konntest nicht kommentieren"));
+      return Left(CustomError(error: errorMessage));
     }
   }
 
@@ -129,8 +129,9 @@ class CommentApi extends BaseApi {
       Uri.parse("$serverIp/comments/delete/$id"),
       headers: await requestHeader(),
     );
+    print(res.body);
     if (statusIsSuccess(res.statusCode)) {
-      return const Right("Dein Kommentar wurde glöscht.");
+      return const Right("Dein Kommentar wurde gelöscht.");
     } else {
       return const Left(
           CustomError(error: "Dein Kommentar konnte nicht gelöscht werden"));
