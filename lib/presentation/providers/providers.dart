@@ -110,3 +110,27 @@ class ReloadNotifier extends ChangeNotifier {
 }
 
 final reloadProvider = ChangeNotifierProvider((ref) => ReloadNotifier());
+
+enum UserRole {
+  loggedOut,
+  admin,
+  user,
+  anonymous,
+  creator,
+}
+
+class UserRoleNotifier extends ChangeNotifier {
+  UserRole? _role;
+
+  UserRole get role => _role ?? UserRole.loggedOut;
+
+  void setRole(UserRole role) {
+    _role = role;
+  }
+
+  void clearRole(UserRole role) {
+    _role = null;
+  }
+}
+
+final userRoleProvider = ChangeNotifierProvider((ref) => UserRoleNotifier());

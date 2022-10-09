@@ -128,7 +128,7 @@ class PackApi extends BaseApi {
   Future<Either<CustomError, String>> deletePack(id) => _interactPackDelete(
       url: "packs/delete/$id",
       successMessage: "Pack successfully deleted",
-      errorMessage: "Couldn't delete Pack");
+      errorMessage: "Pack konnte nicht gelöscht werden");
 
   Future<Either<CustomError, String>> _interactPack({
     required String url,
