@@ -40,12 +40,33 @@ class ProviderHelper {
     );
   }
 
+  static Future getDataAndSessionProvidersForAnonymous(WidgetRef ref) async {
+    ResultModel categoriesResult = await MiscApi().getCategories();
+    List<ContentCategory> categories =
+        List<ContentCategory>.from(categoriesResult.responseList);
+    setSessionProvidersForAnonymous(
+      ref,
+      categories: categories,
+    );
+  }
+
+  static setSessionProvidersForAnonymous(
+    WidgetRef ref, {
+    required List<ContentCategory> categories,
+  }) {
+    ref.read(userRoleProvider).setRole(UserRole.anonymous);
+    ref.read(categoryProvider).setCategories(categories);
+    ref.read(blockedListProvider).setBlockedList([]);
+  }
+
   static setSessionProviders(
     WidgetRef ref, {
     required User user,
     required List<ContentCategory> categories,
     required List<Block> blocks,
   }) {
+    //TODO take use role
+    ref.read(userRoleProvider).setRole(UserRole.user);
     ref.read(userProvider).setUser(user);
     ref.read(categoryProvider).setCategories(categories);
     ref.read(blockedListProvider).setBlockedList(blocks);

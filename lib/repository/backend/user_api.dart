@@ -75,6 +75,21 @@ class UserApi extends BaseApi {
     }
   }
 
+  Future<Either<CustomError, String>> loginAnonymously() async {
+    Response res = await post(
+      Uri.parse("$serverIp/users/anonymous-login"),
+      headers: await requestHeader(),
+    );
+    Map decodedBody = jsonDecode(res.body);
+    if (statusIsSuccess(res.statusCode)) {
+      Map decoded = jsonDecode(res.body);
+      return Right(decoded["token"]);
+    } else {
+      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      return const Left(CustomError(error: "Login Fehlgeschlagen"));
+    }
+  }
+
   Future<Either<CustomError, User>> getUserData() async {
     Response res = await get(
       Uri.parse("$serverIp/users/profile"),

@@ -47,6 +47,7 @@ class User {
   List<dynamic> blockerUser;
   List<dynamic> blocked;
   List<UserFeedback> feedback;
+  //TODO Transform String to Enum
   String role;
 
   factory User.forProvider(Map<String, dynamic> json) => User(
