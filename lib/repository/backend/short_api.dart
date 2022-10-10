@@ -113,43 +113,44 @@ class ShortApi extends BaseApi {
 
   Future<Either<CustomError, String>> upvoteShort(id) => _interactShort(
       url: "shorts/upvote/$id",
-      successMessage: "Successfully Upvoted Short",
-      errorMessage: "Couldn't Upvote Short");
+      successMessage: "Short Bewertet",
+      errorMessage: "Short konnte nicht bewertet werden");
 
   Future<Either<CustomError, String>> downvoteShort(id) => _interactShort(
       url: "shorts/downvote/$id",
-      successMessage: "Successfully Downvoted Short",
-      errorMessage: "Couldn't Downvote Short");
+      successMessage: "Short Bewertet",
+      errorMessage: "Short konnte nicht bewertet werden");
 
   Future<Either<CustomError, String>> removeUpvoteShort(id) => _interactShort(
       url: "shorts/upvote/remove/$id",
-      successMessage: "Successfully Removed Upvote from Short",
-      errorMessage: "Couldn't Remove Upvote Short");
+      successMessage: "Bewertung entfernt",
+      errorMessage: "Bewertung konnte nicht entfernt werden");
 
   Future<Either<CustomError, String>> removeDownvoteShort(id) => _interactShort(
       url: "shorts/downvote/remove/$id",
-      successMessage: "Successfully Removed Downvote Short",
-      errorMessage: "Couldn't Remove Downvote Short");
+      successMessage: "Bewertung entfernt",
+      errorMessage: "Bewertung konnte nicht entfernt werden");
 
   Future<Either<CustomError, String>> bookmarkShort(id) => _interactShort(
       url: "shorts/bookmark/$id",
-      successMessage: "Successfully Bookmarked Short",
-      errorMessage: "Couldn't bookmark Short");
+      successMessage: "Short Gespeichert",
+      errorMessage: "Short konnte nicht gespeichert werden");
 
   Future<Either<CustomError, String>> unbookmarkShort(id) => _interactShort(
       url: "shorts/unbookmark/$id",
-      successMessage: "Successfully Removed Short from Bookmarks",
-      errorMessage: "Couldn't remove Short from bookmarks");
+      successMessage: "Short von Gespeicherten Shorts entfernt",
+      errorMessage:
+          "Short konnte nicht von gespeicherten Shorts entfernt werden");
 
   Future<Either<CustomError, String>> publishShort(id) => _interactShort(
       url: "shorts/publish/$id",
-      successMessage: "Successfully Published Short",
-      errorMessage: "Coldn't publish Short");
+      successMessage: "Short Veröffentlicht",
+      errorMessage: "Du kannst diesen Short nicht veröffentlichen");
 
   Future<Either<CustomError, String>> unpublishShort(id) => _interactShort(
       url: "shorts/unpublish/$id",
-      successMessage: "Successfully Unpublished Short",
-      errorMessage: "Coldn't Unpublish Short");
+      successMessage: "Short Privat gestellt",
+      errorMessage: "Short konnte nicht Privat gestellt werden");
 
   Future<Either<CustomError, String>> _interactShort({
     required String url,
@@ -171,14 +172,14 @@ class ShortApi extends BaseApi {
 
   Future<ResultModel> reactShort(id, reaction) => _updateShortData(
       url: "shorts/reaction/$id",
-      successMessage: "Successfully added Reaction",
-      errorMessage: "Couldn't Add Reaction",
+      successMessage: "Reaktion hinzugefügt",
+      errorMessage: "Du konntest keine Reaktion hinzufügen",
       requestBody: {"reaction": reaction});
 
   Future<ResultModel> unReactShort(id, reaction) => _updateShortData(
       url: "shorts/reaction/remove/$id",
-      successMessage: "Successfully Removed Reaction",
-      errorMessage: "Couldn't Remove Reaction",
+      successMessage: "Reaktion entfernt",
+      errorMessage: "Reaktion konnte nicht entfernt werden",
       requestBody: {"reaction": reaction});
 
   Future<ResultModel> _updateShortData({

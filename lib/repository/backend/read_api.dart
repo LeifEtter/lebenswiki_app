@@ -26,7 +26,7 @@ class ReadApi extends BaseApi {
       return Right(reads);
     } else {
       apiErrorHandler.logRes(res);
-      return const Left(CustomError(error: "Irgendwas ist schiefgelaufen"));
+      return const Left(CustomError(error: "irgendwas ist schiefgelaufen"));
     }
   }
 
@@ -39,7 +39,8 @@ class ReadApi extends BaseApi {
       return Right(Read.fromJson(jsonDecode(res.body)["read"]));
     } else {
       apiErrorHandler.logRes(res);
-      return const Left(CustomError(error: "Irgendwas ist schiefgelaufen"));
+      return const Left(
+          CustomError(error: "Pack konnte nicht angefangen werden"));
     }
   }
 
@@ -53,10 +54,11 @@ class ReadApi extends BaseApi {
       }),
     );
     if (statusIsSuccess(res.statusCode)) {
-      return const Right("Progress Updates");
+      return const Right("Fortschritt Gespeichert");
     } else {
       apiErrorHandler.logRes(res);
-      return const Left(CustomError(error: "Irgendwas ist schiefgelaufen"));
+      return const Left(
+          CustomError(error: "Fortschritt konnte nicht gespeichert werden"));
     }
   }
 }

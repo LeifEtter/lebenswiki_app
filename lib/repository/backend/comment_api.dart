@@ -80,23 +80,23 @@ class CommentApi extends BaseApi {
 
   Future<ResultModel> upvoteComment(id) => _interactComment(
       url: "comments/upvote/$id",
-      successMessage: "Successfully Upvoted Comment",
-      errorMessage: "Couldn't Upvote Comment");
+      successMessage: "Kommentar bewertet",
+      errorMessage: "Kommentar konnte nicht bewertet werden");
 
   Future<ResultModel> downvoteComment(id) => _interactComment(
       url: "comments/downvote/$id",
-      successMessage: "Successfully Downvoted Comment",
-      errorMessage: "Couldn't Downvote Comment");
+      successMessage: "Kommentar bewertet",
+      errorMessage: "Kommentar konnte nicht bewertet werden");
 
   Future<ResultModel> removeUpvoteComment(id) => _interactComment(
       url: "comments/upvote/remove/$id",
-      successMessage: "Successfully Removed Upvote from Comment",
-      errorMessage: "Couldn't Remove Upvote Comment");
+      successMessage: "Bewertung wurde entfernt",
+      errorMessage: "Bewertung konnte nicht entfernt werden");
 
   Future<ResultModel> removeDownvoteComment(id) => _interactComment(
       url: "comments/downvote/remove/$id",
-      successMessage: "Successfully Removed Downvote Comment",
-      errorMessage: "Couldn't Remove Downvote Comment");
+      successMessage: "Bewertung wurde entfernt",
+      errorMessage: "Bewertung konnte nicht entfernt werden");
 
   Future<ResultModel> _interactComment({
     required String url,
@@ -129,7 +129,6 @@ class CommentApi extends BaseApi {
       Uri.parse("$serverIp/comments/delete/$id"),
       headers: await requestHeader(),
     );
-    print(res.body);
     if (statusIsSuccess(res.statusCode)) {
       return const Right("Dein Kommentar wurde gelöscht.");
     } else {

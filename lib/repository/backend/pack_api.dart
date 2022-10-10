@@ -96,23 +96,23 @@ class PackApi extends BaseApi {
 
   Future<Either<CustomError, String>> upvotePack(id) => _interactPack(
       url: "packs/upvote/$id",
-      successMessage: "Successfully Upvoted Pack",
-      errorMessage: "Couldn't Upvote Pack");
+      successMessage: "Pack Bewertet",
+      errorMessage: "Pack konnte nicht bewertet werden");
 
   Future<Either<CustomError, String>> downvotePack(id) => _interactPack(
       url: "packs/downvote/$id",
-      successMessage: "Successfully Downvoted Pack",
-      errorMessage: "Couldn't Downvote Pack");
+      successMessage: "Pack Bewertet",
+      errorMessage: "Pack konnte nicht bewertet werden");
 
   Future<Either<CustomError, String>> removeUpvotePack(id) => _interactPack(
       url: "packs/upvote/remove/$id",
-      successMessage: "Successfully Removed Upvote from Pack",
-      errorMessage: "Couldn't Remove Upvote Pack");
+      successMessage: "Bewertung entfernt",
+      errorMessage: "Bewertung konnte nicht entfernt werden");
 
   Future<Either<CustomError, String>> removeDownvotePack(id) => _interactPack(
       url: "packs/downvote/remove/$id",
-      successMessage: "Successfully Removed Downvote Pack",
-      errorMessage: "Couldn't Remove Downvote Pack");
+      successMessage: "Bewertung entfernt",
+      errorMessage: "Bewertung konnte nicht entfernt werden");
 
   Future<Either<CustomError, String>> bookmarkPack(id) => _interactPack(
       url: "packs/bookmark/$id",
@@ -127,7 +127,7 @@ class PackApi extends BaseApi {
 
   Future<Either<CustomError, String>> deletePack(id) => _interactPackDelete(
       url: "packs/delete/$id",
-      successMessage: "Pack successfully deleted",
+      successMessage: "Pack gelöscht",
       errorMessage: "Pack konnte nicht gelöscht werden");
 
   Future<Either<CustomError, String>> _interactPack({
@@ -169,23 +169,23 @@ class PackApi extends BaseApi {
   Future<Either<CustomError, String>> reactPack(id, reaction) =>
       _updatePackData(
           url: "packs/reaction/$id",
-          successMessage: "Successfully added Reaction",
-          errorMessage: "Couldn't Add Reaction",
+          successMessage: "Reaktion hinzugefügt",
+          errorMessage: "Reaktion konnte nicht hinzugefügt werden",
           requestBody: {"reaction": reaction});
 
   Future<Either<CustomError, String>> unReactPack(id, reaction) =>
       _updatePackData(
           url: "packs/reaction/remove/$id",
-          successMessage: "Successfully Removed Reaction",
-          errorMessage: "Couldn't Remove Reaction",
+          successMessage: "Reaktion entfernt",
+          errorMessage: "Reaktion konnte nicht entfernt werden",
           requestBody: {"reaction": reaction});
 
   Future<Either<CustomError, String>> updatePack(
           {required int id, required Pack pack}) =>
       _updatePackData(
           url: "packs/update/$id",
-          successMessage: "Pack updated Successfully",
-          errorMessage: "Pack couldn't be updated",
+          successMessage: "Pack Gespeichert",
+          errorMessage: "Pack konnte nich gespeichert werden",
           requestBody: pack.toJson());
 
   Future<Either<CustomError, String>> _updatePackData({

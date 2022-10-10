@@ -15,14 +15,14 @@ class ReportApi extends BaseApi {
 
   Future<ResultModel> reportPack({required Report report}) => createReport(
       url: "reports/create/pack/${report.reportedContentId}",
-      successMessage: "Successfully Reported Pack",
-      errorMessage: "Couldn't Report Pack",
+      successMessage: "Pack Gemeldet",
+      errorMessage: "Pack konnte nicht gemeldet werden",
       requestBody: {"reason": report.reason});
 
   Future<ResultModel> reportShort({required Report report}) => createReport(
       url: "reports/create/short/${report.reportedContentId}",
-      successMessage: "Successfully Reported Short",
-      errorMessage: "Couldn't Report Short",
+      successMessage: "Short Gemeldet",
+      errorMessage: "Short konnte nicht gemeldet werden",
       requestBody: {"reason": report.reason});
 
   Future<ResultModel> createReport({
