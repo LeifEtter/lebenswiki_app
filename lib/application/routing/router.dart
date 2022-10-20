@@ -13,6 +13,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case authenticationWrapperRoute:
       return PageRouteBuilder(
+        settings: settings,
         pageBuilder: (context, animation, secondaryAnimation) =>
             const AuthWrapper(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -31,34 +32,42 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       );
     case authenticationViewRoute:
       return MaterialPageRoute(
-          builder: (context) => const AuthenticationView());
+        settings: settings,
+        builder: (context) => const AuthenticationView(),
+      );
     case contactViewRoute:
       return MaterialPageRoute(
+        settings: settings,
         builder: (context) => const ContactView(),
       );
     case developerViewRoute:
       return MaterialPageRoute(
+        settings: settings,
         builder: (context) => const AboutUsView(),
       );
     case profileViewRoute:
       return MaterialPageRoute(
+        settings: settings,
         builder: (context) => const ProfileView(),
       );
     case savedViewRoute:
       return MaterialPageRoute(
+        settings: settings,
         builder: (context) => const SavedView(),
       );
     case createdViewRoute:
       return MaterialPageRoute(
+        settings: settings,
         builder: (context) => const CreatedView(),
-        settings: const RouteSettings(name: "/created"),
       );
     case createShort:
       return MaterialPageRoute(
+        settings: settings,
         builder: (context) => const ShortCreationView(),
       );
     default:
       return MaterialPageRoute(
+        settings: settings,
         builder: (context) => const AuthWrapper(),
       );
   }

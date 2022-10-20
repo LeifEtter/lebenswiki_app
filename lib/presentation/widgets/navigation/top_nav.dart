@@ -37,7 +37,8 @@ class TopNavIOS extends StatelessWidget {
               child: IconButton(
                 onPressed: () {
                   if (isPopMenu) {
-                    //Navigator.popUntil(context, ModalRoute.withName("/home"));
+                    Navigator.popUntil(
+                        context, ModalRoute.withName("/wrapper"));
                   } else {
                     Navigator.pop(context);
                   }
