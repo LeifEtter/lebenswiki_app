@@ -79,16 +79,22 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
 
   Future<Widget> determineWidget() async {
     SharedPreferences _shared = await SharedPreferences.getInstance();
+    String? existingToken = await TokenHandler().get();
 
+    //Get Auth Type from Storage and transform into enum
     String? authTypeString = _shared.getString("authType") ?? "newUser";
-
     AuthType authType =
         EnumToString.fromString(AuthType.values, authTypeString) ??
             AuthType.error;
 
+    //If Token exists set authType to user
+    if (existingToken != null) {
+      authType = AuthType.user;
+    }
+
     switch (authType) {
       case AuthType.newUser:
-        return const OnboardingView();
+        return const OnboardingViewStart();
       case AuthType.error:
         return const Center(child: Text("Etwas ist schiefgelaufen"));
       case AuthType.anonymous:
