@@ -80,7 +80,6 @@ class UserApi extends BaseApi {
       Uri.parse("$serverIp/users/anonymous-login"),
       headers: await requestHeader(),
     );
-    Map decodedBody = jsonDecode(res.body);
     if (statusIsSuccess(res.statusCode)) {
       Map decoded = jsonDecode(res.body);
       return Right(decoded["token"]);

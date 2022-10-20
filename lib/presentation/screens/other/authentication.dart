@@ -267,6 +267,10 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                       toggleSignIn();
                     },
                   ),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text("Anonym Fortfahren"),
+                  ),
                 ],
               ),
             ],

@@ -65,8 +65,7 @@ class ProviderHelper {
     required List<ContentCategory> categories,
     required List<Block> blocks,
   }) {
-    //TODO take use role
-    ref.read(userRoleProvider).setRole(UserRole.user);
+    ref.read(userRoleProvider).setRole(user.role);
     ref.read(userProvider).setUser(user);
     ref.read(categoryProvider).setCategories(categories);
     ref.read(blockedListProvider).setBlockedList(blocks);
