@@ -1,8 +1,14 @@
+import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/main_wrapper.dart';
+import 'package:lebenswiki_app/presentation/providers/provider_helper.dart';
 import 'package:lebenswiki_app/presentation/screens/other/authentication.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/expand_row.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/lw.dart';
+import 'package:lebenswiki_app/repository/backend/token_handler.dart';
+import 'package:lebenswiki_app/repository/backend/user_api.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -92,9 +98,29 @@ class _OnboardingViewStartState extends ConsumerState<OnboardingViewStart> {
                 action: () async {
                   SharedPreferences _preferences =
                       await SharedPreferences.getInstance();
+                  await UserApi().loginAnonymously().fold(
+                    (left) {
+                      CustomFlushbar.error(
+                              message:
+                                  "Anonyme Registrierung ist nicht möglich")
+                          .show(context);
+                    },
+                    (right) async {
+                      await TokenHandler().set(right);
+                      await ProviderHelper
+                          .getDataAndSessionProvidersForAnonymous(ref);
 
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Scaffold(
+                            body: NavBarWrapper(),
+                          ),
+                        ),
+                      );
+                    },
+                  );
                   _preferences.setBool("onboardingFinished", true);
-                  
                 },
               ),
             ],
