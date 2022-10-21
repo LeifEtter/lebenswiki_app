@@ -34,9 +34,26 @@ class Authentication {
   static void logout(context, WidgetRef ref) async {
     TokenHandler().delete();
     ProviderHelper.resetSessionProviders(ref);
+    Navigator.of(context).push(_logoutRoute());
+  }
 
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const AuthWrapper(),
-    ));
+  static Route _logoutRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          const AuthWrapper(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(-1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
   }
 }
