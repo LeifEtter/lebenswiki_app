@@ -5,6 +5,7 @@ import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/short_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/other.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/bottom_menu.dart';
 import 'package:lebenswiki_app/repository/backend/short_api.dart';
@@ -34,11 +35,12 @@ class CommentView extends ConsumerStatefulWidget {
 
 class _CommentViewState extends ConsumerState<CommentView> {
   late User user;
+  late UserRole userRole;
   TextEditingController commentController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     user = ref.read(userProvider).user;
-
+    userRole = ref.read(userRoleProvider).role;
     return Scaffold(
       body: FutureBuilder(
         future: widget.isShort
@@ -81,7 +83,16 @@ class _CommentViewState extends ConsumerState<CommentView> {
                         horizontalPadding: 20,
                         topPadding: 15,
                         innerPadding: 15,
-                        onPressed: () => _openCommentField(),
+                        onPressed: () {
+                          if (userRole == UserRole.anonymous) {
+                            showDialog(
+                                context: context,
+                                builder: (context) =>
+                                    const RegisterRequestPopup());
+                          } else {
+                            _openCommentField();
+                          }
+                        },
                         backgroundColor: Colors.blueAccent,
                         itemColors: Colors.white,
                       ),
