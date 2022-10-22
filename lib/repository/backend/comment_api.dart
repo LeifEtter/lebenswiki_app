@@ -50,7 +50,7 @@ class CommentApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return Right(successMessage);
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return Left(CustomError(error: errorMessage));
     }
   }
@@ -70,7 +70,8 @@ class CommentApi extends BaseApi {
         message: "Reagiert",
       );
     } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      apiErrorHandler.handleAndLog(
+          reponseData: jsonDecode(res.body), trace: StackTrace.current);
       return ResultModel(
         type: ResultType.failure,
         message: "Konnte nicht reagieren",
@@ -114,10 +115,12 @@ class CommentApi extends BaseApi {
           message: successMessage,
         );
       } else {
-        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+        apiErrorHandler.handleAndLog(
+            reponseData: jsonDecode(res.body), trace: StackTrace.current);
       }
     }).catchError((error) {
-      apiErrorHandler.handleAndLog(reponseData: error);
+      apiErrorHandler.handleAndLog(
+          reponseData: error, trace: StackTrace.current);
     });
     return result;
   }

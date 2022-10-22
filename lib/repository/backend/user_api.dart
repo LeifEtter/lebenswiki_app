@@ -44,7 +44,8 @@ class UserApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return const Right("Erfolgreich");
     } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      apiErrorHandler.handleAndLog(
+          reponseData: jsonDecode(res.body), trace: StackTrace.current);
       return const Left(
           CustomError(error: "User acount konnte nicht erstellt werden"));
     }
@@ -70,7 +71,8 @@ class UserApi extends BaseApi {
         user: User.forContent(decoded["user"]),
       ));
     } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      apiErrorHandler.handleAndLog(
+          reponseData: jsonDecode(res.body), trace: StackTrace.current);
       return Left(CustomError(error: decodedBody["error"]["errorMessage"]));
     }
   }
@@ -84,7 +86,8 @@ class UserApi extends BaseApi {
       Map decoded = jsonDecode(res.body);
       return Right(decoded["token"]);
     } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      apiErrorHandler.handleAndLog(
+          reponseData: jsonDecode(res.body), trace: StackTrace.current);
       return const Left(CustomError(error: "Login Fehlgeschlagen"));
     }
   }
@@ -98,7 +101,7 @@ class UserApi extends BaseApi {
       User user = User.forProvider(jsonDecode(res.body)["user"]);
       return Right(user);
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return const Left(
         CustomError(error: "Konnte benutzer daten nicht abfragen"),
       );
@@ -119,7 +122,8 @@ class UserApi extends BaseApi {
       return ResultModel(
           type: ResultType.success, message: "Password erfolgreich geändert");
     } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      apiErrorHandler.handleAndLog(
+          reponseData: jsonDecode(res.body), trace: StackTrace.current);
       String errorMessage = jsonDecode(res.body)["error"]["errorMessage"];
       return ResultModel(
         type: ResultType.failure,
@@ -144,7 +148,8 @@ class UserApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return const Right("Profil erfolgreich geändert");
     } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      apiErrorHandler.handleAndLog(
+          reponseData: jsonDecode(res.body), trace: StackTrace.current);
       return const Left(
           CustomError(error: "Profil konnte nicht geändert werden"));
     }
@@ -162,7 +167,7 @@ class UserApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return const Right("Erfolgreich");
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return const Left(CustomError(error: "Irgendwas ist schiefgelaufen"));
     }
   }
@@ -184,7 +189,8 @@ class UserApi extends BaseApi {
         message: "User erfolgreich geblockt",
       );
     } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      apiErrorHandler.handleAndLog(
+          reponseData: jsonDecode(res.body), trace: StackTrace.current);
       return ResultModel(
         type: ResultType.failure,
         message: "User konnte nicht blockiert werden",
@@ -228,7 +234,8 @@ class UserApi extends BaseApi {
         message: "Feedback wurde erstellt",
       );
     } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      apiErrorHandler.handleAndLog(
+          reponseData: jsonDecode(res.body), trace: StackTrace.current);
       return ResultModel(
         type: ResultType.failure,
         message: "Feedback konnte nicht erstellt werden",

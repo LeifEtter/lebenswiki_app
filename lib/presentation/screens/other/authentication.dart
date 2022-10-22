@@ -285,7 +285,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                           await TokenHandler().set(right);
                           await ProviderHelper
                               .getDataAndSessionProvidersForAnonymous(ref);
-
+                          _preferences.setString("authType", "anonymous");
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

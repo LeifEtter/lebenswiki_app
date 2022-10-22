@@ -8,6 +8,7 @@ import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/short_model.dart';
+import 'package:lebenswiki_app/repository/backend/token_handler.dart';
 
 class ShortApi extends BaseApi {
   late ApiErrorHandler apiErrorHandler;
@@ -29,7 +30,7 @@ class ShortApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return const Right("Short wurde Erstellt");
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return const Left(
           CustomError(error: "Short konnten nicht Erstellt werden"));
     }
@@ -57,7 +58,7 @@ class ShortApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return Right(Short.fromJson(jsonDecode(res.body)["short"]));
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return const Left(CustomError(error: "Short wurde nicht gefunden"));
     }
   }
@@ -81,7 +82,7 @@ class ShortApi extends BaseApi {
 
   Future<Either<CustomError, List<Short>>> getOthersPublishedShorts() =>
       _getShorts(
-          url: "shorts/published",
+          url: "shorts/",
           errorMessage: "Dieser Benutzer hat noch keine shorts veröffentlicht");
 
   Future<Either<CustomError, List<Short>>> getBookmarkedShorts() => _getShorts(
@@ -106,7 +107,7 @@ class ShortApi extends BaseApi {
           .toList());
       return Right(shorts);
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return const Left(CustomError(error: "Keine Shorts gefunden"));
     }
   }
@@ -165,7 +166,7 @@ class ShortApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return Right(successMessage);
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return Left(CustomError(error: errorMessage));
     }
   }
@@ -202,10 +203,12 @@ class ShortApi extends BaseApi {
           message: successMessage,
         );
       } else {
-        apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+        apiErrorHandler.handleAndLog(
+            reponseData: jsonDecode(res.body), trace: StackTrace.current);
       }
     }).catchError((error) {
-      apiErrorHandler.handleAndLog(reponseData: error);
+      apiErrorHandler.handleAndLog(
+          reponseData: error, trace: StackTrace.current);
     });
     return result;
   }

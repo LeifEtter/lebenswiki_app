@@ -21,6 +21,7 @@ import 'package:enum_to_string/enum_to_string.dart';
 
 enum AuthType {
   newUser,
+  loggedOut,
   error,
   user,
   anonymous,
@@ -88,13 +89,15 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
             AuthType.error;
 
     //If Token exists set authType to user
-    if (existingToken != null) {
+    /*if (existingToken != null) {
       authType = AuthType.user;
-    }
+    }*/
 
     switch (authType) {
       case AuthType.newUser:
         return const OnboardingViewStart();
+      case AuthType.loggedOut:
+        return const AuthenticationView();
       case AuthType.error:
         return const Center(child: Text("Etwas ist schiefgelaufen"));
       case AuthType.anonymous:
