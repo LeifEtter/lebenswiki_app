@@ -2,6 +2,9 @@ import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:lebenswiki_app/domain/models/read_model.dart';
+import 'package:lebenswiki_app/domain/models/user_model.dart';
+import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/packs/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/sliver_appbar.dart';
@@ -27,6 +30,8 @@ class ViewPack extends ConsumerStatefulWidget {
 class _ViewPackState extends ConsumerState<ViewPack> {
   late String profileImage;
   late int fakeReads;
+  late User user;
+  late UserRole userRole;
 
   @override
   void initState() {
@@ -37,7 +42,10 @@ class _ViewPackState extends ConsumerState<ViewPack> {
   Widget build(BuildContext context) {
     profileImage = widget.pack.creator!.profileImage;
     int unixTime = widget.pack.creationDate.millisecond;
+
     double calculated = unixTime / 2;
+    user = ref.read(userProvider).user;
+    userRole = ref.read(userRoleProvider).role;
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -164,19 +172,34 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                     color: CustomColors.blue,
                     text: "Pack Starten",
                     action: () async {
-                      await ReadApi().create(packId: widget.pack.id!).fold(
-                          (left) {
-                        CustomFlushbar.error(message: left.error).show(context);
-                      }, (right) {
-                        right.pack = widget.pack;
+                      if (userRole == UserRole.anonymous) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => PackViewerStarted(
-                                      read: right,
-                                      heroName: widget.heroName,
-                                    )));
-                      });
+                              builder: (context) => PackViewerStarted(
+                                  read: Read(
+                                    pack: widget.pack,
+                                    packId: widget.pack.id!,
+                                    userId: user.id,
+                                  ),
+                                  heroName: widget.heroName),
+                            ));
+                      } else {
+                        await ReadApi().create(packId: widget.pack.id!).fold(
+                            (left) {
+                          CustomFlushbar.error(message: left.error)
+                              .show(context);
+                        }, (right) {
+                          right.pack = widget.pack;
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PackViewerStarted(
+                                        read: right,
+                                        heroName: widget.heroName,
+                                      )));
+                        });
+                      }
                     },
                   ),
                 ],

@@ -111,6 +111,32 @@ class ReloadNotifier extends ChangeNotifier {
 
 final reloadProvider = ChangeNotifierProvider((ref) => ReloadNotifier());
 
+UserRole stringToRole(String role) {
+  switch (role) {
+    case "CREATOR":
+      return UserRole.creator;
+    case "USER":
+      return UserRole.user;
+    case "ADMIN":
+      return UserRole.admin;
+    default:
+      return UserRole.anonymous;
+  }
+}
+
+String roleToString(UserRole role) {
+  switch (role) {
+    case UserRole.admin:
+      return "ADMIN";
+    case UserRole.user:
+      return "USER";
+    case UserRole.creator:
+      return "CREATOR";
+    default:
+      return "ANONYMOUS";
+  }
+}
+
 enum UserRole {
   loggedOut,
   admin,

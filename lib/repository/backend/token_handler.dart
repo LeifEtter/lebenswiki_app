@@ -8,8 +8,8 @@ class TokenHandler {
     await storage.write(key: "token", value: token);
   }
 
-  Future<String> get() async {
-    String token = await storage.read(key: "token") ?? "";
+  Future<String?> get() async {
+    String? token = await storage.read(key: "token");
     return token;
   }
 
@@ -18,8 +18,8 @@ class TokenHandler {
   }
 
   Future<bool> authenticateCurrentToken() async {
-    String token = await get();
-    if (token.isEmpty) return false;
+    String? token = await get();
+    if (token == null) return false;
     return await AuthApi.authenticate(token: token);
   }
 }

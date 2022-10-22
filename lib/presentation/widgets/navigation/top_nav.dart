@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/main_wrapper.dart';
 
 class TopNavIOS extends StatelessWidget {
   final String title;
@@ -37,7 +38,7 @@ class TopNavIOS extends StatelessWidget {
               child: IconButton(
                 onPressed: () {
                   if (isPopMenu) {
-                    Navigator.popUntil(context, (route) => route.isFirst);
+                    Navigator.of(context).push(_homeRoute());
                   } else {
                     Navigator.pop(context);
                   }
@@ -66,6 +67,26 @@ class TopNavIOS extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Route _homeRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          const NavBarWrapper(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(-1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
     );
   }
 }

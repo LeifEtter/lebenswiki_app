@@ -2,9 +2,11 @@ import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/presentation/providers/provider_helper.dart';
 import 'package:lebenswiki_app/presentation/screens/other/avatar_screen.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/lw.dart';
+import 'package:lebenswiki_app/repository/backend/token_handler.dart';
 import 'package:lebenswiki_app/repository/backend/user_api.dart';
 import 'package:lebenswiki_app/main_wrapper.dart';
 import 'package:lebenswiki_app/presentation/widgets/input/custom_form_field.dart';
@@ -13,6 +15,7 @@ import 'package:lebenswiki_app/presentation/providers/auth_providers.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/repository/constants/image_repo.dart';
 import 'package:lebenswiki_app/repository/constants/uri_repo.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AuthenticationView extends ConsumerStatefulWidget {
@@ -131,7 +134,8 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                 ),
               ),
               const SizedBox(height: 8),
-              Row(
+              //TODO Add Forgot Password button
+              /*Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
@@ -142,7 +146,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                     ),
                   )
                 ],
-              ),
+              ),*/
               const SizedBox(height: 20),
               const SizedBox(height: 5),
               LW.buttons.normal(
@@ -258,7 +262,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                     child: Text(
                       isSignUp ? "Du hast schon ein Account?" : "Registrieren",
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 14,
                         color: CustomColors.darkBlue,
                       ),
                     ),
@@ -266,6 +270,42 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                       _formProvider.resetErrors();
                       toggleSignIn();
                     },
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      SharedPreferences _preferences =
+                          await SharedPreferences.getInstance();
+                      await UserApi().loginAnonymously().fold(
+                        (left) {
+                          CustomFlushbar.error(
+                                  message:
+                                      "Anonyme Registrierung ist nicht möglich")
+                              .show(context);
+                        },
+                        (right) async {
+                          await TokenHandler().set(right);
+                          await ProviderHelper
+                              .getDataAndSessionProvidersForAnonymous(ref);
+                          _preferences.setString("authType", "anonymous");
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Scaffold(
+                                body: NavBarWrapper(),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                      _preferences.setBool("onboardingFinished", true);
+                    },
+                    child: Text(
+                      "Anonymer Login",
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: CustomColors.blue,
+                      ),
+                    ),
                   ),
                 ],
               ),

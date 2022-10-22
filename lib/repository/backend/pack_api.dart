@@ -23,7 +23,7 @@ class PackApi extends BaseApi {
       Pack pack = Pack.fromJson(jsonDecode(res.body)["pack"]);
       return Right(pack);
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return const Left(CustomError(error: "Irgendwas ist schiefgelaufen"));
     }
   }
@@ -39,7 +39,7 @@ class PackApi extends BaseApi {
       int id = jsonDecode(res.body)["pack"]["id"];
       return Right(id);
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return const Left(
           CustomError(error: "Pack konnte nicht erstellt werden"));
     }
@@ -89,7 +89,7 @@ class PackApi extends BaseApi {
           .toList());
       return Right(packs);
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return const Left(CustomError(error: "Konnte kein Packs finden"));
     }
   }
@@ -143,7 +143,7 @@ class PackApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return Right(successMessage);
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return Left(CustomError(error: errorMessage));
     }
   }
@@ -161,7 +161,7 @@ class PackApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return Right(successMessage);
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return Left(CustomError(error: errorMessage));
     }
   }
@@ -203,7 +203,7 @@ class PackApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return const Right("Pack Gespeichert");
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return const Left(
           CustomError(error: "Pack konnte nicht gespeichert werden."));
     }
@@ -231,7 +231,7 @@ class PackApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return Right(successMessage);
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return Left(CustomError(error: errorMessage));
     }
   }
@@ -244,7 +244,7 @@ class PackApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return const Right("Geklatscht!");
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return const Left(
           CustomError(error: "Ups, du kannst nicht mehr klatschen."));
     }

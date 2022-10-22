@@ -31,12 +31,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    UserRole userRole = ref.read(userRoleProvider).role;
+
     return RefreshIndicator(
       onRefresh: () async {
         ref.read(reloadProvider).reload();
       },
       child: FutureBuilder(
-          future: ReadApi().getAll(),
+          future: ReadApi().getAll(userRole),
           builder: (BuildContext context,
               AsyncSnapshot<Either<CustomError, List<Read>>> snapshot) {
             if (LoadingHelper.isLoading(snapshot)) {

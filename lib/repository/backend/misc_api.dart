@@ -33,7 +33,8 @@ class MiscApi extends BaseApi {
         responseList: categories,
       );
     } else {
-      apiErrorHandler.handleAndLog(reponseData: jsonDecode(res.body));
+      apiErrorHandler.handleAndLog(
+          reponseData: jsonDecode(res.body), trace: StackTrace.current);
       return ResultModel(
         type: ResultType.failure,
         message: "Keine Kategorien gefunden",
@@ -53,7 +54,7 @@ class MiscApi extends BaseApi {
     if (statusIsSuccess(res.statusCode)) {
       return const Right("Feedback erfolgreich verschickt");
     } else {
-      apiErrorHandler.logRes(res);
+      apiErrorHandler.logRes(res, StackTrace.current);
       return const Left(CustomError(
         error: "Feedback konnte nicht verschickt werden",
       ));

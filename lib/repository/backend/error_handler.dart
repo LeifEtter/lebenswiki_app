@@ -7,12 +7,13 @@ class ApiErrorHandler {
 
   String handleAndLog({
     required Map reponseData,
+    required StackTrace trace,
   }) {
-    log("API Error: $reponseData");
+    log("API Error: $reponseData", stackTrace: trace);
     return "Error";
   }
 
-  logRes(Response res) {
-    log("API Error: ${res.body}");
+  logRes(Response res, StackTrace trace) {
+    log("API Error: ${res.body}", stackTrace: trace);
   }
 }

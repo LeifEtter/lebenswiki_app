@@ -8,7 +8,7 @@ class BaseApi {
   Future<Map<String, String>> requestHeader() async {
     return {
       "Content-type": "application/json",
-      "authorization": await TokenHandler().get(),
+      "authorization": await TokenHandler().get() ?? "",
     };
   }
 

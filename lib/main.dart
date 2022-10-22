@@ -1,18 +1,31 @@
+import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/presentation/providers/provider_helper.dart';
 import 'package:lebenswiki_app/presentation/screens/other/onboarding.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/repository/backend/token_handler.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/theme.dart';
 import 'package:lebenswiki_app/main_wrapper.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/application/routing/router.dart';
+import 'package:lebenswiki_app/repository/backend/user_api.dart';
 import 'package:lebenswiki_app/repository/constants/routing_constants.dart';
 import 'package:lebenswiki_app/presentation/screens/other/authentication.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'repository/firebase_options.dart';
+import 'package:enum_to_string/enum_to_string.dart';
+
+enum AuthType {
+  newUser,
+  loggedOut,
+  error,
+  user,
+  anonymous,
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,44 +69,70 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: startOrDenySession(ref),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
+        future: determineWidget(),
+        builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
           if (LoadingHelper.isLoading(snapshot)) {
             return LoadingHelper.loadingIndicator();
           }
-          if (snapshot.data == true) {
-            return const NavBarWrapper();
-          }
-          return FutureBuilder(
-            future: hasFinishedOnboarding(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (LoadingHelper.isLoading(snapshot)) {
-                return LoadingHelper.loadingIndicator();
-              }
-              return snapshot.data
-                  ? const AuthenticationView()
-                  : const OnboardingViewStart();
-            },
-          );
+          return snapshot.data!;
         });
   }
 
-  Future<bool?> hasFinishedOnboarding() async {
+  Future<Widget> determineWidget() async {
     SharedPreferences _shared = await SharedPreferences.getInstance();
-    bool finished = _shared.getBool("onboardingFinished") ?? false;
-    return finished;
-  }
+    String? existingToken = await TokenHandler().get();
+    //TODO Test token stuff
 
-  Future<bool> startOrDenySession(WidgetRef ref) async {
-    bool isValid = await TokenHandler().authenticateCurrentToken();
-    if (isValid) {
-      //In case data has changed set Providers again
-      ProviderHelper.resetSessionProviders(ref);
+    //Get Auth Type from Storage and transform into enum
+    String? authTypeString = _shared.getString("authType") ?? "newUser";
+    AuthType authType =
+        EnumToString.fromString(AuthType.values, authTypeString) ??
+            AuthType.error;
 
-      await ProviderHelper.getDataAndSetSessionProviders(ref);
-      return true;
-    } else {
-      return false;
+    //If Token exists set authType to user
+    /*if (existingToken != null) {
+      authType = AuthType.user;
+    }*/
+
+    switch (authType) {
+      case AuthType.newUser:
+        return const OnboardingViewStart();
+      case AuthType.loggedOut:
+        return const AuthenticationView();
+      case AuthType.error:
+        return const Center(child: Text("Etwas ist schiefgelaufen"));
+      case AuthType.anonymous:
+        bool authenticated = await UserApi().authenticate();
+        if (authenticated) {
+          ProviderHelper.resetSessionProviders(ref);
+          await ProviderHelper.getDataAndSessionProvidersForAnonymous(ref);
+          return const NavBarWrapper();
+        } else {
+          Either<CustomError, String> loginResult =
+              await UserApi().loginAnonymously();
+          if (loginResult.isLeft) {
+            CustomFlushbar.error(
+                    message: "Du konntest nicht anonym angemeldet werden")
+                .show(context);
+            return const AuthenticationView();
+          } else {
+            await TokenHandler().set(loginResult.right);
+            return const NavBarWrapper();
+          }
+        }
+      case AuthType.user:
+        bool authenticated = await UserApi().authenticate();
+        if (authenticated) {
+          ProviderHelper.resetSessionProviders(ref);
+          await ProviderHelper.getDataAndSetSessionProviders(ref);
+          return const NavBarWrapper();
+        } else {
+          CustomFlushbar.error(
+                  message:
+                      "Du wurdest ausgeloggt und musst dich wieder einloggen")
+              .show(context);
+          return const AuthenticationView();
+        }
     }
   }
 }

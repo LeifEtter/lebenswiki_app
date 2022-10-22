@@ -10,6 +10,7 @@ import 'package:lebenswiki_app/presentation/screens/main_views/community.dart';
 import 'package:lebenswiki_app/presentation/screens/main_views/explore.dart';
 import 'package:lebenswiki_app/presentation/screens/main_views/home.dart';
 import 'package:lebenswiki_app/presentation/screens/packs/creator_information.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/appbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/bottom_menu.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
@@ -62,8 +63,9 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
       currentUserId: ref.read(userProvider).user.id,
     );
     ref.watch(reloadProvider);
+    UserRole userRole = ref.watch(userRoleProvider).role;
     return Scaffold(
-      floatingActionButton: _buildAddButton(),
+      floatingActionButton: _buildAddButton(userRole),
       backgroundColor: Colors.white,
       extendBody: true,
       bottomNavigationBar: CustomBottomBar(
@@ -83,6 +85,7 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
                             context,
                             ref,
                             () => setState(() {}),
+                            userRole,
                           )),
                   if (_showSearch) SearchBar(searchController: searchController)
                 ];
@@ -127,7 +130,7 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
     );
   }
 
-  Widget _buildAddButton() => SpeedDial(
+  Widget _buildAddButton(UserRole role) => SpeedDial(
         iconTheme: const IconThemeData(size: 40),
         backgroundColor: CustomColors.blue,
         direction: SpeedDialDirection.up,
@@ -136,19 +139,35 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
           SpeedDialChild(
             label: "Lernpack Erstellen",
             child: const Icon(Icons.comment),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const CreatorPackInfo(),
-              ),
-            ),
+            onTap: () {
+              if (role == UserRole.anonymous) {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        const RegisterRequestPopup());
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CreatorPackInfo(),
+                  ),
+                );
+              }
+            },
           ),
           SpeedDialChild(
               label: "Short Erstellen",
               child: const Icon(Icons.add),
               onTap: () async {
-                await Navigator.pushNamed(context, '/createShort');
-                setState(() {});
+                if (role == UserRole.anonymous) {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) =>
+                          const RegisterRequestPopup());
+                } else {
+                  await Navigator.pushNamed(context, '/createShort');
+                  setState(() {});
+                }
               })
         ],
       );
