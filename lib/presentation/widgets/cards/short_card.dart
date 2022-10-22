@@ -6,6 +6,7 @@ import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/other/comments.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 import 'package:lebenswiki_app/repository/backend/short_api.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/domain/models/short_model.dart';
@@ -33,12 +34,14 @@ class ShortCard extends ConsumerStatefulWidget {
 
 class _ShortCardState extends ConsumerState<ShortCard> {
   late User user;
+  late UserRole userRole;
   late String profileImage;
 
   @override
   Widget build(BuildContext context) {
     profileImage = widget.short.creator.profileImage;
     user = ref.read(userProvider).user;
+    userRole = ref.read(userRoleProvider).role;
     return Stack(
       children: [
         Container(
@@ -86,7 +89,16 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                                 ? const Icon(Icons.bookmark_added)
                                 : const Icon(Icons.bookmark_add_outlined),
                           ),
-                          onPressed: () => _bookmarkCallback(),
+                          onPressed: () {
+                            if (userRole == UserRole.anonymous) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) =>
+                                      const RegisterRequestPopup());
+                            } else {
+                              _bookmarkCallback();
+                            }
+                          },
                         ),
                 ],
               ),
