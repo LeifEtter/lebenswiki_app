@@ -241,6 +241,7 @@ class _CommentViewState extends ConsumerState<CommentView> {
             children: [
               ownComment
                   ? buildMenuTile(
+                      context,
                       text: "Kommentar Löschen",
                       icon: Icons.delete,
                       onPress: () async {
@@ -260,6 +261,7 @@ class _CommentViewState extends ConsumerState<CommentView> {
                       },
                     )
                   : buildMenuTile(
+                      context,
                       text: "Kommentar Melden",
                       icon: Icons.flag,
                       onPress: () {},

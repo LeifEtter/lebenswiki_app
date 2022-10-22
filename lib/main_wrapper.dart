@@ -85,6 +85,7 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
                             context,
                             ref,
                             () => setState(() {}),
+                            userRole,
                           )),
                   if (_showSearch) SearchBar(searchController: searchController)
                 ];
@@ -129,7 +130,6 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
     );
   }
 
-  //TODO deny access to anonymous users
   Widget _buildAddButton(UserRole role) => SpeedDial(
         iconTheme: const IconThemeData(size: 40),
         backgroundColor: CustomColors.blue,

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/application/auth/authentication_functions.dart';
+import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 
-void showBottomMenuForNavigation(
-        BuildContext context, WidgetRef ref, Function reload) =>
+void showBottomMenuForNavigation(BuildContext context, WidgetRef ref,
+        Function reload, UserRole userRole) =>
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(25.0),
@@ -16,30 +18,40 @@ void showBottomMenuForNavigation(
             child: Column(
               children: [
                 buildMenuTile(
+                  context,
                   onPress: () async {
                     await Navigator.pushNamed(context, '/profile');
                     reload();
                   },
                   text: "Profil",
                   icon: Icons.person_outline_rounded,
+                  denyAnonymous: true,
+                  userRole: userRole,
                 ),
                 buildMenuTile(
+                  context,
                   onPress: () async {
                     await Navigator.pushNamed(context, '/saved');
                     reload();
                   },
                   text: "Gespeichert",
                   icon: Icons.bookmark_outline,
+                  denyAnonymous: true,
+                  userRole: userRole,
                 ),
                 buildMenuTile(
+                  context,
                   onPress: () async {
                     await Navigator.pushNamed(context, '/created');
                     reload();
                   },
                   text: "Erstellt",
                   icon: Icons.design_services_outlined,
+                  denyAnonymous: true,
+                  userRole: userRole,
                 ),
                 buildMenuTile(
+                  context,
                   onPress: () async {
                     await Navigator.pushNamed(context, '/contact');
                     reload();
@@ -48,6 +60,7 @@ void showBottomMenuForNavigation(
                   icon: Icons.help_outline_rounded,
                 ),
                 buildMenuTile(
+                  context,
                   onPress: () async {
                     await Navigator.pushNamed(context, '/developer');
                     reload();
@@ -56,6 +69,7 @@ void showBottomMenuForNavigation(
                   icon: Icons.phone_outlined,
                 ),
                 buildMenuTile(
+                  context,
                   onPress: () => Authentication.logout(context, ref),
                   text: "Ausloggen",
                   icon: Icons.logout,
@@ -65,13 +79,29 @@ void showBottomMenuForNavigation(
           );
         });
 
-Widget buildMenuTile({
+Widget buildMenuTile(
+  BuildContext context, {
   required String text,
   required IconData icon,
   required Function onPress,
+  bool denyAnonymous = false,
+  UserRole? userRole,
 }) =>
     InkWell(
-      onTap: () => onPress(),
+      onTap: () {
+        if (denyAnonymous) {
+          if (userRole == UserRole.anonymous) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => const RegisterRequestPopup(),
+            );
+          } else {
+            onPress();
+          }
+        } else {
+          onPress();
+        }
+      },
       child: Column(
         children: [
           Row(
