@@ -8,6 +8,7 @@ import 'package:lebenswiki_app/presentation/screens/packs/view_pack_started.dart
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
 import 'package:lebenswiki_app/presentation/screens/other/comments.dart';
 import 'package:lebenswiki_app/presentation/screens/packs/view_pack.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/repository/backend/pack_api.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
@@ -44,6 +45,7 @@ class _PackCardState extends ConsumerState<PackCard> {
   late bool isPublished;
   bool isReading = false;
   late int progressPercentage;
+  late UserRole userRole;
 
   @override
   void initState() {
@@ -61,6 +63,7 @@ class _PackCardState extends ConsumerState<PackCard> {
   @override
   Widget build(BuildContext context) {
     user = ref.watch(userProvider).user;
+    userRole = ref.watch(userRoleProvider).role;
     return GestureDetector(
       onTap: () async {
         isReading || widget.isDraftView
@@ -260,7 +263,16 @@ class _PackCardState extends ConsumerState<PackCard> {
                         ? const Icon(Icons.bookmark_added)
                         : const Icon(Icons.bookmark_add_outlined),
                   ),
-                  onPressed: () => _bookmarkCallback(),
+                  onPressed: () {
+                    if (userRole == UserRole.anonymous) {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              const RegisterRequestPopup());
+                    } else {
+                      _bookmarkCallback();
+                    }
+                  },
                 ),
         ],
       );

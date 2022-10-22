@@ -81,6 +81,7 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
   Future<Widget> determineWidget() async {
     SharedPreferences _shared = await SharedPreferences.getInstance();
     String? existingToken = await TokenHandler().get();
+    //TODO Test token stuff
 
     //Get Auth Type from Storage and transform into enum
     String? authTypeString = _shared.getString("authType") ?? "newUser";
