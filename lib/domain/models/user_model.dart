@@ -50,6 +50,15 @@ class User {
   List<UserFeedback> feedback;
   UserRole role;
 
+  factory User.forAnonymous() => User(
+        id: 0,
+        name: "Anonymous User",
+        biography: "",
+        profileImage: ImageRepo.standardProfileImage,
+        email: "user@anonymous.com",
+        role: UserRole.anonymous,
+      );
+
   factory User.forProvider(Map<String, dynamic> json) => User(
       id: json["id"],
       name: json["name"],

@@ -54,6 +54,7 @@ class ProviderHelper {
     WidgetRef ref, {
     required List<ContentCategory> categories,
   }) {
+    ref.read(userProvider).setUser(User.forAnonymous());
     ref.read(userRoleProvider).setRole(UserRole.anonymous);
     ref.read(categoryProvider).setCategories(categories);
     ref.read(blockedListProvider).setBlockedList([]);
