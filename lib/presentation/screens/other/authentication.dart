@@ -134,7 +134,8 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                 ),
               ),
               const SizedBox(height: 8),
-              Row(
+              //TODO Add Forgot Password button
+              /*Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
@@ -145,7 +146,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                     ),
                   )
                 ],
-              ),
+              ),*/
               const SizedBox(height: 20),
               const SizedBox(height: 5),
               LW.buttons.normal(
