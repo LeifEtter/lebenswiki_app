@@ -261,7 +261,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                     child: Text(
                       isSignUp ? "Du hast schon ein Account?" : "Registrieren",
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 14,
                         color: CustomColors.darkBlue,
                       ),
                     ),
@@ -298,7 +298,13 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                       );
                       _preferences.setBool("onboardingFinished", true);
                     },
-                    child: const Text("Anonym Fortfahren"),
+                    child: Text(
+                      "Anonymer Login",
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: CustomColors.blue,
+                      ),
+                    ),
                   ),
                 ],
               ),
