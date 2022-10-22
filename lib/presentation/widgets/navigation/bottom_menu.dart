@@ -19,6 +19,7 @@ void showBottomMenuForNavigation(BuildContext context, WidgetRef ref,
               children: [
                 buildMenuTile(
                   context,
+                  ref,
                   onPress: () async {
                     await Navigator.pushNamed(context, '/profile');
                     reload();
@@ -30,6 +31,7 @@ void showBottomMenuForNavigation(BuildContext context, WidgetRef ref,
                 ),
                 buildMenuTile(
                   context,
+                  ref,
                   onPress: () async {
                     await Navigator.pushNamed(context, '/saved');
                     reload();
@@ -41,6 +43,7 @@ void showBottomMenuForNavigation(BuildContext context, WidgetRef ref,
                 ),
                 buildMenuTile(
                   context,
+                  ref,
                   onPress: () async {
                     await Navigator.pushNamed(context, '/created');
                     reload();
@@ -52,6 +55,7 @@ void showBottomMenuForNavigation(BuildContext context, WidgetRef ref,
                 ),
                 buildMenuTile(
                   context,
+                  ref,
                   onPress: () async {
                     await Navigator.pushNamed(context, '/contact');
                     reload();
@@ -61,6 +65,7 @@ void showBottomMenuForNavigation(BuildContext context, WidgetRef ref,
                 ),
                 buildMenuTile(
                   context,
+                  ref,
                   onPress: () async {
                     await Navigator.pushNamed(context, '/developer');
                     reload();
@@ -70,6 +75,7 @@ void showBottomMenuForNavigation(BuildContext context, WidgetRef ref,
                 ),
                 buildMenuTile(
                   context,
+                  ref,
                   onPress: () => Authentication.logout(context, ref),
                   text: "Ausloggen",
                   icon: Icons.logout,
@@ -80,7 +86,8 @@ void showBottomMenuForNavigation(BuildContext context, WidgetRef ref,
         });
 
 Widget buildMenuTile(
-  BuildContext context, {
+  BuildContext context,
+  WidgetRef ref, {
   required String text,
   required IconData icon,
   required Function onPress,
@@ -93,7 +100,7 @@ Widget buildMenuTile(
           if (userRole == UserRole.anonymous) {
             showDialog(
               context: context,
-              builder: (BuildContext context) => const RegisterRequestPopup(),
+              builder: (BuildContext context) => RegisterRequestPopup(ref),
             );
           } else {
             onPress();

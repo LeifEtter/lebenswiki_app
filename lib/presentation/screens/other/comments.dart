@@ -88,7 +88,7 @@ class _CommentViewState extends ConsumerState<CommentView> {
                             showDialog(
                                 context: context,
                                 builder: (context) =>
-                                    const RegisterRequestPopup());
+                                    RegisterRequestPopup(ref));
                           } else {
                             _openCommentField();
                           }
@@ -253,6 +253,7 @@ class _CommentViewState extends ConsumerState<CommentView> {
               ownComment
                   ? buildMenuTile(
                       context,
+                      ref,
                       text: "Kommentar Löschen",
                       icon: Icons.delete,
                       onPress: () async {
@@ -273,6 +274,7 @@ class _CommentViewState extends ConsumerState<CommentView> {
                     )
                   : buildMenuTile(
                       context,
+                      ref,
                       text: "Kommentar Melden",
                       icon: Icons.flag,
                       onPress: () {},

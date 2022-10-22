@@ -191,7 +191,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                       ),
                       Expanded(child: Container()),
                       !isReading
-                          ? _buildInfoBar(context)
+                          ? _buildInfoBar(context, ref)
                           : Padding(
                               padding: const EdgeInsets.only(left: 10),
                               child: _buildProgressRow(context),
@@ -207,7 +207,7 @@ class _PackCardState extends ConsumerState<PackCard> {
     );
   }
 
-  Widget _buildInfoBar(context) => Row(
+  Widget _buildInfoBar(context, ref) => Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           InfoBar(
@@ -221,7 +221,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                   if (userRole == UserRole.anonymous) {
                     showDialog(
                         context: context,
-                        builder: (context) => const RegisterRequestPopup());
+                        builder: (context) => RegisterRequestPopup(ref));
                   } else {
                     pack.userHasClapped(userId: user.id)
                         ? CustomFlushbar.error(
@@ -274,7 +274,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                       showDialog(
                           context: context,
                           builder: (BuildContext context) =>
-                              const RegisterRequestPopup());
+                              RegisterRequestPopup(ref));
                     } else {
                       _bookmarkCallback();
                     }

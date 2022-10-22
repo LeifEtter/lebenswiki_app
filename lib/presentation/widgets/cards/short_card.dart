@@ -94,7 +94,7 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                               showDialog(
                                   context: context,
                                   builder: (context) =>
-                                      const RegisterRequestPopup());
+                                      RegisterRequestPopup(ref));
                             } else {
                               _bookmarkCallback();
                             }

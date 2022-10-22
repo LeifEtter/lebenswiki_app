@@ -65,7 +65,7 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
     ref.watch(reloadProvider);
     UserRole userRole = ref.watch(userRoleProvider).role;
     return Scaffold(
-      floatingActionButton: _buildAddButton(userRole),
+      floatingActionButton: _buildAddButton(ref, userRole: userRole),
       backgroundColor: Colors.white,
       extendBody: true,
       bottomNavigationBar: CustomBottomBar(
@@ -130,7 +130,8 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
     );
   }
 
-  Widget _buildAddButton(UserRole role) => SpeedDial(
+  Widget _buildAddButton(WidgetRef ref, {required UserRole userRole}) =>
+      SpeedDial(
         iconTheme: const IconThemeData(size: 40),
         backgroundColor: CustomColors.blue,
         direction: SpeedDialDirection.up,
@@ -140,11 +141,11 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
             label: "Lernpack Erstellen",
             child: const Icon(Icons.comment),
             onTap: () {
-              if (role == UserRole.anonymous) {
+              if (userRole == UserRole.anonymous) {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) =>
-                        const RegisterRequestPopup());
+                        RegisterRequestPopup(ref));
               } else {
                 Navigator.push(
                   context,
@@ -159,11 +160,11 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
               label: "Short Erstellen",
               child: const Icon(Icons.add),
               onTap: () async {
-                if (role == UserRole.anonymous) {
+                if (userRole == UserRole.anonymous) {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) =>
-                          const RegisterRequestPopup());
+                          RegisterRequestPopup(ref));
                 } else {
                   await Navigator.pushNamed(context, '/createShort');
                   setState(() {});
