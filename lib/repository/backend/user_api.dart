@@ -35,6 +35,21 @@ class UserApi extends BaseApi {
     }
   }
 
+  Future<Either<CustomError, String>> deleteAccount() async {
+    Response res = await delete(
+      Uri.parse("$serverIp/users/deactivate"),
+      headers: await requestHeader(),
+    );
+    if (statusIsSuccess(res.statusCode)) {
+      return const Right("Account gelöscht");
+    } else {
+      apiErrorHandler.logRes(res, StackTrace.current);
+      return const Left(CustomError(
+          error:
+              "Account konnte nicht gelöscht werden, bitte kontaktiere uns"));
+    }
+  }
+
   Future<Either<CustomError, String>> register(User user) async {
     Response res = await post(
       Uri.parse("$serverIp/users/register"),

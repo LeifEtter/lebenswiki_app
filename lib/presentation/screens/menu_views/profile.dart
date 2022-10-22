@@ -3,7 +3,9 @@ import 'package:either_dart/either.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/application/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
+import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/repository/backend/user_api.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/hacks.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
@@ -156,6 +158,19 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                   : throw 'Could not launch $_url';
             },
           ),
+          const Divider(),
+          _buildLinkTile(
+            text: "Account Löschen",
+            textColor: Colors.redAccent,
+            onPressed: () async {
+              await UserApi().deleteAccount().fold((left) {
+                CustomFlushbar.error(message: left.error).show(context);
+              }, (right) {
+                CustomFlushbar.success(message: right).show(context);
+                Authentication.logout(context, ref);
+              });
+            },
+          )
         ],
       );
 
@@ -251,7 +266,10 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
         ),
       );
 
-  Widget _buildLinkTile({required String text, required Function onPressed}) =>
+  Widget _buildLinkTile(
+          {required String text,
+          required Function onPressed,
+          Color? textColor}) =>
       Row(
         children: [
           TextButton(
@@ -261,7 +279,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
               style: Theme.of(context)
                   .textTheme
                   .titleMedium!
-                  .copyWith(color: CustomColors.blue),
+                  .copyWith(color: textColor ?? CustomColors.blue),
             ),
           ),
         ],

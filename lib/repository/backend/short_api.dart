@@ -8,7 +8,6 @@ import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/short_model.dart';
-import 'package:lebenswiki_app/repository/backend/token_handler.dart';
 
 class ShortApi extends BaseApi {
   late ApiErrorHandler apiErrorHandler;
