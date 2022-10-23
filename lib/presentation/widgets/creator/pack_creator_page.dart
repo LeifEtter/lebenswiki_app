@@ -114,13 +114,14 @@ class _PageOverviewState extends ConsumerState<PageOverview> {
     List<List> items = [
       [ItemType.title, Icons.title, "Titel"],
       [ItemType.list, Icons.list, "Liste"],
-      [ItemType.quiz, Icons.question_answer, "Fragen"],
+      //TODO Add Questions to options
+      /*[ItemType.quiz, Icons.question_answer, "Fragen"],*/
       [ItemType.image, Icons.image, "Bild"],
       [ItemType.text, Icons.text_snippet_outlined, "Text"],
     ];
     return SpeedDial(
       icon: Icons.add_rounded,
-      direction: SpeedDialDirection.left,
+      direction: SpeedDialDirection.up,
       children: items
           .map<SpeedDialChild>((itemData) => SpeedDialChild(
                 child: Icon(itemData[1]),

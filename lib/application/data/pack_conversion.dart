@@ -31,6 +31,7 @@ class PackConversion {
             Container(
               decoration: PackComponentStyling.listTitleContainerDecoration(),
               child: TextFormField(
+                textCapitalization: TextCapitalization.sentences,
                 onEditingComplete: () => save(),
                 controller: item.headContent.controller,
                 /*decoration: PackEditorStyling.standardDecoration(
@@ -50,6 +51,7 @@ class PackConversion {
                       children: [
                         Expanded(
                           child: TextFormField(
+                            textCapitalization: TextCapitalization.sentences,
                             onEditingComplete: () => save(),
                             controller: currentInput.controller,
                             /*decoration: PackEditorStyling.standardDecoration(
@@ -78,6 +80,7 @@ class PackConversion {
         );
       case ItemType.title:
         return TextFormField(
+          textCapitalization: TextCapitalization.sentences,
           onEditingComplete: () => save(),
           controller: item.headContent.controller,
           //decoration: PackEditorStyling.standardDecoration("Titel eingeben"),
@@ -108,6 +111,7 @@ class PackConversion {
         );
       case ItemType.text:
         return TextFormField(
+          textCapitalization: TextCapitalization.sentences,
           onEditingComplete: () => save(),
           keyboardType: TextInputType.multiline,
           maxLines: null,
