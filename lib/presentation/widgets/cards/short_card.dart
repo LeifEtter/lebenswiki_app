@@ -142,7 +142,7 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                   InfoItem.forIconLabel(
                     onPress: () {},
                     emoji: Emoji.byName("clapping hands").toString(),
-                    indicator: "10",
+                    indicator: "0",
                   ),
                 ],
               ),
