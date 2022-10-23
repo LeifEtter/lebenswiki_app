@@ -45,7 +45,7 @@ class _CommunityViewState extends ConsumerState<CommunityView> {
             )),
             options: CarouselOptions(
               padEnds: true,
-              height: 230,
+              height: 260,
               enableInfiniteScroll: false,
             ),
           ),

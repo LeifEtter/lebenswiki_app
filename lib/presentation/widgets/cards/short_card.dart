@@ -61,14 +61,16 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                 children: [
                   profileImage.startsWith("assets/")
                       ? CircleAvatar(
+                          radius: 15,
                           backgroundImage:
                               AssetImage(widget.short.creator.profileImage),
                         )
                       : CircleAvatar(
+                          radius: 15,
                           backgroundImage:
                               NetworkImage(widget.short.creator.profileImage),
                         ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 7),
                   Text(
                     widget.short.creator.name.split(' ')[0],
                     style: Theme.of(context).textTheme.bodySmall,
@@ -103,7 +105,18 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 10, left: 5),
+                padding: const EdgeInsets.only(left: 5.0, top: 2),
+                child: Text(
+                  widget.short.title,
+                  style: TextStyle(
+                    color: CustomColors.offBlack,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 5, left: 5),
                 child: Text(widget.short.content),
               ),
               widget.inSlider ? const Spacer() : Container(),
