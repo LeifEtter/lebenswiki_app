@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/application/auth/authentication_functions.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
-import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/repository/backend/user_api.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/hacks.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
@@ -73,12 +72,13 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                     children: [
                       Container(
                         padding:
-                            const EdgeInsets.only(left: 20, right: 20, top: 10),
+                            const EdgeInsets.only(left: 20, right: 20, top: 0),
                         child: ListView(
                           physics: const NeverScrollableScrollPhysics(),
                           children: [
                             const TopNavIOS(title: "Profil"),
-                            const SizedBox(height: 160),
+                            const SizedBox(height: 20),
+                            _buildAvatar(),
                             ExpandablePageView(
                               controller: pageController,
                               physics: const NeverScrollableScrollPhysics(),
@@ -90,14 +90,15 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                           ],
                         ),
                       ),
+                      //TODO Add ability to upload own image
                       Visibility(
                         visible: isPickingAvatar,
                         child: _buildAvatarPicker(setInnerState),
                       ),
-                      Padding(
+                      /*Padding(
                         padding: const EdgeInsets.only(bottom: 530),
                         child: Center(child: _buildAvatar()),
-                      ),
+                      ),*/
                     ],
                   ),
                 );
@@ -260,9 +261,9 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
           shape: BoxShape.circle,
           image: chosenAvatar.startsWith("assets/")
               ? DecorationImage(
-                  image: AssetImage(chosenAvatar), fit: BoxFit.cover)
+                  image: AssetImage(chosenAvatar), fit: BoxFit.contain)
               : DecorationImage(
-                  image: NetworkImage(chosenAvatar), fit: BoxFit.cover),
+                  image: NetworkImage(chosenAvatar), fit: BoxFit.contain),
         ),
       );
 
