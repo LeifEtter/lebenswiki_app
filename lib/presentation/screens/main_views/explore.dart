@@ -187,7 +187,7 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
                 ),
               )),
               options: CarouselOptions(
-                height: 230,
+                height: 270,
                 enableInfiniteScroll: false,
               ),
             ),
