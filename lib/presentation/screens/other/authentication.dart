@@ -50,6 +50,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
     _formProvider = ref.watch(formProvider);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.only(
             top: scHeight / (isSignUp ? 12 : 6), left: 30, right: 30.0),
@@ -246,7 +247,7 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                 ),
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   isSignUp
                       ? Container()
@@ -271,42 +272,54 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
                       toggleSignIn();
                     },
                   ),
-                  TextButton(
-                    onPressed: () async {
-                      SharedPreferences _preferences =
-                          await SharedPreferences.getInstance();
-                      await UserApi().loginAnonymously().fold(
-                        (left) {
-                          CustomFlushbar.error(
-                                  message:
-                                      "Anonyme Registrierung ist nicht möglich")
-                              .show(context);
-                        },
-                        (right) async {
-                          await TokenHandler().set(right);
-                          await ProviderHelper
-                              .getDataAndSessionProvidersForAnonymous(ref);
-                          _preferences.setString("authType", "anonymous");
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Scaffold(
-                                body: NavBarWrapper(),
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                      _preferences.setBool("onboardingFinished", true);
+                ],
+              ),
+              TextButton(
+                onPressed: () async {
+                  SharedPreferences _preferences =
+                      await SharedPreferences.getInstance();
+                  await UserApi().loginAnonymously().fold(
+                    (left) {
+                      CustomFlushbar.error(
+                              message:
+                                  "Anonyme Registrierung ist nicht möglich")
+                          .show(context);
                     },
-                    child: Text(
-                      "Anonymer Login",
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: CustomColors.blue,
-                      ),
-                    ),
+                    (right) async {
+                      await TokenHandler().set(right);
+                      await ProviderHelper
+                          .getDataAndSessionProvidersForAnonymous(ref);
+                      _preferences.setString("authType", "anonymous");
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Scaffold(
+                            body: NavBarWrapper(),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                  _preferences.setBool("onboardingFinished", true);
+                },
+                child: Text(
+                  "Anonymer Login",
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    color: CustomColors.blue,
                   ),
+                ),
+              ),
+              const SizedBox(height: 100),
+              Row(
+                children: [
+                  Image.asset(
+                    "assets/images/image10-23.png",
+                    width: 150,
+                  ),
+                  const SizedBox(width: 10),
+                  Image.asset("assets/images/jugendstrategie-logo.png",
+                      width: 150),
                 ],
               ),
             ],
