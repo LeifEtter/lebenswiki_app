@@ -33,12 +33,19 @@ class ExploreView extends ConsumerStatefulWidget {
 class _ExploreViewState extends ConsumerState<ExploreView> {
   int _selectedCategory = 0;
   late List<bool> selectedCategories;
+  late List<Map<String, dynamic>> selectedCategoriesNew = [
+    {
+      "category": ContentCategory,
+      "active": bool,
+    },
+  ];
 
   @override
   void initState() {
-    selectedCategories =
-        widget.categories.map((ContentCategory cat) => false).toList();
-    selectedCategories[0] = true;
+    selectedCategoriesNew = widget.categories
+        .map((ContentCategory cat) => {"category": cat, "active": false})
+        .toList();
+    selectedCategoriesNew[0]["active"] = true;
     super.initState();
   }
 
@@ -58,11 +65,16 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
                   runSpacing: 10.0,
                   children:
                       List.generate(widget.categories.length, (int index) {
+                    Map<String, dynamic> currentButtonEntry =
+                        selectedCategoriesNew[index];
+                    ContentCategory currentCategory =
+                        currentButtonEntry["category"];
                     return _buildCatButton(
-                      isSelected: selectedCategories[index],
-                      name: widget.categories[index].categoryName,
+                      isSelected: currentButtonEntry["active"],
+                      name: currentCategory.categoryName,
                       onSelect: () => setState(() {
-                        selectedCategories[index] = !selectedCategories[index];
+                        selectedCategoriesNew[index]["active"] =
+                            !selectedCategoriesNew[index]["active"];
                       }),
                     );
                   })),
@@ -70,12 +82,14 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
             Consumer(builder: (context, ref, child) {
               String query = ref.watch(queryProvider).query;
               List<Pack> catPacks = [];
-              if (selectedCategories[0]) {
+              if (selectedCategoriesNew[0]["active"]) {
                 catPacks.addAll(widget.packHelper.categorizedPacks[0]!);
               } else {
-                for (int i = 0; i < selectedCategories.length; i++) {
-                  if (selectedCategories[i] == true) {
-                    catPacks.addAll(widget.packHelper.categorizedPacks[i]!);
+                for (Map buttonEntry in selectedCategoriesNew) {
+                  if (buttonEntry["active"]) {
+                    ContentCategory currentCat = buttonEntry["category"];
+                    catPacks.addAll(
+                        widget.packHelper.categorizedPacks[currentCat.id]!);
                   }
                 }
               }
