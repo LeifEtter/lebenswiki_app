@@ -213,7 +213,7 @@ class ShortApi extends BaseApi {
   }
 
   Future<Either<CustomError, String>> addClap({required int shortId}) async {
-    Response res = await patch(
+    Response res = await put(
       Uri.parse("$serverIp/shorts/add-clap/$shortId"),
       headers: await requestHeader(),
     );
