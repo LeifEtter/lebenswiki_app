@@ -53,7 +53,12 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                     ? Border.all(width: 2, color: Colors.green.shade300)
                     : null,
           ),
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.only(
+            top: 15,
+            right: 15,
+            left: 15,
+            bottom: 5,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -122,7 +127,8 @@ class _ShortCardState extends ConsumerState<ShortCard> {
               widget.inSlider ? const Spacer() : Container(),
               const SizedBox(height: 10),
               InfoBar(
-                width: 200,
+                height: 35,
+                width: 160,
                 items: [
                   InfoItem.forText(
                       text:

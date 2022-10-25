@@ -211,7 +211,8 @@ class _PackCardState extends ConsumerState<PackCard> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           InfoBar(
-            height: 50,
+            height: 35,
+            width: 160,
             items: [
               InfoItem.forText(
                 text: DateFormat.MMMd().format(pack.creationDate),

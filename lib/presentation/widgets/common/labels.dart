@@ -88,7 +88,7 @@ class InfoBar extends StatelessWidget {
   const InfoBar({
     Key? key,
     required this.items,
-    this.textSize = 15,
+    this.textSize = 13,
     this.width = 180,
     this.height = 35,
   }) : super(key: key);
@@ -144,8 +144,8 @@ class InfoBar extends StatelessWidget {
       rowItemsNew.add(rowItems[i]);
       if (i != rowItems.length - 1) {
         rowItemsNew.add(Padding(
-          padding: const EdgeInsets.symmetric(vertical: 7.0),
-          child: _buildVerticalDivider(horizontalPadding: 5),
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: _buildVerticalDivider(horizontalPadding: 0),
         ));
       }
     }
@@ -153,10 +153,8 @@ class InfoBar extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
-        color: CustomColors.mediumDarkGrey,
       ),
       child: Row(
         children: rowItemsNew,
