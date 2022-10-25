@@ -62,6 +62,7 @@ class _OnboardingViewStartState extends ConsumerState<OnboardingViewStart> {
               ),
               const Spacer(),
               const SizedBox(height: 200),
+              //TODO implement onboarding view instead
               ExpandButton(
                 child: LW.buttons.normal(
                   borderRadius: 10.0,
@@ -70,7 +71,7 @@ class _OnboardingViewStartState extends ConsumerState<OnboardingViewStart> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const OnboardingView()));
+                            builder: (context) => const AuthenticationView()));
                   },
                 ),
               ),
