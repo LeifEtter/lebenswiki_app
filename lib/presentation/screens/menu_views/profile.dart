@@ -185,11 +185,36 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
             text: "Account Löschen",
             textColor: Colors.redAccent,
             onPressed: () async {
-              await UserApi().deleteAccount().fold((left) {
-                CustomFlushbar.error(message: left.error).show(context);
-              }, (right) {
-                CustomFlushbar.success(message: right).show(context);
-                Authentication.logout(context, ref);
+              await showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: const Text("Account löschen"),
+                        content: const Text(
+                            "Willst du dieses account wirklich löschen?"),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context, true);
+                            },
+                            child: const Text("Löschen",
+                                style: TextStyle(color: Colors.red)),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context, false);
+                            },
+                            child: const Text("Abbrechen"),
+                          ),
+                        ],
+                      )).then((value) async {
+                if (value) {
+                  await UserApi().deleteAccount().fold((left) {
+                    CustomFlushbar.error(message: left.error).show(context);
+                  }, (right) {
+                    CustomFlushbar.success(message: right).show(context);
+                    Authentication.logout(context, ref);
+                  });
+                }
               });
             },
           )
