@@ -15,7 +15,7 @@ class PackShortService {
     ShortListHelper? shortHelper;
     PackListHelper? packHelper;
 
-    await PackApi().getOthersPublishedpacks().fold((left) {}, (right) {
+    await PackApi().getUnreadPacks().fold((left) {}, (right) {
       packHelper = PackListHelper(packs: right, helperData: helperData);
     });
     await ShortApi().getOthersPublishedShorts().fold((left) {}, (right) {

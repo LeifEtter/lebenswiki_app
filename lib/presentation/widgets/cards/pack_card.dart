@@ -186,7 +186,10 @@ class _PackCardState extends ConsumerState<PackCard> {
                         padding: const EdgeInsets.only(left: 10),
                         child: Text(
                           "by ${pack.creator!.name} for ${pack.initiative}",
-                          style: Theme.of(context).textTheme.bodySmall,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(fontSize: 11.0),
                         ),
                       ),
                       Expanded(child: Container()),
