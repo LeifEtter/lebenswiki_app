@@ -162,8 +162,6 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
           ),
           S.h40(),
           const Divider(),
-          _buildLinkTile(text: "Account Einstellungen", onPressed: () {}),
-          const Divider(),
           _buildLinkTile(
               text: "Datenschutzerklärung",
               onPressed: () async {

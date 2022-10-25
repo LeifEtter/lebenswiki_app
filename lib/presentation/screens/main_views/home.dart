@@ -56,7 +56,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 reads.isNotEmpty
                     ? readSection(
                         heroParent: "home-continue",
-                        title: "Weierlesen",
+                        title: "Weiterlesen",
                         reads: reads,
                         isReading: true,
                       )
