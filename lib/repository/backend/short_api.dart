@@ -211,4 +211,18 @@ class ShortApi extends BaseApi {
     });
     return result;
   }
+
+  Future<Either<CustomError, String>> addClap({required int shortId}) async {
+    Response res = await patch(
+      Uri.parse("$serverIp/shorts/add-clap/$shortId"),
+      headers: await requestHeader(),
+    );
+    if (statusIsSuccess(res.statusCode)) {
+      return const Right("Geklatscht!");
+    } else {
+      apiErrorHandler.logRes(res, StackTrace.current);
+      return const Left(
+          CustomError(error: "Ups, du kannst nicht mehr klatschen."));
+    }
+  }
 }

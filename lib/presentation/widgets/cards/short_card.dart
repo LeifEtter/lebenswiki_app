@@ -146,9 +146,32 @@ class _ShortCardState extends ConsumerState<ShortCard> {
                     indicator: widget.short.comments.length.toString(),
                   ),
                   InfoItem.forIconLabel(
-                    onPress: () {},
+                    onPress: () async {
+                      /* if (userRole == UserRole.anonymous) {
+                    showDialog(
+                        context: context,
+                        builder: (context) => RegisterRequestPopup(ref));
+                  } else {
+                    widget.short.userHasClapped(userId: user.id)
+                        ? CustomFlushbar.error(
+                                message: "Du hast schon geklatscht")
+                            .show(context)
+                        : await ShortApi().addClap(packId: pack.id!).fold(
+                            (left) {
+                              CustomFlushbar.error(message: left.error)
+                                  .show(context);
+                            },
+                            (right) {
+                              CustomFlushbar.success(message: right)
+                                  .show(context);
+                              widget.short.claps.add(user.id);
+                              setState(() {});
+                            },
+                          );
+                  }*/
+                    },
                     emoji: Emoji.byName("clapping hands").toString(),
-                    indicator: "0",
+                    indicator: widget.short.claps.length.toString(),
                   ),
                 ],
               ),

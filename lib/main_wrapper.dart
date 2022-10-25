@@ -93,7 +93,8 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
               },
               body: FutureBuilder(
                   future: PackShortService.getPacksAndShorts(
-                      helperData: helperData),
+                      helperData: helperData,
+                      isAnonymous: userRole == UserRole.anonymous),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (LoadingHelper.isLoading(snapshot)) {
                       return LoadingHelper.loadingIndicator();
