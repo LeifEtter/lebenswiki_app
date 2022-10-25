@@ -133,7 +133,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                               Icons.schedule,
                               size: 18,
                             ),
-                            text: "' 5",
+                            text: pack.pages.length.toString(),
                             backgroundColor: CustomColors.whiteOverlay,
                           ),
                           widget.isDraftView
