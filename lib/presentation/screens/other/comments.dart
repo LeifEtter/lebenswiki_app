@@ -129,7 +129,8 @@ class _CommentViewState extends ConsumerState<CommentView> {
                         comment.content,
                       ),
                       const SizedBox(height: 15),
-                      SizedBox(
+                      //TODO Reimplement Comment interactions
+                      /*SizedBox(
                         width: 150,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,7 +149,7 @@ class _CommentViewState extends ConsumerState<CommentView> {
                             ),
                           ],
                         ),
-                      )
+                      )*/
                     ],
                   ),
                 ),
