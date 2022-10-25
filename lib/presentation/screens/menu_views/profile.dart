@@ -1,9 +1,13 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:either_dart/either.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lebenswiki_app/application/auth/authentication_functions.dart';
+import 'package:lebenswiki_app/application/other/image_helper.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/repository/backend/user_api.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/hacks.dart';
@@ -40,10 +44,14 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
     "009-weasel",
   ];
   bool isPickingAvatar = false;
+  bool isEditingProfile = false;
   TextEditingController nameController = TextEditingController();
   TextEditingController biographyController = TextEditingController();
 
   late String chosenAvatar;
+
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -78,12 +86,24 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                           children: [
                             const TopNavIOS(title: "Profil"),
                             const SizedBox(height: 20),
-                            _buildAvatar(),
+                            _buildAvatar(
+                                user: user, setInnerState: setInnerState),
                             ExpandablePageView(
                               controller: pageController,
+                              onPageChanged: (index) {
+                                if (index != 0) {
+                                  setInnerState(() {
+                                    isEditingProfile = true;
+                                  });
+                                } else {
+                                  setInnerState(() {
+                                    isEditingProfile = true;
+                                  });
+                                }
+                              },
                               physics: const NeverScrollableScrollPhysics(),
                               children: [
-                                _buildShowProfile(user),
+                                _buildShowProfile(user, setInnerState),
                                 _buildEditProfile(setInnerState, user: user),
                               ],
                             ),
@@ -110,7 +130,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
     );
   }
 
-  Widget _buildShowProfile(User user) => ListView(
+  Widget _buildShowProfile(User user, Function setInnerState) => ListView(
         shrinkWrap: true,
         children: [
           S.h20(),
@@ -133,9 +153,12 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
             color: CustomColors.lightGrey,
             text: "Profil Bearbeiten",
             textColor: CustomColors.offBlack,
-            action: () => pageController.animateToPage(1,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeInOut),
+            action: () {
+              //setInnerState(() {});
+              pageController.animateToPage(1,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut);
+            },
           ),
           S.h40(),
           const Divider(),
@@ -185,7 +208,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                     isPickingAvatar = true;
                   }),
               child: Text(
-                "Profilbild ändern",
+                "Avatar Verwenden",
                 style: TextStyle(
                   color: CustomColors.blue,
                 ),
@@ -253,19 +276,77 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
         ),
       );
 
-  Widget _buildAvatar() => Container(
-        width: 130,
-        height: 130,
-        decoration: BoxDecoration(
-          boxShadow: [LebenswikiShadows.cardShadow],
-          shape: BoxShape.circle,
-          image: chosenAvatar.startsWith("assets/")
-              ? DecorationImage(
-                  image: AssetImage(chosenAvatar), fit: BoxFit.contain)
-              : DecorationImage(
-                  image: NetworkImage(chosenAvatar), fit: BoxFit.contain),
+  Widget _buildAvatar({
+    required User user,
+    required Function setInnerState,
+  }) =>
+      GestureDetector(
+        //TODO Finish image upload for avatar
+        onTap: () {
+          isEditingProfile
+              ? upload(context, user: user, setInnerState: setInnerState)
+              : {};
+        },
+        child: Container(
+          width: 130,
+          height: 130,
+          child: isEditingProfile
+              ? const Icon(Icons.camera_alt, color: Colors.white, size: 40)
+              : null,
+          decoration: BoxDecoration(
+            boxShadow: [LebenswikiShadows.cardShadow],
+            shape: BoxShape.circle,
+            image: chosenAvatar.startsWith("assets/")
+                ? DecorationImage(
+                    colorFilter: const ColorFilter.linearToSrgbGamma(),
+                    image: AssetImage(chosenAvatar),
+                    fit: BoxFit.contain)
+                : DecorationImage(
+                    image: NetworkImage(chosenAvatar), fit: BoxFit.cover),
+          ),
         ),
       );
+
+  void upload(
+    context, {
+    required User user,
+    required Function setInnerState,
+  }) async {
+    setInnerState(() {
+      //_imageIsLoading = true;
+    });
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile == null) {
+      setInnerState(() {
+        //_imageIsLoading = false;
+      });
+      return;
+    }
+    /*if (chosenAvatar !=
+            "https://firebasestorage.googleapis.com/v0/b/lebenswiki-db.appspot.com/o/default_profile_image.jpg?alt=media&token=baf25998-6056-4858-9f00-c323bd4bfc0a" &&
+        !chosenAvatar.startsWith("assets/")) {
+      await _storage.refFromURL(chosenAvatar).delete();
+    }*/
+    Either<CustomError, String> result = await ImageHelper.uploadImage(context,
+        pathToStore: "user_profile_images/${user.id}/",
+        chosenImage: File(pickedFile.path),
+        userId: user.id,
+        storage: _storage);
+    result.fold(
+      (left) {
+        CustomFlushbar.error(message: left.error).show(context);
+      },
+      (right) {
+        CustomFlushbar.success(message: "Bild erfolgreich hochgeladen")
+            .show(context);
+
+        setInnerState(() {
+          //_imageIsLoading = false;
+          chosenAvatar = right;
+        });
+      },
+    );
+  }
 
   Widget _buildLinkTile(
           {required String text,
@@ -314,6 +395,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                   width: 350,
                   height: 350,
                   child: GridView(
+                    shrinkWrap: true,
                     padding: const EdgeInsets.all(20),
                     children: profileAvatars
                         .map((String avatarName) => _buildSingleAvatar(
