@@ -67,6 +67,11 @@ class PackApi extends BaseApi {
       url: "packs/published",
       errorMessage: "Dieser Benutzer hat noch keine packs veröffentlicht");
 
+  Future<Either<CustomError, List<Pack>>> getUnreadPacks() => getPacks(
+        url: "packs/unread",
+        errorMessage: "Es gibt keine ungelesenen Packs mehr",
+      );
+
   Future<Either<CustomError, List<Pack>>> getAllPacks() => getPacks(
       url: "packs/", errorMessage: "Es wurden keine Lernpacks gefunden");
 

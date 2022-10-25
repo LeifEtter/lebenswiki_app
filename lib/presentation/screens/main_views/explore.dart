@@ -149,8 +149,8 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
                             child: Text(cat.categoryName,
                                 style: Theme.of(context).textTheme.labelLarge)))
                         .toList(),
-                    onTap: (int newCategory) =>
-                        setState(() => _selectedCategory = newCategory),
+                    onTap: (int newCategory) => setState(() =>
+                        _selectedCategory = widget.categories[newCategory].id),
                   ),
                   const SizedBox(height: 20),
                   CarouselSlider(
