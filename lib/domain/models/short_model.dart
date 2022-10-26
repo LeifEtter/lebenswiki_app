@@ -22,6 +22,7 @@ class Short {
     this.reactions = const [],
     this.lastUpdated,
     required this.creationDate,
+    this.claps = const [],
   }) {
     creatorId = creator.id;
     lastUpdated = DateTime.now();
@@ -51,6 +52,7 @@ class Short {
   bool reactedByUser = false;
   int totalVotes = 0;
   Map reactionMap = {};
+  List<int> claps = [];
 
   factory Short.forError() => Short(
         id: 0,
@@ -61,8 +63,7 @@ class Short {
         creationDate: DateTime.now(),
       );
 
-  factory Short.fromJson(Map<String, dynamic> json) {
-    return Short(
+  factory Short.fromJson(Map<String, dynamic> json) => Short(
       id: json["id"],
       title: json["title"],
       content: json["content"],
@@ -83,8 +84,7 @@ class Short {
           .map((category) => ContentCategory.fromJson(category))),
       reactions: List.from(json["reactions"]),
       creator: User.forContent(json["creator"]),
-    );
-  }
+      claps: List<int>.from(json["shortClaps"].map((user) => user["id"])));
 
   Map<String, dynamic> toJson() => {
         "title": title,
@@ -113,6 +113,10 @@ class Short {
     _setTotalVotes(currentUserId);
     _generateReactionMap();
     _setReactions(currentUserId);
+  }
+
+  bool userHasClapped({required int userId}) {
+    return claps.contains(userId) ? true : false;
   }
 
   void _initHasUpvoted(int currentUserId) {

@@ -65,68 +65,73 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
     );
     ref.watch(reloadProvider);
     UserRole userRole = ref.watch(userRoleProvider).role;
-    return Scaffold(
-      floatingActionButton: _buildAddButton(ref, userRole: userRole),
-      backgroundColor: Colors.white,
-      extendBody: true,
-      bottomNavigationBar: CustomBottomBar(
-        onPressed: (index) => tabController.animateTo(index),
-        selectedIndex: _currentIndex,
-      ),
-      body: Stack(
-        children: [
-          SafeArea(
-            top: true,
-            bottom: false,
-            child: NestedScrollView(
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                return [
-                  appBar(context,
-                      onPress: () => showBottomMenuForNavigation(
-                            context,
-                            ref,
-                            () => setState(() {}),
-                            userRole,
-                          )),
-                  if (_showSearch) SearchBar(searchController: searchController)
-                ];
-              },
-              body: FutureBuilder(
-                  future: PackShortService.getPacksAndShorts(
-                      helperData: helperData),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (LoadingHelper.isLoading(snapshot)) {
-                      return LoadingHelper.loadingIndicator();
-                    }
-                    final Either<CustomError, Map> result = snapshot.data;
-                    return result.fold(
-                      (left) {
-                        return Text(left.error);
-                      },
-                      (right) {
-                        return TabBarView(
-                          controller: tabController,
-                          children: [
-                            HomeView(packHelper: right["packHelper"]),
-                            Consumer(builder: (context, ref, child) {
-                              bool isSearching =
-                                  ref.watch(searchStateProvider).isSearching;
-                              return ExploreView(
-                                isSearching: isSearching,
-                                categories: categories,
-                                packHelper: right["packHelper"],
-                                shortHelper: right["shortHelper"],
-                              );
-                            }),
-                            CommunityView(shortHelper: right["shortHelper"]),
-                          ],
-                        );
-                      },
-                    );
-                  }),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        floatingActionButton: _buildAddButton(ref, userRole: userRole),
+        backgroundColor: Colors.white,
+        extendBody: true,
+        bottomNavigationBar: CustomBottomBar(
+          onPressed: (index) => tabController.animateTo(index),
+          selectedIndex: _currentIndex,
+        ),
+        body: Stack(
+          children: [
+            SafeArea(
+              top: true,
+              bottom: false,
+              child: NestedScrollView(
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return [
+                    appBar(context,
+                        onPress: () => showBottomMenuForNavigation(
+                              context,
+                              ref,
+                              () => setState(() {}),
+                              userRole,
+                            )),
+                    if (_showSearch)
+                      SearchBar(searchController: searchController)
+                  ];
+                },
+                body: FutureBuilder(
+                    future: PackShortService.getPacksAndShorts(
+                        helperData: helperData,
+                        isAnonymous: userRole == UserRole.anonymous),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (LoadingHelper.isLoading(snapshot)) {
+                        return LoadingHelper.loadingIndicator();
+                      }
+                      final Either<CustomError, Map> result = snapshot.data;
+                      return result.fold(
+                        (left) {
+                          return Text(left.error);
+                        },
+                        (right) {
+                          return TabBarView(
+                            controller: tabController,
+                            children: [
+                              HomeView(packHelper: right["packHelper"]),
+                              Consumer(builder: (context, ref, child) {
+                                bool isSearching =
+                                    ref.watch(searchStateProvider).isSearching;
+                                return ExploreView(
+                                  isSearching: isSearching,
+                                  categories: categories,
+                                  packHelper: right["packHelper"],
+                                  shortHelper: right["shortHelper"],
+                                );
+                              }),
+                              CommunityView(shortHelper: right["shortHelper"]),
+                            ],
+                          );
+                        },
+                      );
+                    }),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

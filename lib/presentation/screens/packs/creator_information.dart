@@ -261,7 +261,6 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
       readTime: 0,
       imageIdentifier: _imageIdentifier,
     );
-
     widget.pack == null
         ? await PackApi().createPack(pack: newPack).fold((left) {
             CustomFlushbar.error(message: left.error);

@@ -11,13 +11,21 @@ import 'package:lebenswiki_app/application/data/short_list_helper.dart';
 class PackShortService {
   static Future<Either<CustomError, Map>> getPacksAndShorts({
     required HelperData helperData,
+    bool isAnonymous = false,
   }) async {
     ShortListHelper? shortHelper;
     PackListHelper? packHelper;
 
-    await PackApi().getUnreadPacks().fold((left) {}, (right) {
-      packHelper = PackListHelper(packs: right, helperData: helperData);
-    });
+    if (isAnonymous) {
+      await PackApi().getOthersPublishedpacks().fold((left) {}, (right) {
+        packHelper = PackListHelper(packs: right, helperData: helperData);
+      });
+    } else {
+      await PackApi().getUnreadPacks().fold((left) {}, (right) {
+        packHelper = PackListHelper(packs: right, helperData: helperData);
+      });
+    }
+
     await ShortApi().getOthersPublishedShorts().fold((left) {}, (right) {
       shortHelper = ShortListHelper(shorts: right, helperData: helperData);
     });
