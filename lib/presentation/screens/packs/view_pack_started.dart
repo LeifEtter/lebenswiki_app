@@ -63,6 +63,12 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
                         newProgress: currentIndex + 1);
                   }
                 },
+                clapCallback: () {},
+                shareCallback: () {},
+                bookmarkCallback: () {},
+                clapCount: widget.read.pack != null
+                    ? widget.read.pack!.claps.length
+                    : 0,
               )
             ];
           },

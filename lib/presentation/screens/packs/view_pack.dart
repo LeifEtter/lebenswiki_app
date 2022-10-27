@@ -60,6 +60,10 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                   heroName: widget.heroName,
                   titleImage: widget.pack.titleImage,
                   categoryName: widget.pack.categories[0].categoryName,
+                  clapCallback: () {},
+                  shareCallback: () {},
+                  bookmarkCallback: () {},
+                  clapCount: widget.pack.claps.length,
                 )
               ];
             },

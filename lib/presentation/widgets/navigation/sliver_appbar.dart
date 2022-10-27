@@ -1,3 +1,4 @@
+import 'package:emojis/emoji.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
@@ -8,6 +9,10 @@ class ViewerAppBar extends StatefulWidget {
   final String titleImage;
   final String categoryName;
   final Function? backFunction;
+  final Function shareCallback;
+  final Function clapCallback;
+  final Function bookmarkCallback;
+  final int clapCount;
 
   const ViewerAppBar({
     Key? key,
@@ -15,6 +20,10 @@ class ViewerAppBar extends StatefulWidget {
     required this.titleImage,
     required this.categoryName,
     this.backFunction,
+    required this.shareCallback,
+    required this.clapCallback,
+    required this.bookmarkCallback,
+    required this.clapCount,
   }) : super(key: key);
 
   @override
@@ -71,7 +80,7 @@ class _ViewerAppBarState extends State<ViewerAppBar> {
             height: 40,
             padding: const EdgeInsets.only(
               right: 20,
-              top: 15,
+              top: 10,
               left: 10,
             ),
             child: Row(
@@ -83,20 +92,39 @@ class _ViewerAppBarState extends State<ViewerAppBar> {
                   fontSize: 8,
                 ),
                 const Spacer(),
-                const Icon(
-                  Icons.file_upload_outlined,
-                  size: 20,
+                IconButton(
+                  constraints: const BoxConstraints(),
+                  onPressed: () => widget.shareCallback(),
+                  icon: const Icon(
+                    Icons.file_upload_outlined,
+                    size: 20,
+                  ),
                 ),
-                const SizedBox(width: 15),
-                Image.asset(
-                  "assets/icons/clapping.png",
-                  width: 20,
-                  height: 20,
+                const SizedBox(width: 5),
+                GestureDetector(
+                  onTap: () => widget.clapCallback(),
+                  child: Row(
+                    children: [
+                      Text(Emoji.byName("clapping hands").toString(),
+                          style: const TextStyle(fontSize: 17.0)),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5.0, left: 1.0),
+                        child: Text(
+                          widget.clapCount.toString(),
+                          style: TextStyle(
+                              color: CustomColors.offBlack, fontSize: 13),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(width: 15),
-                const Icon(
-                  Icons.bookmark_add_outlined,
-                  size: 20,
+                IconButton(
+                  constraints: const BoxConstraints(),
+                  onPressed: () => widget.bookmarkCallback(),
+                  icon: const Icon(
+                    Icons.bookmark_add_outlined,
+                    size: 20,
+                  ),
                 ),
               ],
             ),
