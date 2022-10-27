@@ -110,7 +110,6 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                           ],
                         ),
                       ),
-                      //TODO Add ability to upload own image
                       Visibility(
                         visible: isPickingAvatar,
                         child: _buildAvatarPicker(setInnerState),
@@ -304,7 +303,6 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
     required Function setInnerState,
   }) =>
       GestureDetector(
-        //TODO Finish image upload for avatar
         onTap: () {
           isEditingProfile
               ? upload(context, user: user, setInnerState: setInnerState)

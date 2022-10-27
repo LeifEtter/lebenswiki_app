@@ -32,14 +32,15 @@ class _OnboardingViewStartState extends ConsumerState<OnboardingViewStart> {
         child: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const SizedBox(height: 150),
-              SizedBox(
-                height: 150,
-                child: Image.asset("assets/images/lebenswiki_logo.png"),
-              ),
+              Container(),
               Column(
                 children: [
+                  SizedBox(
+                    height: 150,
+                    child: Image.asset("assets/images/lebenswiki_logo.png"),
+                  ),
                   Text(
                     "Willkommen bei Lebenswiki",
                     style: Theme.of(context)
@@ -51,7 +52,7 @@ class _OnboardingViewStartState extends ConsumerState<OnboardingViewStart> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
-                      "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor",
+                      "Lerne von Experten und teile gleichzeitig dein Wissen, Erfahrungen und deine Fragen mit der Community.",
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             color: Colors.white,
@@ -60,69 +61,74 @@ class _OnboardingViewStartState extends ConsumerState<OnboardingViewStart> {
                   ),
                 ],
               ),
-              const Spacer(),
-              const SizedBox(height: 200),
               //TODO implement onboarding view instead
-              ExpandButton(
-                child: LW.buttons.normal(
-                  borderRadius: 10.0,
-                  text: "Weiter",
-                  action: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AuthenticationView()));
-                  },
-                ),
-              ),
-              const SizedBox(height: 15),
-              ExpandButton(
-                child: LW.buttons.normal(
-                  borderRadius: 10.0,
-                  color: Colors.transparent,
-                  textColor: CustomColors.offBlack,
-                  text: "Einloggen",
-                  border: Border.all(width: 2, color: CustomColors.offBlack),
-                  action: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AuthenticationView()));
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              LW.buttons.normal(
-                text: "Überspringen und als Gast fortfahren",
-                color: Colors.transparent,
-                textColor: CustomColors.offBlack,
-                action: () async {
-                  SharedPreferences _preferences =
-                      await SharedPreferences.getInstance();
-                  await UserApi().loginAnonymously().fold(
-                    (left) {
-                      CustomFlushbar.error(
-                              message:
-                                  "Anonyme Registrierung ist nicht möglich")
-                          .show(context);
-                    },
-                    (right) async {
-                      await TokenHandler().set(right);
-                      await ProviderHelper
-                          .getDataAndSessionProvidersForAnonymous(ref);
+              Column(
+                children: [
+                  ExpandButton(
+                    child: LW.buttons.normal(
+                      borderRadius: 10.0,
+                      text: "Weiter",
+                      action: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const AuthenticationView()));
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  ExpandButton(
+                    child: LW.buttons.normal(
+                      borderRadius: 10.0,
+                      color: Colors.transparent,
+                      textColor: CustomColors.offBlack,
+                      text: "Einloggen",
+                      border:
+                          Border.all(width: 2, color: CustomColors.offBlack),
+                      action: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const AuthenticationView()));
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  LW.buttons.normal(
+                    text: "Überspringen und als Gast fortfahren",
+                    color: Colors.transparent,
+                    textColor: CustomColors.offBlack,
+                    action: () async {
+                      SharedPreferences _preferences =
+                          await SharedPreferences.getInstance();
+                      await UserApi().loginAnonymously().fold(
+                        (left) {
+                          CustomFlushbar.error(
+                                  message:
+                                      "Anonyme Registrierung ist nicht möglich")
+                              .show(context);
+                        },
+                        (right) async {
+                          await TokenHandler().set(right);
+                          await ProviderHelper
+                              .getDataAndSessionProvidersForAnonymous(ref);
 
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Scaffold(
-                            body: NavBarWrapper(),
-                          ),
-                        ),
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Scaffold(
+                                body: NavBarWrapper(),
+                              ),
+                            ),
+                          );
+                        },
                       );
+                      _preferences.setBool("onboardingFinished", true);
                     },
-                  );
-                  _preferences.setBool("onboardingFinished", true);
-                },
+                  ),
+                ],
               ),
             ],
           ),
