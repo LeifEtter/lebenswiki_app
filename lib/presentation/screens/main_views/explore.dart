@@ -101,7 +101,7 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
                           .toLowerCase()
                           .contains(query.toLowerCase()))
                   .toList();
-              // Sort throguh categorized packs
+              // Sort through categorized packs
               return Column(
                 children: queriedPacks
                     .map((Pack pack) => SizedBox(
