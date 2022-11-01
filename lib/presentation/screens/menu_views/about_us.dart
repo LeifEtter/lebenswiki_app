@@ -1,172 +1,229 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/repository/backend/user_api.dart';
-import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:lebenswiki_app/repository/constants/colors.dart';
+import 'package:lebenswiki_app/repository/constants/shadows.dart';
 
 class AboutUsView extends StatefulWidget {
   const AboutUsView({Key? key}) : super(key: key);
 
   @override
-  _AboutUsViewState createState() => _AboutUsViewState();
+  State<AboutUsView> createState() => _AboutUsViewState();
 }
 
 class _AboutUsViewState extends State<AboutUsView> {
-  final UserApi userApi = UserApi();
+  bool ealInfoExpanded = false;
+  bool lwInfoExpanded = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-      child: ListView(
-        children: [
-          const TopNavIOS(title: "Über Uns"),
-          const SizedBox(
-            height: 20.0,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Row(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            leadingWidth: 100,
+            leading: Row(
               children: [
-                Image.asset(
-                  "assets/images/BMFSFJ_logo.png",
-                  width: MediaQuery.of(context).size.width * 0.4,
-                ),
-                const SizedBox(width: 20),
-                Image.asset(
-                  "assets/images/jugendstrategie-logo.png",
-                  width: MediaQuery.of(context).size.width * 0.4,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Container(
+                      child: Icon(
+                        Icons.arrow_back_ios_rounded,
+                        color: CustomColors.veryDarkGrey,
+                        size: 30,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color.fromRGBO(255, 255, 255, 0.85),
+                        boxShadow: [LebenswikiShadows.fancyShadow],
+                        borderRadius: BorderRadius.circular(50.0),
+                      ),
+                      height: 50,
+                      width: 50,
+                    ),
+                  ),
                 ),
               ],
             ),
+            backgroundColor: CustomColors.blue,
+            expandedHeight: 180,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: CustomColors.blueGradientSliver,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 50),
+                    child: Center(child: _buildSliverBackgroundImage()),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(15.0),
+                            topRight: Radius.circular(15.0)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Evangelische Akademie Loccum",
-                  textAlign: TextAlign.start,
-                  style: _title(),
+          SliverPadding(
+            padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate.fixed([
+                Center(
+                  child: Text(
+                    "Über Uns",
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
                 ),
-                const Divider(),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
-                            "Anschrift",
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Text(
-                            "Evangelische Akademie \nLoccum \n"
-                            "Münchehäger Straße 6 \n"
-                            "31547 Rehburg-Loccum \n",
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 20.0, top: 20.0),
-                      child: Container(
-                          height: 80,
-                          width: 1,
-                          color: Colors.grey.withOpacity(0.5)),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Kontakt",
-                            style: _subtitle(),
-                          ),
-                          const Text("+49 (0) 5766 81-0 \n"
-                              "eal@evlka.de \n"),
-                        ],
-                      ),
-                    ),
-                  ],
+                const SizedBox(height: 25),
+                const Center(
+                  child: Text(
+                    "Das Lebenswiki ist eine App für junge Erwachsene, in der Grundlagenwissen in den Bereichen Finanzen, Steuern, Beruf, Versicherungen und Wohnen vermittelt werden.",
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Center(
+                  child: Text(
+                    "Das Projekt Lebenswiki wird im Rahmen des Jugend-Budgets vom Bundesministerium für Familie, Senioren, Frauen und Jugend gefördert. Aus diesem Grund ist es uns möglich, die App kostenlos und ohne jegliche Werbung anzubieten. Expertinnen und Experten arbeiten ehrenamtlich - ihr Engagement macht das Lebenswiki möglich!",
+                  ),
                 ),
                 const SizedBox(height: 30),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
-                      "Lebenswiki",
-                      textAlign: TextAlign.center,
-                      style: _title(),
-                    ),
-                  ],
-                ),
-                const Divider(),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Anschrift",
-                            style: _subtitle(),
-                          ),
-                          const Text(
-                            "Max Brenner \n"
-                            "Lohmühlenstraße 65 \n"
-                            "12435 Berlin \n",
-                          ),
-                        ],
+                    Flexible(
+                      flex: 50,
+                      child: SvgPicture.asset(
+                        "assets/images/Bundesministerium_Logo.svg",
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 20.0, top: 20.0),
-                      child: Container(
-                          height: 80,
-                          width: 1,
-                          color: Colors.grey.withOpacity(0.5)),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Kontakt",
-                            style: _subtitle(),
-                          ),
-                          const Text("+49 (0) 171 517-3435 \n"
-                              "lebenswiki@gmail.com \n"),
-                        ],
+                    Flexible(
+                      flex: 50,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: Image.asset(
+                          "assets/images/jugendstrategie-logo.png",
+                        ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                const Divider(),
-                const SizedBox(height: 10),
-                const SizedBox(height: 30.0),
-              ],
+                const SizedBox(height: 20),
+                Center(
+                  child: Text(
+                    "Kontakt",
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ExpansionTile(
+                  iconColor: CustomColors.offBlack,
+                  title: Text(
+                    "Lebenswiki",
+                    style: TextStyle(
+                      color: CustomColors.offBlack,
+                      fontWeight:
+                          ealInfoExpanded ? FontWeight.w500 : FontWeight.w400,
+                    ),
+                  ),
+                  onExpansionChanged: (bool newState) => setState(() {
+                    ealInfoExpanded = newState;
+                  }),
+                  childrenPadding:
+                      const EdgeInsets.only(left: 30, right: 30, bottom: 20),
+                  children: [
+                    _buildInfoTile(
+                        icon: Icons.person_outline_rounded,
+                        text: "Max Brenner"),
+                    _buildInfoTile(
+                        icon: Icons.phone_outlined,
+                        text: "+49 (0) 171 517-3435"),
+                    _buildInfoTile(
+                        icon: Icons.alternate_email_rounded,
+                        text: "lebenswiki@gmail.com"),
+                    _buildInfoTile(
+                        icon: Icons.home_outlined,
+                        text: "Lohmühlenstraße 65\n12435 Berlin"),
+                  ],
+                ),
+                ExpansionTile(
+                  iconColor: CustomColors.offBlack,
+                  title: Text(
+                    "Evangelische Akademie Loccum",
+                    style: TextStyle(
+                      color: CustomColors.offBlack,
+                      fontWeight:
+                          lwInfoExpanded ? FontWeight.w500 : FontWeight.w400,
+                    ),
+                  ),
+                  onExpansionChanged: (bool newState) => setState(() {
+                    lwInfoExpanded = newState;
+                  }),
+                  childrenPadding:
+                      const EdgeInsets.only(left: 30, right: 30, bottom: 20),
+                  children: [
+                    _buildInfoTile(
+                        icon: Icons.person_outline_rounded,
+                        text: "Evangelische Akademie Loccum"),
+                    _buildInfoTile(
+                        icon: Icons.phone_outlined, text: "+49 (0) 5766 81-0"),
+                    _buildInfoTile(
+                        icon: Icons.alternate_email_rounded,
+                        text: "eal@evlka.de"),
+                    _buildInfoTile(
+                        icon: Icons.home_outlined,
+                        text: "Münchehäger Straße 6 \n31547 Rehburg-Loccum"),
+                  ],
+                ),
+                const SizedBox(height: 100),
+              ]),
             ),
           ),
         ],
       ),
-    ));
+    );
   }
 
-  TextStyle _title() => const TextStyle(
-        fontSize: 25.0,
-        fontWeight: FontWeight.w500,
-      );
+  Widget _buildInfoTile({
+    required IconData icon,
+    required String text,
+    String? imagePath,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5, bottom: 5),
+      child: Row(
+        children: [
+          imagePath != null
+              ? Image.asset(imagePath, width: 30, height: 30)
+              : Icon(icon, size: 30, color: CustomColors.veryDarkGrey),
+          const SizedBox(width: 20),
+          SelectableText(text),
+        ],
+      ),
+    );
+  }
 
-  TextStyle _subtitle() => const TextStyle(
-        fontSize: 20.0,
-        fontWeight: FontWeight.w500,
+  Container _buildSliverBackgroundImage() => Container(
+        width: 120,
+        height: 120,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.contain,
+            image: AssetImage(
+              "assets/icons/Lebenswiki_Logo_no-background.png",
+            ),
+          ),
+        ),
       );
 }

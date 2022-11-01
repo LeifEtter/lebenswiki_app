@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/presentation/screens/main_views/short_creation.dart';
-import 'package:lebenswiki_app/presentation/screens/menu_views/about_us_new.dart';
+import 'package:lebenswiki_app/presentation/screens/menu_views/about_us.dart';
 import 'package:lebenswiki_app/presentation/screens/menu_views/contact.dart';
 import 'package:lebenswiki_app/presentation/screens/menu_views/created.dart';
 import 'package:lebenswiki_app/presentation/screens/menu_views/profile.dart';
@@ -44,7 +44,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case developerViewRoute:
       return MaterialPageRoute(
         settings: settings,
-        builder: (context) => const AboutUsViewNew(),
+        builder: (context) => const AboutUsView(),
       );
     case profileViewRoute:
       return MaterialPageRoute(
