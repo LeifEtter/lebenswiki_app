@@ -61,12 +61,24 @@ class _AboutUsViewNewState extends State<AboutUsViewNew> {
                     padding: const EdgeInsets.only(top: 50),
                     child: Center(child: _buildSliverBackgroundImage()),
                   ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(15.0),
+                            topRight: Radius.circular(15.0)),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.only(top: 40, left: 20, right: 20),
+            padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
             sliver: SliverList(
               delegate: SliverChildListDelegate.fixed([
                 Center(
