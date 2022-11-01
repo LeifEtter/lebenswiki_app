@@ -6,6 +6,7 @@ import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/screens/main_views/see_all.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/extensions.dart';
 import 'package:lebenswiki_app/application/data/pack_list_helper.dart';
@@ -98,10 +99,25 @@ class _HomeViewState extends ConsumerState<HomeView> {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.headlineLarge,
-          ).addPadding(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: Theme.of(context).textTheme.headlineLarge,
+              ).addPadding(),
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: TextButton(
+                    onPressed: () => navigateToSeeAll(),
+                    child: const Text(
+                      "Alle Packs",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500, fontSize: 15.0),
+                    )),
+              ),
+            ],
+          ),
           CarouselSlider(
             options: standardOptions(height: isReading ? 200 : 250),
             items: List.generate(
@@ -128,10 +144,25 @@ class _HomeViewState extends ConsumerState<HomeView> {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.headlineLarge,
-          ).addPadding(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: Theme.of(context).textTheme.headlineLarge,
+              ).addPadding(),
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: TextButton(
+                    onPressed: () => navigateToSeeAll(),
+                    child: const Text(
+                      "Alle Packs",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500, fontSize: 15.0),
+                    )),
+              ),
+            ],
+          ),
           CarouselSlider(
             options: standardOptions(height: isReading ? 200 : 250),
             items: List.generate(
@@ -148,4 +179,9 @@ class _HomeViewState extends ConsumerState<HomeView> {
           ),
         ],
       );
+
+  void navigateToSeeAll() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const SeeAllView()));
+  }
 }
