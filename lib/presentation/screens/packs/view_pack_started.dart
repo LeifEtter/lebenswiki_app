@@ -1,10 +1,16 @@
+import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/application/data/pack_conversion.dart';
 import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/domain/models/read_model.dart';
+import 'package:lebenswiki_app/domain/models/user_model.dart';
+import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/sliver_appbar.dart';
+import 'package:lebenswiki_app/repository/backend/pack_api.dart';
 import 'package:lebenswiki_app/repository/backend/read_api.dart';
 
 class PackViewerStarted extends ConsumerStatefulWidget {
@@ -28,6 +34,9 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
   List<ListView> pages = [];
   late int currentIndex;
   late PageController pageController;
+  late UserRole userRole;
+  final PackApi packApi = PackApi();
+  late User user;
 
   @override
   void initState() {
@@ -47,6 +56,8 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
 
   @override
   Widget build(BuildContext context) {
+    user = ref.read(userProvider).user;
+    userRole = ref.read(userRoleProvider).role;
     return Scaffold(
       backgroundColor: Colors.white,
       body: NestedScrollView(
@@ -69,6 +80,7 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
                 clapCount: widget.read.pack != null
                     ? widget.read.pack!.claps.length
                     : 0,
+                bookmarkIcon: const Icon(Icons.bookmark),
               )
             ];
           },
@@ -152,4 +164,43 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
         )
         .toList();
   }
+
+  void _bookmarkCallback() async {
+    if (widget.read.pack != null) {
+      widget.read.pack!.bookmarkedByUser
+          ? await packApi.unbookmarkPack(widget.read.pack!.id).fold((left) {
+              CustomFlushbar.error(message: left.error).show(context);
+            }, (right) {
+              CustomFlushbar.success(message: right).show(context);
+              widget.read.pack!.toggleBookmarked(user);
+            })
+          : await packApi.bookmarkPack(widget.read.pack!.id).fold((left) {
+              CustomFlushbar.error(message: left.error).show(context);
+            }, (right) {
+              CustomFlushbar.success(message: right).show(context);
+              widget.read.pack!.toggleBookmarked(user);
+            });
+      setState(() {});
+    }
+  }
+
+  void _clapCallback() async {
+    widget.read.pack!.userHasClapped(userId: user.id)
+        ? CustomFlushbar.error(message: "Du hast schon geklatscht")
+            .show(context)
+        : await PackApi().addClap(packId: widget.read.pack!.id!).fold(
+            (left) {
+              CustomFlushbar.error(message: left.error).show(context);
+            },
+            (right) {
+              CustomFlushbar.success(message: right).show(context);
+              widget.read.pack!.claps.add(user.id);
+              setState(() {});
+            },
+          );
+  }
+
+  void _showRegisterRequest() => showDialog(
+      context: context,
+      builder: (BuildContext context) => RegisterRequestPopup(ref));
 }

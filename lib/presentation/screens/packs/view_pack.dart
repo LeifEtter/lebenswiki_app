@@ -7,7 +7,9 @@ import 'package:lebenswiki_app/domain/models/user_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/packs/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/sliver_appbar.dart';
+import 'package:lebenswiki_app/repository/backend/pack_api.dart';
 import 'package:lebenswiki_app/repository/backend/read_api.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/widgets/lw.dart';
@@ -32,6 +34,7 @@ class _ViewPackState extends ConsumerState<ViewPack> {
   late int fakeReads;
   late User user;
   late UserRole userRole;
+  PackApi packApi = PackApi();
 
   @override
   void initState() {
@@ -60,10 +63,17 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                   heroName: widget.heroName,
                   titleImage: widget.pack.titleImage,
                   categoryName: widget.pack.categories[0].categoryName,
-                  clapCallback: () {},
+                  clapCallback: userRole == UserRole.anonymous
+                      ? _showRegisterRequest
+                      : _clapCallback,
                   shareCallback: () {},
-                  bookmarkCallback: () {},
+                  bookmarkCallback: userRole == UserRole.anonymous
+                      ? _showRegisterRequest
+                      : _bookmarkCallback,
                   clapCount: widget.pack.claps.length,
+                  bookmarkIcon: widget.pack.bookmarkedByUser
+                      ? const Icon(Icons.bookmark_added, size: 20)
+                      : const Icon(Icons.bookmark_add_outlined, size: 20),
                 )
               ];
             },
@@ -239,4 +249,44 @@ class _ViewPackState extends ConsumerState<ViewPack> {
           height: 40,
         ),
       );
+
+  void _bookmarkCallback() async {
+    widget.pack.bookmarkedByUser
+        ? await packApi.unbookmarkPack(widget.pack.id).fold((left) {
+            CustomFlushbar.error(message: left.error).show(context);
+          }, (right) {
+            CustomFlushbar.success(message: right).show(context);
+            widget.pack.toggleBookmarked(user);
+          })
+        : await packApi.bookmarkPack(widget.pack.id).fold((left) {
+            CustomFlushbar.error(message: left.error).show(context);
+          }, (right) {
+            CustomFlushbar.success(message: right).show(context);
+            widget.pack.toggleBookmarked(user);
+          });
+    setState(() {});
+  }
+
+  void _clapCallback() async {
+    widget.pack.userHasClapped(userId: user.id)
+        ? CustomFlushbar.error(message: "Du hast schon geklatscht")
+            .show(context)
+        : await PackApi().addClap(packId: widget.pack.id!).fold(
+            (left) {
+              CustomFlushbar.error(message: left.error).show(context);
+            },
+            (right) {
+              CustomFlushbar.success(message: right).show(context);
+              widget.pack.claps.add(user.id);
+              setState(() {});
+            },
+          );
+  }
+
+  void _showRegisterRequest() => showDialog(
+      context: context,
+      builder: (BuildContext context) => RegisterRequestPopup(ref));
+
+  //TODO implement share
+  //void _shareCallback() async {}
 }

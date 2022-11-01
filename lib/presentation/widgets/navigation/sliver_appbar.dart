@@ -13,6 +13,7 @@ class ViewerAppBar extends StatefulWidget {
   final Function clapCallback;
   final Function bookmarkCallback;
   final int clapCount;
+  final Icon bookmarkIcon;
 
   const ViewerAppBar({
     Key? key,
@@ -24,6 +25,7 @@ class ViewerAppBar extends StatefulWidget {
     required this.clapCallback,
     required this.bookmarkCallback,
     required this.clapCount,
+    required this.bookmarkIcon,
   }) : super(key: key);
 
   @override
@@ -100,7 +102,6 @@ class _ViewerAppBarState extends State<ViewerAppBar> {
                     size: 20,
                   ),
                 ),
-                const SizedBox(width: 5),
                 GestureDetector(
                   onTap: () => widget.clapCallback(),
                   child: Row(
@@ -108,7 +109,7 @@ class _ViewerAppBarState extends State<ViewerAppBar> {
                       Text(Emoji.byName("clapping hands").toString(),
                           style: const TextStyle(fontSize: 17.0)),
                       Padding(
-                        padding: const EdgeInsets.only(top: 5.0, left: 1.0),
+                        padding: const EdgeInsets.only(top: 5.0, left: 0),
                         child: Text(
                           widget.clapCount.toString(),
                           style: TextStyle(
@@ -121,10 +122,7 @@ class _ViewerAppBarState extends State<ViewerAppBar> {
                 IconButton(
                   constraints: const BoxConstraints(),
                   onPressed: () => widget.bookmarkCallback(),
-                  icon: const Icon(
-                    Icons.bookmark_add_outlined,
-                    size: 20,
-                  ),
+                  icon: widget.bookmarkIcon,
                 ),
               ],
             ),
