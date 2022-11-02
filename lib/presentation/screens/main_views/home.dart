@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
+import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/main_views/see_all.dart';
@@ -93,7 +94,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
   Widget packSection({
     required String heroParent,
     required String title,
-    required List packs,
+    required List<Pack> packs,
     required bool isReading,
   }) =>
       Column(
@@ -109,7 +110,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
               Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: TextButton(
-                    onPressed: () => navigateToSeeAll(),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SeeAllView(
+                                    packs: packs,
+                                  )));
+                    },
                     child: const Text(
                       "Alle Packs",
                       style: TextStyle(
@@ -154,7 +162,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
               Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: TextButton(
-                    onPressed: () => navigateToSeeAll(),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SeeAllView(
+                                    reads: reads,
+                                  )));
+                    },
                     child: const Text(
                       "Alle Packs",
                       style: TextStyle(
@@ -179,9 +194,4 @@ class _HomeViewState extends ConsumerState<HomeView> {
           ),
         ],
       );
-
-  void navigateToSeeAll() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const SeeAllView()));
-  }
 }

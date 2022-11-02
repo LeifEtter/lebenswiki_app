@@ -1,7 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/application/data/pack_list_helper.dart';
+import 'package:lebenswiki_app/domain/models/category_model.dart';
+import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
+import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/domain/models/short_model.dart';
+import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 
@@ -11,16 +18,27 @@ enum SortingOption {
   mostCommented,
 }
 
+class CatCheckboxEntry {
+  ContentCategory cat;
+  bool value;
+
+  CatCheckboxEntry({required this.cat, required this.value});
+}
+
 class SeeAllView extends ConsumerStatefulWidget {
   final bool isShorts;
+  final bool isReads;
   final List<Pack>? packs;
   final List<Short>? shorts;
+  final List<Read>? reads;
 
   const SeeAllView({
     Key? key,
     this.isShorts = false,
+    this.isReads = false,
     this.packs = const [],
     this.shorts = const [],
+    this.reads,
   }) : super(key: key);
 
   @override
@@ -28,15 +46,32 @@ class SeeAllView extends ConsumerStatefulWidget {
 }
 
 class _SeeAllViewState extends ConsumerState<SeeAllView> {
+  late List<ContentCategory> categories;
+  late ContentCategory chosenCategory;
+
   SortingOption chosenSortingOption = SortingOption.newestFirst;
+
+  late List<CatCheckboxEntry> catCheckboxList;
+
+  late List<Pack> packsToShow;
 
   @override
   void initState() {
+    packsToShow = widget.packs!;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    categories = ref.read(categoryProvider).categories;
+    catCheckboxList = categories
+        .map((ContentCategory cat) => CatCheckboxEntry(
+              cat: cat,
+              value: false,
+            ))
+        .toList();
+    chosenCategory = categories[0];
+    print("Full reload");
     return Scaffold(
       body: ListView(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 50),
@@ -46,58 +81,197 @@ class _SeeAllViewState extends ConsumerState<SeeAllView> {
             thickness: 1.1,
             color: CustomColors.mediumGrey,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              GestureDetector(
-                onTap: () => _showFilteringOptions(),
-                child: Row(
-                  children: [
-                    Icon(Icons.filter_list_rounded, color: CustomColors.blue),
-                    const SizedBox(width: 10),
-                    Text("Filter",
-                        style: TextStyle(
-                            color: CustomColors.textGrey,
-                            fontWeight: FontWeight.w500)),
-                  ],
+          StatefulBuilder(builder: (context, innerSetState) {
+            for (CatCheckboxEntry checkboxEntry in catCheckboxList) {
+              if (checkboxEntry.cat == chosenCategory) {
+                checkboxEntry.value = true;
+              } else {
+                checkboxEntry.value = false;
+              }
+            }
+            preparePacksToShow();
+            return Column(
+              children: [
+                _buildTopOptions(innerSetState),
+                Divider(
+                  thickness: 1.1,
+                  color: CustomColors.mediumGrey,
                 ),
-              ),
-              Container(
-                height: 30,
-                width: 1.1,
-                color: CustomColors.mediumGrey,
-              ),
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => _showSortingOptions(),
-                child: Row(
-                  children: [
-                    RotatedBox(
-                        quarterTurns: 1,
-                        child: Icon(Icons.sync_alt_rounded,
-                            color: CustomColors.blue)),
-                    const SizedBox(width: 10),
-                    Text("Sortieren",
-                        style: TextStyle(
-                            color: CustomColors.textGrey,
-                            fontWeight: FontWeight.w500)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Divider(
-            thickness: 1.1,
-            color: CustomColors.mediumGrey,
-          ),
+                ...packsToShow.map(
+                  (Pack pack) => Padding(
+                    padding: const EdgeInsets.only(top: 8, bottom: 8),
+                    child: SizedBox(
+                      height: 250,
+                      child: PackCard(
+                        heroParent: "",
+                        pack: pack,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            );
+          }),
         ],
       ),
     );
   }
 
-  void _showFilteringOptions() {}
+  Future preparePacksToShow() async {
+    if (chosenCategory.categoryName != "Neu") {
+      packsToShow = widget.packs!.where((Pack pack) {
+        return pack.categories[0].id == chosenCategory.id;
+      }).toList();
+    }
+    switch (chosenSortingOption) {
+      case SortingOption.newestFirst:
+        packsToShow.sort((a, b) => a.creationDate.compareTo(b.creationDate));
+        break;
+      case SortingOption.mostCommented:
+        packsToShow
+            .sort((a, b) => a.comments.length.compareTo(b.comments.length));
+        break;
+      case SortingOption.mostRead:
+        packsToShow.sort((a, b) => a.claps.length.compareTo(b.claps.length));
+    }
+  }
 
-  void _showSortingOptions() {
+  Widget _buildTopOptions(Function setInnerState) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Flexible(
+            flex: 50,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => _showFilteringOptions(setInnerState),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.filter_list_rounded, color: CustomColors.blue),
+                  const SizedBox(width: 10),
+                  Text("Filter",
+                      style: TextStyle(
+                          color: CustomColors.textGrey,
+                          fontWeight: FontWeight.w500)),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            height: 30,
+            width: 1.1,
+            color: CustomColors.mediumGrey,
+          ),
+          Flexible(
+            flex: 50,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => _showSortingOptions(setInnerState),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  RotatedBox(
+                      quarterTurns: 1,
+                      child: Icon(Icons.sync_alt_rounded,
+                          color: CustomColors.blue)),
+                  const SizedBox(width: 10),
+                  Text("Sortieren",
+                      style: TextStyle(
+                          color: CustomColors.textGrey,
+                          fontWeight: FontWeight.w500)),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+
+  void _showFilteringOptions(Function setInnerState) {
+    showModalBottomSheet(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+        height: 300,
+        child: ListView(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(Icons.close_rounded, color: CustomColors.blue, size: 25),
+                Text(
+                  "Sortieren",
+                  style: TextStyle(
+                      color: CustomColors.offBlack,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18),
+                ),
+                Icon(Icons.check_rounded, color: CustomColors.blue, size: 25),
+              ],
+            ),
+            const SizedBox(height: 20),
+            ExpansionTile(
+              tilePadding: const EdgeInsets.only(),
+              title: Text(
+                "Kategorien",
+                style: TextStyle(
+                  color: CustomColors.offBlack,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              children: [
+                ...catCheckboxList
+                    .map((CatCheckboxEntry catCheckbox) => Padding(
+                          padding:
+                              const EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              setInnerState(() {
+                                chosenCategory = catCheckbox.cat;
+                              });
+                              Navigator.pop(context);
+                            },
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: Checkbox(
+                                    activeColor: CustomColors.offBlack,
+                                    shape: const CircleBorder(),
+                                    value: catCheckbox.value,
+                                    onChanged: (bool? newValue) {
+                                      setInnerState(() {});
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                                Text(
+                                  catCheckbox.cat.categoryName,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: catCheckbox.value
+                                        ? CustomColors.offBlack
+                                        : CustomColors.textMediumGrey,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ))
+                    .toList(),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showSortingOptions(Function setInnerState) {
     showModalBottomSheet(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       context: context,
@@ -122,12 +296,18 @@ class _SeeAllViewState extends ConsumerState<SeeAllView> {
             ),
             const SizedBox(height: 40),
             _buildSortingOptionTile(
-                optionName: "Neueste", option: SortingOption.newestFirst),
+              setInnerState: setInnerState,
+              optionName: "Neueste",
+              option: SortingOption.newestFirst,
+            ),
             const Divider(height: 20),
             _buildSortingOptionTile(
-                optionName: "Meist Gelesen", option: SortingOption.mostRead),
+                setInnerState: setInnerState,
+                optionName: "Meist Gelesen",
+                option: SortingOption.mostRead),
             const Divider(height: 20),
             _buildSortingOptionTile(
+              setInnerState: setInnerState,
               optionName: "Meist Kommentiert",
               option: SortingOption.mostCommented,
             ),
@@ -138,12 +318,13 @@ class _SeeAllViewState extends ConsumerState<SeeAllView> {
   }
 
   Widget _buildSortingOptionTile({
+    required Function setInnerState,
     required String optionName,
     required SortingOption option,
   }) =>
       GestureDetector(
         onTap: () {
-          setState(() {
+          setInnerState(() {
             chosenSortingOption = option;
           });
           Navigator.pop(context);
