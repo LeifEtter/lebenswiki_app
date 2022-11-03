@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/packs/view_pack_started.dart';
+import 'package:lebenswiki_app/presentation/widgets/common/border.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
 import 'package:lebenswiki_app/presentation/screens/other/comments.dart';
 import 'package:lebenswiki_app/presentation/screens/packs/view_pack.dart';
@@ -169,41 +170,72 @@ class _PackCardState extends ConsumerState<PackCard> {
             ),
             Flexible(
               flex: 50,
-              child: SizedBox(
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 0, top: 15, right: 5, bottom: 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          pack.title,
-                          style: Theme.of(context).textTheme.labelMedium,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          "by ${pack.creator!.name} for ${pack.initiative}",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(fontSize: 11.0),
-                        ),
-                      ),
-                      Expanded(child: Container()),
-                      !isReading
-                          ? _buildInfoBar(context, ref)
-                          : Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: _buildProgressRow(context),
+              child: Stack(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 0, top: 15, right: 5, bottom: 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Text(
+                              pack.title,
+                              style: Theme.of(context).textTheme.labelMedium,
                             ),
-                    ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10, bottom: 0),
+                            child: Text(
+                              "by ${pack.creator!.name} for ${pack.initiative}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(fontSize: 11.0, height: 1.1),
+                            ),
+                          ),
+                          Expanded(child: Container()),
+                          !isReading
+                              ? _buildInfoBar(context, ref)
+                              : Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: _buildProgressRow(context),
+                                ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: widget.isDraftView
+                        ? Container()
+                        : IconButton(
+                            constraints: const BoxConstraints(),
+                            iconSize: 25,
+                            icon: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child: pack.bookmarkedByUser
+                                  ? const Icon(Icons.bookmark_added)
+                                  : const Icon(
+                                      Icons.bookmark_add_outlined,
+                                    ),
+                            ),
+                            onPressed: () {
+                              if (userRole == UserRole.anonymous) {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        RegisterRequestPopup(ref));
+                              } else {
+                                _bookmarkCallback();
+                              }
+                            },
+                          ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -212,81 +244,62 @@ class _PackCardState extends ConsumerState<PackCard> {
     );
   }
 
-  Widget _buildInfoBar(context, ref) => Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          InfoBar(
-            height: 35,
-            width: 160,
-            items: [
-              InfoItem.forText(
-                text: DateFormat.MMMd().format(pack.creationDate),
-              ),
-              InfoItem.forIconLabel(
-                onPress: () async {
-                  if (userRole == UserRole.anonymous) {
-                    showDialog(
-                        context: context,
-                        builder: (context) => RegisterRequestPopup(ref));
-                  } else {
-                    pack.userHasClapped(userId: user.id)
-                        ? CustomFlushbar.error(
-                                message: "Du hast schon geklatscht")
-                            .show(context)
-                        : await PackApi().addClap(packId: pack.id!).fold(
-                            (left) {
-                              CustomFlushbar.error(message: left.error)
-                                  .show(context);
-                            },
-                            (right) {
-                              CustomFlushbar.success(message: right)
-                                  .show(context);
-                              pack.claps.add(user.id);
-                              setState(() {});
-                            },
-                          );
-                  }
-                },
-                emoji: Emoji.byName("clapping hands").toString(),
-                indicator: pack.claps.length.toString(),
-              ),
-              InfoItem.forIconLabel(
-                onPress: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            CommentView(isShort: false, id: pack.id!))),
-                icon: const Icon(
-                  Icons.mode_comment,
-                  size: 15,
+  Widget _buildInfoBar(context, ref) => SizedBox(
+        height: 35,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            InfoBar(
+              height: 35,
+              width: 160,
+              items: [
+                InfoItem.forText(
+                  text: DateFormat.MMMd().format(pack.creationDate),
                 ),
-                indicator: pack.comments.length.toString(),
-              ),
-            ],
-          ),
-          const Spacer(),
-          widget.isDraftView
-              ? Container()
-              : IconButton(
-                  iconSize: 30,
-                  icon: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    child: pack.bookmarkedByUser
-                        ? const Icon(Icons.bookmark_added)
-                        : const Icon(Icons.bookmark_add_outlined),
-                  ),
-                  onPressed: () {
+                InfoItem.forIconLabel(
+                  onPress: () async {
                     if (userRole == UserRole.anonymous) {
                       showDialog(
                           context: context,
-                          builder: (BuildContext context) =>
-                              RegisterRequestPopup(ref));
+                          builder: (context) => RegisterRequestPopup(ref));
                     } else {
-                      _bookmarkCallback();
+                      pack.userHasClapped(userId: user.id)
+                          ? CustomFlushbar.error(
+                                  message: "Du hast schon geklatscht")
+                              .show(context)
+                          : await PackApi().addClap(packId: pack.id!).fold(
+                              (left) {
+                                CustomFlushbar.error(message: left.error)
+                                    .show(context);
+                              },
+                              (right) {
+                                CustomFlushbar.success(message: right)
+                                    .show(context);
+                                pack.claps.add(user.id);
+                                setState(() {});
+                              },
+                            );
                     }
                   },
+                  emoji: Emoji.byName("clapping hands").toString(),
+                  indicator: pack.claps.length.toString(),
                 ),
-        ],
+                InfoItem.forIconLabel(
+                  onPress: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              CommentView(isShort: false, id: pack.id!))),
+                  icon: const Icon(
+                    Icons.mode_comment,
+                    size: 15,
+                  ),
+                  indicator: pack.comments.length.toString(),
+                ),
+              ],
+            ),
+          ],
+        ),
       );
 
   Widget _buildProgressRow(context) => Padding(
