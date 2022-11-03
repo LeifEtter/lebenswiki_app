@@ -60,7 +60,7 @@ void showBottomMenuForNavigation(BuildContext context, WidgetRef ref,
                     await Navigator.pushNamed(context, '/contact');
                     reload();
                   },
-                  text: "Hilfe",
+                  text: "Hilfe/Feedback",
                   icon: Icons.help_outline_rounded,
                 ),
                 buildMenuTile(

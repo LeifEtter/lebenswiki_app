@@ -2,6 +2,7 @@ import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
+import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/widgets/input/drop_down_menu.dart';
 import 'package:lebenswiki_app/presentation/widgets/input/simplified_form_field.dart';
 import 'package:lebenswiki_app/repository/backend/misc_api.dart';
@@ -29,9 +30,13 @@ class _ContactViewState extends ConsumerState<ContactView> {
     "Feedback",
     "Anderes",
   ];
+  String name = "Anonymous";
 
   @override
   Widget build(BuildContext context) {
+    if (ref.read(userRoleProvider).role != UserRole.anonymous) {
+      name = ref.read(userProvider).user.name;
+    }
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -62,7 +67,8 @@ class _ContactViewState extends ConsumerState<ContactView> {
               text: "Einreichen",
               action: () async {
                 Either<CustomError, String> feedbackResult = await MiscApi()
-                    .createFeedback(feedback: submissionController.text);
+                    .createFeedback(
+                        feedback: submissionController.text, name: name);
                 feedbackResult.fold(
                   (left) =>
                       CustomFlushbar.error(message: left.error).show(context),
