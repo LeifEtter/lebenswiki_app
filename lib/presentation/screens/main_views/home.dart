@@ -118,6 +118,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => SeeAllView(
+                                    title: title,
                                     packs: packs,
                                     categories: categories,
                                   )));

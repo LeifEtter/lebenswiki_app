@@ -20,12 +20,16 @@ class CatCheckboxEntry {
 }
 
 class SeeAllView extends ConsumerStatefulWidget {
+  final String title;
   final List<Pack> packs;
   final List<ContentCategory> categories;
 
-  const SeeAllView(
-      {Key? key, required this.packs, required this.categories, requi})
-      : super(key: key);
+  const SeeAllView({
+    Key? key,
+    required this.packs,
+    required this.categories,
+    required this.title,
+  }) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _SeeAllViewState();
@@ -71,7 +75,7 @@ class _SeeAllViewState extends ConsumerState<SeeAllView> {
         padding: const EdgeInsets.only(left: 15.0, right: 15, top: 40.0),
         child: Column(
           children: [
-            const TopNavIOS(title: "Irgendwas"),
+            TopNavIOS(title: widget.title),
             Divider(
               thickness: 1.1,
               color: CustomColors.mediumGrey,
