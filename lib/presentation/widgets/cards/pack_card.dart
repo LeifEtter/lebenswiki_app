@@ -24,6 +24,7 @@ class PackCard extends ConsumerStatefulWidget {
   final Pack? pack;
   final Read? read;
   final bool isDraftView;
+  final String? title;
 
   const PackCard({
     Key? key,
@@ -31,6 +32,7 @@ class PackCard extends ConsumerStatefulWidget {
     this.read,
     required this.heroParent,
     this.isDraftView = false,
+    this.title,
   }) : super(key: key);
 
   @override

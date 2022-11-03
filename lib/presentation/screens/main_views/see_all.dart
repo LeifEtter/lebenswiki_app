@@ -1,13 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/application/data/pack_list_helper.dart';
 import 'package:lebenswiki_app/domain/models/category_model.dart';
-import 'package:lebenswiki_app/domain/models/helper_data_model.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
-import 'package:lebenswiki_app/domain/models/read_model.dart';
-import 'package:lebenswiki_app/domain/models/short_model.dart';
-import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
@@ -26,27 +20,18 @@ class CatCheckboxEntry {
 }
 
 class SeeAllView extends ConsumerStatefulWidget {
-  final bool isShorts;
-  final bool isReads;
-  final List<Pack>? packs;
-  final List<Short>? shorts;
-  final List<Read>? reads;
+  final List<Pack> packs;
+  final List<ContentCategory> categories;
 
-  const SeeAllView({
-    Key? key,
-    this.isShorts = false,
-    this.isReads = false,
-    this.packs = const [],
-    this.shorts = const [],
-    this.reads,
-  }) : super(key: key);
+  const SeeAllView(
+      {Key? key, required this.packs, required this.categories, requi})
+      : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _SeeAllViewState();
 }
 
 class _SeeAllViewState extends ConsumerState<SeeAllView> {
-  late List<ContentCategory> categories;
   late ContentCategory chosenCategory;
 
   SortingOption chosenSortingOption = SortingOption.newestFirst;
@@ -57,93 +42,117 @@ class _SeeAllViewState extends ConsumerState<SeeAllView> {
 
   @override
   void initState() {
-    packsToShow = widget.packs!;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    categories = ref.read(categoryProvider).categories;
-    catCheckboxList = categories
+    packsToShow = widget.packs;
+    catCheckboxList = widget.categories
         .map((ContentCategory cat) => CatCheckboxEntry(
               cat: cat,
               value: false,
             ))
         .toList();
-    chosenCategory = categories[0];
-    print("Full reload");
+    chosenCategory = widget.categories[0];
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    for (CatCheckboxEntry checkboxEntry in catCheckboxList) {
+      if (checkboxEntry.cat == chosenCategory) {
+        checkboxEntry.value = true;
+      } else {
+        checkboxEntry.value = false;
+      }
+    }
+    List<Pack> newPacksToShow = [];
+
+    newPacksToShow = preparePacksToShow();
+
     return Scaffold(
-      body: ListView(
-        padding: const EdgeInsets.only(left: 20, right: 20, top: 50),
-        children: [
-          const TopNavIOS(title: "Irgendwas"),
-          Divider(
-            thickness: 1.1,
-            color: CustomColors.mediumGrey,
-          ),
-          StatefulBuilder(builder: (context, innerSetState) {
-            for (CatCheckboxEntry checkboxEntry in catCheckboxList) {
-              if (checkboxEntry.cat == chosenCategory) {
-                checkboxEntry.value = true;
-              } else {
-                checkboxEntry.value = false;
-              }
-            }
-            preparePacksToShow();
-            return Column(
-              children: [
-                _buildTopOptions(innerSetState),
-                Divider(
-                  thickness: 1.1,
-                  color: CustomColors.mediumGrey,
-                ),
-                ...packsToShow.map(
-                  (Pack pack) => Padding(
-                    padding: const EdgeInsets.only(top: 8, bottom: 8),
-                    child: SizedBox(
-                      height: 250,
-                      child: PackCard(
-                        heroParent: "",
-                        pack: pack,
+      body: Padding(
+        padding: const EdgeInsets.only(left: 15.0, right: 15, top: 40.0),
+        child: Column(
+          children: [
+            const TopNavIOS(title: "Irgendwas"),
+            Divider(
+              thickness: 1.1,
+              color: CustomColors.mediumGrey,
+            ),
+            _buildTopOptions(
+              sortCallback: (SortingOption option) {
+                chosenSortingOption = option;
+                setState(() {});
+              },
+              filterCallback: (ContentCategory category) {
+                chosenCategory = category;
+                setState(() {});
+              },
+            ),
+            Divider(
+              thickness: 1.1,
+              color: CustomColors.mediumGrey,
+            ),
+            Expanded(
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: newPacksToShow.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 8, bottom: 8),
+                      child: SizedBox(
+                        height: 250,
+                        child: PackCard(
+                          title: newPacksToShow[index].title,
+                          heroParent: "",
+                          pack: newPacksToShow[index],
+                        ),
                       ),
-                    ),
-                  ),
-                )
-              ],
-            );
-          }),
-        ],
+                    );
+                  }),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Future preparePacksToShow() async {
+  List<Pack> preparePacksToShow() {
+    List<Pack> result = [];
     if (chosenCategory.categoryName != "Neu") {
-      packsToShow = widget.packs!.where((Pack pack) {
+      result = widget.packs.where((Pack pack) {
         return pack.categories[0].id == chosenCategory.id;
       }).toList();
+    } else {
+      result = widget.packs;
     }
+
     switch (chosenSortingOption) {
       case SortingOption.newestFirst:
-        packsToShow.sort((a, b) => a.creationDate.compareTo(b.creationDate));
+        result
+            .sort((Pack a, Pack b) => b.creationDate.compareTo(a.creationDate));
         break;
       case SortingOption.mostCommented:
-        packsToShow
-            .sort((a, b) => a.comments.length.compareTo(b.comments.length));
+        result.sort(
+            (Pack a, Pack b) => b.comments.length.compareTo(a.comments.length));
         break;
       case SortingOption.mostRead:
-        packsToShow.sort((a, b) => a.claps.length.compareTo(b.claps.length));
+        result
+            .sort((Pack a, Pack b) => b.claps.length.compareTo(a.claps.length));
     }
+    return result;
   }
 
-  Widget _buildTopOptions(Function setInnerState) => Row(
+  Widget _buildTopOptions({
+    required Function(SortingOption) sortCallback,
+    required Function(ContentCategory) filterCallback,
+  }) =>
+      Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Flexible(
             flex: 50,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () => _showFilteringOptions(setInnerState),
+              onTap: () =>
+                  _showFilteringOptions(filterCallback: filterCallback),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -166,7 +175,9 @@ class _SeeAllViewState extends ConsumerState<SeeAllView> {
             flex: 50,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () => _showSortingOptions(setInnerState),
+              onTap: () => _showSortingOptions(
+                sortCallback: sortCallback,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -186,7 +197,8 @@ class _SeeAllViewState extends ConsumerState<SeeAllView> {
         ],
       );
 
-  void _showFilteringOptions(Function setInnerState) {
+  void _showFilteringOptions(
+      {required Function(ContentCategory) filterCallback}) {
     showModalBottomSheet(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       context: context,
@@ -227,10 +239,8 @@ class _SeeAllViewState extends ConsumerState<SeeAllView> {
                           child: GestureDetector(
                             behavior: HitTestBehavior.opaque,
                             onTap: () {
-                              setInnerState(() {
-                                chosenCategory = catCheckbox.cat;
-                              });
                               Navigator.pop(context);
+                              filterCallback(catCheckbox.cat);
                             },
                             child: Row(
                               children: [
@@ -242,7 +252,7 @@ class _SeeAllViewState extends ConsumerState<SeeAllView> {
                                     shape: const CircleBorder(),
                                     value: catCheckbox.value,
                                     onChanged: (bool? newValue) {
-                                      setInnerState(() {});
+                                      //TODO setstate
                                     },
                                   ),
                                 ),
@@ -271,7 +281,7 @@ class _SeeAllViewState extends ConsumerState<SeeAllView> {
     );
   }
 
-  void _showSortingOptions(Function setInnerState) {
+  void _showSortingOptions({required Function(SortingOption) sortCallback}) {
     showModalBottomSheet(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       context: context,
@@ -296,18 +306,18 @@ class _SeeAllViewState extends ConsumerState<SeeAllView> {
             ),
             const SizedBox(height: 40),
             _buildSortingOptionTile(
-              setInnerState: setInnerState,
+              sortCallback: sortCallback,
               optionName: "Neueste",
               option: SortingOption.newestFirst,
             ),
             const Divider(height: 20),
             _buildSortingOptionTile(
-                setInnerState: setInnerState,
+                sortCallback: sortCallback,
                 optionName: "Meist Gelesen",
                 option: SortingOption.mostRead),
             const Divider(height: 20),
             _buildSortingOptionTile(
-              setInnerState: setInnerState,
+              sortCallback: sortCallback,
               optionName: "Meist Kommentiert",
               option: SortingOption.mostCommented,
             ),
@@ -318,16 +328,14 @@ class _SeeAllViewState extends ConsumerState<SeeAllView> {
   }
 
   Widget _buildSortingOptionTile({
-    required Function setInnerState,
+    required Function(SortingOption) sortCallback,
     required String optionName,
     required SortingOption option,
   }) =>
       GestureDetector(
         onTap: () {
-          setInnerState(() {
-            chosenSortingOption = option;
-          });
           Navigator.pop(context);
+          sortCallback(option);
         },
         child: Text(
           optionName,

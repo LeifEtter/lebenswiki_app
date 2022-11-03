@@ -3,6 +3,7 @@ import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
+import 'package:lebenswiki_app/domain/models/category_model.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/domain/models/read_model.dart';
@@ -26,6 +27,8 @@ class HomeView extends ConsumerStatefulWidget {
 }
 
 class _HomeViewState extends ConsumerState<HomeView> {
+  late List<ContentCategory> categories;
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +37,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
   @override
   Widget build(BuildContext context) {
     UserRole userRole = ref.read(userRoleProvider).role;
-
+    categories = ref.read(categoryProvider).categories;
     return RefreshIndicator(
       onRefresh: () async {
         ref.read(reloadProvider).reload();
@@ -116,6 +119,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                           MaterialPageRoute(
                               builder: (context) => SeeAllView(
                                     packs: packs,
+                                    categories: categories,
                                   )));
                     },
                     child: const Text(
@@ -159,23 +163,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 title,
                 style: Theme.of(context).textTheme.headlineLarge,
               ).addPadding(),
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SeeAllView(
-                                    reads: reads,
-                                  )));
-                    },
-                    child: const Text(
-                      "Alle Packs",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500, fontSize: 15.0),
-                    )),
-              ),
+              Container(),
             ],
           ),
           CarouselSlider(
