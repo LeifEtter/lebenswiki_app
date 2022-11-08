@@ -2,6 +2,7 @@ import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lebenswiki_app/presentation/providers/provider_helper.dart';
 import 'package:lebenswiki_app/presentation/screens/other/avatar_screen.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
@@ -313,13 +314,32 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
               const SizedBox(height: 100),
               Row(
                 children: [
-                  Image.asset(
-                    "assets/images/image10-23.png",
-                    width: 150,
+                  Flexible(
+                    flex: 50,
+                    child: GestureDetector(
+                      onTap: () async {
+                        await launchUrl(Uri.parse("https://www.bmfsfj.de/"));
+                      },
+                      child: SvgPicture.asset(
+                        "assets/images/Bundesministerium_Logo.svg",
+                      ),
+                    ),
                   ),
-                  const SizedBox(width: 10),
-                  Image.asset("assets/images/jugendstrategie-logo.png",
-                      width: 150),
+                  Flexible(
+                    flex: 50,
+                    child: GestureDetector(
+                      onTap: () async {
+                        await launchUrl(Uri.parse(
+                            "https://www.bmfsfj.de/bmfsfj/themen/kinder-und-jugend/jugendbildung/jugendstrategie?view="));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: Image.asset(
+                          "assets/images/jugendstrategie-logo.png",
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ],
