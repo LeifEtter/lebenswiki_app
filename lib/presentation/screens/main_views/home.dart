@@ -3,9 +3,12 @@ import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
+import 'package:lebenswiki_app/domain/models/category_model.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
+import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/screens/main_views/see_all.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/pack_card.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/extensions.dart';
 import 'package:lebenswiki_app/application/data/pack_list_helper.dart';
@@ -24,6 +27,8 @@ class HomeView extends ConsumerStatefulWidget {
 }
 
 class _HomeViewState extends ConsumerState<HomeView> {
+  late List<ContentCategory> categories;
+
   @override
   void initState() {
     super.initState();
@@ -32,7 +37,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
   @override
   Widget build(BuildContext context) {
     UserRole userRole = ref.read(userRoleProvider).role;
-
+    categories = ref.read(categoryProvider).categories;
     return RefreshIndicator(
       onRefresh: () async {
         ref.read(reloadProvider).reload();
@@ -92,16 +97,40 @@ class _HomeViewState extends ConsumerState<HomeView> {
   Widget packSection({
     required String heroParent,
     required String title,
-    required List packs,
+    required List<Pack> packs,
     required bool isReading,
   }) =>
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.headlineLarge,
-          ).addPadding(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: Theme.of(context).textTheme.headlineLarge,
+              ).addPadding(),
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SeeAllView(
+                                    title: title,
+                                    packs: packs,
+                                    categories: categories,
+                                  )));
+                    },
+                    child: const Text(
+                      "Alle Packs",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500, fontSize: 15.0),
+                    )),
+              ),
+            ],
+          ),
           CarouselSlider(
             options: standardOptions(height: isReading ? 200 : 250),
             items: List.generate(
@@ -128,10 +157,16 @@ class _HomeViewState extends ConsumerState<HomeView> {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.headlineLarge,
-          ).addPadding(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: Theme.of(context).textTheme.headlineLarge,
+              ).addPadding(),
+              Container(),
+            ],
+          ),
           CarouselSlider(
             options: standardOptions(height: isReading ? 200 : 250),
             items: List.generate(

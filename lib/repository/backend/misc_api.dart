@@ -43,12 +43,13 @@ class MiscApi extends BaseApi {
   }
 
   Future<Either<CustomError, String>> createFeedback(
-      {required String feedback}) async {
+      {required String feedback, required String name}) async {
     Response res = await post(
       Uri.parse("$serverIp/feedbacks/create"),
       headers: await requestHeader(),
       body: jsonEncode({
-        "text": feedback,
+        "name": name,
+        "feedback": feedback,
       }),
     );
     if (statusIsSuccess(res.statusCode)) {

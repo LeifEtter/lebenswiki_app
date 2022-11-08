@@ -32,7 +32,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allow App to access Gallery</string>
+	<string>Fotos werden für Profilbilder benutzt, oder können als Titelbild für Beiträge oder für den Inhalt der Beiträge verwendet werden.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
