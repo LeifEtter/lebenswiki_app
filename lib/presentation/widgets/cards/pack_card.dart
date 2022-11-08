@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/packs/view_pack_started.dart';
-import 'package:lebenswiki_app/presentation/widgets/common/border.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
 import 'package:lebenswiki_app/presentation/screens/other/comments.dart';
 import 'package:lebenswiki_app/presentation/screens/packs/view_pack.dart';
@@ -136,7 +135,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                               Icons.schedule,
                               size: 18,
                             ),
-                            text: pack.pages.length.toString(),
+                            text: (pack.pages.length / 2).toString(),
                             backgroundColor: CustomColors.whiteOverlay,
                           ),
                           widget.isDraftView
@@ -190,7 +189,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                           Padding(
                             padding: const EdgeInsets.only(left: 10, bottom: 0),
                             child: Text(
-                              "by ${pack.creator!.name} for ${pack.initiative}",
+                              "von ${pack.creator!.name} für ${pack.initiative}",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!

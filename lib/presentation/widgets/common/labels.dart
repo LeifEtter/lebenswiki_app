@@ -26,7 +26,10 @@ class InfoLabel extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          icon ?? Container(),
+          Padding(
+            padding: const EdgeInsets.only(right: 2),
+            child: icon ?? Container(),
+          ),
           Text(
             text,
             style: textStyle ??

@@ -145,7 +145,8 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                     children: [
                       _buildInteractionLabel(
                         label: "Lesezeit",
-                        indicator: widget.pack.pages.length.toString() + " Min",
+                        indicator:
+                            (widget.pack.pages.length / 2).toString() + " Min",
                       ),
                       _buildVerticalDivider(),
                       _buildInteractionLabel(
