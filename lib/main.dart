@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Lebenswiki',
         theme: buildTheme(Brightness.light),
         onGenerateRoute: generateRoute,
