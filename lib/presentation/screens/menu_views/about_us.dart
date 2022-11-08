@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/repository/constants/shadows.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutUsView extends StatefulWidget {
   const AboutUsView({Key? key}) : super(key: key);
@@ -104,16 +105,27 @@ class _AboutUsViewState extends State<AboutUsView> {
                   children: [
                     Flexible(
                       flex: 50,
-                      child: SvgPicture.asset(
-                        "assets/images/Bundesministerium_Logo.svg",
+                      child: GestureDetector(
+                        onTap: () async {
+                          await launchUrl(Uri.parse("https://www.bmfsfj.de/"));
+                        },
+                        child: SvgPicture.asset(
+                          "assets/images/Bundesministerium_Logo.svg",
+                        ),
                       ),
                     ),
                     Flexible(
                       flex: 50,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Image.asset(
-                          "assets/images/jugendstrategie-logo.png",
+                      child: GestureDetector(
+                        onTap: () async {
+                          await launchUrl(Uri.parse(
+                              "https://www.bmfsfj.de/bmfsfj/themen/kinder-und-jugend/jugendbildung/jugendstrategie?view="));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Image.asset(
+                            "assets/images/jugendstrategie-logo.png",
+                          ),
                         ),
                       ),
                     ),
