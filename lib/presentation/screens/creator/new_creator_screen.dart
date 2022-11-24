@@ -14,6 +14,7 @@ import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/lebenswiki_icons.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/creator/editor_button_row.dart';
+import 'package:lebenswiki_app/presentation/screens/creator/item_to_editable_widget.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
@@ -34,6 +35,7 @@ class NewCreatorScreen extends ConsumerStatefulWidget {
 class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
   final FirebaseStorage storage = FirebaseStorage.instance;
   final ImagePicker _picker = ImagePicker();
+  late ItemToEditableWidget itemToEditableWidget;
 
   late Pack pack;
   late PackPage currentPage;
@@ -47,6 +49,11 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
     currentPage = widget.pack.pages.first;
     currentPage.initControllers();
     initPageNumbers();
+    itemToEditableWidget = ItemToEditableWidget(
+      save: () => currentPage.save(),
+      uploadImage: (PackPageItem item) => uploadImage(context, item),
+      reload: () => setState(() {}),
+    );
     super.initState();
   }
 
@@ -81,11 +88,16 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
               },
               addItem: (ItemType itemType) {
                 TextEditingController newController = TextEditingController();
+                TextEditingController secondController =
+                    TextEditingController();
                 newController.text = "";
+                secondController.text = "";
                 currentPage.items.add(PackPageItem(
                   type: itemType,
                   headContent: PackPageItemInput(controller: newController),
-                  bodyContent: [],
+                  bodyContent: itemType == ItemType.list
+                      ? [PackPageItemInput(controller: secondController)]
+                      : [],
                 ));
                 setState(() {
                   currentPage.save();
@@ -112,43 +124,43 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
       shrinkWrap: true,
       itemCount: currentPage.items.length,
       itemBuilder: (BuildContext context, int index) {
-        return Row(
-          children: [
-            Expanded(
-              child: PackConversion.toEditableItem(context,
+        if (currentPage.items[index].type == ItemType.title) {
+          return Row(
+            children: [
+              Expanded(
+                child: itemToEditableWidget.convert(
                   item: currentPage.items[index],
-                  reload: () => setState(() {}),
-                  index: index,
-                  addListItem: () => setState(() {
-                        TextEditingController newController =
-                            TextEditingController();
-                        newController.text = "";
-                        currentPage.items[index].bodyContent.add(
-                          PackPageItemInput(
-                            value: "",
-                            controller: newController,
-                          ),
-                        );
-                      }),
-                  save: () => currentPage.save(),
-                  uploadCallback: (BuildContext context, PackPageItem item) =>
-                      /*upload(context, item),*/ true),
-            ),
-            IconButton(
-              icon: Icon(
-                LebenswikiIcons.trash,
-                color: CustomColors.darkGrey,
-                size: 23,
+                ),
               ),
-              onPressed: () => setState(() {
-                currentPage.removeItem(index);
-              }),
-            ),
-          ],
-        );
+              _deleteButton(index),
+            ],
+          );
+        } else {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              itemToEditableWidget.convert(
+                item: currentPage.items[index],
+              ),
+              _deleteButton(index),
+            ],
+          );
+        }
       },
     );
   }
+
+  Widget _deleteButton(index) => IconButton(
+        constraints: BoxConstraints(),
+        icon: Icon(
+          LebenswikiIcons.trash,
+          color: CustomColors.darkGrey,
+          size: 23,
+        ),
+        onPressed: () => setState(() {
+          currentPage.removeItem(index);
+        }),
+      );
 
   void uploadImage(context, PackPageItem item) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
