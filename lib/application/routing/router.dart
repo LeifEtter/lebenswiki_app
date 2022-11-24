@@ -5,7 +5,6 @@ import 'package:lebenswiki_app/presentation/screens/menu_views/contact.dart';
 import 'package:lebenswiki_app/presentation/screens/menu_views/created.dart';
 import 'package:lebenswiki_app/presentation/screens/menu_views/profile.dart';
 import 'package:lebenswiki_app/presentation/screens/menu_views/saved.dart';
-import 'package:lebenswiki_app/presentation/screens/menu_views/about_us.dart';
 import 'package:lebenswiki_app/repository/constants/routing_constants.dart';
 import 'package:lebenswiki_app/main.dart';
 import 'package:lebenswiki_app/presentation/screens/other/authentication.dart';

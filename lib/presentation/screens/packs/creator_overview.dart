@@ -1,4 +1,4 @@
-import 'package:either_dart/either.dart';
+/*import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/read_model.dart';
@@ -201,4 +201,4 @@ class _CreatorOverviewState extends State<CreatorOverview> {
 
   void _animToPage(index) => _viewController.animateToPage(index,
       duration: const Duration(milliseconds: 800), curve: Curves.easeInOut);
-}
+}*/

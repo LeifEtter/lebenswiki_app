@@ -74,6 +74,7 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
                         newProgress: currentIndex + 1);
                   }
                 },
+                //TODO implement Callbacks
                 clapCallback: () {},
                 shareCallback: () {},
                 bookmarkCallback: () {},
@@ -157,8 +158,7 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
           (PackPage page) => ListView(
             padding: const EdgeInsets.all(15.0),
             children: page.items
-                .map((PackPageItem item) =>
-                    PackConversion.itemToDisplayWidget(item))
+                .map((PackPageItem item) => PackConversion.toViewableItem(item))
                 .toList(),
           ),
         )

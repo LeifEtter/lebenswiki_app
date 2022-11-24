@@ -6,7 +6,7 @@ class PackPageItemInput {
   TextEditingController? controller;
 
   PackPageItemInput({
-    required this.value,
+    this.value = "",
     this.controller,
   });
 
@@ -111,6 +111,10 @@ class PackPage {
     for (PackPageItem item in items) {
       item.save();
     }
+  }
+
+  void removeItem(int index) {
+    items.removeAt(index);
   }
 
   bool isSaved() {

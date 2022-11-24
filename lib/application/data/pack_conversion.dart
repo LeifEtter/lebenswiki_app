@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
+import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/repository/constants/shadows.dart';
 
 class PackComponentStyling {
@@ -15,12 +16,12 @@ class PackComponentStyling {
 }
 
 class PackConversion {
-  static itemToWidget(
+  static toEditableItem(
     BuildContext context, {
     required PackPageItem item,
     required int index,
     required Function save,
-    required Function removeSelf,
+    required Function addListItem,
     required Function reload,
     required Function(BuildContext, PackPageItem) uploadCallback,
   }) {
@@ -74,16 +75,27 @@ class PackConversion {
             ),
             IconButton(
               icon: const Icon(Icons.add),
-              onPressed: () => removeSelf(),
+              onPressed: () => addListItem(),
             ),
           ],
         );
+
       case ItemType.title:
         return TextFormField(
+          style: const TextStyle(
+            fontSize: 20.0,
+          ),
           textCapitalization: TextCapitalization.sentences,
           onEditingComplete: () => save(),
           controller: item.headContent.controller,
-          //decoration: PackEditorStyling.standardDecoration("Titel eingeben"),
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(left: 10),
+            hintText: "Titel Hinzufügen",
+            border: InputBorder.none,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: CustomColors.outlineBlue, width: 2),
+            ),
+          ),
         );
       case ItemType.image:
         return GestureDetector(
@@ -146,7 +158,7 @@ class PackConversion {
               style: Theme.of(context).textTheme.labelSmall,
             ));
 
-  static Widget itemToDisplayWidget(PackPageItem item) {
+  static Widget toViewableItem(PackPageItem item) {
     switch (item.type) {
       case ItemType.list:
         return Column(

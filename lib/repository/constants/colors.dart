@@ -12,6 +12,10 @@ class CustomColors {
   static HexColor get whiteOverlay => HexColor("#F5F5F5");
   static HexColor get mediumDarkGrey => HexColor("##DFDFDF");
 
+  static HexColor get outlineBlue => HexColor("#9FC7F6");
+
+  static HexColor get greySeperator => HexColor("#646464");
+
   //Background Colors
   static HexColor get lightGrey => HexColor("#F1F1F1");
   //static LinearGradient? get blueGradientCombined => LinearGradient.lerp(blueGradient, blueGradient, blueGradient);

@@ -209,12 +209,12 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
           ),
           SpeedDialChild(
             onTap: () async {
-              await Navigator.push(
+              /*await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
                           CreatorOverview(pack: currentPack)));
-              setState(() {});
+              setState(() {});*/
             },
             child: const Icon(
               Icons.edit_outlined,

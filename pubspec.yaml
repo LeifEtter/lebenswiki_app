@@ -56,6 +56,9 @@ flutter:
     - assets/avatars/
 
   fonts:
+    - family: Lebenswiki
+      fonts:
+        - asset: assets/fonts/Lebenswiki.ttf
     - family: Outfit
       fonts:
         - asset: assets/fonts/Outfit/Outfit-Thin.ttf

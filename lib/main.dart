@@ -2,7 +2,10 @@ import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
+import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
+import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/presentation/providers/provider_helper.dart';
+import 'package:lebenswiki_app/presentation/screens/creator/new_creator_screen.dart';
 import 'package:lebenswiki_app/presentation/screens/other/onboarding.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/repository/backend/token_handler.dart';
@@ -80,6 +83,20 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
   }
 
   Future<Widget> determineWidget() async {
+    return NewCreatorScreen(
+      pack: Pack(
+        title: "Something",
+        description: "Something",
+        pages: [
+          PackPage(items: [], pageNumber: 1),
+          PackPage(items: [], pageNumber: 2),
+          PackPage(items: [], pageNumber: 3)
+        ],
+        categories: [],
+        titleImage: "asdamdlaskdm",
+        creatorId: 0,
+      ),
+    );
     SharedPreferences _shared = await SharedPreferences.getInstance();
     String? existingToken = await TokenHandler().get();
     //TODO Test token stuff
