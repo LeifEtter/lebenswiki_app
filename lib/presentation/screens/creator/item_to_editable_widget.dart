@@ -73,7 +73,7 @@ class ItemToEditableWidget {
   Widget _titleWidget(PackPageItem item) {
     return TextFormField(
       style: const TextStyle(
-        fontSize: 20.0,
+        fontSize: 23.0,
       ),
       textCapitalization: TextCapitalization.sentences,
       onEditingComplete: () => save(),
@@ -96,6 +96,7 @@ class ItemToEditableWidget {
         maxLines: null,
         minLines: 1,
         controller: item.headContent.controller,
+        style: const TextStyle(fontWeight: FontWeight.w400),
         decoration: InputDecoration(
           hintText: "Text Hinzufügen",
           hintStyle: const TextStyle(fontWeight: FontWeight.w400),
@@ -153,6 +154,9 @@ class ItemToEditableWidget {
           controller: item.headContent.controller,
           textCapitalization: TextCapitalization.sentences,
           onEditingComplete: () => save(),
+          style: TextStyle(
+            fontWeight: FontWeight.w400,
+          ),
           decoration: InputDecoration(
             hintText: "Titel",
             border: InputBorder.none,
@@ -174,6 +178,9 @@ class ItemToEditableWidget {
                     textCapitalization: TextCapitalization.sentences,
                     onEditingComplete: () => save(),
                     controller: input.controller,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                    ),
                     decoration: InputDecoration(
                       constraints: const BoxConstraints(maxHeight: 30),
                       contentPadding:
@@ -204,9 +211,8 @@ class ItemToEditableWidget {
               ],
             )),
         IconButton(
-          padding: const EdgeInsets.only(top: 10),
-          constraints: const BoxConstraints(),
           icon: const Icon(Icons.add),
+          padding: EdgeInsets.only(bottom: 20),
           onPressed: () {
             TextEditingController newController = TextEditingController();
             newController.text = "";

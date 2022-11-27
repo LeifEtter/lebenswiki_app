@@ -10,13 +10,14 @@ import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
 import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
 import 'package:lebenswiki_app/domain/models/pack_model.dart';
-import 'package:lebenswiki_app/lebenswiki_icons.dart';
+import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/creator/editor_button_row.dart';
 import 'package:lebenswiki_app/presentation/screens/creator/item_to_editable_widget.dart';
+import 'package:lebenswiki_app/presentation/screens/viewer/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
-import 'package:lebenswiki_app/repository/constants/colors.dart';
+import 'package:lebenswiki_app/repository/backend/pack_api.dart';
 
 class NewCreatorScreen extends ConsumerStatefulWidget {
   final Pack pack;
@@ -45,6 +46,7 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
   @override
   void initState() {
     pack = widget.pack;
+    if (pack.pages.isEmpty) pack.pages.add(PackPage(items: [], pageNumber: 1));
     currentPage = widget.pack.pages.first;
     currentPage.initControllers();
     initPageNumbers();
@@ -71,6 +73,12 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
               TopNavIOS(
                 title: "Seiten Bearbeiten (S${currentPage.pageNumber})",
                 nextTitle: "Vorschau",
+                nextFunction: () {
+                  pack.save();
+                  _saveToServer();
+                  pack.id = 0;
+                  _navigateToPreview();
+                },
               ),
               _buildPageContent(context),
             ],
@@ -165,10 +173,27 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
         currentPage = pack.pages.last;
       });
 
-  void _switchPage(int newIndex) {
-    currentPage.save();
-    setState(() {
-      currentPage = pack.pages[newIndex - 1];
+  void _switchPage(int newIndex) => setState(() {
+        currentPage.save();
+        currentPage = pack.pages[newIndex - 1];
+      });
+
+  void _navigateToPreview() => Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PackViewerStarted(
+          read: Read(id: 0, packId: widget.pack.id!, userId: 0, pack: pack),
+          heroName: "",
+        ),
+      ));
+
+  void _saveToServer() async {
+    Either<CustomError, String> updateResult =
+        await PackApi().updatePack(id: pack.id!, pack: pack);
+    updateResult.fold((left) {
+      CustomFlushbar.error(message: left.error).show(context);
+    }, (right) {
+      CustomFlushbar.success(message: right).show(context);
     });
   }
 }

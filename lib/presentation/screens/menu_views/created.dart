@@ -8,6 +8,7 @@ import 'package:lebenswiki_app/domain/models/pack_model.dart';
 import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/domain/models/short_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/screens/creator/new_creator_screen.dart';
 import 'package:lebenswiki_app/presentation/screens/packs/creator_information.dart';
 import 'package:lebenswiki_app/presentation/screens/packs/creator_overview.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
@@ -209,12 +210,12 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
           ),
           SpeedDialChild(
             onTap: () async {
-              /*await Navigator.push(
+              await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          CreatorOverview(pack: currentPack)));
-              setState(() {});*/
+                          NewCreatorScreen(pack: currentPack)));
+              setState(() {});
             },
             child: const Icon(
               Icons.edit_outlined,

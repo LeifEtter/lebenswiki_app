@@ -83,20 +83,6 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
   }
 
   Future<Widget> determineWidget() async {
-    return NewCreatorScreen(
-      pack: Pack(
-        title: "Something",
-        description: "Something",
-        pages: [
-          PackPage(items: [], pageNumber: 1),
-          PackPage(items: [], pageNumber: 2),
-          PackPage(items: [], pageNumber: 3)
-        ],
-        categories: [],
-        titleImage: "asdamdlaskdm",
-        creatorId: 0,
-      ),
-    );
     SharedPreferences _shared = await SharedPreferences.getInstance();
     String? existingToken = await TokenHandler().get();
     //TODO Test token stuff

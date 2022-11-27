@@ -3,7 +3,7 @@ import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
 
 class ViewableWidgetStyling {
-  TextStyle get title => TextStyle();
+  TextStyle get title => const TextStyle();
 }
 
 class ItemToViewableWidget {
