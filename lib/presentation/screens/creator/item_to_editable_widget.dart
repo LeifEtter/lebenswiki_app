@@ -154,7 +154,7 @@ class ItemToEditableWidget {
           controller: item.headContent.controller,
           textCapitalization: TextCapitalization.sentences,
           onEditingComplete: () => save(),
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.w400,
           ),
           decoration: InputDecoration(
@@ -178,7 +178,7 @@ class ItemToEditableWidget {
                     textCapitalization: TextCapitalization.sentences,
                     onEditingComplete: () => save(),
                     controller: input.controller,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w400,
                     ),
                     decoration: InputDecoration(
@@ -212,7 +212,7 @@ class ItemToEditableWidget {
             )),
         IconButton(
           icon: const Icon(Icons.add),
-          padding: EdgeInsets.only(bottom: 20),
+          padding: const EdgeInsets.only(bottom: 20),
           onPressed: () {
             TextEditingController newController = TextEditingController();
             newController.text = "";

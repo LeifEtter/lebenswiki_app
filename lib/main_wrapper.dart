@@ -9,7 +9,7 @@ import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/main_views/community.dart';
 import 'package:lebenswiki_app/presentation/screens/main_views/explore.dart';
 import 'package:lebenswiki_app/presentation/screens/main_views/home.dart';
-import 'package:lebenswiki_app/presentation/screens/packs/creator_information.dart';
+import 'package:lebenswiki_app/presentation/screens/creator/creator_information.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/appbar.dart';
