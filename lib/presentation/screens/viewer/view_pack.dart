@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:lebenswiki_app/domain/models/read_model.dart';
 import 'package:lebenswiki_app/domain/models/user_model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/presentation/screens/packs/view_pack_started.dart';
+import 'package:lebenswiki_app/presentation/screens/viewer/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/sliver_appbar.dart';

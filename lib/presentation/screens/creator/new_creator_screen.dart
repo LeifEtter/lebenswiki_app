@@ -5,7 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lebenswiki_app/application/data/pack_conversion.dart';
 import 'package:lebenswiki_app/application/other/image_helper.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/error_model.dart';
@@ -50,6 +49,7 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
     currentPage.initControllers();
     initPageNumbers();
     itemToEditableWidget = ItemToEditableWidget(
+      context: context,
       save: () => currentPage.save(),
       uploadImage: (PackPageItem item) => uploadImage(context, item),
       reload: () => setState(() {}),
@@ -80,37 +80,9 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
             child: EditorButtonRow(
               currentPageNumber: currentPage.pageNumber,
               pageNumbers: pageNumbers,
-              switchPage: (int newIndex) {
-                currentPage.save();
-                setState(() {
-                  currentPage = pack.pages[newIndex - 1];
-                });
-              },
-              addItem: (ItemType itemType) {
-                TextEditingController newController = TextEditingController();
-                TextEditingController secondController =
-                    TextEditingController();
-                newController.text = "";
-                secondController.text = "";
-                currentPage.items.add(PackPageItem(
-                  type: itemType,
-                  headContent: PackPageItemInput(controller: newController),
-                  bodyContent: itemType == ItemType.list
-                      ? [PackPageItemInput(controller: secondController)]
-                      : [],
-                ));
-                setState(() {
-                  currentPage.save();
-                  currentPage.initControllers();
-                });
-              },
-              addPage: () => setState(() {
-                currentPage.save();
-                pack.pages.add(
-                    PackPage(pageNumber: pack.pages.length + 1, items: []));
-                initPageNumbers();
-                currentPage = pack.pages.last;
-              }),
+              switchPage: (int newIndex) => _switchPage(newIndex),
+              addItem: (ItemType itemType) => _addItem(itemType),
+              addPage: () => _addPage(),
             ),
           ),
         ],
@@ -120,47 +92,21 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
 
   Widget _buildPageContent(context) {
     return ListView.builder(
+      physics: const ClampingScrollPhysics(),
       padding: const EdgeInsets.only(left: 30, right: 20, top: 10),
       shrinkWrap: true,
       itemCount: currentPage.items.length,
       itemBuilder: (BuildContext context, int index) {
-        if (currentPage.items[index].type == ItemType.title) {
-          return Row(
-            children: [
-              Expanded(
-                child: itemToEditableWidget.convert(
-                  item: currentPage.items[index],
-                ),
-              ),
-              _deleteButton(index),
-            ],
-          );
-        } else {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              itemToEditableWidget.convert(
-                item: currentPage.items[index],
-              ),
-              _deleteButton(index),
-            ],
-          );
-        }
+        return itemToEditableWidget.convert(
+          item: currentPage.items[index],
+          deleteSelf: () {
+            currentPage.removeItem(index);
+            setState(() {});
+          },
+        );
       },
     );
   }
-
-  Widget _deleteButton(index) => IconButton(
-        constraints: BoxConstraints(),
-        icon: Icon(
-          LebenswikiIcons.trash,
-          color: CustomColors.darkGrey,
-          size: 23,
-        ),
-        onPressed: () => setState(() {
-          currentPage.removeItem(index);
-        }),
-      );
 
   void uploadImage(context, PackPageItem item) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -192,5 +138,37 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
         });
       },
     );
+  }
+
+  void _addItem(ItemType itemType) {
+    TextEditingController newController = TextEditingController();
+    TextEditingController secondController = TextEditingController();
+    newController.text = "";
+    secondController.text = "";
+    currentPage.items.add(PackPageItem(
+      type: itemType,
+      headContent: PackPageItemInput(controller: newController),
+      bodyContent: itemType == ItemType.list
+          ? [PackPageItemInput(controller: secondController)]
+          : [],
+    ));
+    setState(() {
+      currentPage.save();
+      currentPage.initControllers();
+    });
+  }
+
+  void _addPage() => setState(() {
+        currentPage.save();
+        pack.pages.add(PackPage(pageNumber: pack.pages.length + 1, items: []));
+        initPageNumbers();
+        currentPage = pack.pages.last;
+      });
+
+  void _switchPage(int newIndex) {
+    currentPage.save();
+    setState(() {
+      currentPage = pack.pages[newIndex - 1];
+    });
   }
 }

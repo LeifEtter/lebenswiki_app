@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
 import 'package:lebenswiki_app/lebenswiki_icons.dart';
-import 'package:lebenswiki_app/presentation/widgets/common/border.dart';
 import 'package:lebenswiki_app/repository/constants/colors.dart';
 import 'package:lebenswiki_app/repository/constants/shadows.dart';
 
 class ItemToEditableWidget {
+  final BuildContext context;
   final Function save;
   final Function uploadImage;
   final Function reload;
 
   ItemToEditableWidget({
+    required this.context,
     required this.save,
     required this.uploadImage,
     required this.reload,
@@ -19,47 +21,85 @@ class ItemToEditableWidget {
 
   Widget convert({
     required PackPageItem item,
+    required Function deleteSelf,
   }) {
     switch (item.type) {
       case ItemType.title:
-        return _titleWidget(item);
+        return _slidableWrapper(
+          child: _titleWidget(item),
+          deleteSelf: deleteSelf,
+        );
       case ItemType.text:
-        return _textWidget(item);
+        return _slidableWrapper(
+          child: _textWidget(item),
+          deleteSelf: deleteSelf,
+        );
       case ItemType.list:
-        return _listWidget(item);
+        return _slidableWrapper(
+          child: _listWidget(item),
+          deleteSelf: deleteSelf,
+        );
       case ItemType.quiz:
         return Container();
       case ItemType.image:
-        return _imageWidget(item);
+        return _slidableWrapper(
+          child: _imageWidget(item),
+          deleteSelf: deleteSelf,
+        );
     }
   }
 
-  Widget _titleWidget(PackPageItem item) => TextFormField(
-        style: const TextStyle(
-          fontSize: 20.0,
-        ),
-        textCapitalization: TextCapitalization.sentences,
-        onEditingComplete: () => save(),
-        controller: item.headContent.controller,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(left: 10),
-          hintText: "Titel Hinzufügen",
-          border: InputBorder.none,
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: CustomColors.outlineBlue, width: 2),
+  Widget _slidableWrapper(
+      {required Widget child, required Function deleteSelf}) {
+    return Slidable(
+      child: child,
+      endActionPane: ActionPane(
+        extentRatio: 0.1,
+        motion: const ScrollMotion(),
+        children: [
+          SlidableAction(
+            borderRadius: BorderRadius.circular(5),
+            onPressed: (context) => deleteSelf(),
+            backgroundColor: const Color(0xFFFE4A49),
+            foregroundColor: Colors.white,
+            icon: Icons.delete,
+            padding: EdgeInsets.zero,
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _titleWidget(PackPageItem item) {
+    return TextFormField(
+      style: const TextStyle(
+        fontSize: 20.0,
+      ),
+      textCapitalization: TextCapitalization.sentences,
+      onEditingComplete: () => save(),
+      controller: item.headContent.controller,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.only(left: 10),
+        hintText: "Titel Hinzufügen",
+        border: InputBorder.none,
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: CustomColors.outlineBlue, width: 2),
         ),
-      );
+      ),
+    );
+  }
 
   Widget _textWidget(PackPageItem item) => TextFormField(
         textCapitalization: TextCapitalization.sentences,
         onEditingComplete: () => save(),
         keyboardType: TextInputType.multiline,
         maxLines: null,
-        minLines: 3,
+        minLines: 1,
         controller: item.headContent.controller,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(left: 10),
+          hintText: "Text Hinzufügen",
+          hintStyle: const TextStyle(fontWeight: FontWeight.w400),
+          contentPadding: const EdgeInsets.only(left: 11, top: 10, bottom: 10),
           border: InputBorder.none,
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: CustomColors.outlineBlue, width: 2),
@@ -70,7 +110,7 @@ class ItemToEditableWidget {
   Widget _imageWidget(PackPageItem item) => GestureDetector(
         onTap: () => uploadImage(item),
         child: Padding(
-          padding: const EdgeInsets.only(top: 20),
+          padding: const EdgeInsets.only(right: 10),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),

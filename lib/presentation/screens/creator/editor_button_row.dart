@@ -60,6 +60,12 @@ class _EditorButtonRowState extends State<EditorButtonRow> {
           ),
           IconButton(
             onPressed: () {
+              widget.addItem(ItemType.text);
+            },
+            icon: const Icon(Icons.text_snippet_outlined, size: 25),
+          ),
+          IconButton(
+            onPressed: () {
               widget.addItem(ItemType.list);
             },
             icon: const Icon(LebenswikiIcons.menu_bars, size: 20),
