@@ -104,6 +104,12 @@ class Pack {
     }
   }
 
+  void reassignePageNumbers() {
+    for (int i = 0; i < pages.length; i++) {
+      pages[i].pageNumber = i + 1;
+    }
+  }
+
   bool isSaved() {
     for (PackPage page in pages) {
       if (!page.isSaved()) return false;

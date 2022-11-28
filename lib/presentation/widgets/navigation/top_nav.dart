@@ -7,6 +7,7 @@ class TopNavIOS extends StatelessWidget {
   final String? nextTitle;
   final Function? nextFunction;
   final bool isPopMenu;
+  final PopupMenuButton? popMenuButton;
 
   const TopNavIOS({
     Key? key,
@@ -14,6 +15,7 @@ class TopNavIOS extends StatelessWidget {
     this.nextTitle,
     this.nextFunction,
     this.isPopMenu = false,
+    this.popMenuButton,
   }) : super(key: key);
 
   const TopNavIOS.withNextButton({
@@ -22,6 +24,7 @@ class TopNavIOS extends StatelessWidget {
     required this.nextTitle,
     required this.nextFunction,
     this.isPopMenu = false,
+    this.popMenuButton,
   }) : super(key: key);
 
   @override
@@ -56,18 +59,29 @@ class TopNavIOS extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.centerRight,
-            child: nextTitle != null
-                ? CupertinoButton(
-                    child: Text(nextTitle!),
-                    onPressed: () => nextFunction!(),
-                  )
-                : Container(
-                    width: 50,
-                  ),
-          ),
+            child: _rightButton(),
+          )
         ],
       ),
     );
+  }
+
+  Widget _rightButton() {
+    if (nextTitle != null) {
+      return CupertinoButton(
+        child: Text(nextTitle!),
+        onPressed: () => nextFunction!(),
+      );
+    } else if (popMenuButton != null) {
+      return Padding(
+        padding: const EdgeInsets.only(right: 10),
+        child: popMenuButton!,
+      );
+    } else {
+      return Container(
+        width: 50,
+      );
+    }
   }
 
   Route _homeRoute() {

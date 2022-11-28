@@ -114,6 +114,7 @@ class _EditorButtonRowState extends State<EditorButtonRow> {
   Widget _pagePickerButton(int pageNr) {
     return GestureDetector(
       onTap: () {
+        animatedPickerHeight = 0;
         widget.switchPage(pageNr);
       },
       child: Container(

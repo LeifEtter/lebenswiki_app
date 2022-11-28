@@ -11,12 +11,16 @@ class ItemToEditableWidget {
   final Function save;
   final Function uploadImage;
   final Function reload;
+  final Function orderingOn;
+
+  bool isOrdering = false;
 
   ItemToEditableWidget({
     required this.context,
     required this.save,
     required this.uploadImage,
     required this.reload,
+    required this.orderingOn,
   });
 
   Widget convert({
@@ -72,6 +76,7 @@ class ItemToEditableWidget {
 
   Widget _titleWidget(PackPageItem item) {
     return TextFormField(
+      enabled: !isOrdering,
       style: const TextStyle(
         fontSize: 23.0,
       ),
@@ -79,6 +84,9 @@ class ItemToEditableWidget {
       onEditingComplete: () => save(),
       controller: item.headContent.controller,
       decoration: InputDecoration(
+        disabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(width: 2, color: CustomColors.outlineBlue),
+        ),
         contentPadding: const EdgeInsets.only(left: 10),
         hintText: "Titel Hinzufügen",
         border: InputBorder.none,
@@ -90,6 +98,7 @@ class ItemToEditableWidget {
   }
 
   Widget _textWidget(PackPageItem item) => TextFormField(
+        enabled: !isOrdering,
         textCapitalization: TextCapitalization.sentences,
         onEditingComplete: () => save(),
         keyboardType: TextInputType.multiline,
@@ -98,6 +107,9 @@ class ItemToEditableWidget {
         controller: item.headContent.controller,
         style: const TextStyle(fontWeight: FontWeight.w400),
         decoration: InputDecoration(
+          disabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(width: 2, color: CustomColors.outlineBlue),
+          ),
           hintText: "Text Hinzufügen",
           hintStyle: const TextStyle(fontWeight: FontWeight.w400),
           contentPadding: const EdgeInsets.only(left: 11, top: 10, bottom: 10),
@@ -110,8 +122,14 @@ class ItemToEditableWidget {
 
   Widget _imageWidget(PackPageItem item) => GestureDetector(
         onTap: () => uploadImage(item),
-        child: Padding(
-          padding: const EdgeInsets.only(right: 10),
+        child: Container(
+          padding:
+              const EdgeInsets.only(right: 10, top: 10, bottom: 10, left: 10),
+          decoration: BoxDecoration(
+            border: isOrdering
+                ? Border.all(width: 2, color: CustomColors.outlineBlue)
+                : null,
+          ),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
@@ -148,79 +166,90 @@ class ItemToEditableWidget {
           : const Center(child: Text("Wähle ein Bild"));
 
   Widget _listWidget(PackPageItem item) {
-    return Column(
-      children: [
-        TextFormField(
-          controller: item.headContent.controller,
-          textCapitalization: TextCapitalization.sentences,
-          onEditingComplete: () => save(),
-          style: const TextStyle(
-            fontWeight: FontWeight.w400,
-          ),
-          decoration: InputDecoration(
-            hintText: "Titel",
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.only(left: 10),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: CustomColors.outlineBlue, width: 2),
+    return Container(
+      decoration: BoxDecoration(
+        border: isOrdering
+            ? Border.all(width: 2, color: CustomColors.outlineBlue)
+            : null,
+      ),
+      child: Column(
+        children: [
+          TextFormField(
+            enabled: !isOrdering,
+            controller: item.headContent.controller,
+            textCapitalization: TextCapitalization.sentences,
+            onEditingComplete: () => save(),
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+            ),
+            decoration: InputDecoration(
+              hintText: "Titel",
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.only(left: 10),
+              focusedBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: CustomColors.outlineBlue, width: 2),
+              ),
             ),
           ),
-        ),
-        ...item.bodyContent.map((PackPageItemInput input) => Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 10),
-                  child:
-                      Icon(Icons.circle, size: 7, color: CustomColors.darkGrey),
-                ),
-                Expanded(
-                  child: TextFormField(
-                    textCapitalization: TextCapitalization.sentences,
-                    onEditingComplete: () => save(),
-                    controller: input.controller,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w400,
-                    ),
-                    decoration: InputDecoration(
-                      constraints: const BoxConstraints(maxHeight: 30),
-                      contentPadding:
-                          const EdgeInsets.only(left: 10, bottom: 10),
-                      hintText: "Stichpunkt",
-                      border: InputBorder.none,
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: CustomColors.outlineBlue,
-                          width: 2,
+          ...item.bodyContent.map((PackPageItemInput input) => Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 10),
+                    child: Icon(Icons.circle,
+                        size: 7, color: CustomColors.darkGrey),
+                  ),
+                  Expanded(
+                    child: TextFormField(
+                      enabled: !isOrdering,
+                      textCapitalization: TextCapitalization.sentences,
+                      onEditingComplete: () => save(),
+                      controller: input.controller,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                      ),
+                      decoration: InputDecoration(
+                        constraints: const BoxConstraints(maxHeight: 30),
+                        contentPadding:
+                            const EdgeInsets.only(left: 10, bottom: 10),
+                        hintText: "Stichpunkt",
+                        border: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: CustomColors.outlineBlue,
+                            width: 2,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                IconButton(
-                  constraints:
-                      const BoxConstraints(minHeight: 30, minWidth: 40),
-                  padding: EdgeInsets.zero,
-                  icon: Icon(LebenswikiIcons.trash,
-                      size: 18, color: CustomColors.darkGrey),
-                  onPressed: () {
-                    item.bodyContent.remove(input);
-                    reload();
-                  },
-                ),
-                const SizedBox(width: 30),
-              ],
-            )),
-        IconButton(
-          icon: const Icon(Icons.add),
-          padding: const EdgeInsets.only(bottom: 20),
-          onPressed: () {
-            TextEditingController newController = TextEditingController();
-            newController.text = "";
-            item.bodyContent.add(PackPageItemInput(controller: newController));
-            reload();
-          },
-        )
-      ],
+                  IconButton(
+                    constraints:
+                        const BoxConstraints(minHeight: 30, minWidth: 40),
+                    padding: EdgeInsets.zero,
+                    icon: Icon(LebenswikiIcons.trash,
+                        size: 18, color: CustomColors.darkGrey),
+                    onPressed: () {
+                      item.bodyContent.remove(input);
+                      reload();
+                    },
+                  ),
+                  const SizedBox(width: 30),
+                ],
+              )),
+          IconButton(
+            icon: const Icon(Icons.add),
+            padding: const EdgeInsets.only(bottom: 20),
+            onPressed: () {
+              TextEditingController newController = TextEditingController();
+              newController.text = "";
+              item.bodyContent
+                  .add(PackPageItemInput(controller: newController));
+              reload();
+            },
+          )
+        ],
+      ),
     );
   }
 }
