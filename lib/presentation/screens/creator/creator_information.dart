@@ -91,12 +91,13 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
                 controller: _titleController,
                 errorText: errorTitle,
                 labelText: "Titel*",
-                onChanged: (_) {
-                  if (errorTitle != null) {
-                    setState(() {
-                      errorTitle = null;
-                    });
-                  }
+                onChanged: () => {
+                  if (errorTitle != null)
+                    {
+                      setState(() {
+                        errorTitle = null;
+                      })
+                    }
                 },
               ),
               S.h20(),
