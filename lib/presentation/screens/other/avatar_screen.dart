@@ -1,67 +1,47 @@
-import 'dart:io';
+import 'dart:developer';
 import 'package:either_dart/either.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lebenswiki_app/application/other/image_helper.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
-import 'package:lebenswiki_app/domain/models/error_model.dart';
-import 'package:lebenswiki_app/domain/models/user_model.dart';
-import 'package:lebenswiki_app/main_wrapper.dart';
-import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/application/routing/router.dart';
+import 'package:lebenswiki_app/domain/models/error.model.dart';
+import 'package:lebenswiki_app/domain/models/user/user.model.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
-import 'package:lebenswiki_app/repository/backend/user_api.dart';
-import 'package:lebenswiki_app/repository/constants/shadows.dart';
+import 'package:lebenswiki_app/data/user_api.dart';
+import 'package:lebenswiki_app/presentation/constants/shadows.dart';
 
 class AvatarScreen extends ConsumerStatefulWidget {
-  const AvatarScreen({
-    Key? key,
-  }) : super(key: key);
+  const AvatarScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AvatarScreenState();
 }
 
 class _AvatarScreenState extends ConsumerState<AvatarScreen> {
-  final FirebaseStorage storage = FirebaseStorage.instance;
   final ImagePicker _picker = ImagePicker();
+  late XFile? pickedImage;
   late User user;
   bool _imageIsLoading = false;
   String? _chosenImageLink;
 
   @override
   Widget build(BuildContext context) {
-    user = ref.watch(userProvider).user;
     return Scaffold(
         body: ListView(
       children: [
         TopNavIOS.withNextButton(
           title: "Wähle einen Avatar",
-          nextTitle: "Erstellen",
-          nextFunction: () async {
-            await UserApi()
-                .updateProfileImage(
-                    profileImage: _chosenImageLink ??
-                        "https://firebasestorage.googleapis.com/v0/b/lebenswiki-db.appspot.com/o/default_profile_image.jpg?alt=media&token=baf25998-6056-4858-9f00-c323bd4bfc0a")
-                .fold((left) {
-              CustomFlushbar.error(message: left.error).show(context);
-            }, (right) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Scaffold(
-                      body: Scaffold(
-                    body: NavBarWrapper(),
-                  )),
-                ),
-              );
-            });
-          },
+          nextTitle: "Fertig",
+          nextFunction: () => Navigator.pushNamed(context, homeRoute),
         ),
         GestureDetector(
-          onTap: () => upload(context),
+          onTap: () => pickAndUpload().fold(
+              (left) => CustomFlushbar.error(
+                    message: left.error,
+                  ),
+              (right) => CustomFlushbar.success(message: right)),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
@@ -101,37 +81,47 @@ class _AvatarScreenState extends ConsumerState<AvatarScreen> {
                       )),
           ),
         ),
+        TextButton(
+          child: const Text("Ohne Avatar Fortfahren"),
+          onPressed: () async {
+            Either<CustomError, String> defaultAvatarResult =
+                await UserApi().defaultAvatar();
+            if (defaultAvatarResult.isLeft) {
+              CustomFlushbar.error(message: "Irgendwas ist schiefgelaufen")
+                  .show(context);
+            } else {
+              Navigator.pushNamed(context, homeRoute);
+            }
+          },
+        ),
       ],
     ));
   }
 
-  void upload(context) async {
-    setState(() => _imageIsLoading = true);
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile == null) {
-      setState(() => _imageIsLoading = false);
-      return;
+  Future<Either<CustomError, String>> pickAndUpload() async {
+    try {
+      setState(() => _imageIsLoading = true);
+      pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedImage == null) {
+        setState(() => _imageIsLoading = false);
+        return const Left(CustomError(error: "Kein Avatar ausgewählt"));
+      }
+      String pathToImage = pickedImage!.path;
+      Either<CustomError, Map<String, dynamic>> uploadResult =
+          await UserApi().uploadAvatar(pathToImage: pathToImage);
+      if (uploadResult.isLeft) {
+        return const Left(
+            CustomError(error: "Bild konnte nicht hochgeladen werden"));
+      } else {
+        log(uploadResult.right["url"]);
+        _imageIsLoading = false;
+        setState(() => _chosenImageLink = uploadResult.right["url"]);
+        return const Right("Avatar erfolgreich hochgeladen");
+      }
+    } catch (error) {
+      log(inspect(error).toString());
+      return const Left(
+          CustomError(error: "Bild konnte nicht hochgeladen werden"));
     }
-    if (_chosenImageLink != null) {
-      await storage.refFromURL(_chosenImageLink!).delete();
-    }
-    Either<CustomError, String> result = await ImageHelper.uploadImage(context,
-        pathToStore: "user_profile_images/${user.id}/",
-        chosenImage: File(pickedFile.path),
-        userId: user.id,
-        storage: storage);
-    result.fold(
-      (left) {
-        CustomFlushbar.error(message: left.error).show(context);
-      },
-      (right) {
-        CustomFlushbar.success(message: "Bild erfolgreich hochgeladen")
-            .show(context);
-        setState(() {
-          _imageIsLoading = false;
-          _chosenImageLink = right;
-        });
-      },
-    );
   }
 }
