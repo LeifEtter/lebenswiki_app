@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:http/http.dart';
 import 'package:lebenswiki_app/application/auth/token_handler.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
