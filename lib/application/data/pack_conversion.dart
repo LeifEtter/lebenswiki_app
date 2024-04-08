@@ -1,36 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/domain/models/enums.dart';
-import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
+import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';
 
 class PackConversion {
   static Widget toViewableItem(PackPageItem item) {
     switch (item.type) {
       case ItemType.list:
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              item.headContent.value,
-              style: const TextStyle(
-                fontSize: 15.0,
-                fontWeight: FontWeight.w600,
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item.headContent.value,
+                style: const TextStyle(
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 7, top: 4),
-              child: Column(
-                children: item.bodyContent
-                    .map(
-                        (PackPageItemInput input) => buildListItem(input.value))
-                    .toList(),
+              Padding(
+                padding: const EdgeInsets.only(left: 7, top: 4),
+                child: Column(
+                  children: item.bodyContent
+                      .map((PackPageItemContent input) =>
+                          buildListItem(input.value))
+                      .toList(),
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-          ],
+              const SizedBox(height: 10),
+            ],
+          ),
         );
       case ItemType.title:
         return Padding(
-          padding: const EdgeInsets.only(bottom: 20.0),
+          padding: const EdgeInsets.only(bottom: 10.0, top: 10.0),
           child: Text(
             item.headContent.value,
             style: const TextStyle(
@@ -43,7 +45,7 @@ class PackConversion {
         return Padding(
           padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
           child: Image.network(
-            item.headContent.value,
+            item.headContent.value.replaceAll("https", "http"),
             fit: BoxFit.contain,
             height: 250,
           ),
