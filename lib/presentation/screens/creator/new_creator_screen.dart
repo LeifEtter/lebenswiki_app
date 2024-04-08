@@ -1,30 +1,26 @@
-import 'dart:io';
 import 'package:either_dart/either.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lebenswiki_app/application/other/image_helper.dart';
-import 'package:lebenswiki_app/domain/models/enums.dart';
-import 'package:lebenswiki_app/domain/models/error_model.dart';
-import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
-import 'package:lebenswiki_app/domain/models/pack_model.dart';
-import 'package:lebenswiki_app/domain/models/read_model.dart';
-import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/application/routing/router.dart';
+import 'package:lebenswiki_app/domain/models/error.model.dart';
+import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';
+import 'package:lebenswiki_app/domain/models/pack/pack.model.dart';
 import 'package:lebenswiki_app/presentation/screens/creator/editor_button_row.dart';
 import 'package:lebenswiki_app/presentation/screens/creator/item_to_editable_widget.dart';
-import 'package:lebenswiki_app/presentation/screens/viewer/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
-import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
-import 'package:lebenswiki_app/repository/backend/pack_api.dart';
+import 'package:lebenswiki_app/data/pack_api.dart';
+import 'package:uuid/uuid.dart';
+
+var uuid = Uuid();
 
 class NewCreatorScreen extends ConsumerStatefulWidget {
   final Pack pack;
 
   const NewCreatorScreen({
-    Key? key,
+    super.key,
     required this.pack,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -32,8 +28,7 @@ class NewCreatorScreen extends ConsumerStatefulWidget {
 }
 
 class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
-  final FirebaseStorage storage = FirebaseStorage.instance;
-  final ImagePicker _picker = ImagePicker();
+  final ImagePicker picker = ImagePicker();
 
   late ItemToEditableWidget itemToEditableWidget;
   late Pack pack;
@@ -46,14 +41,36 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
   @override
   void initState() {
     pack = widget.pack;
-    if (pack.pages.isEmpty) pack.pages.add(PackPage(items: [], pageNumber: 1));
+    if (pack.pages.isEmpty) {
+      pack.pages.add(PackPage(id: uuid.v4(), items: [], pageNumber: 1));
+    }
+    pack.orderPages();
+    pack.orderItems();
     currentPage = widget.pack.pages.first;
     currentPage.initControllers();
     initPageNumbers();
     itemToEditableWidget = ItemToEditableWidget(
       context: context,
       save: () => currentPage.save(),
-      uploadImage: (PackPageItem item) => uploadImage(context, item),
+      uploadImage: (PackPageItem item) async {
+        XFile? file = await picker.pickImage(source: ImageSource.gallery);
+        if (file != null) {
+          Either<CustomError, String> uploadResult = await PackApi()
+              .uploadItemImage(
+                  pathToImage: file.path, packId: pack.id!, itemId: item.id);
+          if (uploadResult.isLeft) {
+            CustomFlushbar.error(message: uploadResult.left.error)
+                .show(context);
+          } else {
+            setState(() {
+              item.headContent.value = uploadResult.right;
+              item.headContent.controller!.text = uploadResult.right;
+              currentPage.save();
+            });
+            CustomFlushbar.success(message: "Bild Hochgeladen").show(context);
+          }
+        }
+      },
       reload: () => setState(() {}),
       orderingOn: () => _orderingOn(),
     );
@@ -85,24 +102,21 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
                               "Willst du wirklich ohne Speichern verlassen?"),
                           actions: [
                             TextButton(
-                              child: const Text("Ohne Speichern Verlassen",
-                                  style: TextStyle(color: Colors.red)),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
+                                child: const Text("Ohne Speichern Verlassen",
+                                    style: TextStyle(color: Colors.red)),
+                                onPressed: () => Navigator.pushNamed(
+                                    context, createdViewRoute)),
                             TextButton(
                               child: const Text("Speichern und Verlassen"),
                               onPressed: () {
                                 pack.save();
                                 _saveToServer();
-                                Navigator.pop(context);
+                                Navigator.pushNamed(context, createdViewRoute);
                               },
                             ),
                           ],
                         ),
                       );
-                      Navigator.pop(context);
                     },
                   ),
                   Text(
@@ -171,48 +185,19 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
     );
   }
 
-  void uploadImage(context, PackPageItem item) async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile == null) {
-      return;
-    }
-    if (item.headContent.value.isNotEmpty) {
-      await storage.refFromURL(item.headContent.value).delete();
-    }
-    Either<CustomError, String> result = await ImageHelper.uploadImage(
-      context,
-      pathToStore: "pack_images/${widget.pack.imageIdentifier}/",
-      chosenImage: File(pickedFile.path),
-      userId: ref.read(userProvider).user.id,
-      storage: storage,
-    );
-    result.fold(
-      (left) {
-        CustomFlushbar.error(message: left.error).show(context);
-      },
-      (right) {
-        CustomFlushbar.success(message: "Bild erfolgreich hochgeladen")
-            .show(context);
-
-        setState(() {
-          item.headContent.value = right;
-          item.headContent.controller!.text = right;
-          currentPage.save();
-        });
-      },
-    );
-  }
-
   void _addItem(ItemType itemType) {
     TextEditingController newController = TextEditingController();
     TextEditingController secondController = TextEditingController();
     newController.text = "";
     secondController.text = "";
     currentPage.items.add(PackPageItem(
+      position: currentPage.items.length,
+      id: uuid.v4(),
       type: itemType,
-      headContent: PackPageItemInput(controller: newController),
+      headContent:
+          PackPageItemContent(controller: newController, id: uuid.v4()),
       bodyContent: itemType == ItemType.list
-          ? [PackPageItemInput(controller: secondController)]
+          ? [PackPageItemContent(controller: secondController, id: uuid.v4())]
           : [],
     ));
     setState(() {
@@ -223,7 +208,8 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
 
   void _addPage() => setState(() {
         currentPage.save();
-        pack.pages.add(PackPage(pageNumber: pack.pages.length + 1, items: []));
+        pack.pages.add(PackPage(
+            id: uuid.v4(), pageNumber: pack.pages.length + 1, items: []));
         initPageNumbers();
         currentPage = pack.pages.last;
       });
@@ -241,7 +227,7 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
       int deleteIndex = currentPage.pageNumber - 1;
       currentPage = pack.pages[deleteIndex - 1];
       pack.pages.removeAt(deleteIndex);
-      pack.reassignePageNumbers();
+      pack.reassignPageNumbers();
       initPageNumbers();
       setState(() {
         CustomFlushbar.success(message: "Seite Gelöscht").show(context);
@@ -253,30 +239,30 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
   void _orderingOn() => setState(() => isOrdering = true);
   void _orderingOff() => setState(() => isOrdering = false);
 
-  void _navigateToPreview() async => await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PackViewerStarted(
-            read: Read(id: 0, packId: widget.pack.id!, userId: 0, pack: pack),
-            heroName: "",
-          ),
-        ),
-      );
+  // void _navigateToPreview() async => await Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => PackViewerStarted(
+  //           packId: pack.id,
+  //           heroName: "",
+  //         ),
+  //       ),
+  //     );
 
   Future<bool> _saveToServer() async {
     Either<CustomError, String> updateResult =
-        await PackApi().updatePack(id: pack.id!, pack: pack);
-
+        await PackApi().updatePages(pack.pages, pack.id!);
     if (updateResult.isLeft) {
       CustomFlushbar.error(message: updateResult.left.error).show(context);
       return false;
     } else {
+      CustomFlushbar.success(message: updateResult.right).show(context);
       return true;
     }
   }
 
   Widget _popMenuButton() {
-    List<String> _menuOptions = [
+    List<String> menuOptions = [
       "Vorschau",
       "Sortieren",
       "Speichern",
@@ -290,7 +276,7 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
             case "Vorschau":
               pack.save();
               _saveToServer();
-              _navigateToPreview();
+              // _navigateToPreview();
               break;
             case "Speichern":
               pack.save();
@@ -302,9 +288,9 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
               break;
             case "Speichern und Verlassen":
               pack.save();
-              bool isSuccessfull = await _saveToServer();
-              if (isSuccessfull) {
-                Navigator.pop(context);
+              bool isSuccessful = await _saveToServer();
+              if (isSuccessful) {
+                Navigator.pushNamed(context, "/created");
               }
               break;
             case "Aktuelle Seite Löschen":
@@ -314,9 +300,9 @@ class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
               break;
           }
         },
-        itemBuilder: (BuildContext context) => _menuOptions
+        itemBuilder: (BuildContext context) => menuOptions
             .map((String option) =>
-                PopupMenuItem(child: Text(option), value: option))
+                PopupMenuItem(value: option, child: Text(option)))
             .toList());
   }
 }
