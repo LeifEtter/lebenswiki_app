@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/domain/models/enums.dart';
+import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';
 import 'package:lebenswiki_app/lebenswiki_icons.dart';
-import 'package:lebenswiki_app/repository/constants/colors.dart';
+import 'package:lebenswiki_app/presentation/constants/colors.dart';
 
 class EditorButtonRow extends StatefulWidget {
   final int currentPageNumber;
@@ -11,13 +11,13 @@ class EditorButtonRow extends StatefulWidget {
   final Function addPage;
 
   const EditorButtonRow({
-    Key? key,
+    super.key,
     required this.currentPageNumber,
     required this.pageNumbers,
     required this.switchPage,
     required this.addItem,
     required this.addPage,
-  }) : super(key: key);
+  });
 
   @override
   State<EditorButtonRow> createState() => _EditorButtonRowState();
