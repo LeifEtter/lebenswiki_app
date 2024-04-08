@@ -1,11 +1,10 @@
 import 'package:either_dart/either.dart';
-import 'package:lebenswiki_app/application/other/image_helper.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
-import 'package:lebenswiki_app/domain/models/error_model.dart';
-import 'package:lebenswiki_app/domain/models/pack_model.dart';
-import 'package:lebenswiki_app/domain/models/user_model.dart';
+import 'package:lebenswiki_app/application/routing/router.dart';
+import 'package:lebenswiki_app/domain/models/error.model.dart';
+import 'package:lebenswiki_app/domain/models/pack/pack.model.dart';
+import 'package:lebenswiki_app/domain/models/user/user.model.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,11 +13,12 @@ import 'package:lebenswiki_app/presentation/widgets/common/hacks.dart';
 import 'package:lebenswiki_app/presentation/widgets/input/drop_down_menu.dart';
 import 'package:lebenswiki_app/presentation/widgets/input/simplified_form_field.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
-import 'package:lebenswiki_app/domain/models/category_model.dart';
-import 'package:lebenswiki_app/repository/backend/pack_api.dart';
-import 'package:lebenswiki_app/repository/constants/colors.dart';
-import 'package:lebenswiki_app/repository/constants/shadows.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:lebenswiki_app/domain/models/category.model.dart';
+import 'package:lebenswiki_app/data/pack_api.dart';
+import 'package:lebenswiki_app/presentation/constants/colors.dart';
+import 'package:lebenswiki_app/presentation/constants/shadows.dart';
+
+const String packPlaceholder = "assets/images/pack_placeholder_image.jpg";
 
 class CreatorPackInfo extends ConsumerStatefulWidget {
   final Pack? pack;
