@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';
-import 'package:lebenswiki_app/lebenswiki_icons.dart';
+import 'package:lebenswiki_app/presentation/constants/lebenswiki_icons.dart';
 import 'package:lebenswiki_app/presentation/constants/colors.dart';
 
 class EditorButtonRow extends StatefulWidget {

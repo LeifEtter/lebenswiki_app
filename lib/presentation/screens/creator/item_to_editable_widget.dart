@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';
-import 'package:lebenswiki_app/lebenswiki_icons.dart';
+import 'package:lebenswiki_app/presentation/constants/lebenswiki_icons.dart';
 import 'package:lebenswiki_app/presentation/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/constants/shadows.dart';
 import 'package:uuid/uuid.dart';
