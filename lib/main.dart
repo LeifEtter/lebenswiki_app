@@ -1,143 +1,135 @@
+import 'dart:developer';
 import 'package:either_dart/either.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/services.dart';
+import 'package:lebenswiki_app/application/auth/prefs_handler.dart';
+import 'package:lebenswiki_app/application/routing/router.dart';
+import 'package:lebenswiki_app/data/category_api.dart';
+import 'package:lebenswiki_app/domain/models/category.model.dart';
+import 'package:lebenswiki_app/domain/models/error.model.dart';
+import 'package:lebenswiki_app/domain/models/user/user.model.dart';
+import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/widgets/common/theme.dart';
+import 'package:lebenswiki_app/data/user_api.dart';
+import 'package:lebenswiki_app/application/other/loading_helper.dart';
+import 'package:lebenswiki_app/application/auth/token_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/domain/models/error_model.dart';
-import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
-import 'package:lebenswiki_app/domain/models/pack_model.dart';
-import 'package:lebenswiki_app/experiment_drag.dart';
-import 'package:lebenswiki_app/presentation/providers/provider_helper.dart';
-import 'package:lebenswiki_app/presentation/screens/creator/new_creator_screen.dart';
-import 'package:lebenswiki_app/presentation/screens/other/onboarding.dart';
-import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
-import 'package:lebenswiki_app/repository/backend/token_handler.dart';
-import 'package:lebenswiki_app/presentation/widgets/common/theme.dart';
-import 'package:lebenswiki_app/main_wrapper.dart';
-import 'package:lebenswiki_app/application/other/loading_helper.dart';
-import 'package:lebenswiki_app/application/routing/router.dart';
-import 'package:lebenswiki_app/repository/backend/user_api.dart';
-import 'package:lebenswiki_app/repository/constants/routing_constants.dart';
-import 'package:lebenswiki_app/presentation/screens/other/authentication.dart';
-import 'package:flutter/services.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'repository/firebase_options.dart';
-import 'package:enum_to_string/enum_to_string.dart';
-
-enum AuthType {
-  newUser,
-  loggedOut,
-  error,
-  user,
-  anonymous,
-}
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  runApp(
-    const ProviderScope(child: MyApp()),
+  await dotenv.load(fileName: ".env");
+  await SentryFlutter.init(
+    (options) {
+      options.dsn =
+          'https://c30e1c85e3fcf934335f96d328f23ae0@o4506802868846592.ingest.sentry.io/4506802920226816';
+      options.tracesSampleRate = 1.0;
+    },
+    appRunner: () => runApp(
+      ProviderScope(child: LebenswikiApp()),
+    ),
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class LebenswikiApp extends ConsumerWidget {
+  final TokenHandler tokenHandler = TokenHandler();
+
+  LebenswikiApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
       },
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Lebenswiki',
-        theme: buildTheme(Brightness.light),
-        onGenerateRoute: generateRoute,
-        initialRoute: authenticationWrapperRoute,
-      ),
+      // child: MaterialApp(home: SafeArea(child: AuthWrapper())),
+      child: FutureBuilder(
+          future: determineWidgetNew(ref),
+          builder: (context, AsyncSnapshot<String> snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return LoadingHelper.loadingIndicator();
+            }
+            if (snapshot.data == null) {
+              print("Error during Widget determining");
+              return MaterialApp(home: Scaffold(body: backendDown()));
+            }
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Lebenswiki',
+              theme: buildTheme(Brightness.light),
+              onGenerateRoute: generateRoute,
+              initialRoute: snapshot.data,
+              // initialRoute: snapshot.data,
+            );
+          }),
     );
   }
-}
 
-class AuthWrapper extends ConsumerStatefulWidget {
-  const AuthWrapper({Key? key}) : super(key: key);
+  Future<String> determineWidgetNew(WidgetRef ref) async {
+    List<Category> existingCategories = ref.read(categoryProvider).categories;
+    if (existingCategories.isEmpty) {
+      List<Category> categories = await CategoryApi().getCategories();
+      ref.read(categoryProvider).setCategories(categories);
+    }
 
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AuthWrapperState();
-}
+    // TODO: Add when adding onboarding
+    // if (!(await PrefHandler.hasCompletedOnboarding())) {
+    //   log("New User detected");
+    //   return authRoute;
+    // }
+    if ((await PrefHandler.isBrowsingAnonymously())) {
+      return homeRoute;
+    }
 
-class _AuthWrapperState extends ConsumerState<AuthWrapper> {
-  bool sessionIsPossible = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: determineWidget(),
-        builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-          if (LoadingHelper.isLoading(snapshot)) {
-            return LoadingHelper.loadingIndicator();
-          }
-          return snapshot.data!;
-        });
+    String? token = await tokenHandler.get();
+    if (token == null || token == "") {
+      await handleTokenInvalid(ref);
+    }
+    Either<CustomError, User> tokenCheckResult =
+        await UserApi().authenticate(token: await tokenHandler.get() ?? "");
+    bool tokenValid = tokenCheckResult.isRight;
+    return tokenValid
+        ? await handleTokenValid(ref, tokenCheckResult.right)
+        : await handleTokenInvalid(ref);
   }
 
-  Future<Widget> determineWidget() async {
-    SharedPreferences _shared = await SharedPreferences.getInstance();
-    String? existingToken = await TokenHandler().get();
-    //TODO Test token stuff
+  Future<String> handleTokenValid(WidgetRef ref, User user) async {
+    if (ref.read(userProvider).user == null) {
+      ref.read(userProvider).setUser(user);
+    }
+    log("User logged in with account");
+    return homeRoute;
+  }
 
-    //Get Auth Type from Storage and transform into enum
-    String? authTypeString = _shared.getString("authType") ?? "newUser";
-    AuthType authType =
-        EnumToString.fromString(AuthType.values, authTypeString) ??
-            AuthType.error;
-
-    //If Token exists set authType to user
-    /*if (existingToken != null) {
-      authType = AuthType.user;
-    }*/
-
-    switch (authType) {
-      case AuthType.newUser:
-        return const OnboardingViewStart();
-      case AuthType.loggedOut:
-        return const AuthenticationView();
-      case AuthType.error:
-        return const Center(child: Text("Etwas ist schiefgelaufen"));
-      case AuthType.anonymous:
-        bool authenticated = await UserApi().authenticate();
-        if (authenticated) {
-          ProviderHelper.resetSessionProviders(ref);
-          await ProviderHelper.getDataAndSessionProvidersForAnonymous(ref);
-          return const NavBarWrapper();
-        } else {
-          Either<CustomError, String> loginResult =
-              await UserApi().loginAnonymously();
-          if (loginResult.isLeft) {
-            CustomFlushbar.error(
-                    message: "Du konntest nicht anonym angemeldet werden")
-                .show(context);
-            return const AuthenticationView();
-          } else {
-            await TokenHandler().set(loginResult.right);
-            return const NavBarWrapper();
-          }
-        }
-      case AuthType.user:
-        bool authenticated = await UserApi().authenticate();
-        if (authenticated) {
-          ProviderHelper.resetSessionProviders(ref);
-          await ProviderHelper.getDataAndSetSessionProviders(ref);
-          return const NavBarWrapper();
-        } else {
-          CustomFlushbar.error(
-                  message:
-                      "Du wurdest ausgeloggt und musst dich wieder einloggen")
-              .show(context);
-          return const AuthenticationView();
-        }
+  Future<String> handleTokenInvalid(WidgetRef ref) async {
+    await tokenHandler.delete();
+    ref.read(userProvider).removeUser();
+    bool anonymous = await PrefHandler.isBrowsingAnonymously();
+    if (!anonymous) {
+      log("User is not browsing anonymously and token isn't valid");
+      return authRoute;
+    } else {
+      log("User is logged in anonymously");
+      return homeRoute;
     }
   }
+
+  Widget backendDown() => const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.build,
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10.0),
+              child: Text("Backend wird derzeit gewartet,"),
+            ),
+            Text("versuche es später erneut."),
+          ],
+        ),
+      );
 }
