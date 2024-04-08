@@ -23,10 +23,7 @@ const String packPlaceholder = "assets/images/pack_placeholder_image.jpg";
 class CreatorPackInfo extends ConsumerStatefulWidget {
   final Pack? pack;
 
-  const CreatorPackInfo({
-    Key? key,
-    this.pack,
-  }) : super(key: key);
+  const CreatorPackInfo({super.key, this.pack});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -34,51 +31,119 @@ class CreatorPackInfo extends ConsumerStatefulWidget {
 }
 
 class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
-  final FirebaseStorage storage = FirebaseStorage.instance;
+  late User user;
+
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _initiativeController = TextEditingController();
 
-  bool _imageIsLoading = false;
-
   String? errorTitle;
   String? errorDescription;
 
-  String? _chosenImageLink;
-  final ImagePicker _picker = ImagePicker();
+  final ImagePicker picker = ImagePicker();
+  XFile? pickedImage;
+  late String imageCurrentlyShowing;
+  bool imageIsLoading = false;
 
-  String chosenCategory = "Beruf";
-  late List<ContentCategory> categories;
-  late User user;
+  late List<DropDownItem> dropdownItems;
+  late DropDownItem chosenItem;
 
-  late String _imageIdentifier;
+  bool imageIsWeb(String image) => Uri.parse(image).isAbsolute;
 
   @override
   void initState() {
+    dropdownItems = ref
+        .read(categoryProvider)
+        .categories
+        .skip(0)
+        .toList()
+        .map<DropDownItem>((Category cat) => DropDownItem(
+              id: cat.id,
+              name: cat.name,
+            ))
+        .toList();
+
+    user = ref.read(userProvider).user!;
     if (widget.pack != null) {
       _titleController.text = widget.pack!.title;
       _descriptionController.text = widget.pack!.description;
-      _chosenImageLink = widget.pack!.titleImage;
-      _initiativeController.text = widget.pack!.initiative ?? "";
-      chosenCategory = widget.pack!.categories.first.categoryName;
-      _imageIdentifier = widget.pack!.imageIdentifier;
+      _initiativeController.text = widget.pack!.initiative;
+      // chosenItem = DropDownItem(
+      //     id: widget.pack!.categories.first.id,
+      //     name: widget.pack!.categories.first.name);
+      chosenItem = dropdownItems
+          .where((e) => e.id == widget.pack!.categories.first.id)
+          .first;
+      imageCurrentlyShowing = widget.pack!.titleImage!;
+    } else {
+      chosenItem = dropdownItems[0];
+      imageCurrentlyShowing = packPlaceholder;
     }
-    _imageIdentifier = DateTime.now().millisecondsSinceEpoch.toString();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    categories = ref.watch(categoryProvider).categories;
-    List<ContentCategory> categoriesWithoutNew = categories.skip(1).toList();
-    user = ref.watch(userProvider).user;
     return Scaffold(
       body: ListView(
         children: [
           TopNavIOS.withNextButton(
             title: "Erstelle ein Pack",
             nextTitle: "Speichern",
-            nextFunction: () => update(context),
+            nextFunction: () async {
+              if (!validateFields()) {
+                return;
+              }
+              Pack packToSave = Pack(
+                title: _titleController.text,
+                description: _descriptionController.text,
+                pages: widget.pack != null ? widget.pack!.pages : [],
+                initiative: _initiativeController.text,
+                categories: [
+                  Category(id: chosenItem.id, name: chosenItem.name),
+                ],
+                readTime: 1,
+              );
+              bool isUpdate = widget.pack != null;
+              int packId;
+              if (isUpdate) {
+                Either<CustomError, Pack> updateRes =
+                    await PackApi().updatePack(packToSave, widget.pack!.id!);
+                if (updateRes.isLeft) {
+                  CustomFlushbar.error(message: updateRes.left.error)
+                      .show(context);
+                  return;
+                } else {
+                  packId = updateRes.right.id!;
+                }
+              } else {
+                Either<CustomError, Pack> createRes =
+                    await PackApi().createPack(packToSave);
+
+                if (createRes.isLeft) {
+                  CustomFlushbar.error(message: createRes.left.error)
+                      .show(context);
+                  return;
+                } else {
+                  packId = createRes.right.id!;
+                }
+              }
+              if (pickedImage != null) {
+                print("Doing upload");
+                Either<CustomError, String> imageUpload = await PackApi()
+                    .uploadCoverImage(
+                        pathToImage: pickedImage!.path, packId: packId);
+                if (imageUpload.isLeft) {
+                  CustomFlushbar.error(
+                    message:
+                        "Pack gespeichert, jedoch konnte das Bild nicht hochgeladen werden",
+                  ).show(context);
+                }
+              }
+              Navigator.pushNamed(context, createdViewRoute);
+              CustomFlushbar.success(message: "Pack erfolgreich gespeichert")
+                  .show(context);
+            },
           ),
           ListView(
             padding: const EdgeInsets.only(left: 20, right: 20, bottom: 100),
@@ -91,32 +156,23 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
                 controller: _titleController,
                 errorText: errorTitle,
                 labelText: "Titel*",
-                onChanged: () => {
-                  if (errorTitle != null)
-                    {
-                      setState(() {
-                        errorTitle = null;
-                      })
-                    }
-                },
+                onChanged: (newValue) => errorTitle != null
+                    ? setState(() => errorTitle = null)
+                    : null,
               ),
               S.h20(),
               SimplifiedFormField.multiline(
-                maxLength: 100,
+                maxLength: 500,
                 borderRadius: 15,
                 color: CustomColors.lightGrey,
                 controller: _descriptionController,
                 errorText: errorDescription,
                 labelText: "Beschreibung*",
                 minLines: 3,
-                maxLines: 5,
-                onChanged: (_) {
-                  if (errorDescription != null) {
-                    setState(() {
-                      errorDescription = null;
-                    });
-                  }
-                },
+                maxLines: 10,
+                onChanged: (newValue) => errorDescription != null
+                    ? setState(() => errorDescription = null)
+                    : null,
               ),
               S.h20(),
               SimplifiedFormField(
@@ -138,35 +194,40 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
               ),
               CustomDropDownMenu(
                 shadows: [LebenswikiShadows.fancyShadow],
-                chosenValue: chosenCategory,
-                onPress: (newCategory) => setState(() {
-                  chosenCategory = newCategory;
-                }),
-                items: List<String>.from(categoriesWithoutNew
-                    .map((ContentCategory cat) => cat.categoryName)
-                    .toList()),
+                chosenValue: chosenItem,
+                onPress: (DropDownItem item) =>
+                    setState(() => chosenItem = item),
+                items: dropdownItems,
               ),
               S.h30(),
               GestureDetector(
-                onTap: () => upload(context),
+                onTap: () async {
+                  XFile? file =
+                      await picker.pickImage(source: ImageSource.gallery);
+
+                  if (file != null) {
+                    pickedImage = file;
+                    setState(() => imageCurrentlyShowing = file.path);
+                  }
+                },
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.0),
                     boxShadow: [LebenswikiShadows.fancyShadow],
                     color: Colors.white,
-                    image: _chosenImageLink != null
-                        ? DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                              _chosenImageLink!,
-                            ))
-                        : null,
+                    image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: imageIsWeb(imageCurrentlyShowing)
+                            ? NetworkImage(imageCurrentlyShowing.replaceAll(
+                                "https", "http"))
+                            : AssetImage(imageCurrentlyShowing)
+                                as ImageProvider),
                   ),
                   width: double.infinity,
                   height: 200,
-                  child: _imageIsLoading
+                  child: imageIsLoading
                       ? LoadingHelper.loadingIndicator()
-                      : _chosenImageLink != null
+                      : imageCurrentlyShowing == packPlaceholder
                           ? Center(
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -196,41 +257,7 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
     );
   }
 
-  void upload(context) async {
-    setState(() => _imageIsLoading = true);
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile == null) {
-      setState(() => _imageIsLoading = false);
-      return;
-    }
-    if (_chosenImageLink != null &&
-        _chosenImageLink !=
-            "https://firebasestorage.googleapis.com/v0/b/lebenswiki-db.appspot.com/o/defaultImages%2Fpack_placeholder_image.jpg?alt=media&token=d61d13f9-0b5b-4f62-9d3e-c76a637392af") {
-      await storage.refFromURL(_chosenImageLink!).delete();
-    }
-    Either<CustomError, String> result = await ImageHelper.uploadImage(
-      context,
-      pathToStore: "pack_images/$_imageIdentifier/",
-      chosenImage: File(pickedFile.path),
-      userId: user.id,
-      storage: storage,
-    );
-    result.fold(
-      (left) {
-        CustomFlushbar.error(message: left.error).show(context);
-      },
-      (right) {
-        CustomFlushbar.success(message: "Bild erfolgreich hochgeladen")
-            .show(context);
-        setState(() {
-          _imageIsLoading = false;
-          _chosenImageLink = right;
-        });
-      },
-    );
-  }
-
-  void update(context) async {
+  bool validateFields() {
     if (_titleController.text.isEmpty) {
       errorTitle = "Schreibe hier deinen Titel";
     }
@@ -239,44 +266,8 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
     }
     if (_descriptionController.text.isEmpty || _titleController.text.isEmpty) {
       setState(() {});
-      return;
+      return false;
     }
-    if (_initiativeController.text.isEmpty) {
-      _initiativeController.text = "Keine Initiative";
-    }
-
-    Pack newPack = Pack(
-      title: _titleController.text,
-      description: _descriptionController.text,
-      titleImage: _chosenImageLink ??
-          "https://firebasestorage.googleapis.com/v0/b/lebenswiki-db.appspot.com/o/defaultImages%2Fpack_placeholder_image.jpg?alt=media&token=d61d13f9-0b5b-4f62-9d3e-c76a637392af",
-      pages: widget.pack != null ? widget.pack!.pages : [],
-      creatorId: user.id,
-      creator: user,
-      initiative: _initiativeController.text,
-      categories: [
-        categories
-            .where((ContentCategory cat) => cat.categoryName == chosenCategory)
-            .first
-      ],
-      readTime: 0,
-      imageIdentifier: _imageIdentifier,
-    );
-    widget.pack == null
-        ? await PackApi().createPack(pack: newPack).fold((left) {
-            CustomFlushbar.error(message: left.error);
-          }, (right) {
-            Navigator.pushNamed(context, '/created');
-            CustomFlushbar.success(message: "Pack wurde erstellt")
-                .show(context);
-          })
-        : await PackApi().updatePack(id: widget.pack!.id!, pack: newPack).fold(
-            (left) {
-            CustomFlushbar.error(message: left.error).show(context);
-          }, (right) {
-            Navigator.popUntil(context, ModalRoute.withName('/created'));
-            CustomFlushbar.success(message: right).show(context);
-          });
-    return;
+    return true;
   }
 }
