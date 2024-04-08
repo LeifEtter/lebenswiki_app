@@ -76,3 +76,4 @@ app.*.symbols
 !/dev/ci/**/Gemfile.lock
 
 .vscode
+WIP_experiment_drag.dart
