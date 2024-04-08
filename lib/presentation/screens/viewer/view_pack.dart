@@ -2,53 +2,44 @@ import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:lebenswiki_app/domain/models/read_model.dart';
-import 'package:lebenswiki_app/domain/models/user_model.dart';
+import 'package:lebenswiki_app/domain/models/user/user.model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/viewer/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/sliver_appbar.dart';
-import 'package:lebenswiki_app/repository/backend/pack_api.dart';
-import 'package:lebenswiki_app/repository/backend/read_api.dart';
-import 'package:lebenswiki_app/repository/constants/colors.dart';
+import 'package:lebenswiki_app/data/pack_api.dart';
+import 'package:lebenswiki_app/presentation/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/widgets/lw.dart';
-import 'package:lebenswiki_app/domain/models/pack_model.dart';
+import 'package:lebenswiki_app/domain/models/pack/pack.model.dart';
 
 class ViewPack extends ConsumerStatefulWidget {
   final Pack pack;
   final String heroName;
 
   const ViewPack({
-    Key? key,
+    super.key,
     required this.pack,
     required this.heroName,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ViewPackState();
 }
 
 class _ViewPackState extends ConsumerState<ViewPack> {
-  late String profileImage;
   late int fakeReads;
-  late User user;
-  late UserRole userRole;
+  late User? user;
   PackApi packApi = PackApi();
 
   @override
   void initState() {
+    user = ref.read(userProvider).user;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    profileImage = widget.pack.creator!.profileImage;
-    int unixTime = widget.pack.creationDate.millisecond;
-
-    double calculated = unixTime / 2;
-    user = ref.read(userProvider).user;
-    userRole = ref.read(userRoleProvider).role;
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -61,17 +52,16 @@ class _ViewPackState extends ConsumerState<ViewPack> {
               return [
                 ViewerAppBar(
                   heroName: widget.heroName,
-                  titleImage: widget.pack.titleImage,
-                  categoryName: widget.pack.categories[0].categoryName,
-                  clapCallback: userRole == UserRole.anonymous
-                      ? _showRegisterRequest
-                      : _clapCallback,
+                  titleImage: widget.pack.titleImage ??
+                      "assets/images/pack_placeholder_image.jpg",
+                  categoryName: widget.pack.categories[0].name,
+                  clapCallback:
+                      user == null ? _showRegisterRequest : _clapCallback,
                   shareCallback: () {},
-                  bookmarkCallback: userRole == UserRole.anonymous
-                      ? _showRegisterRequest
-                      : _bookmarkCallback,
-                  clapCount: widget.pack.claps.length,
-                  bookmarkIcon: widget.pack.bookmarkedByUser
+                  bookmarkCallback:
+                      user == null ? _showRegisterRequest : _bookmarkCallback,
+                  clapCount: widget.pack.totalClaps,
+                  bookmarkIcon: widget.pack.userHasBookmarked
                       ? const Icon(Icons.bookmark_added, size: 20)
                       : const Icon(Icons.bookmark_add_outlined, size: 20),
                 )
@@ -90,16 +80,17 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                   const SizedBox(height: 15),
                   Row(
                     children: [
-                      profileImage.startsWith('assets/')
+                      widget.pack.creator!.avatar != null
                           ? CircleAvatar(
                               backgroundColor: Colors.white,
                               backgroundImage:
-                                  AssetImage(widget.pack.creator!.profileImage),
+                                  AssetImage(widget.pack.creator!.avatar!),
                             )
                           : CircleAvatar(
                               backgroundColor: Colors.white,
-                              backgroundImage: NetworkImage(
-                                  widget.pack.creator!.profileImage),
+                              backgroundImage: NetworkImage(widget
+                                  .pack.creator!.profileImage!
+                                  .replaceAll("https", "http")),
                             ),
                       const SizedBox(width: 10),
                       Column(
@@ -121,7 +112,7 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                                 ]),
                           ),
                           Text(
-                            "${DateFormat.MMMd().format(widget.pack.creationDate)}, ${DateFormat.y().format(widget.pack.creationDate)}",
+                            "${DateFormat.MMMd().format(widget.pack.creationDate!)}, ${DateFormat.y().format(widget.pack.creationDate!)}",
                             style: Theme.of(context)
                                 .textTheme
                                 .displaySmall!
@@ -145,24 +136,23 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                     children: [
                       _buildInteractionLabel(
                         label: "Lesezeit",
-                        indicator:
-                            (widget.pack.pages.length / 2).toString() + " Min",
+                        indicator: "${(widget.pack.pages.length / 2)} Min",
                       ),
                       _buildVerticalDivider(),
                       _buildInteractionLabel(
                         label: "Leser",
-                        indicator: calculated.round().toString(),
+                        indicator: widget.pack.totalReads.toString(),
                       ),
                       _buildVerticalDivider(),
                       _buildInteractionLabel(
                         label: "Claps",
-                        indicator: widget.pack.claps.length.toString(),
+                        indicator: widget.pack.totalClaps.toString(),
                       ),
-                      _buildVerticalDivider(),
-                      _buildInteractionLabel(
-                        label: "Kommentare",
-                        indicator: widget.pack.comments.length.toString(),
-                      ),
+                      // _buildVerticalDivider(),
+                      // _buildInteractionLabel(
+                      //   label: "Kommentare",
+                      //   indicator: widget.pack.comments.length.toString(),
+                      // ),
                     ],
                   ),
                   Padding(
@@ -187,32 +177,29 @@ class _ViewPackState extends ConsumerState<ViewPack> {
                     color: CustomColors.blue,
                     text: "Pack Starten",
                     action: () async {
-                      if (userRole == UserRole.anonymous) {
+                      if (user == null) {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PackViewerStarted(
-                                  read: Read(
-                                    pack: widget.pack,
-                                    packId: widget.pack.id!,
-                                    userId: user.id,
-                                  ),
-                                  heroName: widget.heroName),
-                            ));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PackViewerStarted(
+                                packId: widget.pack.id!,
+                                heroName: widget.heroName),
+                          ),
+                        );
                       } else {
-                        await ReadApi().create(packId: widget.pack.id!).fold(
-                            (left) {
+                        await PackApi().createRead(widget.pack.id).fold((left) {
                           CustomFlushbar.error(message: left.error)
                               .show(context);
                         }, (right) {
-                          right.pack = widget.pack;
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PackViewerStarted(
-                                        read: right,
-                                        heroName: widget.heroName,
-                                      )));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PackViewerStarted(
+                                packId: widget.pack.id!,
+                                heroName: widget.heroName,
+                              ),
+                            ),
+                          );
                         });
                       }
                     },
@@ -252,34 +239,37 @@ class _ViewPackState extends ConsumerState<ViewPack> {
       );
 
   void _bookmarkCallback() async {
-    widget.pack.bookmarkedByUser
-        ? await packApi.unbookmarkPack(widget.pack.id).fold((left) {
+    setState(() async => widget.pack.userHasBookmarked
+        ? await packApi.removeBookmarkPack(widget.pack.id).fold((left) {
             CustomFlushbar.error(message: left.error).show(context);
           }, (right) {
             CustomFlushbar.success(message: right).show(context);
-            widget.pack.toggleBookmarked(user);
+            widget.pack.userHasBookmarked = false;
+            widget.pack.totalBookmarks -= 1;
           })
         : await packApi.bookmarkPack(widget.pack.id).fold((left) {
             CustomFlushbar.error(message: left.error).show(context);
           }, (right) {
             CustomFlushbar.success(message: right).show(context);
-            widget.pack.toggleBookmarked(user);
-          });
-    setState(() {});
+            widget.pack.userHasBookmarked = true;
+            widget.pack.totalBookmarks += 1;
+          }));
   }
 
   void _clapCallback() async {
-    widget.pack.userHasClapped(userId: user.id)
+    widget.pack.userHasClapped
         ? CustomFlushbar.error(message: "Du hast schon geklatscht")
             .show(context)
-        : await PackApi().addClap(packId: widget.pack.id!).fold(
+        : await PackApi().clapForPack(widget.pack.id).fold(
             (left) {
               CustomFlushbar.error(message: left.error).show(context);
             },
             (right) {
               CustomFlushbar.success(message: right).show(context);
-              widget.pack.claps.add(user.id);
-              setState(() {});
+              setState(() {
+                widget.pack.userHasClapped = true;
+                widget.pack.totalClaps += 1;
+              });
             },
           );
   }

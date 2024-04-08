@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/domain/models/enums.dart';
-import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
+import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';
 
 class ViewableWidgetStyling {
   TextStyle get title => const TextStyle();
@@ -47,7 +46,8 @@ class ItemToViewableWidget {
             padding: const EdgeInsets.only(left: 7, top: 4),
             child: Column(
               children: item.bodyContent
-                  .map((PackPageItemInput input) => _buildListItem(input.value))
+                  .map((PackPageItemContent input) =>
+                      _buildListItem(input.value))
                   .toList(),
             ),
           ),
@@ -75,7 +75,7 @@ class ItemToViewableWidget {
   Widget _imageWidget(PackPageItem item) => Padding(
         padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
         child: Image.network(
-          item.headContent.value,
+          item.headContent.value.replaceAll("https", "http"),
           fit: BoxFit.contain,
           height: 250,
         ),
