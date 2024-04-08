@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/application/auth/string_validation_extensions.dart';
-import 'package:lebenswiki_app/domain/models/user_model.dart';
-import 'package:lebenswiki_app/repository/constants/image_repo.dart';
+import 'package:lebenswiki_app/domain/models/user/user.model.dart';
 
 class ValidationModel {
   String? value;
@@ -38,7 +37,7 @@ class FormNotifier extends ChangeNotifier {
       _password = ValidationModel(val, null);
     } else {
       _password = ValidationModel(null,
-          'Password sollte mind. 6 Zeichen lang sein, einen Groß- und Kleinbuchstaben als auch eine Zahl enthalten');
+          'Password sollte mind. 8 Zeichen lang sein, einen Groß- und Kleinbuchstaben als auch eine Zahl und Symbol enthalten');
     }
     notifyListeners();
   }
@@ -95,11 +94,11 @@ class FormNotifier extends ChangeNotifier {
   }
 
   User convertToUser() => User(
+        isFirstLogin: true,
         name: _name.value ?? "",
         email: _email.value,
         biography: _biography.value ?? "",
         password: password.value,
-        profileImage: ImageRepo.standardProfileImage,
       );
 
   bool get validateForRegister {

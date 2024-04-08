@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/domain/models/block_model.dart';
-import 'package:lebenswiki_app/domain/models/category_model.dart';
-import 'package:lebenswiki_app/domain/models/user_model.dart';
+import 'package:lebenswiki_app/domain/models/category.model.dart';
+import 'package:lebenswiki_app/domain/models/user/role.model.dart';
+import 'package:lebenswiki_app/domain/models/user/user.model.dart';
 
 class SearchQueryNotifier extends ChangeNotifier {
   SearchQueryNotifier({this.query = ""});
@@ -37,7 +37,7 @@ final searchStateProvider =
 class UserNotifier extends ChangeNotifier {
   User? _user;
 
-  User get user => _user ?? User(name: "error");
+  User? get user => _user;
 
   void setUser(User newUser) {
     _user = newUser;
@@ -54,13 +54,14 @@ final userProvider = ChangeNotifierProvider<UserNotifier>(
 );
 
 class CategoryProvider extends ChangeNotifier {
-  List<ContentCategory>? _categories;
+  List<Category>? _categories;
 
-  List<ContentCategory> get categories => _categories ?? [];
+  List<Category> get categories => _categories ?? [];
 
-  void setCategories(List<ContentCategory> newCategories) {
-    _categories = newCategories;
-    _categories!.insert(0, ContentCategory.forNew());
+  void setCategories(List<Category> categories) {
+    _categories = categories;
+    // _categories!.insert(0, Category.forNew());
+    notifyListeners();
   }
 
   void removeCategories() {
@@ -71,37 +72,37 @@ class CategoryProvider extends ChangeNotifier {
 final categoryProvider =
     ChangeNotifierProvider<CategoryProvider>(((ref) => CategoryProvider()));
 
-class BlockedListNotifier extends ChangeNotifier {
-  List<Block>? _blockedList;
-  List<int>? _blockedIdList;
+// class BlockedListNotifier extends ChangeNotifier {
+//   List<Block>? _blockedList;
+//   List<int>? _blockedIdList;
 
-  List<Block> get blockedList => _blockedList ?? [];
-  List<int> get blockedIdList => _blockedIdList ?? [99999999];
+//   List<Block> get blockedList => _blockedList ?? [];
+//   List<int> get blockedIdList => _blockedIdList ?? [99999999];
 
-  void setBlockedList(List<Block> newBlocks) {
-    _blockedList = newBlocks;
-    _setBlockedIdList();
-  }
+//   void setBlockedList(List<Block> newBlocks) {
+//     _blockedList = newBlocks;
+//     _setBlockedIdList();
+//   }
 
-  void _setBlockedIdList() {
-    _blockedIdList =
-        _blockedList!.map((Block block) => block.blockedId).toList();
-  }
+//   void _setBlockedIdList() {
+//     _blockedIdList =
+//         _blockedList!.map((Block block) => block.blockedId).toList();
+//   }
 
-  void addBlock(Block block) {
-    _blockedList!.add(block);
-    _blockedIdList!.add(block.blockedId);
-    notifyListeners();
-  }
+//   void addBlock(Block block) {
+//     _blockedList!.add(block);
+//     _blockedIdList!.add(block.blockedId);
+//     notifyListeners();
+//   }
 
-  void removeBlockedList() {
-    _blockedList = null;
-    _blockedIdList = null;
-  }
-}
+//   void removeBlockedList() {
+//     _blockedList = null;
+//     _blockedIdList = null;
+//   }
+// }
 
-final blockedListProvider =
-    ChangeNotifierProvider(((ref) => BlockedListNotifier()));
+// final blockedListProvider =
+//     ChangeNotifierProvider(((ref) => BlockedListNotifier()));
 
 class ReloadNotifier extends ChangeNotifier {
   void reload() {
@@ -111,50 +112,16 @@ class ReloadNotifier extends ChangeNotifier {
 
 final reloadProvider = ChangeNotifierProvider((ref) => ReloadNotifier());
 
-UserRole stringToRole(String role) {
-  switch (role) {
-    case "CREATOR":
-      return UserRole.creator;
-    case "USER":
-      return UserRole.user;
-    case "ADMIN":
-      return UserRole.admin;
-    default:
-      return UserRole.anonymous;
-  }
-}
-
-String roleToString(UserRole role) {
-  switch (role) {
-    case UserRole.admin:
-      return "ADMIN";
-    case UserRole.user:
-      return "USER";
-    case UserRole.creator:
-      return "CREATOR";
-    default:
-      return "ANONYMOUS";
-  }
-}
-
-enum UserRole {
-  loggedOut,
-  admin,
-  user,
-  anonymous,
-  creator,
-}
-
 class UserRoleNotifier extends ChangeNotifier {
-  UserRole? _role;
+  Role? _role;
 
-  UserRole get role => _role ?? UserRole.loggedOut;
+  Role? get role => _role;
 
-  void setRole(UserRole role) {
+  void setRole(Role role) {
     _role = role;
   }
 
-  void clearRole(UserRole role) {
+  void clearRole(Role role) {
     _role = null;
   }
 }
