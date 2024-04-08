@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: io.sentry:sentry-android-ndk:7.3.0@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f9ff6b147108fc295ad2b1a553541f36/transformed/jetified-sentry-android-ndk-7.3.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/f9ff6b147108fc295ad2b1a553541f36/transformed/jetified-sentry-android-ndk-7.3.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f9ff6b147108fc295ad2b1a553541f36/transformed/jetified-sentry-android-ndk-7.3.0/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.sentry/sentry-android-ndk/7.3.0/a9ca68d861241c437ce02e15c7ca3a607006db93/sentry-android-ndk-7.3.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.sentry/sentry-android-ndk/7.3.0/705f5498cab46f49209f498205e8557618c0f12c/sentry-android-ndk-7.3.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
