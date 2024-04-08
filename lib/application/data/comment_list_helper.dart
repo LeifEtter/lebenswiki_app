@@ -1,4 +1,4 @@
-import 'package:lebenswiki_app/domain/models/comment_model.dart';
+import 'package:lebenswiki_app/domain/models/comment.model.dart';
 
 class CommentListHelper {
   List<Comment> comments = [];
@@ -10,20 +10,7 @@ class CommentListHelper {
     required int currentUserId,
     required List<int> blockedList,
   }) {
-    filterCommentsForBlocked(blockedList);
-    initDisplayParams(currentUserId);
     sortByDate();
-  }
-
-  void initDisplayParams(int currentUserId) {
-    for (Comment comment in comments) {
-      comment.initializeDisplayParams(currentUserId);
-    }
-  }
-
-  void filterCommentsForBlocked(List<int> blockedList) {
-    comments.removeWhere(
-        (Comment comment) => blockedList.contains(comment.creator.id));
   }
 
   void sortByDate() {
@@ -34,8 +21,7 @@ class CommentListHelper {
   }
 
   void sortByVote() {
-    comments
-        .sort((Comment a, Comment b) => b.totalVotes.compareTo(a.totalVotes));
+    comments.sort((Comment a, Comment b) => b.voteCount.compareTo(a.voteCount));
     isSortedByDate = false;
     isSortedByVotes = true;
   }
