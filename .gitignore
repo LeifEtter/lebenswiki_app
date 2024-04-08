@@ -1,4 +1,4 @@
-
+*.env
 
 # Flutter/Dart/Pub related
 **/doc/api/
