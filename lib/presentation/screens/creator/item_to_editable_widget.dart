@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:lebenswiki_app/domain/models/enums.dart';
-import 'package:lebenswiki_app/domain/models/pack_content_models.dart';
+import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';
 import 'package:lebenswiki_app/lebenswiki_icons.dart';
-import 'package:lebenswiki_app/repository/constants/colors.dart';
-import 'package:lebenswiki_app/repository/constants/shadows.dart';
+import 'package:lebenswiki_app/presentation/constants/colors.dart';
+import 'package:lebenswiki_app/presentation/constants/shadows.dart';
+import 'package:uuid/uuid.dart';
+
+var uuid = Uuid();
 
 class ItemToEditableWidget {
   final BuildContext context;
@@ -139,7 +141,7 @@ class ItemToEditableWidget {
                   ? DecorationImage(
                       fit: BoxFit.cover,
                       image: NetworkImage(
-                        item.headContent.value,
+                        item.headContent.value.replaceAll("https", "http"),
                       ))
                   : null,
             ),
@@ -192,7 +194,7 @@ class ItemToEditableWidget {
               ),
             ),
           ),
-          ...item.bodyContent.map((PackPageItemInput input) => Row(
+          ...item.bodyContent.map((PackPageItemContent input) => Row(
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 10),
@@ -243,8 +245,8 @@ class ItemToEditableWidget {
             onPressed: () {
               TextEditingController newController = TextEditingController();
               newController.text = "";
-              item.bodyContent
-                  .add(PackPageItemInput(controller: newController));
+              item.bodyContent.add(PackPageItemContent(
+                  controller: newController, id: uuid.v4()));
               reload();
             },
           )
