@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lebenswiki_app/repository/constants/colors.dart';
+import 'package:lebenswiki_app/presentation/constants/colors.dart';
 
 class CustomInputField extends StatefulWidget {
   final String hintText;

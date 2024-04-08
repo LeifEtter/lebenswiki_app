@@ -1,14 +1,15 @@
 import 'package:emojis/emoji.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lebenswiki_app/application/routing/router.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
-import 'package:lebenswiki_app/repository/constants/colors.dart';
+import 'package:lebenswiki_app/presentation/constants/colors.dart';
 
 class ViewerAppBar extends StatefulWidget {
   final String heroName;
   final String titleImage;
   final String categoryName;
-  final Function? backFunction;
+  final Future<void> Function()? backFunction;
   final Function shareCallback;
   final Function clapCallback;
   final Function bookmarkCallback;
@@ -51,8 +52,13 @@ class _ViewerAppBarState extends State<ViewerAppBar> {
         child: FloatingActionButton(
           backgroundColor: const Color.fromRGBO(255, 255, 255, 0.8),
           onPressed: () async {
-            await widget.backFunction?.call();
-            Navigator.pop(context);
+            if (widget.backFunction != null) {
+              await widget.backFunction!();
+            } else {
+              Navigator.of(context).popUntil((route) =>
+                  route.settings.name == homeRoute ||
+                  route.settings.name == homeRoute.split("/")[1]);
+            }
           },
           child: Icon(
             Icons.arrow_back_ios_new_rounded,
@@ -70,10 +76,12 @@ class _ViewerAppBarState extends State<ViewerAppBar> {
         titlePadding: const EdgeInsets.all(0),
         background: Hero(
           tag: widget.heroName,
-          child: Image.network(
-            widget.titleImage,
-            fit: BoxFit.cover,
-          ),
+          child: widget.titleImage.startsWith("assets/")
+              ? Image.asset(widget.titleImage, fit: BoxFit.cover)
+              : Image.network(
+                  widget.titleImage.replaceAll("https", "http"),
+                  fit: BoxFit.cover,
+                ),
         ),
         title: AnimatedOpacity(
           duration: const Duration(milliseconds: 500),
@@ -85,6 +93,13 @@ class _ViewerAppBarState extends State<ViewerAppBar> {
               top: 10,
               left: 10,
             ),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0),
+              ),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -94,14 +109,14 @@ class _ViewerAppBarState extends State<ViewerAppBar> {
                   fontSize: 8,
                 ),
                 const Spacer(),
-                IconButton(
-                  constraints: const BoxConstraints(),
-                  onPressed: () => widget.shareCallback(),
-                  icon: const Icon(
-                    Icons.file_upload_outlined,
-                    size: 20,
-                  ),
-                ),
+                // IconButton(
+                //   constraints: const BoxConstraints(),
+                //   onPressed: () => widget.shareCallback(),
+                //   icon: const Icon(
+                //     Icons.file_upload_outlined,
+                //     size: 20,
+                //   ),
+                // ),
                 GestureDetector(
                   onTap: () => widget.clapCallback(),
                   child: Row(
@@ -126,12 +141,6 @@ class _ViewerAppBarState extends State<ViewerAppBar> {
                 ),
               ],
             ),
-            decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15.0),
-                  topRight: Radius.circular(15.0),
-                )),
           ),
         ),
       ),

@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
+class DropDownItem {
+  final int id;
+  final String name;
+
+  DropDownItem({required this.id, required this.name});
+}
+
 class CustomDropDownMenu extends StatelessWidget {
-  final String chosenValue;
+  final DropDownItem chosenValue;
+  final List<DropDownItem> items;
   final Function onPress;
-  final List<String> items;
   final double borderRadius;
   final List<BoxShadow>? shadows;
 
@@ -27,16 +34,17 @@ class CustomDropDownMenu extends StatelessWidget {
         boxShadow: shadows,
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
+        child: DropdownButton<DropDownItem>(
           borderRadius: BorderRadius.circular(borderRadius),
           value: chosenValue,
           items: items
-              .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
-                    value: value,
-                    child: Text(value),
-                  ))
+              .map<DropdownMenuItem<DropDownItem>>(
+                  (DropDownItem item) => DropdownMenuItem(
+                        value: item,
+                        child: Text(item.name),
+                      ))
               .toList(),
-          onChanged: (String? newValue) => onPress(newValue),
+          onChanged: (DropDownItem? newValue) => onPress(newValue),
         ),
       ),
     );

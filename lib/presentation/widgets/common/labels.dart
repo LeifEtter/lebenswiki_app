@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/repository/constants/colors.dart';
+import 'package:lebenswiki_app/presentation/constants/colors.dart';
 
 class InfoLabel extends StatelessWidget {
   final String text;

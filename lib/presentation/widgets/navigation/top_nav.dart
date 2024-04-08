@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lebenswiki_app/application/routing/router.dart';
 import 'package:lebenswiki_app/main_wrapper.dart';
 
 class TopNavIOS extends StatelessWidget {
@@ -41,7 +42,8 @@ class TopNavIOS extends StatelessWidget {
               child: IconButton(
                 onPressed: () {
                   if (isPopMenu) {
-                    Navigator.of(context).push(_homeRoute());
+                    Navigator.of(context)
+                        .popUntil((route) => route.settings.name == homeRoute);
                   } else {
                     Navigator.pop(context);
                   }

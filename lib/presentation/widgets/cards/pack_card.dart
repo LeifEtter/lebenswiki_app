@@ -1,79 +1,68 @@
-import 'package:animate_icons/animate_icons.dart';
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/domain/models/read_model.dart';
+import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/viewer/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
-import 'package:lebenswiki_app/presentation/screens/other/comments.dart';
 import 'package:lebenswiki_app/presentation/screens/viewer/view_pack.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
-import 'package:lebenswiki_app/repository/constants/colors.dart';
-import 'package:lebenswiki_app/repository/backend/pack_api.dart';
-import 'package:lebenswiki_app/domain/models/pack_model.dart';
+import 'package:lebenswiki_app/presentation/widgets/interactions/report_popup.dart';
+import 'package:lebenswiki_app/data/user_api.dart';
+import 'package:lebenswiki_app/presentation/constants/colors.dart';
+import 'package:lebenswiki_app/data/pack_api.dart';
+import 'package:lebenswiki_app/domain/models/pack/pack.model.dart';
 import 'package:emojis/emoji.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/theme.dart';
 import 'package:intl/intl.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
-import 'package:lebenswiki_app/domain/models/user_model.dart';
-import 'package:lebenswiki_app/repository/constants/shadows.dart';
+import 'package:lebenswiki_app/domain/models/user/user.model.dart';
+import 'package:lebenswiki_app/presentation/constants/shadows.dart';
 
 class PackCard extends ConsumerStatefulWidget {
   final String heroParent;
-  final Pack? pack;
-  final Read? read;
+  final Pack pack;
   final bool isDraftView;
   final String? title;
 
   const PackCard({
-    Key? key,
-    this.pack,
-    this.read,
+    super.key,
+    required this.pack,
     required this.heroParent,
     this.isDraftView = false,
     this.title,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _PackCardState();
 }
 
 class _PackCardState extends ConsumerState<PackCard> {
-  final AnimateIconController animateIconController = AnimateIconController();
   final PackApi packApi = PackApi();
   late Pack pack;
-  late User user;
   late bool isPublished;
   bool isReading = false;
   late int progressPercentage;
-  late UserRole userRole;
+  late User? user;
 
-  @override
-  void initState() {
-    pack = widget.pack ?? widget.read!.pack!;
-    if (widget.read != null) isReading = true;
-    if (widget.read != null) {
-      widget.read!.pack!.pages.isEmpty
-          ? progressPercentage = 100
-          : progressPercentage =
-              ((widget.read!.progress / pack.pages.length) * 100).round();
-    }
-    super.initState();
-  }
+  int calculateProgressPercentage(double progress, int pageAmount) =>
+      pageAmount == 0 ? 100 : ((progress / pageAmount) * 100).round();
 
   @override
   Widget build(BuildContext context) {
-    user = ref.watch(userProvider).user;
-    userRole = ref.watch(userRoleProvider).role;
+    pack = widget.pack;
+    user = ref.read(userProvider).user;
+    if (widget.pack.readProgress > 0) isReading = true;
+    progressPercentage =
+        calculateProgressPercentage(pack.readProgress, pack.pages.length);
     return GestureDetector(
       onTap: () async {
-        isReading || widget.isDraftView
+        isReading || widget.isDraftView || pack.readProgress >= 1
             ? await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => PackViewerStarted(
-                          read: widget.read!,
+                          packId: pack.id!,
                           heroName: "${widget.heroParent}-${pack.id}-hero",
                         )))
             : await Navigator.push(
@@ -88,9 +77,10 @@ class _PackCardState extends ConsumerState<PackCard> {
       },
       child: Container(
         decoration: BoxDecoration(
-          border: (pack.published && pack.creatorId == user.id)
-              ? Border.all(width: 3, color: Colors.green.shade200)
-              : null,
+          border:
+              (pack.published && user != null && pack.creator!.id == user!.id)
+                  ? Border.all(width: 3, color: Colors.green.shade200)
+                  : null,
           borderRadius: BorderRadius.circular(15.0),
           color: CustomColors.lightGrey,
         ),
@@ -110,10 +100,14 @@ class _PackCardState extends ConsumerState<PackCard> {
                       ),
                       child: Hero(
                         tag: "${widget.heroParent}-${pack.id}-hero",
-                        child: Image.network(
-                          pack.titleImage,
-                          fit: BoxFit.cover,
-                        ),
+                        child: pack.titleImage != null
+                            ? Image.network(
+                                pack.titleImage!.replaceAll('https', 'http'),
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                "assets/images/image_placeholder.png",
+                              ),
                       ),
                     ),
                   ),
@@ -127,7 +121,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                         spacing: 8,
                         children: [
                           InfoLabel(
-                            text: pack.categories[0].categoryName,
+                            text: pack.categories[0].name,
                             backgroundColor: CustomColors.whiteOverlay,
                           ),
                           InfoLabel(
@@ -135,7 +129,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                               Icons.schedule,
                               size: 18,
                             ),
-                            text: (pack.pages.length / 2).toString(),
+                            text: (pack.pages.length).toString(),
                             backgroundColor: CustomColors.whiteOverlay,
                           ),
                           widget.isDraftView
@@ -145,7 +139,9 @@ class _PackCardState extends ConsumerState<PackCard> {
                       ),
                     ),
                   ),
-                  (pack.published && pack.creatorId == user.id)
+                  (pack.published &&
+                          user != null &&
+                          pack.creator!.id == user!.id)
                       ? Align(
                           alignment: Alignment.topLeft,
                           child: Container(
@@ -187,9 +183,10 @@ class _PackCardState extends ConsumerState<PackCard> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 10, bottom: 0),
+                            padding: const EdgeInsets.only(
+                                left: 10, bottom: 0, top: 5),
                             child: Text(
-                              "von ${pack.creator!.name} für ${pack.initiative}",
+                              "von ${pack.creator!.name} ${pack.initiative.isNotEmpty ? "für ${pack.initiative}" : ""}",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
@@ -211,27 +208,99 @@ class _PackCardState extends ConsumerState<PackCard> {
                     alignment: Alignment.bottomRight,
                     child: widget.isDraftView
                         ? Container()
-                        : IconButton(
-                            constraints: const BoxConstraints(),
-                            iconSize: 25,
-                            icon: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              child: pack.bookmarkedByUser
-                                  ? const Icon(Icons.bookmark_added)
-                                  : const Icon(
-                                      Icons.bookmark_add_outlined,
-                                    ),
+                        : Container(
+                            width: 100,
+                            child: Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () async {
+                                    if (user == null) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              RegisterRequestPopup(ref));
+                                    } else {
+                                      await showDialog(
+                                        context: context,
+                                        builder: (context) => ReportDialog(
+                                          resourceName: "Pack",
+                                          reportCallback: (bool blockUser,
+                                              String reason) async {
+                                            Either<CustomError, String>
+                                                reportResult =
+                                                await PackApi().reportPack(
+                                                    widget.pack.id!, reason);
+                                            if (reportResult.isRight &&
+                                                !blockUser) {
+                                              CustomFlushbar.success(
+                                                      message:
+                                                          "Pack wurde gemeldet. Wir sehen uns deine Meldung an")
+                                                  .show(context);
+
+                                              return;
+                                            }
+                                            if (reportResult.isLeft) {
+                                              CustomFlushbar.error(
+                                                      message:
+                                                          "Pack konnte nicht gemeldet werden")
+                                                  .show(context);
+                                              return;
+                                            }
+                                            if (blockUser) {
+                                              Either<CustomError, String>
+                                                  blockResult =
+                                                  await UserApi().blockUser(
+                                                      widget.pack.creator!.id!,
+                                                      reason);
+                                              if (blockResult.isRight) {
+                                                CustomFlushbar.success(
+                                                        message:
+                                                            "Nutzer wurde blockiert. Shorts und Packs des Nutzers werden nicht mehr bei dir auftauchen")
+                                                    .show(context);
+                                                ref
+                                                    .read(reloadProvider)
+                                                    .reload();
+                                                return;
+                                              }
+                                              if (blockResult.isLeft) {
+                                                CustomFlushbar.error(
+                                                        message:
+                                                            "Nutzer konnte nicht blockiert werden. Bitte kontaktiere uns. Wir haben jedoch das Pack gemeldet.")
+                                                    .show(context);
+                                                return;
+                                              }
+                                            }
+                                          },
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  icon: const Icon(Icons.flag),
+                                ),
+                                IconButton(
+                                  constraints: const BoxConstraints(),
+                                  iconSize: 25,
+                                  icon: AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 200),
+                                    child: pack.userHasBookmarked
+                                        ? const Icon(Icons.bookmark_added)
+                                        : const Icon(
+                                            Icons.bookmark_add_outlined,
+                                          ),
+                                  ),
+                                  onPressed: () {
+                                    if (user == null) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              RegisterRequestPopup(ref));
+                                    } else {
+                                      _bookmarkCallback();
+                                    }
+                                  },
+                                ),
+                              ],
                             ),
-                            onPressed: () {
-                              if (userRole == UserRole.anonymous) {
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        RegisterRequestPopup(ref));
-                              } else {
-                                _bookmarkCallback();
-                              }
-                            },
                           ),
                   ),
                 ],
@@ -253,20 +322,24 @@ class _PackCardState extends ConsumerState<PackCard> {
               width: 160,
               items: [
                 InfoItem.forText(
-                  text: DateFormat.MMMd().format(pack.creationDate),
-                ),
+                    text: DateFormat.MMMd().format(widget.pack.creationDate!) +
+                        ", " +
+                        DateFormat.y()
+                            .format(widget.pack.creationDate!)
+                            .split('20')
+                            .last),
                 InfoItem.forIconLabel(
                   onPress: () async {
-                    if (userRole == UserRole.anonymous) {
+                    if (user == null) {
                       showDialog(
                           context: context,
                           builder: (context) => RegisterRequestPopup(ref));
                     } else {
-                      pack.userHasClapped(userId: user.id)
+                      pack.userHasClapped
                           ? CustomFlushbar.error(
                                   message: "Du hast schon geklatscht")
                               .show(context)
-                          : await PackApi().addClap(packId: pack.id!).fold(
+                          : (await PackApi().clapForPack(pack.id)).fold(
                               (left) {
                                 CustomFlushbar.error(message: left.error)
                                     .show(context);
@@ -274,27 +347,31 @@ class _PackCardState extends ConsumerState<PackCard> {
                               (right) {
                                 CustomFlushbar.success(message: right)
                                     .show(context);
-                                pack.claps.add(user.id);
-                                setState(() {});
+                                setState(() {
+                                  pack.userHasClapped = true;
+                                  pack.totalClaps += 1;
+                                });
                               },
                             );
                     }
                   },
                   emoji: Emoji.byName("clapping hands").toString(),
-                  indicator: pack.claps.length.toString(),
+                  indicator: pack.totalClaps.toString(),
                 ),
-                InfoItem.forIconLabel(
-                  onPress: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              CommentView(isShort: false, id: pack.id!))),
-                  icon: const Icon(
-                    Icons.mode_comment,
-                    size: 15,
-                  ),
-                  indicator: pack.comments.length.toString(),
-                ),
+                // InfoItem.forIconLabel(
+                //   onPress: () => {},
+                //   //TODO Implement Navigate to comment view
+                //   // onPress: () => Navigator.push(
+                //   //     context,
+                //   //     MaterialPageRoute(
+                //   //         builder: (context) =>
+                //   //             CommentView(isShort: false, id: pack.id!))),
+                //   icon: const Icon(
+                //     Icons.mode_comment,
+                //     size: 15,
+                //   ),
+                //   indicator: pack.comments.length.toString(),
+                // ),
               ],
             ),
           ],
@@ -314,18 +391,20 @@ class _PackCardState extends ConsumerState<PackCard> {
       );
 
   void _bookmarkCallback() async {
-    pack.bookmarkedByUser
-        ? await packApi.unbookmarkPack(pack.id).fold((left) {
+    pack.userHasBookmarked
+        ? (await packApi.removeBookmarkPack(pack.id)).fold((left) {
             CustomFlushbar.error(message: left.error).show(context);
           }, (right) {
+            pack.userHasBookmarked = false;
+            pack.totalBookmarks -= 1;
             CustomFlushbar.success(message: right).show(context);
-            pack.toggleBookmarked(user);
           })
-        : await packApi.bookmarkPack(pack.id).fold((left) {
+        : (await packApi.bookmarkPack(pack.id)).fold((left) {
             CustomFlushbar.error(message: left.error).show(context);
           }, (right) {
+            pack.userHasBookmarked = true;
+            pack.totalBookmarks += 1;
             CustomFlushbar.success(message: right).show(context);
-            pack.toggleBookmarked(user);
           });
     setState(() {});
   }

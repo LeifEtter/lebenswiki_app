@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/repository/constants/shadows.dart';
+import 'package:lebenswiki_app/presentation/constants/shadows.dart';
 
 class LebenswikiCards {
   static standardButton({

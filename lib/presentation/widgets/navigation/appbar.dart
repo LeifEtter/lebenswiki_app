@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/repository/constants/colors.dart';
+import 'package:lebenswiki_app/presentation/constants/colors.dart';
 
 SliverAppBar appBar(context, {required Function onPress}) {
   return SliverAppBar(
@@ -45,6 +45,9 @@ SliverAppBar appBar(context, {required Function onPress}) {
   );
 }
 
+SearchBar searchBar(context, {required controller}) =>
+    SearchBar(searchController: controller);
+
 class SearchBar extends ConsumerStatefulWidget {
   final TextEditingController searchController;
 
@@ -79,7 +82,7 @@ class _SearchBarState extends ConsumerState<SearchBar> {
           fontSize: 15.0,
           color: CustomColors.darkGrey,
         ),
-        placeholder: "Suche nach Artiken, Autoren oder Benutzern",
+        placeholder: "Suche nach Artikeln, Autoren oder Benutzern",
         onChanged: (String text) {
           ref.read(queryProvider).setQuery(text);
           ref.read(searchStateProvider).checkChange(text: text);
