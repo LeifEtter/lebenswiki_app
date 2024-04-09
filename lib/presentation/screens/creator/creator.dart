@@ -14,20 +14,19 @@ import 'package:uuid/uuid.dart';
 
 var uuid = Uuid();
 
-class NewCreatorScreen extends ConsumerStatefulWidget {
+class Creator extends ConsumerStatefulWidget {
   final Pack pack;
 
-  const NewCreatorScreen({
+  const Creator({
     super.key,
     required this.pack,
   });
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _NewCreatorScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _CreatorScreenState();
 }
 
-class _NewCreatorScreenState extends ConsumerState<NewCreatorScreen> {
+class _CreatorScreenState extends ConsumerState<Creator> {
   final ImagePicker picker = ImagePicker();
 
   late ItemToEditableWidget itemToEditableWidget;
