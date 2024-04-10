@@ -8,7 +8,7 @@ import 'package:lebenswiki_app/domain/models/short.model.dart';
 import 'package:lebenswiki_app/domain/models/user/user.model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/creator/creator_information.dart';
-import 'package:lebenswiki_app/presentation/screens/creator/new_creator_screen.dart';
+import 'package:lebenswiki_app/presentation/screens/creator/creator.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/data/pack_api.dart';
@@ -233,8 +233,7 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
               await Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          NewCreatorScreen(pack: currentPack)));
+                      builder: (context) => Creator(pack: currentPack)));
               //TODO maybe remove this
               setState(() {});
             },

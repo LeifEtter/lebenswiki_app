@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:either_dart/either.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +10,6 @@ import 'package:lebenswiki_app/domain/models/user/user.model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/theme.dart';
 import 'package:lebenswiki_app/data/user_api.dart';
-import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/application/auth/token_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +20,8 @@ void main() async {
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await dotenv.load(fileName: ".env");
+  (String, User?) initRouteResults = await getRoute();
+  List<Category> categories = await CategoryApi().getCategories();
   await SentryFlutter.init(
     (options) {
       options.dsn =
@@ -29,92 +29,68 @@ void main() async {
       options.tracesSampleRate = 1.0;
     },
     appRunner: () => runApp(
-      ProviderScope(child: LebenswikiApp()),
+      ProviderScope(
+          child: LebenswikiApp(
+        initialRoute: initRouteResults.$1,
+        user: initRouteResults.$2,
+        categories: categories,
+      )),
     ),
   );
 }
 
-class LebenswikiApp extends ConsumerWidget {
+Future<(String, User?)> getRoute() async {
   final TokenHandler tokenHandler = TokenHandler();
 
-  LebenswikiApp({super.key});
+  if ((await PrefHandler.isBrowsingAnonymously())) {
+    return (homeRoute, null);
+  }
+
+  String? token = await tokenHandler.get();
+  if (token == null || token == "") {
+    return (authRoute, null);
+  }
+
+  Either<CustomError, User> authResult =
+      await UserApi().authenticate(token: token);
+  if (authResult.isLeft) {
+    return (authRoute, null);
+  }
+  if (authResult.isRight) {
+    return (homeRoute, authResult.right);
+  }
+  return (authRoute, null);
+}
+
+class LebenswikiApp extends ConsumerWidget {
+  final String initialRoute;
+  final User? user;
+  final List<Category> categories;
+
+  const LebenswikiApp({
+    super.key,
+    required this.initialRoute,
+    this.user,
+    required this.categories,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return GestureDetector(
-      onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus();
-      },
-      // child: MaterialApp(home: SafeArea(child: AuthWrapper())),
-      child: FutureBuilder(
-          future: determineWidgetNew(ref),
-          builder: (context, AsyncSnapshot<String> snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return LoadingHelper.loadingIndicator();
-            }
-            if (snapshot.data == null) {
-              print("Error during Widget determining");
-              return MaterialApp(home: Scaffold(body: backendDown()));
-            }
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'Lebenswiki',
-              theme: buildTheme(Brightness.light),
-              onGenerateRoute: generateRoute,
-              initialRoute: snapshot.data,
-              // initialRoute: snapshot.data,
-            );
-          }),
-    );
-  }
-
-  Future<String> determineWidgetNew(WidgetRef ref) async {
-    List<Category> existingCategories = ref.read(categoryProvider).categories;
-    if (existingCategories.isEmpty) {
-      List<Category> categories = await CategoryApi().getCategories();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      user != null
+          ? ref.read(userProvider).setUser(user!)
+          : ref.read(userProvider).removeUser();
       ref.read(categoryProvider).setCategories(categories);
-    }
-
-    // TODO: Add when adding onboarding
-    // if (!(await PrefHandler.hasCompletedOnboarding())) {
-    //   log("New User detected");
-    //   return authRoute;
-    // }
-    if ((await PrefHandler.isBrowsingAnonymously())) {
-      return homeRoute;
-    }
-
-    String? token = await tokenHandler.get();
-    if (token == null || token == "") {
-      await handleTokenInvalid(ref);
-    }
-    Either<CustomError, User> tokenCheckResult =
-        await UserApi().authenticate(token: await tokenHandler.get() ?? "");
-    bool tokenValid = tokenCheckResult.isRight;
-    return tokenValid
-        ? await handleTokenValid(ref, tokenCheckResult.right)
-        : await handleTokenInvalid(ref);
-  }
-
-  Future<String> handleTokenValid(WidgetRef ref, User user) async {
-    if (ref.read(userProvider).user == null) {
-      ref.read(userProvider).setUser(user);
-    }
-    log("User logged in with account");
-    return homeRoute;
-  }
-
-  Future<String> handleTokenInvalid(WidgetRef ref) async {
-    await tokenHandler.delete();
-    ref.read(userProvider).removeUser();
-    bool anonymous = await PrefHandler.isBrowsingAnonymously();
-    if (!anonymous) {
-      log("User is not browsing anonymously and token isn't valid");
-      return authRoute;
-    } else {
-      log("User is logged in anonymously");
-      return homeRoute;
-    }
+    });
+    return Builder(builder: (context) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: "Lebenswiki",
+        theme: buildTheme(Brightness.light),
+        onGenerateRoute: generateRoute,
+        initialRoute: initialRoute,
+      );
+    });
   }
 
   Widget backendDown() => const Center(

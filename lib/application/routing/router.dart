@@ -8,7 +8,6 @@ import 'package:lebenswiki_app/presentation/screens/menu/profile.dart';
 import 'package:lebenswiki_app/presentation/screens/menu/saved.dart';
 import 'package:lebenswiki_app/presentation/screens/main/authentication.dart';
 import 'package:lebenswiki_app/presentation/screens/other/avatar_screen.dart';
-import 'package:lebenswiki_app/presentation/screens/quizzer/quiz_main.dart';
 
 const String homeRoute = '/home';
 const String authRoute = '/authentication';
@@ -25,11 +24,6 @@ const String avatarScreen = '/avatar';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
-    // case tokenCheck:
-    //   return MaterialPageRoute(
-    //     settings: settings,
-    //     builder: (context) => const AuthWrapper(),
-    //   );
     case homeRoute:
       return PageRouteBuilder(
         settings: settings,
@@ -49,8 +43,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           );
         },
       );
-    case "quizzer":
-      return MaterialPageRoute(builder: (context) => const Quizzer());
     case authRoute:
       return MaterialPageRoute(
         settings: settings,
