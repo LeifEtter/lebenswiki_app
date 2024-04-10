@@ -115,7 +115,9 @@ class _CreatorScreenState extends ConsumerState<Creator> {
                         ),
                 ],
               ),
-              _buildPageContent(context),
+              currentPage.items.isEmpty
+                  ? _buildPageChooseSetting(context)
+                  : _buildPageContent(context),
             ],
           ),
           Padding(
@@ -130,6 +132,22 @@ class _CreatorScreenState extends ConsumerState<Creator> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPageChooseSetting(context) {
+    return Column(
+      children: [
+        TextButton(
+          onPressed: () => {},
+          child: const Text("Info"),
+        ),
+        const Text("oder"),
+        TextButton(
+          onPressed: () => {},
+          child: const Text("Quiz"),
+        ),
+      ],
     );
   }
 
