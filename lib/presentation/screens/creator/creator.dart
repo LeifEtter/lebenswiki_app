@@ -51,25 +51,7 @@ class _CreatorScreenState extends ConsumerState<Creator> {
     itemToEditableWidget = ItemToEditableWidget(
       context: context,
       save: () => currentPage.save(),
-      uploadImage: (PackPageItem item) async {
-        XFile? file = await picker.pickImage(source: ImageSource.gallery);
-        if (file != null) {
-          Either<CustomError, String> uploadResult = await PackApi()
-              .uploadItemImage(
-                  pathToImage: file.path, packId: pack.id!, itemId: item.id);
-          if (uploadResult.isLeft) {
-            CustomFlushbar.error(message: uploadResult.left.error)
-                .show(context);
-          } else {
-            setState(() {
-              item.headContent.value = uploadResult.right;
-              item.headContent.controller!.text = uploadResult.right;
-              currentPage.save();
-            });
-            CustomFlushbar.success(message: "Bild Hochgeladen").show(context);
-          }
-        }
-      },
+      uploadImage: _uploadImage,
       reload: () => setState(() {}),
       orderingOn: () => _orderingOn(),
     );
@@ -203,6 +185,25 @@ class _CreatorScreenState extends ConsumerState<Creator> {
       currentPage.save();
       currentPage.initControllers();
     });
+  }
+
+  void _uploadImage(PackPageItem item) async {
+    XFile? file = await picker.pickImage(source: ImageSource.gallery);
+    if (file != null) {
+      Either<CustomError, String> uploadResult = await PackApi()
+          .uploadItemImage(
+              pathToImage: file.path, packId: pack.id!, itemId: item.id);
+      if (uploadResult.isLeft) {
+        CustomFlushbar.error(message: uploadResult.left.error).show(context);
+      } else {
+        setState(() {
+          item.headContent.value = uploadResult.right;
+          item.headContent.controller!.text = uploadResult.right;
+          currentPage.save();
+        });
+        CustomFlushbar.success(message: "Bild Hochgeladen").show(context);
+      }
+    }
   }
 
   void _addPage() => setState(() {
