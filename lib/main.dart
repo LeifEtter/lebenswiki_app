@@ -82,15 +82,13 @@ class LebenswikiApp extends ConsumerWidget {
           : ref.read(userProvider).removeUser();
       ref.read(categoryProvider).setCategories(categories);
     });
-    return Builder(builder: (context) {
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: "Lebenswiki",
-        theme: buildTheme(Brightness.light),
-        onGenerateRoute: generateRoute,
-        initialRoute: initialRoute,
-      );
-    });
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: "Lebenswiki",
+      theme: buildTheme(Brightness.light),
+      onGenerateRoute: generateRoute,
+      initialRoute: initialRoute,
+    );
   }
 
   Widget backendDown() => const Center(
