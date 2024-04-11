@@ -9,11 +9,13 @@ class PackPage {
   final String id;
   int pageNumber;
   List<PackPageItem> items;
+  PageType? type;
 
   PackPage({
     required this.id,
     required this.pageNumber,
     required this.items,
+    this.type,
   });
 
   factory PackPage.fromJson(Map<String, dynamic> json) =>
@@ -61,6 +63,8 @@ enum ItemType {
   image,
   @JsonValue("ItemType.text")
   text,
+  @JsonValue("ItemType.question")
+  question,
 }
 
 @JsonSerializable(explicitToJson: true)
