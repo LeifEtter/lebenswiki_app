@@ -140,15 +140,30 @@ class _CreatorScreenState extends ConsumerState<Creator> {
   Widget _buildPageChooseSetting(context) {
     return Column(
       children: [
-        TextButton(
-          onPressed: () => {},
-          child: const Text("Info"),
+        const Padding(
+          padding: EdgeInsets.only(top: 50, bottom: 20),
+          child: Text(
+            "Wähle den Seiten Typ aus",
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 18.0,
+            ),
+          ),
         ),
-        const Text("oder"),
-        TextButton(
-          onPressed: () => {},
-          child: const Text("Quiz"),
+        _buildSelectButton("Info", "assets/icons/info_mark_in_circle.svg",
+            () => {print("Selected Info")}),
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: Text(
+            "oder",
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 18,
+            ),
+          ),
         ),
+        _buildSelectButton("Quiz", "assets/icons/question_mark_in_circle.svg",
+            () => {print("Selected Quiz")}),
       ],
     );
   }
