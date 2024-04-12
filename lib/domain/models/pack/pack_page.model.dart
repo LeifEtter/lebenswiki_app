@@ -74,6 +74,7 @@ class PackPageItem {
   final PackPageItemContent headContent;
   final List<PackPageItemContent> bodyContent;
   int position;
+  bool? notDeletable;
 
   PackPageItem({
     required this.id,
@@ -117,11 +118,14 @@ class PackPageItemContent {
   final String id;
   @JsonKey(includeFromJson: false, includeToJson: false)
   TextEditingController? controller;
+  @JsonKey(includeFromJson: true, includeToJson: true)
+  bool? isCorrectAnswer;
 
   PackPageItemContent({
     this.value = "",
     required this.id,
     this.controller,
+    this.isCorrectAnswer,
   });
 
   factory PackPageItemContent.fromJson(Map<String, dynamic> json) =>
