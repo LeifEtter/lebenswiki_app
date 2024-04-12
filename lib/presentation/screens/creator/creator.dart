@@ -1,11 +1,14 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lebenswiki_app/application/routing/router.dart';
+import 'package:lebenswiki_app/domain/enums/page_type_enum.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack.model.dart';
+import 'package:lebenswiki_app/presentation/constants/shadows.dart';
 import 'package:lebenswiki_app/presentation/screens/creator/editor_button_row.dart';
 import 'package:lebenswiki_app/presentation/screens/creator/item_to_editable_widget.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
@@ -45,6 +48,9 @@ class _CreatorScreenState extends ConsumerState<Creator> {
     }
     pack.orderPages();
     pack.orderItems();
+    for (PackPage page in pack.pages) {
+      page.type ??= PageType.info;
+    }
     currentPage = widget.pack.pages.first;
     currentPage.initControllers();
     initPageNumbers();
@@ -115,7 +121,7 @@ class _CreatorScreenState extends ConsumerState<Creator> {
                         ),
                 ],
               ),
-              currentPage.items.isEmpty
+              currentPage.items.isEmpty && currentPage.type == null
                   ? _buildPageChooseSetting(context)
                   : _buildPageContent(context),
             ],
@@ -123,10 +129,12 @@ class _CreatorScreenState extends ConsumerState<Creator> {
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20, bottom: 50),
             child: EditorButtonRow(
+              pageType: currentPage.type,
               currentPageNumber: currentPage.pageNumber,
               pageNumbers: pageNumbers,
               switchPage: (int newIndex) => _switchPage(newIndex),
               addItem: (ItemType itemType) => _addItem(itemType),
+              addQuiz: () => _addQuiz(),
               addPage: () => _addPage(),
             ),
           ),
@@ -138,16 +146,62 @@ class _CreatorScreenState extends ConsumerState<Creator> {
   Widget _buildPageChooseSetting(context) {
     return Column(
       children: [
-        TextButton(
-          onPressed: () => {},
-          child: const Text("Info"),
+        const Padding(
+          padding: EdgeInsets.only(top: 50, bottom: 20),
+          child: Text(
+            "Wähle den Seiten Typ aus",
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 18.0,
+            ),
+          ),
         ),
-        const Text("oder"),
-        TextButton(
-          onPressed: () => {},
-          child: const Text("Quiz"),
+        _buildSelectButton("Info", "assets/icons/info_mark_in_circle.svg",
+            () => setState(() => currentPage.type = PageType.info)),
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: Text(
+            "oder",
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 18,
+            ),
+          ),
         ),
+        _buildSelectButton("Quiz", "assets/icons/question_mark_in_circle.svg",
+            _initializeQuizPage),
       ],
+    );
+  }
+
+  Widget _buildSelectButton(
+      String title, String icon, void Function() onPressed) {
+    return TextButton(
+      onPressed: onPressed,
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [LebenswikiShadows.fancyShadow],
+          borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+          color: const Color.fromRGBO(119, 140, 249, 1),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+          child: Column(
+            children: [
+              SvgPicture.asset(
+                width: 30.0,
+                icon,
+                colorFilter:
+                    const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+              ),
+              Text(
+                title,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -182,6 +236,33 @@ class _CreatorScreenState extends ConsumerState<Creator> {
         },
       ),
     );
+  }
+
+  void _addQuiz() {
+    TextEditingController questionController = TextEditingController(text: "");
+    TextEditingController rightAnswerController =
+        TextEditingController(text: "");
+
+    currentPage.items.add(PackPageItem(
+        id: uuid.v4(),
+        type: ItemType.question,
+        headContent:
+            PackPageItemContent(id: uuid.v4(), controller: questionController),
+        bodyContent: [
+          PackPageItemContent(
+              id: uuid.v4(),
+              controller: rightAnswerController,
+              isCorrectAnswer: true),
+          ...List.generate(
+              3,
+              (index) => PackPageItemContent(
+                  id: uuid.v4(), controller: TextEditingController(text: "")))
+        ],
+        position: currentPage.items.length));
+    setState(() {
+      currentPage.save();
+      currentPage.initControllers();
+    });
   }
 
   void _addItem(ItemType itemType) {
@@ -257,6 +338,12 @@ class _CreatorScreenState extends ConsumerState<Creator> {
   void _orderingOn() => setState(() => isOrdering = true);
   void _orderingOff() => setState(() => isOrdering = false);
 
+  void _initializeQuizPage() {
+    _addItem(ItemType.title);
+    currentPage.items[0].notDeletable = true;
+    setState(() => currentPage.type = PageType.quiz);
+  }
+
   // void _navigateToPreview() async => await Navigator.push(
   //       context,
   //       MaterialPageRoute(
@@ -273,10 +360,8 @@ class _CreatorScreenState extends ConsumerState<Creator> {
     if (updateResult.isLeft) {
       CustomFlushbar.error(message: updateResult.left.error).show(context);
       return false;
-    } else {
-      CustomFlushbar.success(message: updateResult.right).show(context);
-      return true;
     }
+    return true;
   }
 
   Widget _popMenuButton() {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:lebenswiki_app/domain/enums/page_type_enum.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';
 import 'package:lebenswiki_app/presentation/constants/lebenswiki_icons.dart';
 import 'package:lebenswiki_app/presentation/constants/colors.dart';
@@ -8,7 +10,9 @@ class EditorButtonRow extends StatefulWidget {
   final List<int> pageNumbers;
   final Function(int) switchPage;
   final Function(ItemType) addItem;
+  final Function addQuiz;
   final Function addPage;
+  final PageType? pageType;
 
   const EditorButtonRow({
     super.key,
@@ -17,6 +21,8 @@ class EditorButtonRow extends StatefulWidget {
     required this.switchPage,
     required this.addItem,
     required this.addPage,
+    required this.pageType,
+    required this.addQuiz,
   });
 
   @override
@@ -52,30 +58,49 @@ class _EditorButtonRowState extends State<EditorButtonRow> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          IconButton(
-            onPressed: () {
-              widget.addItem(ItemType.title);
-            },
-            icon: const Icon(LebenswikiIcons.text_options, size: 20),
-          ),
-          IconButton(
-            onPressed: () {
-              widget.addItem(ItemType.text);
-            },
-            icon: const Icon(Icons.text_snippet_outlined, size: 25),
-          ),
-          IconButton(
-            onPressed: () {
-              widget.addItem(ItemType.list);
-            },
-            icon: const Icon(LebenswikiIcons.menu_bars, size: 20),
-          ),
-          IconButton(
-            onPressed: () {
-              widget.addItem(ItemType.image);
-            },
-            icon: const Icon(LebenswikiIcons.image, size: 20),
-          ),
+          ...widget.pageType != null
+              ? (widget.pageType == PageType.info
+                  ? [
+                      IconButton(
+                        onPressed: () {
+                          widget.addItem(ItemType.title);
+                        },
+                        icon:
+                            const Icon(LebenswikiIcons.text_options, size: 20),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          widget.addItem(ItemType.text);
+                        },
+                        icon: const Icon(Icons.text_snippet_outlined, size: 25),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          widget.addItem(ItemType.list);
+                        },
+                        icon: const Icon(LebenswikiIcons.menu_bars, size: 20),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          widget.addItem(ItemType.image);
+                        },
+                        icon: const Icon(LebenswikiIcons.image, size: 20),
+                      ),
+                    ]
+                  : [
+                      IconButton(
+                        onPressed: () {
+                          widget.addQuiz();
+                        },
+                        icon: SvgPicture.asset(
+                          width: 25.0,
+                          "assets/icons/question_mark_plus_no_box.svg",
+                          colorFilter: const ColorFilter.mode(
+                              Colors.black, BlendMode.srcIn),
+                        ),
+                      ),
+                    ])
+              : [],
           const Spacer(),
           IconButton(
             onPressed: () {
