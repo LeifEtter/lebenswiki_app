@@ -1,16 +1,15 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lebenswiki_app/application/routing/router.dart';
 import 'package:lebenswiki_app/domain/enums/page_type_enum.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack.model.dart';
-import 'package:lebenswiki_app/presentation/constants/shadows.dart';
 import 'package:lebenswiki_app/presentation/screens/creator/editor_button_row.dart';
 import 'package:lebenswiki_app/presentation/screens/creator/item_to_editable_widget.dart';
+import 'package:lebenswiki_app/presentation/widgets/buttons/buttons.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/data/pack_api.dart';
 import 'package:uuid/uuid.dart';
@@ -156,7 +155,9 @@ class _CreatorScreenState extends ConsumerState<Creator> {
             ),
           ),
         ),
-        _buildSelectButton("Info", "assets/icons/info_mark_in_circle.svg",
+        const LWButtons().svgButton(
+            "Info",
+            "assets/icons/info_mark_in_circle.svg",
             () => setState(() => currentPage.type = PageType.info)),
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 10),
@@ -168,40 +169,9 @@ class _CreatorScreenState extends ConsumerState<Creator> {
             ),
           ),
         ),
-        _buildSelectButton("Quiz", "assets/icons/question_mark_in_circle.svg",
-            _initializeQuizPage),
+        const LWButtons().svgButton("Quiz",
+            "assets/icons/question_mark_in_circle.svg", _initializeQuizPage),
       ],
-    );
-  }
-
-  Widget _buildSelectButton(
-      String title, String icon, void Function() onPressed) {
-    return TextButton(
-      onPressed: onPressed,
-      child: Container(
-        decoration: BoxDecoration(
-          boxShadow: [LebenswikiShadows.fancyShadow],
-          borderRadius: const BorderRadius.all(Radius.circular(20.0)),
-          color: const Color.fromRGBO(119, 140, 249, 1),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-          child: Column(
-            children: [
-              SvgPicture.asset(
-                width: 30.0,
-                icon,
-                colorFilter:
-                    const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-              ),
-              Text(
-                title,
-                style: const TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 
