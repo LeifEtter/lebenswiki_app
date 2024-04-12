@@ -18,6 +18,8 @@ class ItemToViewableWidget {
         return _textWidget(item);
       case ItemType.quiz:
         return Container();
+      case ItemType.question:
+        return Container();
     }
   }
 
