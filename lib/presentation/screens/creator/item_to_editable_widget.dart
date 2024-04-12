@@ -57,6 +57,9 @@ class ItemToEditableWidget {
           child: _imageWidget(item),
           deleteSelf: deleteSelf,
         );
+      case ItemType.question:
+        return _slidableWrapper(
+            child: _questionWidget(item), deleteSelf: deleteSelf);
     }
   }
 
@@ -255,6 +258,83 @@ class ItemToEditableWidget {
               reload();
             },
           )
+        ],
+      ),
+    );
+  }
+
+  Widget _questionWidget(PackPageItem item) {
+    PackPageItemContent rightAnswer = item.bodyContent
+        .where(
+          (item) => item.isCorrectAnswer == true,
+        )
+        .first;
+    return Container(
+      decoration: BoxDecoration(
+        border: isOrdering
+            ? Border.all(width: 2, color: CustomColors.outlineBlue)
+            : null,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Divider(),
+          TextFormField(
+            enabled: !isOrdering,
+            controller: item.headContent.controller,
+            textCapitalization: TextCapitalization.sentences,
+            onEditingComplete: () => save(),
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+            ),
+            decoration: InputDecoration(
+              labelText: "Frage",
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.only(left: 10),
+              focusedBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: CustomColors.outlineBlue, width: 2),
+              ),
+            ),
+          ),
+          TextFormField(
+            enabled: !isOrdering,
+            controller: rightAnswer.controller,
+            textCapitalization: TextCapitalization.sentences,
+            onEditingComplete: () => save(),
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+            ),
+            decoration: InputDecoration(
+              labelText: "Richtige Antwort",
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.only(left: 10),
+              focusedBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: CustomColors.outlineBlue, width: 2),
+              ),
+            ),
+          ),
+          ...item.bodyContent.where((x) => x.isCorrectAnswer == null).map(
+                (PackPageItemContent bodyItem) => TextFormField(
+                  enabled: !isOrdering,
+                  controller: bodyItem.controller,
+                  textCapitalization: TextCapitalization.sentences,
+                  onEditingComplete: () => save(),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: "Falsche Antwort",
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.only(left: 10),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: CustomColors.outlineBlue, width: 2),
+                    ),
+                  ),
+                ),
+              ),
         ],
       ),
     );
