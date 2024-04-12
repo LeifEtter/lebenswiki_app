@@ -23,8 +23,8 @@ Map<String, dynamic> _$PackPageToJson(PackPage instance) => <String, dynamic>{
     };
 
 const _$PageTypeEnumMap = {
-  PageType.quiz: 'quiz',
-  PageType.info: 'info',
+  PageType.info: 'PageType.info',
+  PageType.quiz: 'PageType.quiz',
 };
 
 PackPageItem _$PackPageItemFromJson(Map<String, dynamic> json) => PackPageItem(
@@ -36,7 +36,7 @@ PackPageItem _$PackPageItemFromJson(Map<String, dynamic> json) => PackPageItem(
           .map((e) => PackPageItemContent.fromJson(e as Map<String, dynamic>))
           .toList(),
       position: json['position'] as int,
-    );
+    )..notDeletable = json['notDeletable'] as bool?;
 
 Map<String, dynamic> _$PackPageItemToJson(PackPageItem instance) =>
     <String, dynamic>{
@@ -45,6 +45,7 @@ Map<String, dynamic> _$PackPageItemToJson(PackPageItem instance) =>
       'headContent': instance.headContent.toJson(),
       'bodyContent': instance.bodyContent.map((e) => e.toJson()).toList(),
       'position': instance.position,
+      'notDeletable': instance.notDeletable,
     };
 
 const _$ItemTypeEnumMap = {
@@ -60,6 +61,7 @@ PackPageItemContent _$PackPageItemContentFromJson(Map<String, dynamic> json) =>
     PackPageItemContent(
       value: json['value'] as String? ?? "",
       id: json['id'] as String,
+      isCorrectAnswer: json['isCorrectAnswer'] as bool?,
     );
 
 Map<String, dynamic> _$PackPageItemContentToJson(
@@ -67,4 +69,5 @@ Map<String, dynamic> _$PackPageItemContentToJson(
     <String, dynamic>{
       'value': instance.value,
       'id': instance.id,
+      'isCorrectAnswer': instance.isCorrectAnswer,
     };
