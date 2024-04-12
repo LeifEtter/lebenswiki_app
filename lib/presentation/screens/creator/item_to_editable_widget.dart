@@ -31,10 +31,15 @@ class ItemToEditableWidget {
   }) {
     switch (item.type) {
       case ItemType.title:
-        return _slidableWrapper(
-          child: _titleWidget(item),
-          deleteSelf: deleteSelf,
-        );
+        if (item.notDeletable != null && item.notDeletable == true) {
+          return _titleWidget(item);
+        } else {
+          return _slidableWrapper(
+            child: _titleWidget(item),
+            deleteSelf: deleteSelf,
+          );
+        }
+
       case ItemType.text:
         return _slidableWrapper(
           child: _textWidget(item),
