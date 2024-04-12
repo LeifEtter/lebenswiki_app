@@ -121,7 +121,7 @@ class _CreatorScreenState extends ConsumerState<Creator> {
                         ),
                 ],
               ),
-              currentPage.items.isEmpty
+              currentPage.items.isEmpty && currentPage.type == null
                   ? _buildPageChooseSetting(context)
                   : _buildPageContent(context),
             ],
@@ -157,7 +157,7 @@ class _CreatorScreenState extends ConsumerState<Creator> {
           ),
         ),
         _buildSelectButton("Info", "assets/icons/info_mark_in_circle.svg",
-            () => {print("Selected Info")}),
+            () => setState(() => currentPage.type = PageType.info)),
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 10),
           child: Text(
@@ -169,7 +169,7 @@ class _CreatorScreenState extends ConsumerState<Creator> {
           ),
         ),
         _buildSelectButton("Quiz", "assets/icons/question_mark_in_circle.svg",
-            () => {print("Selected Quiz")}),
+            _initializeQuizPage),
       ],
     );
   }
@@ -338,6 +338,12 @@ class _CreatorScreenState extends ConsumerState<Creator> {
   void _orderingOn() => setState(() => isOrdering = true);
   void _orderingOff() => setState(() => isOrdering = false);
 
+  void _initializeQuizPage() {
+    _addItem(ItemType.title);
+    currentPage.items[0].notDeletable = true;
+    setState(() => currentPage.type = PageType.quiz);
+  }
+
   // void _navigateToPreview() async => await Navigator.push(
   //       context,
   //       MaterialPageRoute(
@@ -354,10 +360,8 @@ class _CreatorScreenState extends ConsumerState<Creator> {
     if (updateResult.isLeft) {
       CustomFlushbar.error(message: updateResult.left.error).show(context);
       return false;
-    } else {
-      CustomFlushbar.success(message: updateResult.right).show(context);
-      return true;
     }
+    return true;
   }
 
   Widget _popMenuButton() {
