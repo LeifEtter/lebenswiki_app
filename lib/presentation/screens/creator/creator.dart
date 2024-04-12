@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lebenswiki_app/application/routing/router.dart';
+import 'package:lebenswiki_app/domain/enums/page_type_enum.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack.model.dart';
@@ -47,6 +48,9 @@ class _CreatorScreenState extends ConsumerState<Creator> {
     }
     pack.orderPages();
     pack.orderItems();
+    for (PackPage page in pack.pages) {
+      page.type ??= PageType.info;
+    }
     currentPage = widget.pack.pages.first;
     currentPage.initControllers();
     initPageNumbers();
@@ -125,10 +129,12 @@ class _CreatorScreenState extends ConsumerState<Creator> {
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20, bottom: 50),
             child: EditorButtonRow(
+              pageType: currentPage.type,
               currentPageNumber: currentPage.pageNumber,
               pageNumbers: pageNumbers,
               switchPage: (int newIndex) => _switchPage(newIndex),
               addItem: (ItemType itemType) => _addItem(itemType),
+              addQuiz: () => _addQuiz(),
               addPage: () => _addPage(),
             ),
           ),
@@ -230,6 +236,33 @@ class _CreatorScreenState extends ConsumerState<Creator> {
         },
       ),
     );
+  }
+
+  void _addQuiz() {
+    TextEditingController questionController = TextEditingController(text: "");
+    TextEditingController rightAnswerController =
+        TextEditingController(text: "");
+
+    currentPage.items.add(PackPageItem(
+        id: uuid.v4(),
+        type: ItemType.question,
+        headContent:
+            PackPageItemContent(id: uuid.v4(), controller: questionController),
+        bodyContent: [
+          PackPageItemContent(
+              id: uuid.v4(),
+              controller: rightAnswerController,
+              isCorrectAnswer: true),
+          ...List.generate(
+              3,
+              (index) => PackPageItemContent(
+                  id: uuid.v4(), controller: TextEditingController(text: "")))
+        ],
+        position: currentPage.items.length));
+    setState(() {
+      currentPage.save();
+      currentPage.initControllers();
+    });
   }
 
   void _addItem(ItemType itemType) {
