@@ -4,11 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/application/data/pack_conversion.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/application/routing/router.dart';
+import 'package:lebenswiki_app/domain/enums/page_type_enum.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack.model.dart';
 import 'package:lebenswiki_app/domain/models/user/user.model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/screens/quizzer/quiz_main.dart';
+import 'package:lebenswiki_app/presentation/widgets/buttons/buttons.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/sliver_appbar.dart';
@@ -185,12 +188,40 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
   void initPages(Pack pack) {
     pages = pack.pages
         .map(
-          (PackPage page) => ListView(
-            padding: const EdgeInsets.all(15.0),
-            children: page.items
-                .map((PackPageItem item) => PackConversion.toViewableItem(item))
-                .toList(),
-          ),
+          (PackPage page) => page.type == PageType.info
+              ? ListView(
+                  padding: const EdgeInsets.all(15.0),
+                  children: page.items
+                      .map((PackPageItem item) =>
+                          PackConversion.toViewableItem(item))
+                      .toList(),
+                )
+              : ListView(
+                  padding: const EdgeInsets.all(15.0),
+                  children: [
+                    PackConversion.toViewableItem(page.items.first),
+                    const Padding(
+                      padding: const EdgeInsets.only(top: 30.0, bottom: 20.0),
+                      child: Center(
+                        child: Text(
+                          "Lust auf ein Quiz?",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const LWButtons().svgButton(
+                        "Zum Quiz", "assets/icons/question_mark_in_circle.svg",
+                        () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Quizzer(packPage: page)));
+                    })
+                  ],
+                ),
         )
         .toList();
   }
