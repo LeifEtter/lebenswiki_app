@@ -1,74 +1,24 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/domain/models/quiz.dart';
+import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';
 import 'package:lebenswiki_app/presentation/screens/quizzer/gyro_handler.dart';
 
+class QuizPageNew extends StatefulWidget {
+  final String centerText;
+  final GyroDirection direction;
+  final Map<GyroDirection, PackPageItemContent> directionAnswers;
 
-class QuizPage extends StatefulWidget {
-  final QuizQuestion quizQuestion;
-  final Function correctAnswerCallback;
-
-  const QuizPage({
+  const QuizPageNew({
     super.key,
-    required this.quizQuestion,
-    required this.correctAnswerCallback,
+    required this.centerText,
+    required this.direction,
+    required this.directionAnswers,
   });
 
   @override
-  State<QuizPage> createState() => _QuizPageState();
+  State<QuizPageNew> createState() => _QuizPageNewState();
 }
 
-class _QuizPageState extends State<QuizPage> {
-  GyroDirection direction = GyroDirection.none;
-  late CustomTimer quizTimer;
-  late GyroHandler gyroHandler;
-  Timer? timer;
-  String? currentColor;
-  late Map<GyroDirection, String> directionAnswers;
-  late String centerText;
-
-  int timeLeft = 500;
-  int totalTimeSpent = 0;
-
-  @override
-  void initState() {
-    centerText = widget.quizQuestion.question;
-    directionAnswers = {
-      GyroDirection.top: widget.quizQuestion.answers[0],
-      GyroDirection.right: widget.quizQuestion.answers[1],
-      GyroDirection.bottom: widget.quizQuestion.answers[2],
-      GyroDirection.left: widget.quizQuestion.answers[3]
-    };
-    quizTimer = CustomTimer();
-    gyroHandler = GyroHandler(
-        updateDirectionCallback: answerEvent, timeBetweenDetections: 2);
-
-    super.initState();
-  }
-
-  void answerEvent(GyroDirection newDirection) async {
-    print(newDirection);
-    setState(() => direction = newDirection);
-    if (newDirection == GyroDirection.none) {
-      return;
-    }
-    if (widget.quizQuestion.isAnswerCorrect(directionAnswers[newDirection])) {
-      print("Doing");
-      setState(() => centerText = "Bravo!");
-      await Future.delayed(const Duration(milliseconds: (2000)));
-      widget.correctAnswerCallback(5);
-    } else {
-      print("Failed");
-      setState(() {
-        centerText = "Versuchs Nochmal";
-      });
-      await Future.delayed(const Duration(milliseconds: 2000));
-      setState(() {
-        centerText = widget.quizQuestion.question;
-      });
-    }
-  }
-
+class _QuizPageNewState extends State<QuizPageNew> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -79,7 +29,7 @@ class _QuizPageState extends State<QuizPage> {
             child: SizedBox(
               width: MediaQuery.sizeOf(context).width * 0.8,
               child: Text(
-                centerText,
+                widget.centerText,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontWeight: FontWeight.w500,
@@ -87,13 +37,15 @@ class _QuizPageState extends State<QuizPage> {
               ),
             ),
           ),
-          ...directionAnswers.keys.map((GyroDirection answerDirection) {
-            String answer = directionAnswers[answerDirection]!;
+          ...widget.directionAnswers.keys.map((GyroDirection answerDirection) {
+            PackPageItemContent answer =
+                widget.directionAnswers[answerDirection]!;
             return _buildAnswerBox(
               answerDirection,
-              answer,
-              direction == answerDirection
-                  ? (widget.quizQuestion.isAnswerCorrect(answer)
+              answer.value,
+              widget.direction == answerDirection
+                  ? (answer.isCorrectAnswer != null &&
+                          answer.isCorrectAnswer == true
                       ? Colors.green
                       : Colors.red)
                   : null,
@@ -147,46 +99,4 @@ class _QuizPageState extends State<QuizPage> {
       ),
     );
   }
-
-  Widget _buildTimer() => Column(
-        children: [
-          Center(
-            child: SizedBox(
-              width: 100,
-              height: 100,
-              child: CircularProgressIndicator(
-                strokeWidth: 5,
-                value: 100 / 50000 * timeLeft,
-                strokeAlign: CircularProgressIndicator.strokeAlignInside,
-                backgroundColor: Colors.purple,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 50),
-            child: TextButton(
-              child: const Text("Toggle Timer"),
-              onPressed: () {
-                // timer =
-                //     Timer.periodic(const Duration(milliseconds: 10), (timer) {
-                //   if (timeLeft == 0) {
-                //     timer.cancel();
-                //     return;
-                //   }
-
-                //   setState(() {
-                //     timeLeft--;
-                //     totalTimeSpent += 10;
-                //   });
-                // });
-                // timer =
-                //     Timer(Duration(milliseconds: 5000), () => {print("done")});
-
-                print("Toggling timer");
-                // quizTimer.isRunning ? quizTimer.stop() : quizTimer.start();
-              },
-            ),
-          ),
-        ],
-      );
 }
