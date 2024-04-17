@@ -6,7 +6,7 @@ enum GyroDirection { none, top, right, bottom, left }
 class GyroHandler {
   final Function(GyroDirection direction) updateDirectionCallback;
   late CustomTimer gyroTimer;
-  final timeBetweenDetections;
+  final int timeBetweenDetections;
 
   GyroHandler({
     required this.updateDirectionCallback,
