@@ -212,7 +212,7 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
                         ),
                       ),
                     ),
-                    const LWButtons().svgButton(
+                    const LWButtons().purpleSvgButton(
                         "Zum Quiz", "assets/icons/question_mark_in_circle.svg",
                         () {
                       Navigator.push(

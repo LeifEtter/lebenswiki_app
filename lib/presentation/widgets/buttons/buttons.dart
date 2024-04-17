@@ -39,7 +39,49 @@ class LWButtons {
         ),
       );
 
-  Widget svgButton(String title, String icon, void Function() onPressed) {
+  Widget purpleButton(String title, void Function() onPressed) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        boxShadow: [LebenswikiShadows.fancyShadow],
+        borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+        color: const Color.fromRGBO(119, 140, 249, 1),
+      ),
+      child: TextButton(
+        onPressed: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+          child: Text(
+            title,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget outlineButton(String title, void Function() onPressed) {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+          border: Border.all(
+            color: Colors.black,
+          )),
+      child: TextButton(
+        onPressed: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+          child: Text(
+            title,
+            style: const TextStyle(
+                color: Colors.black, fontWeight: FontWeight.w400),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget purpleSvgButton(String title, String icon, void Function() onPressed) {
     return TextButton(
       onPressed: onPressed,
       child: Container(

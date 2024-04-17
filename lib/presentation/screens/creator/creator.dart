@@ -155,7 +155,7 @@ class _CreatorScreenState extends ConsumerState<Creator> {
             ),
           ),
         ),
-        const LWButtons().svgButton(
+        const LWButtons().purpleSvgButton(
             "Info",
             "assets/icons/info_mark_in_circle.svg",
             () => setState(() => currentPage.type = PageType.info)),
@@ -169,7 +169,7 @@ class _CreatorScreenState extends ConsumerState<Creator> {
             ),
           ),
         ),
-        const LWButtons().svgButton("Quiz",
+        const LWButtons().purpleSvgButton("Quiz",
             "assets/icons/question_mark_in_circle.svg", _initializeQuizPage),
       ],
     );
