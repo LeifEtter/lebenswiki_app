@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lebenswiki_app/presentation/constants/colors.dart';
+import 'package:lebenswiki_app/presentation/constants/shadows.dart';
 
 class LWButtons {
   const LWButtons();
@@ -36,4 +38,76 @@ class LWButtons {
           ),
         ),
       );
+
+  Widget purpleButton(String title, void Function() onPressed) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        boxShadow: [LebenswikiShadows.fancyShadow],
+        borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+        color: const Color.fromRGBO(119, 140, 249, 1),
+      ),
+      child: TextButton(
+        onPressed: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+          child: Text(
+            title,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget outlineButton(String title, void Function() onPressed) {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+          border: Border.all(
+            color: Colors.black,
+          )),
+      child: TextButton(
+        onPressed: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+          child: Text(
+            title,
+            style: const TextStyle(
+                color: Colors.black, fontWeight: FontWeight.w400),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget purpleSvgButton(String title, String icon, void Function() onPressed) {
+    return TextButton(
+      onPressed: onPressed,
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [LebenswikiShadows.fancyShadow],
+          borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+          color: const Color.fromRGBO(119, 140, 249, 1),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+          child: Column(
+            children: [
+              SvgPicture.asset(
+                width: 30.0,
+                icon,
+                colorFilter:
+                    const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+              ),
+              Text(
+                title,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

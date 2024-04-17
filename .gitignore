@@ -78,3 +78,8 @@ app.*.symbols
 .vscode
 WIP_experiment_drag.dart
 WIP_onboarding.dart
+
+.DS_Store
+*/.DS_Store
+
+gyro_mocker.dart
