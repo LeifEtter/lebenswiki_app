@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lebenswiki_app/application/routing/router.dart';
+
 import 'package:lebenswiki_app/domain/enums/page_type_enum.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';

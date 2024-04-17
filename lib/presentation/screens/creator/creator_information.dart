@@ -1,7 +1,7 @@
 import 'package:either_dart/either.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
-import 'package:lebenswiki_app/application/routing/router.dart';
+
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack.model.dart';
 import 'package:lebenswiki_app/domain/models/user/user.model.dart';

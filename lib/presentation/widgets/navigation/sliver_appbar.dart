@@ -2,7 +2,6 @@ import 'package:emojis/emoji.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lebenswiki_app/application/routing/router.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
 import 'package:lebenswiki_app/presentation/constants/colors.dart';
 

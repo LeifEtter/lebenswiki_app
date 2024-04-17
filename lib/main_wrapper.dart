@@ -8,7 +8,6 @@ import 'package:lebenswiki_app/domain/models/category.model.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/user/user.model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/presentation/screens/creator/creator_information.dart';
 import 'package:lebenswiki_app/presentation/screens/main/community.dart';
 import 'package:lebenswiki_app/presentation/screens/main/explore.dart';
 import 'package:lebenswiki_app/presentation/screens/main/home.dart';

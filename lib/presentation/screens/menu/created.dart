@@ -8,8 +8,6 @@ import 'package:lebenswiki_app/domain/models/pack/pack.model.dart';
 import 'package:lebenswiki_app/domain/models/short.model.dart';
 import 'package:lebenswiki_app/domain/models/user/user.model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/presentation/screens/creator/creator_information.dart';
-import 'package:lebenswiki_app/presentation/screens/creator/creator.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/data/pack_api.dart';

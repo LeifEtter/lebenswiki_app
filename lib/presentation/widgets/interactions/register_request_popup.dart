@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lebenswiki_app/application/routing/router.dart';
+
 import 'package:lebenswiki_app/presentation/widgets/common/expand_row.dart';
 import 'package:lebenswiki_app/presentation/widgets/lw.dart';
 import 'package:lebenswiki_app/presentation/constants/colors.dart';
