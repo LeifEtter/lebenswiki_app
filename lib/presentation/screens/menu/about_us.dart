@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/presentation/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/constants/shadows.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -25,7 +26,7 @@ class _AboutUsViewState extends State<AboutUsView> {
             leading: Row(
               children: [
                 GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: () => context.pop(),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child: Container(

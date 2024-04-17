@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/application/routing/router.dart';
@@ -34,7 +35,7 @@ class _AvatarScreenState extends ConsumerState<AvatarScreen> {
         TopNavIOS.withNextButton(
           title: "Wähle einen Avatar",
           nextTitle: "Fertig",
-          nextFunction: () => Navigator.pushNamed(context, homeRoute),
+          nextFunction: () => context.go("/"),
         ),
         GestureDetector(
           onTap: () => pickAndUpload().fold(

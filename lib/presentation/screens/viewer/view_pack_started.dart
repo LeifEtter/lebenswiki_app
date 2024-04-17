@@ -1,6 +1,7 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/application/data/pack_conversion.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/application/routing/router.dart';
@@ -82,20 +83,17 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
                               .updateRead(
                                   packId: pack.id!, progress: currentIndex + 1)
                               .fold((left) {
-                            Navigator.popUntil(context,
-                                (route) => route.settings.name == homeRoute);
+                            context.pop();
                             CustomFlushbar.error(message: left.error)
                                 .show(context);
                           }, (right) {
-                            Navigator.popUntil(context,
-                                (route) => route.settings.name == homeRoute);
+                            context.pop();
                             CustomFlushbar.success(
                                     message: "Fortschritt gespeichert")
                                 .show(context);
                           });
                         } else {
-                          Navigator.popUntil(context,
-                              (route) => route.settings.name == homeRoute);
+                          context.pop();
                         }
                       },
                       //TODO implement Callbacks
@@ -212,13 +210,15 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
                         ),
                       ),
                     ),
+                    //TODO Enable getting single quiz from backend so that quizzes can be deep linked
                     const LWButtons().purpleSvgButton(
                         "Zum Quiz", "assets/icons/question_mark_in_circle.svg",
                         () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Quizzer(packPage: page)));
+                      context.go("/pack/${pack.id}/quiz/${page.id}");
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => Quizzer(quizId: ,)));
                     })
                   ],
                 ),

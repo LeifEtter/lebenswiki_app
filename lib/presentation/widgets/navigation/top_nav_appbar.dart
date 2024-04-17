@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class TopNavIOSAppBar extends StatelessWidget implements PreferredSizeWidget {
   final AppBar appBar;
@@ -26,7 +27,7 @@ class TopNavIOSAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: IconButton(
         onPressed: () async {
           await leftAction?.call();
-          Navigator.pop(context);
+          context.pop();
         },
         icon: const Icon(
           Icons.arrow_back_ios_new_rounded,

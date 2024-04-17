@@ -1,6 +1,7 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lebenswiki_app/application/routing/router.dart';
 import 'package:lebenswiki_app/domain/enums/page_type_enum.dart';
@@ -88,16 +89,16 @@ class _CreatorScreenState extends ConsumerState<Creator> {
                               "Willst du wirklich ohne Speichern verlassen?"),
                           actions: [
                             TextButton(
-                                child: const Text("Ohne Speichern Verlassen",
-                                    style: TextStyle(color: Colors.red)),
-                                onPressed: () => Navigator.pushNamed(
-                                    context, createdViewRoute)),
+                              child: const Text("Ohne Speichern Verlassen",
+                                  style: TextStyle(color: Colors.red)),
+                              onPressed: () => context.go("/created"),
+                            ),
                             TextButton(
                               child: const Text("Speichern und Verlassen"),
                               onPressed: () {
                                 pack.save();
                                 _saveToServer();
-                                Navigator.pushNamed(context, createdViewRoute);
+                                context.go("/created");
                               },
                             ),
                           ],
@@ -363,7 +364,7 @@ class _CreatorScreenState extends ConsumerState<Creator> {
               pack.save();
               bool isSuccessful = await _saveToServer();
               if (isSuccessful) {
-                Navigator.pushNamed(context, "/created");
+                context.go("/created");
               }
               break;
             case "Aktuelle Seite Löschen":

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/application/routing/router.dart';
 import 'package:lebenswiki_app/domain/models/category.model.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
@@ -64,7 +65,7 @@ class _ShortCreationViewState extends ConsumerState<ShortCreationView> {
                     (left) =>
                         CustomFlushbar.error(message: left.error).show(context),
                     (right) {
-                      Navigator.pushNamed(context, createdViewRouteShorts);
+                      context.go("/created/shorts");
                       CustomFlushbar.success(message: "Short Erstellt")
                           .show(context);
                     },

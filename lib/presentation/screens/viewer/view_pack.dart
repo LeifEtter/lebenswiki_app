@@ -1,7 +1,9 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/user/user.model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/screens/viewer/view_pack_started.dart';
@@ -264,36 +266,36 @@ class _ViewPackState extends ConsumerState<ViewPack> {
       );
 
   void _bookmarkCallback() async {
-    setState(() async => widget.pack.userHasBookmarked
-        ? await packApi.removeBookmarkPack(widget.pack.id).fold((left) {
+    setState(() async => pack.userHasBookmarked
+        ? await packApi.removeBookmarkPack(pack.id).fold((left) {
             CustomFlushbar.error(message: left.error).show(context);
           }, (right) {
             CustomFlushbar.success(message: right).show(context);
-            widget.pack.userHasBookmarked = false;
-            widget.pack.totalBookmarks -= 1;
+            pack.userHasBookmarked = false;
+            pack.totalBookmarks -= 1;
           })
-        : await packApi.bookmarkPack(widget.pack.id).fold((left) {
+        : await packApi.bookmarkPack(pack.id).fold((left) {
             CustomFlushbar.error(message: left.error).show(context);
           }, (right) {
             CustomFlushbar.success(message: right).show(context);
-            widget.pack.userHasBookmarked = true;
-            widget.pack.totalBookmarks += 1;
+            pack.userHasBookmarked = true;
+            pack.totalBookmarks += 1;
           }));
   }
 
   void _clapCallback() async {
-    widget.pack.userHasClapped
+    pack.userHasClapped
         ? CustomFlushbar.error(message: "Du hast schon geklatscht")
             .show(context)
-        : await PackApi().clapForPack(widget.pack.id).fold(
+        : await PackApi().clapForPack(pack.id).fold(
             (left) {
               CustomFlushbar.error(message: left.error).show(context);
             },
             (right) {
               CustomFlushbar.success(message: right).show(context);
               setState(() {
-                widget.pack.userHasClapped = true;
-                widget.pack.totalClaps += 1;
+                pack.userHasClapped = true;
+                pack.totalClaps += 1;
               });
             },
           );

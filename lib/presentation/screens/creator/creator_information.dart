@@ -1,4 +1,5 @@
 import 'package:either_dart/either.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/application/routing/router.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
@@ -140,7 +141,7 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
                   ).show(context);
                 }
               }
-              Navigator.pushNamed(context, createdViewRoute);
+              await context.push("/create/pack");
               CustomFlushbar.success(message: "Pack erfolgreich gespeichert")
                   .show(context);
             },

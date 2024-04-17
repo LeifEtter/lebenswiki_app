@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/presentation/constants/misc_repo.dart';
 
 void showReactionMenu(
@@ -35,7 +36,7 @@ void showReactionMenu(
                 String reaction = MiscRepo.allReactions[index].toUpperCase();
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    context.pop();
                     callback(reaction);
                   },
                   child: Image.asset(

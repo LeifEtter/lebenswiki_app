@@ -1,5 +1,6 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/data/pack_api.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';
@@ -165,8 +166,8 @@ class _QuizzerState extends State<Quizzer> {
                 const SizedBox(height: 20),
                 SizedBox(
                   width: 230,
-                  child: const LWButtons().outlineButton(
-                      "Zurück zum Pack", () => Navigator.pop(context)),
+                  child: const LWButtons()
+                      .outlineButton("Zurück zum Pack", () => context.pop()),
                 ),
               ],
             ),

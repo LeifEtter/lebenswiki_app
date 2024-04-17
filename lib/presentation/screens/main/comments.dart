@@ -228,7 +228,7 @@
 //                       commentResult.fold((left) {
 //                         CustomFlushbar.error(message: left.error).show(context);
 //                       }, (right) {
-//                         Navigator.pop(context);
+//                         context.pop();
 //                         CustomFlushbar.success(message: right).show(context);
 //                         commentController.text = "";
 //                         setState(() {});
@@ -262,12 +262,12 @@
 //                       onPress: () async {
 //                         await CommentApi().deleteComment(id: comment.id).fold(
 //                           (left) {
-//                             Navigator.pop(context);
+//                             context.pop();
 //                             CustomFlushbar.error(message: left.error)
 //                                 .show(context);
 //                           },
 //                           (right) {
-//                             Navigator.pop(context);
+//                             context.pop();
 //                             CustomFlushbar.success(message: right)
 //                                 .show(context);
 //                           },

@@ -13,10 +13,12 @@ import 'package:lebenswiki_app/presentation/widgets/common/extensions.dart';
 class ExploreView extends ConsumerStatefulWidget {
   final List<Category> categoriesWithPacks;
   final bool isSearching;
+  final String? query;
 
   const ExploreView({
     required this.categoriesWithPacks,
     required this.isSearching,
+    this.query,
     Key? key,
   }) : super(key: key);
 
@@ -136,11 +138,13 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
 class SearchScreen extends StatefulWidget {
   final List<Category> categoriesWithPacks;
   final List<Category> categories;
+  final String? query;
 
   const SearchScreen({
     Key? key,
     required this.categoriesWithPacks,
     required this.categories,
+    this.query,
   }) : super(key: key);
 
   @override
