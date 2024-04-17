@@ -73,7 +73,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                           heroName: "${widget.heroParent}-${pack.id}-hero",
                         ))));
 
-        ref.read(reloadProvider).reload();
+        // ref.read(reloadProvider).reload();
       },
       child: Container(
         decoration: BoxDecoration(
