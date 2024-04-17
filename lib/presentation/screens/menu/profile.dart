@@ -3,9 +3,10 @@ import 'package:either_dart/either.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lebenswiki_app/application/auth/token_handler.dart';
-import 'package:lebenswiki_app/application/routing/router.dart';
+
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/data/user_api.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/hacks.dart';
@@ -63,7 +64,7 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
   Future<void> logout() async {
     await TokenHandler().delete();
     ref.read(userProvider).removeUser();
-    if (context.mounted) Navigator.pushNamed(context, authRoute);
+    context.go("/login");
   }
 
   @override
@@ -446,12 +447,12 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                     const Text("Willst du dieses account wirklich löschen?"),
                 actions: [
                   TextButton(
-                    onPressed: () => Navigator.pop(context, true),
+                    onPressed: () => context.pop(),
                     child: const Text("Löschen",
                         style: TextStyle(color: Colors.red)),
                   ),
                   TextButton(
-                    onPressed: () => Navigator.pop(context, false),
+                    onPressed: () => context.pop(),
                     child: const Text("Abbrechen"),
                   ),
                 ],

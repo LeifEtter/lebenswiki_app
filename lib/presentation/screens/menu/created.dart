@@ -2,13 +2,12 @@ import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack.model.dart';
 import 'package:lebenswiki_app/domain/models/short.model.dart';
 import 'package:lebenswiki_app/domain/models/user/user.model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/presentation/screens/creator/creator_information.dart';
-import 'package:lebenswiki_app/presentation/screens/creator/creator.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/data/pack_api.dart';
@@ -113,13 +112,8 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                                                 style: TextStyle(
                                                     color: Colors.white),
                                               ),
-                                              onPressed: () => Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const CreatorPackInfo(),
-                                                ),
-                                              ),
+                                              onPressed: () =>
+                                                  context.go("/create/pack"),
                                             ),
                                           ),
                                         );
@@ -216,11 +210,12 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
         children: [
           SpeedDialChild(
             onTap: () async {
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          CreatorPackInfo(pack: currentPack)));
+              context.go("/create/pack", extra: currentPack);
+              // await Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) =>
+              //             CreatorPackInfo(pack: currentPack)));
               //TODO Maybe remove this
               setState(() {});
             },
@@ -230,10 +225,11 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
           SpeedDialChild(
             onTap: () async {
               //TODO Implement Pack Editor
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Creator(pack: currentPack)));
+              // await Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => Creator(pack: currentPack)));
+              context.go("/create/pages/", extra: currentPack);
               //TODO maybe remove this
               setState(() {});
             },
@@ -272,7 +268,7 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                 onDelete: () async {
                   await PackApi().deletePack(currentPack.id!).fold(
                     (left) {
-                      Navigator.pop(context);
+                      context.pop();
                       CustomFlushbar.error(message: left.error).show(context);
                     },
                     (right) async {
@@ -286,7 +282,7 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                       //     }
                       //   });
                       // }
-                      Navigator.pop(context);
+                      context.pop();
                       CustomFlushbar.success(message: right).show(context);
                     },
                   );
@@ -348,11 +344,11 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
               onDelete: () async {
                 await ShortApi().deleteShort(currentShort.id!).fold(
                   (left) {
-                    Navigator.pop(context);
+                    context.pop();
                     CustomFlushbar.error(message: left.error).show(context);
                   },
                   (right) {
-                    Navigator.pop(context);
+                    context.pop();
                     CustomFlushbar.success(message: right).show(context);
                   },
                 );
@@ -415,7 +411,7 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    context.pop();
                   },
                   child: Text(
                     "Abbrechen",

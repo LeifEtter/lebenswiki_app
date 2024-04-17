@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/application/auth/token_handler.dart';
-import 'package:lebenswiki_app/application/routing/router.dart';
 import 'package:lebenswiki_app/domain/models/user/user.model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
@@ -24,7 +24,7 @@ void showBottomMenuForNavigation(
                         context,
                         ref,
                         onPress: () async {
-                          await Navigator.pushNamed(context, profileViewRoute);
+                          await context.push("/profile");
                           reload();
                         },
                         text: "Profil",
@@ -38,7 +38,7 @@ void showBottomMenuForNavigation(
                         context,
                         ref,
                         onPress: () async {
-                          await Navigator.pushNamed(context, savedViewRoute);
+                          await context.push("/saved");
                           reload();
                         },
                         text: "Gespeichert",
@@ -52,7 +52,7 @@ void showBottomMenuForNavigation(
                         context,
                         ref,
                         onPress: () async {
-                          await Navigator.pushNamed(context, createdViewRoute);
+                          await context.push("/created");
                           reload();
                         },
                         text: "Erstellt",
@@ -64,13 +64,13 @@ void showBottomMenuForNavigation(
                         text: "Als Creator Bewerben",
                         icon: Icons.edit, onPress: () async {
                         //TODO Set default contact option to "Bewerbung" on Routing
-                        await Navigator.pushNamed(context, contactViewRoute);
+                        await context.push("/contact");
                       }),
                 buildMenuTile(
                   context,
                   ref,
                   onPress: () async {
-                    await Navigator.pushNamed(context, contactViewRoute);
+                    await context.push("/contact");
                   },
                   text: "Hilfe/Feedback",
                   icon: Icons.help_outline_rounded,
@@ -79,7 +79,7 @@ void showBottomMenuForNavigation(
                   context,
                   ref,
                   onPress: () async {
-                    await Navigator.pushNamed(context, developerViewRoute);
+                    await context.push("/impressum");
                   },
                   text: "Über uns",
                   icon: Icons.phone_outlined,
@@ -91,7 +91,7 @@ void showBottomMenuForNavigation(
                     await TokenHandler().delete();
                     ref.read(userProvider).removeUser();
                     if (context.mounted) {
-                      await Navigator.pushNamed(context, authRoute);
+                      context.go("/login");
                     }
                   },
                   text: user != null ? "Ausloggen" : "Einloggen",

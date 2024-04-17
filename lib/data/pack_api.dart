@@ -328,4 +328,15 @@ class PackApi extends BaseApi {
               "Das Pack konnte nicht gemeldet werden. Bitte wende dich an unseren Support"));
     }
   }
+
+  Future<Either<CustomError, PackPage>> getQuiz(String quizId) async {
+    Response res = await get(Uri.parse("$serverIp/pack/quiz/$quizId"),
+        headers: await requestHeader());
+    if (res.statusCode == 200) {
+      return Right(PackPage.fromJson(await jsonDecode(res.body)));
+    } else {
+      return const Left(
+          CustomError(error: "Quiz konnte nicht gefunden werden"));
+    }
+  }
 }

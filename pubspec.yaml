@@ -42,6 +42,7 @@ dependencies:
   sentry_flutter: ^7.16.1
   sensors_plus: ^5.0.0
   device_info_plus: ^10.0.1
+  go_router: ^13.2.4
 
 dev_dependencies:
   flutter_test:

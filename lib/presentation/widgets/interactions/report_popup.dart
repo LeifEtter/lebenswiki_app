@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/presentation/constants/misc_repo.dart';
 
 class ReportDialog extends StatefulWidget {
@@ -33,12 +34,12 @@ class _ReportDialogState extends State<ReportDialog> {
         actions: <Widget>[
           TextButton(
             child: const Text("Abbrechen"),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
           ),
           TextButton(
               child: const Text("Melden"),
               onPressed: () {
-                Navigator.pop(context);
+                context.pop();
                 widget.reportCallback(blockUser, chosenReason);
               })
         ],

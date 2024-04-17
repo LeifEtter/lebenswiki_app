@@ -1,7 +1,7 @@
 import 'package:emojis/emoji.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lebenswiki_app/application/routing/router.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
 import 'package:lebenswiki_app/presentation/constants/colors.dart';
 
@@ -55,9 +55,7 @@ class _ViewerAppBarState extends State<ViewerAppBar> {
             if (widget.backFunction != null) {
               await widget.backFunction!();
             } else {
-              Navigator.of(context).popUntil((route) =>
-                  route.settings.name == homeRoute ||
-                  route.settings.name == homeRoute.split("/")[1]);
+              context.pop();
             }
           },
           child: Icon(

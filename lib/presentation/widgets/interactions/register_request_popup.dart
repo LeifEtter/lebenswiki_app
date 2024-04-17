@@ -1,7 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/application/routing/router.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:lebenswiki_app/presentation/widgets/common/expand_row.dart';
 import 'package:lebenswiki_app/presentation/widgets/lw.dart';
 import 'package:lebenswiki_app/presentation/constants/colors.dart';
@@ -39,18 +40,16 @@ class RegisterRequestPopup extends StatelessWidget {
               children: [
                 ExpandButton(
                   child: LW.buttons.normal(
-                    borderRadius: 12,
-                    text: "Registrieren",
-                    action: () =>
-                        Navigator.pushNamed(context, authRouteRegister),
-                  ),
+                      borderRadius: 12,
+                      text: "Registrieren",
+                      action: () => context.go("/register")),
                 ),
                 const SizedBox(height: 10),
                 ExpandButton(
                   child: LW.buttons.normal(
                     borderRadius: 12,
                     text: "Einloggen",
-                    action: () => Navigator.pushNamed(context, authRoute),
+                    action: () => context.go("/login"),
                     color: CustomColors.mediumGrey,
                     textColor: CustomColors.offBlack,
                   ),

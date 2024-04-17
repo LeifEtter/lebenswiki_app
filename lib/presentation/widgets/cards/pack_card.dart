@@ -1,11 +1,10 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/presentation/screens/viewer/view_pack_started.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/labels.dart';
-import 'package:lebenswiki_app/presentation/screens/viewer/view_pack.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/report_popup.dart';
 import 'package:lebenswiki_app/data/user_api.dart';
@@ -56,22 +55,26 @@ class _PackCardState extends ConsumerState<PackCard> {
     progressPercentage =
         calculateProgressPercentage(pack.readProgress, pack.pages.length);
     return GestureDetector(
+      // onTap: () async {
+      //   isReading || widget.isDraftView || pack.readProgress >= 1
+      //       ? await Navigator.push(
+      //           context,
+      //           MaterialPageRoute(
+      //               builder: (context) => PackViewerStarted(
+      //                     packId: pack.id!,
+      //                     heroName: "${widget.heroParent}-${pack.id}-hero",
+      //                   )))
+      //       : await Navigator.push(
+      //           context,
+      //           MaterialPageRoute(
+      //               builder: ((context) => ViewPack(
+      //                     packId: pack.id!,
+      //                     heroName: "${widget.heroParent}-${pack.id}-hero",
+      //                   ))));
       onTap: () async {
         isReading || widget.isDraftView || pack.readProgress >= 1
-            ? await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PackViewerStarted(
-                          packId: pack.id!,
-                          heroName: "${widget.heroParent}-${pack.id}-hero",
-                        )))
-            : await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: ((context) => ViewPack(
-                          pack: pack,
-                          heroName: "${widget.heroParent}-${pack.id}-hero",
-                        ))));
+            ? context.go("/pack/${pack.id!}")
+            : context.go("/pack/overview/${pack.id!}");
 
         // ref.read(reloadProvider).reload();
       },

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/domain/models/category.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack.model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
@@ -236,7 +237,7 @@ class _SeeAllViewState extends ConsumerState<SeeAllView> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        Navigator.pop(context);
+                        context.pop();
                         filterCallback(catCheckbox.cat);
                       },
                       child: Row(
@@ -331,7 +332,7 @@ class _SeeAllViewState extends ConsumerState<SeeAllView> {
   }) =>
       GestureDetector(
         onTap: () {
-          Navigator.pop(context);
+          context.pop();
           sortCallback(option);
         },
         child: Text(

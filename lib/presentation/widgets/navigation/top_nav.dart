@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lebenswiki_app/application/routing/router.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:lebenswiki_app/main_wrapper.dart';
 
 class TopNavIOS extends StatelessWidget {
@@ -40,14 +41,7 @@ class TopNavIOS extends StatelessWidget {
             child: SizedBox(
               width: 50,
               child: IconButton(
-                onPressed: () {
-                  if (isPopMenu) {
-                    Navigator.of(context)
-                        .popUntil((route) => route.settings.name == homeRoute);
-                  } else {
-                    Navigator.pop(context);
-                  }
-                },
+                onPressed: () => context.pop(),
                 icon: const Icon(Icons.arrow_back_ios_new_rounded),
               ),
             ),

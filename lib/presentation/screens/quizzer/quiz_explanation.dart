@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/presentation/screens/quizzer/gyro_handler.dart';
 import 'package:lebenswiki_app/presentation/screens/quizzer/gyro_util.dart';
 import 'package:lebenswiki_app/presentation/widgets/buttons/buttons.dart';
@@ -136,8 +137,8 @@ class _QuizExplanationState extends State<QuizExplanation> {
           const SizedBox(height: 50),
           SizedBox(
             width: 230,
-            child: const LWButtons()
-                .purpleButton("Zum Quiz", () => Navigator.pop(context)),
+            child:
+                const LWButtons().purpleButton("Zum Quiz", () => context.pop()),
           ),
           const SizedBox(height: 20),
           SizedBox(

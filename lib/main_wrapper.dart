@@ -2,13 +2,12 @@ import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
-import 'package:lebenswiki_app/application/routing/router.dart';
 import 'package:lebenswiki_app/domain/models/category.model.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/user/user.model.dart';
 import 'package:lebenswiki_app/presentation/providers/providers.dart';
-import 'package:lebenswiki_app/presentation/screens/creator/creator_information.dart';
 import 'package:lebenswiki_app/presentation/screens/main/community.dart';
 import 'package:lebenswiki_app/presentation/screens/main/explore.dart';
 import 'package:lebenswiki_app/presentation/screens/main/home.dart';
@@ -145,12 +144,7 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
                             "Du musst Creator sein um Lernpacks zu erstellen")
                     .show(context);
               } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CreatorPackInfo(),
-                  ),
-                );
+                context.go("/create/pack");
               }
             },
           ),
@@ -164,7 +158,7 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
                       builder: (BuildContext context) =>
                           RegisterRequestPopup(ref));
                 } else {
-                  await Navigator.pushNamed(context, createShort);
+                  await context.push("/create/short");
                   setState(() {});
                 }
               })

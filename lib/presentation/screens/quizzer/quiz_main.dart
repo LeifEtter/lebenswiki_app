@@ -1,4 +1,8 @@
+import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lebenswiki_app/data/pack_api.dart';
+import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack_page.model.dart';
 import 'package:lebenswiki_app/presentation/screens/quizzer/quiz_question.dart';
 import 'package:lebenswiki_app/presentation/screens/quizzer/quiz_start.dart';
@@ -22,11 +26,13 @@ class Question {
 }
 
 class Quizzer extends StatefulWidget {
-  final PackPage packPage;
+  // final PackPage packPage;
+  final String quizId;
 
   const Quizzer({
     super.key,
-    required this.packPage,
+    // required this.packPage,
+    required this.quizId,
   });
 
   @override
@@ -37,7 +43,7 @@ class _QuizzerState extends State<Quizzer> {
   GyroDirection direction = GyroDirection.none;
   int wrongTries = 0;
   // late CustomTimer customTimer;
-  late GyroHandler gyroHandler;
+  GyroHandler? gyroHandler;
   String centerText = "";
   late List<Question> questions;
   int timeLeft = 5;
@@ -45,45 +51,71 @@ class _QuizzerState extends State<Quizzer> {
 
   @override
   void initState() {
-    List<PackPageItem> onlyQuestionItems = widget.packPage.items
-        .where((item) => item.type == ItemType.question)
-        .toList();
-    questions = onlyQuestionItems
-        .map((PackPageItem item) => Question(
-              questionText: item.headContent.value,
-              answers: item.bodyContent,
-            ))
-        .toList();
-    gyroHandler = GyroHandler(
-      updateDirectionCallback: (GyroDirection newDirection) {
-        setState(() => direction = newDirection);
-        answerEvent(newDirection);
-      },
-      timeBetweenDetections: 2,
-    );
+    // gyroHandler = GyroHandler(
+    //   updateDirectionCallback: (GyroDirection newDirection) {
+    //     setState(() => direction = newDirection);
+    //     answerEvent(newDirection);
+    //   },
+    //   timeBetweenDetections: 2,
+    // );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: _pageController,
-        children: [
-          StartPage(
-              title: widget.packPage.items.first.headContent.value,
-              nextPage: () => nextQuestion()),
-          ...questions.map(
-            (Question question) => QuizPageNew(
-              centerText: centerText,
-              direction: direction,
-              directionAnswers: question.directionToAnswerMap,
-            ),
-          ),
-          endPage(),
-        ],
-      ),
+      body: FutureBuilder(
+          future: PackApi().getQuiz(widget.quizId),
+          builder:
+              (context, AsyncSnapshot<Either<CustomError, PackPage>> snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const CircularProgressIndicator();
+            }
+            if (!snapshot.hasData || snapshot.data!.isLeft) {
+              return const Center(
+                  child: Text("Quiz konnte nicht gefunden werden"));
+            }
+            PackPage page = snapshot.data!.right;
+            List<PackPageItem> onlyQuestionItems = page.items
+                .where((item) => item.type == ItemType.question)
+                .toList();
+            questions = onlyQuestionItems
+                .map((PackPageItem item) => Question(
+                      questionText: item.headContent.value,
+                      answers: item.bodyContent,
+                    ))
+                .toList();
+            return StatefulBuilder(builder: (context, setInnerState) {
+              gyroHandler ??= GyroHandler(
+                updateDirectionCallback: (GyroDirection newDirection) {
+                  setInnerState(() => direction = newDirection);
+                  answerEvent(setInnerState, newDirection);
+                },
+                timeBetweenDetections: 2,
+              );
+              return PageView(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: _pageController,
+                children: [
+                  StartPage(
+                      title: page.items
+                          .where((e) => e.type == ItemType.title)
+                          .first
+                          .headContent
+                          .value,
+                      nextPage: () => nextQuestion(setInnerState)),
+                  ...questions.map(
+                    (Question question) => QuizPageNew(
+                      centerText: centerText,
+                      direction: direction,
+                      directionAnswers: question.directionToAnswerMap,
+                    ),
+                  ),
+                  endPage(),
+                ],
+              );
+            });
+          }),
     );
   }
 
@@ -134,8 +166,8 @@ class _QuizzerState extends State<Quizzer> {
                 const SizedBox(height: 20),
                 SizedBox(
                   width: 230,
-                  child: const LWButtons().outlineButton(
-                      "Zurück zum Pack", () => Navigator.pop(context)),
+                  child: const LWButtons()
+                      .outlineButton("Zurück zum Pack", () => context.pop()),
                 ),
               ],
             ),
@@ -149,11 +181,11 @@ class _QuizzerState extends State<Quizzer> {
         color: Colors.yellow,
       );
 
-  void nextQuestion() {
+  void nextQuestion(Function setInnerState) {
     int nextPageIndex = _pageController.page!.toInt() + 1;
     bool endNotReached = nextPageIndex <= questions.length;
     if (endNotReached) {
-      setState(() {
+      setInnerState(() {
         direction = GyroDirection.none;
         centerText = questions[nextPageIndex - 1].questionText;
       });
@@ -162,32 +194,32 @@ class _QuizzerState extends State<Quizzer> {
         duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
   }
 
-  void resetQuestion() {
-    setState(() {
+  void resetQuestion(Function setInnerState) {
+    setInnerState(() {
       direction = GyroDirection.none;
       centerText = questions[_pageController.page!.toInt() - 1].questionText;
     });
   }
 
-  void answerEvent(GyroDirection newDirection) async {
-    setState(() => direction = newDirection);
+  void answerEvent(Function setInnerState, GyroDirection newDirection) async {
+    setInnerState(() => direction = newDirection);
     if (newDirection == GyroDirection.none) {
       return;
     }
     Question question = questions[_pageController.page!.toInt() - 1];
     if (question.directionToAnswerMap[newDirection]!.isCorrectAnswer == true) {
-      setState(() {
+      setInnerState(() {
         centerText = "Bravo!";
       });
       await Future.delayed(const Duration(milliseconds: (1000)));
-      nextQuestion();
+      nextQuestion(setInnerState);
     } else {
-      setState(() {
+      setInnerState(() {
         centerText = "Versuchs Nochmal";
         wrongTries++;
       });
       await Future.delayed(const Duration(milliseconds: 1000));
-      resetQuestion();
+      resetQuestion(setInnerState);
     }
   }
 

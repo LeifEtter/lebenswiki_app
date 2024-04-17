@@ -67,7 +67,7 @@ class CustomFlushbar extends StatelessWidget {
         duration: const Duration(milliseconds: 3000),
         mainButton: IconButton(
           icon: const Icon(Icons.close, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
         ),
       );
 }
