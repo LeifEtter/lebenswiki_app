@@ -54,9 +54,10 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<!-- TODO Keep this, because encryption settings are accepted automatically if you do -->
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>FlutterDeepLinkingEnabled</key>
+	<true/>
 	<key>NSMotionUsageDescription</key>
 	<string>Gyrosensor Daten werden bei der Auswahl von Antworten im Quiz benutzt</string>
 </dict>
