@@ -32,7 +32,8 @@ class AuthenticationView extends ConsumerStatefulWidget {
       _AuthenticationViewState();
 }
 
-class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
+class _AuthenticationViewState extends ConsumerState<AuthenticationView>
+    with RestorationMixin {
   final UserApi userApi = UserApi();
   late FormNotifier _formProvider;
   bool isAdminSignUp = false;
@@ -287,6 +288,12 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView> {
       ),
     );
   }
+
+  @override
+  String? get restorationId => "auth_screen";
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {}
 
   void handleAnonymousLogin() async {
     await PrefHandler.setIsBrowsingAnonymously(true);
