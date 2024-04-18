@@ -8,6 +8,7 @@ import 'package:lebenswiki_app/presentation/screens/quizzer/quiz_question.dart';
 import 'package:lebenswiki_app/presentation/screens/quizzer/quiz_start.dart';
 import 'package:lebenswiki_app/presentation/screens/quizzer/gyro_handler.dart';
 import 'package:lebenswiki_app/presentation/widgets/buttons/buttons.dart';
+import 'package:share_plus/share_plus.dart';
 
 class Question {
   final String questionText;
@@ -94,7 +95,7 @@ class _QuizzerState extends State<Quizzer> {
                 timeBetweenDetections: 2,
               );
               return PageView(
-                physics: const NeverScrollableScrollPhysics(),
+                // physics: const NeverScrollableScrollPhysics(),
                 controller: _pageController,
                 children: [
                   StartPage(
@@ -168,6 +169,35 @@ class _QuizzerState extends State<Quizzer> {
                   width: 230,
                   child: const LWButtons()
                       .outlineButton("Zurück zum Pack", () => context.pop()),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      constraints: const BoxConstraints(),
+                      onPressed: () {
+                        String shareLink =
+                            'http://leifetter.github.io${GoRouter.of(context).routeInformationProvider.value.uri}';
+                        Share.share("Lust auf ein Quiz? $shareLink");
+                      },
+                      icon: const Icon(
+                        Icons.file_upload_outlined,
+                        size: 30,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 200,
+                      child: Text(
+                        "Teile das Quiz mit deinen Freunden!",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

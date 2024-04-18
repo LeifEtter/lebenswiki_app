@@ -38,6 +38,7 @@ void main() async {
   await dotenv.load(fileName: ".env");
   (String, User?) initRouteResults = await getRoute();
   List<Category> categories = await CategoryApi().getCategories();
+  GoRouter router = createRouter(initRouteResults.$1);
   await SentryFlutter.init(
     (options) {
       options.dsn =
@@ -47,9 +48,9 @@ void main() async {
     appRunner: () => runApp(
       ProviderScope(
           child: LebenswikiApp(
-        initialRoute: initRouteResults.$1,
         user: initRouteResults.$2,
         categories: categories,
+        router: router,
       )),
     ),
   );
@@ -175,14 +176,14 @@ GoRouter createRouter(String? initialLocation) => GoRouter(
     );
 
 class LebenswikiApp extends ConsumerWidget {
-  final String initialRoute;
   final User? user;
   final List<Category> categories;
+  final GoRouter router;
 
   const LebenswikiApp({
     super.key,
-    required this.initialRoute,
     this.user,
+    required this.router,
     required this.categories,
   });
 
@@ -198,9 +199,7 @@ class LebenswikiApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       title: "Lebenswiki",
       theme: buildTheme(Brightness.light),
-      routerConfig: createRouter(initialRoute),
-      // onGenerateRoute: generateRoute,
-      // initialRoute: initialRoute,
+      routerConfig: router,
     );
   }
 

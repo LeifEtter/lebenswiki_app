@@ -16,6 +16,7 @@ import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar
 import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/sliver_appbar.dart';
 import 'package:lebenswiki_app/data/pack_api.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PackViewerStarted extends ConsumerStatefulWidget {
   final int packId;
@@ -99,7 +100,12 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
                       clapCallback: () => user == null
                           ? _showRegisterRequest
                           : _clapCallback(pack),
-                      shareCallback: () {},
+                      shareCallback: () {
+                        String shareLink =
+                            'http://leifetter.github.io${GoRouter.of(context).routeInformationProvider.value.uri}';
+                        Share.share(
+                            'Schau dir dieses Pack "${pack.title}" an: $shareLink');
+                      },
                       bookmarkCallback: () => user == null
                           ? _showRegisterRequest
                           : _bookmarkCallback(pack),

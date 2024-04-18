@@ -107,14 +107,14 @@ class _ViewerAppBarState extends State<ViewerAppBar> {
                   fontSize: 8,
                 ),
                 const Spacer(),
-                // IconButton(
-                //   constraints: const BoxConstraints(),
-                //   onPressed: () => widget.shareCallback(),
-                //   icon: const Icon(
-                //     Icons.file_upload_outlined,
-                //     size: 20,
-                //   ),
-                // ),
+                IconButton(
+                  constraints: const BoxConstraints(),
+                  onPressed: () => widget.shareCallback(),
+                  icon: const Icon(
+                    Icons.file_upload_outlined,
+                    size: 20,
+                  ),
+                ),
                 GestureDetector(
                   onTap: () => widget.clapCallback(),
                   child: Row(
