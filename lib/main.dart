@@ -197,6 +197,7 @@ class LebenswikiApp extends ConsumerWidget {
     });
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
+      restorationScopeId: "root",
       title: "Lebenswiki",
       theme: buildTheme(Brightness.light),
       routerConfig: router,

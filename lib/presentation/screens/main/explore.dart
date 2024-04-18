@@ -151,7 +151,7 @@ class SearchScreen extends StatefulWidget {
   State<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _SearchScreenState extends State<SearchScreen> with RestorationMixin {
   late List<bool> selectedCategories;
   late List<Map<String, dynamic>> selectedCategoriesNew = [
     {
@@ -243,6 +243,12 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
   }
+
+  @override
+  String? get restorationId => "search_screen";
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {}
 
   Widget _buildCatButton({
     required bool isSelected,
