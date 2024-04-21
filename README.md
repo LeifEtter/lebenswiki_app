@@ -21,7 +21,7 @@ flutter pub get
 
 Create a .env file in the projects root directory and ad this line:
 
-```json
+```yaml
 API_URL=https://api.lebenswiki.com
 ```
 
