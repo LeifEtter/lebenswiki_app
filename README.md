@@ -7,9 +7,9 @@ This documentation gives an overview of the App's Layers and their Interactions.
 
 - Flutter Installed
 - Either:
-  - Android Studio with an Android Simulator
-  - XCode with an iOS Simulator
-  - Real Android or iOS Device connected and with Debugging enabled
+   - Android Studio with an Android Simulator
+   - XCode with an iOS Simulator
+   - Real Android or iOS Device connected and with Debugging enabled
 - VSCode oder Android Studio (needed for debugging)
 
 ## Installation
@@ -22,7 +22,7 @@ flutter pub get
 
 Create a .env file in the projects root directory and ad this line:
 
-```json
+```yaml
 API_URL=https://api.lebenswiki.com
 ```
 
@@ -92,7 +92,7 @@ Contains screens, widgets and providers. This layer encompasses the user interfa
 
 ### State Management
 
-The App utilizes the ChangeNotifier class from [riverpod](https://pub.dev/packages/riverpod) to manage state.
+The App utilizes the ChangeNotifier class from [riverpod](https://pub.dev/packages/riverpod) to manage state. 
 Existing Notifiers:
 
 - FormNotifier: Assists the authentication screen with validatio
@@ -130,3 +130,4 @@ When a user chooses to edit a Pack, the router instantiates the Creator page. Th
 ![Leeres Diagramm (2).png](https://res.craft.do/user/full/b0e62220-21e7-3e79-e368-d4886dca007e/doc/E653D7EC-2788-4642-8FEE-1630E069EE7C/A3DBC8A8-FDB3-4E98-83AB-D9AD7F5F11F2_2/FUdiW7sXr8zLsM9MlWWNyFQ14OrTQODjnJ8QBgMliNcz/Leeres%20Diagramm%202.png)
 
 Figure 2: Control Flow Diagram
+
