@@ -3,7 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/application/auth/prefs_handler.dart';
-import 'package:lebenswiki_app/application/routing/router.dart';
+import 'package:lebenswiki_app/router.dart';
 
 import 'package:lebenswiki_app/data/category_api.dart';
 import 'package:lebenswiki_app/domain/models/category.model.dart';
