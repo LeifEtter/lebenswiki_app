@@ -1,6 +1,7 @@
-# Extended
+# Extended For Mobile App
 
-The Lebenswiki Frontend, a Mobile App developed with the Flutter SDK, serves as a platform for users to create and view interactive Articles. ~~It is part of~~ [~~Lebenswiki~~](https://www.lebenswiki.com/)~~, a project that strives to provide youths and young adults with a centralized repository for knowledge and interactive ways of learning.~~ This documentation gives an overview of the App's ~~various~~ Layers and their Interactions. It assumes basic knowledge of [Flutter](https://docs.flutter.dev/#new-to-flutter), Application Development, [OOP](https://www.educative.io/blog/object-oriented-programming) and [Domain-Driven-Design](https://en.wikipedia.org/wiki/Domain-driven_design).
+The Lebenswiki Frontend, a Mobile App developed with the Flutter SDK, serves as a platform for users to create and view interactive Articles. It is part of [Lebenswiki](https://www.lebenswiki.com/), a project that strives to provide youths and young adults with a centralized repository for knowledge and interactive ways of learning.
+This documentation gives an overview of the App's Layers and their Interactions. It assumes basic knowledge of [Flutter](https://docs.flutter.dev/#new-to-flutter), Application Development, [OOP](https://www.educative.io/blog/object-oriented-programming) and [Domain-Driven-Design](https://en.wikipedia.org/wiki/Domain-driven_design).
 
 ## Prerequisites
 
@@ -21,7 +22,7 @@ flutter pub get
 
 Create a .env file in the projects root directory and ad this line:
 
-```yaml
+```json
 API_URL=https://api.lebenswiki.com
 ```
 
@@ -91,14 +92,12 @@ Contains screens, widgets and providers. This layer encompasses the user interfa
 
 ### State Management
 
-The App uses ChangeNotifiers to manage user, search and form information.
+The App utilizes the ChangeNotifier class from [riverpod](https://pub.dev/packages/riverpod) to manage state.
+Existing Notifiers:
 
-~~The App utilizes the ChangeNotifier class from~~ [~~riverpod~~](https://pub.dev/packages/riverpod)~~ to manage state.
-Existing Notifiers:~~
-
-- ~~FormNotifier: Assists the authentication screen with validatio~~
-- ~~UserNotifier: Manages user data (captured on login) throughout the App~~
-- ~~SearchNotifier: Maintains search queries and search state~~
+- FormNotifier: Assists the authentication screen with validatio
+- UserNotifier: Manages user data (captured on login) throughout the App
+- SearchNotifier: Maintains search queries and search state
 
 ### Screens
 
@@ -116,7 +115,9 @@ Folders containing screens:
 
 ### **Routing**
 
-The App retrieves the user's role from the `UserProvider` and checks if the user is permitted to access the route. If permission is confirmed, the app calls `generateRoute` and executes the returned route.
+On Startup the main process creates a Go Router, passing the initial page as a parameter.
+
+When navigating to a new page, the App retrieves the users role from the `UserProvider` and checks if the user is permitted to access the route. If permission is confirmed, the app calls `context.go` to navigate to the new page.
 
 ### Widgets
 
@@ -124,8 +125,8 @@ Reusable components that are used in various screens.
 
 ## Layer-Interactions
 
-When a user chooses to edit a Pack, the router returns the creator route. The editor gets the packhelper to retrieve the pack from the repo. The repo gets the pack from the backend and casts it into a Pack Object. The object gets returned to the screen, which uses it, as well as widgets to render the editor screen.
+When a user chooses to edit a Pack, the router instantiates the Creator page. The editor uses the pack helper to retrieve the pack from the pack api. The pack api gets the pack from the backend and casts it into a Pack Object. The object gets returned to the pack helper and then to the screen, which uses it, as well as widgets, to render the editor screen.
 
-![Diagram 2_ Data Flow on Navigation to Pack Editor (5).png](https://res.craft.do/user/full/b0e62220-21e7-3e79-e368-d4886dca007e/doc/0A8DC5E9-899D-434B-8E77-6DA9B8314CFB/E97F67BD-1FF6-4F9B-9F08-ABDC61CE8AFD_2/yedisyrgRS25tahV2nVxTUzlPCTgsXb6tG7eqTb9ELYz/Diagram%202_%20Data%20Flow%20on%20Navigation%20to%20Pack%20Editor%205.png)
+![Leeres Diagramm (2).png](https://res.craft.do/user/full/b0e62220-21e7-3e79-e368-d4886dca007e/doc/E653D7EC-2788-4642-8FEE-1630E069EE7C/A3DBC8A8-FDB3-4E98-83AB-D9AD7F5F11F2_2/FUdiW7sXr8zLsM9MlWWNyFQ14OrTQODjnJ8QBgMliNcz/Leeres%20Diagramm%202.png)
 
 Figure 2: Control Flow Diagram
