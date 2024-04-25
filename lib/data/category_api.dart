@@ -59,23 +59,3 @@ class CategoryApi extends BaseApi {
     }
   }
 }
-
-// Future<List<Category>> getCategories() async {
-//     try {
-//       Response res = await get(
-//         Uri.parse("$serverIp/category/"),
-//         headers: await requestHeader(),
-//       );
-//       if (res.statusCode == 200) {
-//         List body = jsonDecode(res.body);
-//         List<Category> categories =
-//             body.map((e) => Category.fromJson(e)).toList();
-//         return categories;
-//       } else {
-//         log(res.body);
-//         throw "Couldn't fetch categories";
-//       }
-//     } catch (error) {
-//       throw error;
-//     }
-//   }
