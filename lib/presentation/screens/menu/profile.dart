@@ -6,9 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lebenswiki_app/application/auth/token_handler.dart';
-
-import 'package:lebenswiki_app/presentation/providers/providers.dart';
 import 'package:lebenswiki_app/data/user_api.dart';
+import 'package:lebenswiki_app/presentation/providers/user_provider.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/hacks.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/presentation/constants/colors.dart';

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack.model.dart';
 import 'package:lebenswiki_app/domain/models/short.model.dart';
-import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/providers/category_provider.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/short_card.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/data/pack_api.dart';

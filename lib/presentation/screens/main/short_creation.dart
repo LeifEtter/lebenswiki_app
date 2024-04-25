@@ -1,14 +1,12 @@
 import 'dart:developer';
-
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:lebenswiki_app/domain/models/category.model.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/short.model.dart';
-import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/providers/category_provider.dart';
 import 'package:lebenswiki_app/presentation/widgets/input/drop_down_menu.dart';
 import 'package:lebenswiki_app/presentation/widgets/input/simplified_form_field.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';

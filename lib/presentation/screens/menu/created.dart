@@ -7,7 +7,7 @@ import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/pack/pack.model.dart';
 import 'package:lebenswiki_app/domain/models/short.model.dart';
 import 'package:lebenswiki_app/domain/models/user/user.model.dart';
-import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/providers/user_provider.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/top_nav.dart';
 import 'package:lebenswiki_app/data/pack_api.dart';
@@ -134,7 +134,7 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
                                               ),
                                               Align(
                                                 alignment: Alignment.topRight,
-                                                child: _buildActionMenu(context,
+                                                child: _buildActionMenu(
                                                     currentPack: currentPack),
                                               ),
                                             ],
@@ -199,7 +199,7 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
     return Right(result);
   }
 
-  Widget _buildActionMenu(context, {required Pack currentPack}) => SpeedDial(
+  Widget _buildActionMenu({required Pack currentPack}) => SpeedDial(
         elevation: 10,
         direction: SpeedDialDirection.down,
         backgroundColor: CustomColors.lightGrey,
@@ -229,7 +229,7 @@ class _CreatedViewState extends ConsumerState<CreatedView> {
               //     context,
               //     MaterialPageRoute(
               //         builder: (context) => Creator(pack: currentPack)));
-              context.go("/create/pages/", extra: currentPack);
+              context.go("/create/pack/pages/", extra: currentPack);
               //TODO maybe remove this
               setState(() {});
             },

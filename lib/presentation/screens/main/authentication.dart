@@ -6,15 +6,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/application/auth/prefs_handler.dart';
 import 'package:lebenswiki_app/application/auth/token_handler.dart';
-
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/user/user.model.dart';
-import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/providers/user_provider.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/lw.dart';
 import 'package:lebenswiki_app/data/user_api.dart';
 import 'package:lebenswiki_app/presentation/widgets/input/custom_form_field.dart';
-import 'package:lebenswiki_app/presentation/providers/auth_providers.dart';
+import 'package:lebenswiki_app/presentation/providers/form_provider.dart';
 import 'package:lebenswiki_app/presentation/constants/colors.dart';
 import 'package:lebenswiki_app/presentation/constants/uri_repo.dart';
 import 'package:url_launcher/url_launcher.dart';

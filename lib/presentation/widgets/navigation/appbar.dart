@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/providers/search_providers.dart';
 import 'package:lebenswiki_app/presentation/constants/colors.dart';
 
 SliverAppBar appBar(context, {required Function onPress}) {

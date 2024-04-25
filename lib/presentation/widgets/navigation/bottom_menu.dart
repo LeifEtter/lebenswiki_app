@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lebenswiki_app/application/auth/token_handler.dart';
 import 'package:lebenswiki_app/domain/models/user/user.model.dart';
-import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/providers/user_provider.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 
 void showBottomMenuForNavigation(

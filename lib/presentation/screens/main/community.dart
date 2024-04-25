@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
-import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/providers/reload_provider.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/extensions.dart';
 import 'package:lebenswiki_app/presentation/widgets/cards/short_card.dart';
 import 'package:lebenswiki_app/domain/models/short.model.dart';

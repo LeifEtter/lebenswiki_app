@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/data/user_api.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/domain/models/user/user.model.dart';
-import 'package:lebenswiki_app/presentation/providers/providers.dart';
+import 'package:lebenswiki_app/presentation/providers/user_provider.dart';
 import 'package:lebenswiki_app/presentation/widgets/input/drop_down_menu.dart';
 import 'package:lebenswiki_app/presentation/widgets/input/simplified_form_field.dart';
 import 'package:lebenswiki_app/presentation/widgets/common/hacks.dart';
