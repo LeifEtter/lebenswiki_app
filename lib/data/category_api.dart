@@ -55,7 +55,7 @@ class CategoryApi extends BaseApi {
       }
     } catch (error) {
       print(error);
-      throw error;
+      rethrow;
     }
   }
 }
