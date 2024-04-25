@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:either_dart/either.dart';
 import 'package:http/http.dart';
-import 'package:lebenswiki_app/domain/enums/result_type_enum.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/data/base_api.dart';
 import 'package:lebenswiki_app/data/error_handler.dart';
