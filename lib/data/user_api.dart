@@ -1,16 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
-// import 'dart:io';
-// import 'package:either_dart/either.dart';
 import 'package:either_dart/either.dart';
 import 'package:http/http.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
-// import 'package:lebenswiki_app/domain/models/error.model.dart';
 import 'package:lebenswiki_app/data/base_api.dart';
 import 'package:lebenswiki_app/data/error_handler.dart';
-// import 'package:lebenswiki_app/repository/backend/result_model_api.dart';
-// import 'package:lebenswiki_app/domain/models/block.model.dart';
-// import 'package:lebenswiki_app/domain/models/enums.dart';
 import 'package:lebenswiki_app/domain/models/user/user.model.dart';
 import 'package:lebenswiki_app/application/auth/token_handler.dart';
 
@@ -49,39 +43,6 @@ class UserApi extends BaseApi {
       throw Error;
     }
   }
-
-  // Future<String> uploadSingleImageToS3(File image) async {
-  //   log(image.lengthSync());
-  //   MultipartRequest request =
-  //       MultipartRequest('POST', Uri.parse("$serverIp/images/setAvatar"));
-  //   request.files.add(MultipartFile(
-  //       'avatar', image.readAsBytes().asStream(), image.lengthSync(),
-  //       filename: "test-image"));
-
-  //   StreamedResponse res = await request.send();
-  //   log("Status Code for uploading image" + res.statusCode.toString());
-  //   if (res.statusCode == 200 | 201) {
-  //     return "Success Uploading image";
-  //   } else {
-  //     return "Something went wrong";
-  //   }
-  // }
-  // Future<String> uploadSingleImageToS3(File image) async {
-  //   Response resPreSigned =
-  //       await get(Uri.parse("$serverIp/images/getPresigned"));
-  //   log(resPreSigned.body);
-  //   Map decBody = await jsonDecode(resPreSigned.body);
-  //   Uri uri = Uri.parse(decBody["url"]);
-  //   var res = await put(uri,
-  //       body: await image.readAsBytes(),
-  //       headers: {"Content-Type": "image/jpg"});
-  //   log(res);
-  //   Response viewingLink = await get(Uri.parse("$serverIp/images/viewImage"));
-  //   Map decBodyViewing = jsonDecode(viewingLink.body);
-  //   log(decBodyViewing["url"]);
-
-  //   return decBodyViewing["url"];
-  // }
 
   Future<Either<CustomError, String>> deleteAccount() async {
     try {
@@ -191,30 +152,6 @@ class UserApi extends BaseApi {
     }
   }
 
-  // Future<ResultModel> updatePassword({
-  //   required String oldpassword,
-  //   required String newpassword,
-  // }) async {
-  //   Response res = await patch(Uri.parse("$serverIp/users/password/update"),
-  //       headers: await requestHeader(),
-  //       body: jsonEncode({
-  //         "oldPassword": oldpassword,
-  //         "newPassword": newpassword,
-  //       }));
-  //   if (statusIsSuccess(res.statusCode)) {
-  //     return ResultModel(
-  //         type: ResultType.success, message: "Password erfolgreich geändert");
-  //   } else {
-  //     apiErrorHandler.handleAndLog(
-  //         responseData: jsonDecode(res.body), trace: StackTrace.current);
-  //     String errorMessage = jsonDecode(res.body)["error"]["errorMessage"];
-  //     return ResultModel(
-  //       type: ResultType.failure,
-  //       message: errorMessage,
-  //     );
-  //   }
-  // }
-
   Future<Either<CustomError, String>> updateProfile({
     required User user,
   }) async {
@@ -239,94 +176,6 @@ class UserApi extends BaseApi {
       return Left(CustomError(error: error.toString()));
     }
   }
-
-  // Future<Either<CustomError, String>> updateProfileImage(
-  //     {required String profileImage}) async {
-  //   Response res = await put(
-  //     Uri.parse("$serverIp/users/profile/update/image"),
-  //     headers: await requestHeader(),
-  //     body: jsonEncode({
-  //       "profileImage": profileImage,
-  //     }),
-  //   );
-  //   if (statusIsSuccess(res.statusCode)) {
-  //     return const Right("Erfolgreich");
-  //   } else {
-  //     apiErrorHandler.logRes(res, StackTrace.current);
-  //     return const Left(CustomError(error: "Irgendwas ist schiefgelaufen"));
-  //   }
-  // }
-
-  // Future<ResultModel> blockUser({
-  //   required int id,
-  //   required String reason,
-  // }) async {
-  //   Response res = await post(
-  //     Uri.parse("$serverIp/blocks/create/$id"),
-  //     headers: await requestHeader(),
-  //     body: jsonEncode({
-  //       "reason": reason,
-  //     }),
-  //   );
-  //   if (statusIsSuccess(res.statusCode)) {
-  //     return ResultModel(
-  //       type: ResultType.success,
-  //       message: "User erfolgreich geblockt",
-  //     );
-  //   } else {
-  //     apiErrorHandler.handleAndLog(
-  //         responseData: jsonDecode(res.body), trace: StackTrace.current);
-  //     return ResultModel(
-  //       type: ResultType.failure,
-  //       message: "User konnte nicht blockiert werden",
-  //     );
-  //   }
-  // }
-
-  // Future<ResultModel> getBlockedUsers() async {
-  //   Response res = await get(
-  //     Uri.parse("$serverIp/blocks/"),
-  //     headers: await requestHeader(),
-  //   );
-  //   if (statusIsSuccess(res.statusCode)) {
-  //     List blocks = jsonDecode(res.body)["blockedUsers"];
-  //     return ResultModel(
-  //       type: ResultType.success,
-  //       responseList: blocks.map((block) => Block.fromJson(block)).toList(),
-  //     );
-  //   } else {
-  //     return ResultModel(
-  //       type: ResultType.failure,
-  //       responseList: [],
-  //       message: "Du hast keine User blockiert",
-  //     );
-  //   }
-  // }
-
-  // Future<ResultModel> createFeedback({
-  //   required String feedback,
-  // }) async {
-  //   Response res = await post(
-  //     Uri.parse("$serverIp/feedbacks/create"),
-  //     headers: await requestHeader(),
-  //     body: jsonEncode({
-  //       "feedback": feedback,
-  //     }),
-  //   );
-  //   if (statusIsSuccess(res.statusCode)) {
-  //     return ResultModel(
-  //       type: ResultType.success,
-  //       message: "Feedback wurde erstellt",
-  //     );
-  //   } else {
-  //     apiErrorHandler.handleAndLog(
-  //         responseData: jsonDecode(res.body), trace: StackTrace.current);
-  //     return ResultModel(
-  //       type: ResultType.failure,
-  //       message: "Feedback konnte nicht erstellt werden",
-  //     );
-  //   }
-  // }
 
   Future<Either<CustomError, String>> createFeedback(
       {required String type, required String content}) async {
