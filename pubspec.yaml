@@ -2,7 +2,7 @@ name: lebenswiki_app
 description: The official Lebenswiki App Repository.
 
 publish_to: "none"
-version: 1.2.4+6
+version: 1.4.0+7
 
 environment:
   sdk: ">=3.0.0 <3.3.1"
