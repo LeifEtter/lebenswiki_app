@@ -6,11 +6,11 @@ This documentation gives an overview of the App's Layers and their Interactions.
 ## Prerequisites
 
 - Flutter Installed
-- Either:
-   - Android Studio with an Android Simulator
-   - XCode with an iOS Simulator
-   - Real Android or iOS Device connected and with Debugging enabled
-- VSCode oder Android Studio (needed for debugging)
+- One of three options:
+  - Android Studio with an Android Simulator
+  - XCode with an iOS Simulator
+  - Real Android or iOS Device connected and with Debugging enabled
+- VSCode or Android Studio (needed for debugging)
 
 ## Installation
 
@@ -42,15 +42,22 @@ Run this command in the projects route directory:
 flutter run
 ```
 
+You can use following account for testing:
+
+```other
+Email: gandalf@traveler.me
+Password: YouShallnotPassword@1234
+```
+
 ## Introduction
 
 The App contains screens for browsing and creating Packs (interactive articles) and Shorts (short user posts). Additional Screens can be accessed through the top-right menu button.
 
 ## Architecture Overview
 
-The Architecture follows the principles of Domain-Driven-Design. The Domain containing Models, Repository for getting Data from the backend and casting, Application with helpers managing the data and finally the presentation layer containing the ui.
+The Architecture follows the principles of Domain-Driven-Design. Domain contains the Models, Repository retrieves and casts data from the Backend, Application manages the data, and Presentation serves the UI.
 
-![Diagram 2_ Data Flow on Navigation to Pack Editor (6).png](https://res.craft.do/user/full/b0e62220-21e7-3e79-e368-d4886dca007e/doc/0A8DC5E9-899D-434B-8E77-6DA9B8314CFB/5028CDAF-4F25-420A-A422-BD3B932F9BA9_2/joLfjOIJUWRABdEcLjDMMzPGzTlj1KQjvMghe8BIW64z/Diagram%202_%20Data%20Flow%20on%20Navigation%20to%20Pack%20Editor%206.png)
+![Leeres Diagramm (3).png](https://res.craft.do/user/full/b0e62220-21e7-3e79-e368-d4886dca007e/doc/E653D7EC-2788-4642-8FEE-1630E069EE7C/F4823CE2-D8FF-4B87-B930-21D82714C096_2/4wZspFwm8crvRl3VeKTsq1WHXgq6Dgn7K8bJVo2eOd0z/Leeres%20Diagramm%203.png)
 
 Fig 1: Overview Diagram
 
@@ -92,7 +99,7 @@ Contains screens, widgets and providers. This layer encompasses the user interfa
 
 ### State Management
 
-The App utilizes the ChangeNotifier class from [riverpod](https://pub.dev/packages/riverpod) to manage state. 
+The App utilizes the ChangeNotifier class from [riverpod](https://pub.dev/packages/riverpod) to manage state.
 Existing Notifiers:
 
 - FormNotifier: Assists the authentication screen with validatio
@@ -125,9 +132,8 @@ Reusable components that are used in various screens.
 
 ## Layer-Interactions
 
-When a user chooses to edit a Pack, the router instantiates the Creator page. The editor uses the pack helper to retrieve the pack from the pack api. The pack api gets the pack from the backend and casts it into a Pack Object. The object gets returned to the pack helper and then to the screen, which uses it, as well as widgets, to render the editor screen.
+When the user selects "Edit-Pack", the App passes the new route to the Go Router, which retrieves  and Instantiates the Editor Screen. Using the Pack Helper, the Editor Screen tells the Pack Repo to fetch and cast the requested Pack from the Backend. After the Pack Helper initializes and returns the Pack, the Editor Screen serves the UI.
 
 ![Leeres Diagramm (2).png](https://res.craft.do/user/full/b0e62220-21e7-3e79-e368-d4886dca007e/doc/E653D7EC-2788-4642-8FEE-1630E069EE7C/A3DBC8A8-FDB3-4E98-83AB-D9AD7F5F11F2_2/FUdiW7sXr8zLsM9MlWWNyFQ14OrTQODjnJ8QBgMliNcz/Leeres%20Diagramm%202.png)
 
 Figure 2: Control Flow Diagram
-
