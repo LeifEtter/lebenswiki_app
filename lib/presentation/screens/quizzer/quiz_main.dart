@@ -52,13 +52,6 @@ class _QuizzerState extends State<Quizzer> {
 
   @override
   void initState() {
-    // gyroHandler = GyroHandler(
-    //   updateDirectionCallback: (GyroDirection newDirection) {
-    //     setState(() => direction = newDirection);
-    //     answerEvent(newDirection);
-    //   },
-    //   timeBetweenDetections: 2,
-    // );
     super.initState();
   }
 
@@ -76,6 +69,10 @@ class _QuizzerState extends State<Quizzer> {
               return const Center(
                   child: Text("Quiz konnte nicht gefunden werden"));
             }
+            if (gyroHandler != null) {
+              gyroHandler!.initListener();
+            }
+
             PackPage page = snapshot.data!.right;
             List<PackPageItem> onlyQuestionItems = page.items
                 .where((item) => item.type == ItemType.question)
@@ -92,7 +89,7 @@ class _QuizzerState extends State<Quizzer> {
                   setInnerState(() => direction = newDirection);
                   answerEvent(setInnerState, newDirection);
                 },
-                timeBetweenDetections: 2,
+                timeBetweenDetections: 1,
               );
               return PageView(
                 // physics: const NeverScrollableScrollPhysics(),
@@ -161,6 +158,7 @@ class _QuizzerState extends State<Quizzer> {
                       direction = GyroDirection.none;
                       wrongTries = 0;
                     });
+                    gyroHandler!.initListener();
                     _pageController.jumpToPage(0);
                   }),
                 ),

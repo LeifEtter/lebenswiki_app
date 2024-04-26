@@ -13,10 +13,14 @@ class GyroHandler {
     required this.timeBetweenDetections,
   }) {
     gyroTimer = CustomTimer();
+    initListener();
+  }
+
+  void initListener() {
     gyroscopeEventStream().listen(
       checkGyroForDirection,
       onError: (error) => print(error),
-      cancelOnError: true,
+      cancelOnError: false,
     );
   }
 

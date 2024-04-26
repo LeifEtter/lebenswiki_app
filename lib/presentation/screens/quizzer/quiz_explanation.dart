@@ -38,7 +38,7 @@ class _QuizExplanationState extends State<QuizExplanation> {
           print(newDirection);
           answerEvent(newDirection);
         },
-        timeBetweenDetections: 2);
+        timeBetweenDetections: 1);
     super.initState();
   }
 
