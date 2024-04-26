@@ -83,13 +83,8 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
                                   packId: pack.id!, progress: currentIndex + 1)
                               .fold((left) {
                             context.pop();
-                            CustomFlushbar.error(message: left.error)
-                                .show(context);
                           }, (right) {
                             context.pop();
-                            CustomFlushbar.success(
-                                    message: "Fortschritt gespeichert")
-                                .show(context);
                           });
                         } else {
                           context.pop();
@@ -107,7 +102,7 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
                       },
                       bookmarkCallback: () => user == null
                           ? _showRegisterRequest
-                          : _bookmarkCallback(pack),
+                          : _bookmarkCallback(pack, setInnerState),
                       clapCount: pack.totalClaps,
                       bookmarkIcon: pack.userHasBookmarked
                           ? const Icon(Icons.bookmark_added, size: 20)
@@ -230,7 +225,7 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
         .toList();
   }
 
-  void _bookmarkCallback(Pack pack) async {
+  void _bookmarkCallback(Pack pack, Function setInnerState) async {
     pack.userHasBookmarked
         ? await packApi.removeBookmarkPack(pack.id).fold((left) {
             CustomFlushbar.error(message: left.error).show(context);
@@ -246,7 +241,7 @@ class _PackViewerStartedState extends ConsumerState<PackViewerStarted> {
             pack.userHasBookmarked = true;
             pack.totalBookmarks += 1;
           });
-    setState(() {});
+    setInnerState(() => {});
   }
 
   void _clapCallback(Pack pack) async {
