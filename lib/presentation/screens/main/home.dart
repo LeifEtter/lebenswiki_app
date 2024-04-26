@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lebenswiki_app/application/auth/token_handler.dart';
 import 'package:lebenswiki_app/application/other/loading_helper.dart';
 import 'package:lebenswiki_app/domain/models/category.model.dart';
 import 'package:lebenswiki_app/domain/models/error.model.dart';
@@ -58,6 +59,11 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
             return ListView(
               children: [
+                TextButton(
+                    onPressed: () async {
+                      await TokenHandler().set("dfasdfaskdf");
+                    },
+                    child: Text("insert wt")),
                 user != null
                     ? FutureBuilder(
                         future: PackApi().getReadPacks(),
