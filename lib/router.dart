@@ -91,8 +91,12 @@ GoRouter createRouter(String? initialLocation) => GoRouter(
                 GoRoute(
                   path: "pack",
                   builder: (context, state) {
-                    Pack? pack = state.extra as Pack;
-                    return CreatorPackInfo(pack: pack);
+                    if (state.extra != null) {
+                      Pack? pack = state.extra as Pack;
+                      return CreatorPackInfo(pack: pack);
+                    } else {
+                      return const CreatorPackInfo();
+                    }
                   },
                 ),
               ],
