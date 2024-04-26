@@ -2,6 +2,7 @@
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomFlushbar extends StatelessWidget {
   late final Color color;
@@ -54,7 +55,7 @@ class CustomFlushbar extends StatelessWidget {
     flush(context).show(context);
   }
 
-  Flushbar flush(context) => Flushbar(
+  Flushbar flush(BuildContext context) => Flushbar(
         backgroundColor: color,
         icon: icon,
         flushbarStyle: FlushbarStyle.FLOATING,
