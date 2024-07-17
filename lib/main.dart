@@ -44,14 +44,14 @@ void main() async {
 
 Future<(String, User?)> getRoute() async {
   final TokenHandler tokenHandler = TokenHandler();
-
-  if ((await PrefHandler.isBrowsingAnonymously())) {
-    return ("/", null);
-  }
-
   String? token = await tokenHandler.get();
+
   if (token == null || token == "") {
     return ("/register", null);
+  }
+
+  if ((await PrefHandler.isBrowsingAnonymously()) && token == "") {
+    return ("/", null);
   }
 
   Either<CustomError, User> authResult =
