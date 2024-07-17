@@ -57,6 +57,7 @@ Future<(String, User?)> getRoute() async {
   Either<CustomError, User> authResult =
       await UserApi().authenticate(token: token);
   if (authResult.isLeft) {
+    await TokenHandler().delete();
     return ("/login", null);
   }
   if (authResult.isRight) {
