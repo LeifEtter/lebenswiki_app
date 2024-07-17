@@ -13,6 +13,7 @@ import 'package:lebenswiki_app/presentation/providers/user_provider.dart';
 import 'package:lebenswiki_app/presentation/screens/main/community.dart';
 import 'package:lebenswiki_app/presentation/screens/main/explore.dart';
 import 'package:lebenswiki_app/presentation/screens/main/home.dart';
+import 'package:lebenswiki_app/presentation/widgets/buttons/debug_buttons.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/appbar.dart';
