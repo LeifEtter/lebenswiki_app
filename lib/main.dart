@@ -25,6 +25,8 @@ void main() async {
   (String, User?) initRouteResults = await getRoute();
   List<Category> categories = await CategoryApi().getCategories();
   GoRouter router = createRouter(initRouteResults.$1);
+
+  // Test Token
   await SentryFlutter.init(
     (options) {
       options.dsn =
