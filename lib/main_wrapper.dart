@@ -98,9 +98,12 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
                               snapshot) {
                         if (snapshot.connectionState != ConnectionState.done) {
                           return LoadingHelper.loadingIndicator();
-                        }
-                        if (snapshot.data == null || snapshot.data!.isLeft) {
+                        } else if (snapshot.data == null) {
                           return const Text("Something went wrong");
+                        } else if (snapshot.data!.isLeft &&
+                            snapshot.data!.left.error ==
+                                "Authentication Failed") {
+                          context.go("/login");
                         }
                         List<Category> categories = snapshot.data!.right;
                         return TabBarView(

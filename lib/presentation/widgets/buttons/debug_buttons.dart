@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart';
 import 'package:lebenswiki_app/application/auth/token_handler.dart';
 
 class DebugButtons extends StatelessWidget {
@@ -24,7 +23,8 @@ class DebugButtons extends StatelessWidget {
         ),
         TextButton(
           onPressed: () async => {
-            print(await TokenHandler().set("imawrongjwttoken")),
+            print(await TokenHandler().set(
+                "eyJ1c2VyX2lkIjo4MCwiaWF0IjoxNzA3ODY5NzU5LCJleHAiOjE3MDc4NzY5NTl9.0puX_2aPrbKI5X3ig5r1dUfDuZbI6N69voFutqsmT8I")),
           },
           child: Text("Set False JWT"),
         ),

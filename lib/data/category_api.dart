@@ -29,6 +29,9 @@ class CategoryApi extends BaseApi {
       } else {
         // await Sentry.captureEvent(SentryEvent(message: SentryMessage("")),));
         apiErrorHandler.logRes(res, StackTrace.current);
+        if (res.statusCode == 401) {
+          return const Left(CustomError(error: "Authentication Issue"));
+        }
         return const Left(CustomError(error: "Irgendwas ist schiefgelaufen"));
       }
     } catch (error) {

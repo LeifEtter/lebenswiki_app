@@ -5,12 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="da07e9fc-ed00-41eb-86c1-049eeb7926df" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/app/android.app.androidTest.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/app/android.app.androidTest.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/app/android.app.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/app/android.app.main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/app/android.app.unitTest.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/app/android.app.unitTest.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/data/base_api.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/data/base_api.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/data/category_api.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/data/category_api.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/data/pack_api.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/data/pack_api.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/main_wrapper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/main_wrapper.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/presentation/widgets/buttons/debug_buttons.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/presentation/widgets/buttons/debug_buttons.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

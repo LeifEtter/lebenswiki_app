@@ -68,7 +68,6 @@ class _AuthenticationViewState extends ConsumerState<AuthenticationView>
           key: _authFormKey,
           child: ListView(
             children: [
-              const DebugButtons(),
               Center(
                 child: Text(
                   isSignUp ? "Registrieren" : "Login",

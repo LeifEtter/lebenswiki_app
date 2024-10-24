@@ -59,7 +59,6 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
             return ListView(
               children: [
-                const DebugButtons(),
                 user != null
                     ? FutureBuilder(
                         future: PackApi().getReadPacks(),

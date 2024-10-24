@@ -15,7 +15,6 @@ import 'package:lebenswiki_app/data/user_api.dart';
 import 'package:lebenswiki_app/application/auth/token_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,23 +24,29 @@ void main() async {
   (String, User?) initRouteResults = await getRoute();
   List<Category> categories = await CategoryApi().getCategories();
   GoRouter router = createRouter(initRouteResults.$1);
-
   // Test Token
-  await SentryFlutter.init(
-    (options) {
-      options.dsn =
-          'https://c30e1c85e3fcf934335f96d328f23ae0@o4506802868846592.ingest.sentry.io/4506802920226816';
-      options.tracesSampleRate = 1.0;
-    },
-    appRunner: () => runApp(
-      ProviderScope(
-          child: LebenswikiApp(
-        user: initRouteResults.$2,
-        categories: categories,
-        router: router,
-      )),
-    ),
-  );
+  // await SentryFlutter.init(
+  //   (options) {
+  //     options.dsn =
+  //         'https://c30e1c85e3fcf934335f96d328f23ae0@o4506802868846592.ingest.sentry.io/4506802920226816';
+  //     options.tracesSampleRate = 1.0;
+  //   },
+  //   appRunner: () => runApp(
+  //     ProviderScope(
+  //         child: LebenswikiApp(
+  //       user: initRouteResults.$2,
+  //       categories: categories,
+  //       router: router,
+  //     )),
+  //   ),
+  // );
+  //TODO Reimplement Sentry
+  runApp(ProviderScope(
+      child: LebenswikiApp(
+    user: initRouteResults.$2,
+    categories: categories,
+    router: router,
+  )));
 }
 
 Future<(String, User?)> getRoute() async {
@@ -62,7 +67,7 @@ Future<(String, User?)> getRoute() async {
     await TokenHandler().delete();
     return ("/login", null);
   }
-  if (authResult.isRight) {
+  if (authResult.isRight || authResult.right.id != 0) {
     return ("/", authResult.right);
   }
   return ("/login", null);
