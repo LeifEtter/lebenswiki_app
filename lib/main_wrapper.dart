@@ -104,23 +104,28 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
                             snapshot.data!.left.error ==
                                 "Authentication Failed") {
                           context.go("/login");
+                          return Container();
+                        } else if (snapshot.data!.isRight) {
+                          List<Category> categories = snapshot.data!.right;
+                          return TabBarView(
+                            controller: tabController,
+                            children: [
+                              const HomeView(),
+                              Consumer(builder: (context, ref, child) {
+                                bool isSearching =
+                                    ref.watch(searchStateProvider).isSearching;
+                                return ExploreView(
+                                  isSearching: isSearching,
+                                  categoriesWithPacks: categories,
+                                );
+                              }),
+                              const CommunityView(),
+                            ],
+                          );
+                        } else {
+                          return const Center(
+                              child: Text("Something went wrong"));
                         }
-                        List<Category> categories = snapshot.data!.right;
-                        return TabBarView(
-                          controller: tabController,
-                          children: [
-                            const HomeView(),
-                            Consumer(builder: (context, ref, child) {
-                              bool isSearching =
-                                  ref.watch(searchStateProvider).isSearching;
-                              return ExploreView(
-                                isSearching: isSearching,
-                                categoriesWithPacks: categories,
-                              );
-                            }),
-                            const CommunityView(),
-                          ],
-                        );
                       })),
             ),
           ],
