@@ -1,7 +1,7 @@
 name: lebenswiki_app
 description: The official Lebenswiki App Repository.
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 1.5.1+16
+publish_to: "none"
+version: 1.5.1+17
 
 environment:
   sdk: ^3.9.2
