@@ -13,7 +13,6 @@ import 'package:lebenswiki_app/presentation/providers/user_provider.dart';
 import 'package:lebenswiki_app/presentation/screens/main/community.dart';
 import 'package:lebenswiki_app/presentation/screens/main/explore.dart';
 import 'package:lebenswiki_app/presentation/screens/main/home.dart';
-import 'package:lebenswiki_app/presentation/widgets/buttons/debug_buttons.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/custom_flushbar.dart';
 import 'package:lebenswiki_app/presentation/widgets/interactions/register_request_popup.dart';
 import 'package:lebenswiki_app/presentation/widgets/navigation/appbar.dart';
@@ -64,8 +63,10 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
     return PopScope(
       onPopInvoked: (bool bool) => false,
       child: Scaffold(
-        floatingActionButton:
-            _buildAddButton(ref, user: ref.read(userProvider).user),
+        floatingActionButton: _buildAddButton(
+          ref,
+          user: ref.read(userProvider).user,
+        ),
         backgroundColor: Colors.white,
         extendBody: true,
         bottomNavigationBar: CustomBottomBar(
@@ -78,24 +79,29 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
               top: true,
               bottom: false,
               child: NestedScrollView(
-                  headerSliverBuilder: (context, innerBoxIsScrolled) {
-                    return [
-                      appBar(context,
-                          onPress: () => showBottomMenuForNavigation(
-                                context,
-                                ref,
-                                () => setState(() {}),
-                                ref.read(userProvider).user,
-                              )),
-                      if (_showSearch)
-                        searchBar(context, controller: searchController),
-                    ];
-                  },
-                  body: FutureBuilder(
-                      future: CategoryApi().getCategorizedPacksAndShorts(),
-                      builder: (context,
-                          AsyncSnapshot<Either<CustomError, List<Category>>>
-                              snapshot) {
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return [
+                    appBar(
+                      context,
+                      onPress: () => showBottomMenuForNavigation(
+                        context,
+                        ref,
+                        () => setState(() {}),
+                        ref.read(userProvider).user,
+                      ),
+                    ),
+                    if (_showSearch)
+                      searchBar(context, controller: searchController),
+                  ];
+                },
+                body: FutureBuilder(
+                  future: CategoryApi().getCategorizedPacksAndShorts(),
+                  builder:
+                      (
+                        context,
+                        AsyncSnapshot<Either<CustomError, List<Category>>>
+                        snapshot,
+                      ) {
                         if (snapshot.connectionState != ConnectionState.done) {
                           return LoadingHelper.loadingIndicator();
                         } else if (snapshot.data == null) {
@@ -111,22 +117,28 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
                             controller: tabController,
                             children: [
                               const HomeView(),
-                              Consumer(builder: (context, ref, child) {
-                                bool isSearching =
-                                    ref.watch(searchStateProvider).isSearching;
-                                return ExploreView(
-                                  isSearching: isSearching,
-                                  categoriesWithPacks: categories,
-                                );
-                              }),
+                              Consumer(
+                                builder: (context, ref, child) {
+                                  bool isSearching = ref
+                                      .watch(searchStateProvider)
+                                      .isSearching;
+                                  return ExploreView(
+                                    isSearching: isSearching,
+                                    categoriesWithPacks: categories,
+                                  );
+                                },
+                              ),
                               const CommunityView(),
                             ],
                           );
                         } else {
                           return const Center(
-                              child: Text("Something went wrong"));
+                            child: Text("Something went wrong"),
+                          );
                         }
-                      })),
+                      },
+                ),
+              ),
             ),
           ],
         ),
@@ -135,46 +147,46 @@ class _NavBarWrapperState extends ConsumerState<NavBarWrapper>
   }
 
   Widget _buildAddButton(WidgetRef ref, {required User? user}) => SpeedDial(
-        iconTheme: const IconThemeData(size: 40),
-        backgroundColor: CustomColors.blue,
-        direction: SpeedDialDirection.up,
-        icon: Icons.add_rounded,
-        children: [
-          SpeedDialChild(
-            label: "Lernpack Erstellen",
-            child: const Icon(Icons.comment),
-            onTap: () {
-              if (user == null) {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) =>
-                        RegisterRequestPopup(ref));
-              } else if (user.role!.level < 3) {
-                CustomFlushbar.error(
-                        message:
-                            "Du musst Creator sein um Lernpacks zu erstellen")
-                    .show(context);
-              } else {
-                context.go("/create/pack");
-              }
-            },
-          ),
-          SpeedDialChild(
-              label: "Short Erstellen",
-              child: const Icon(Icons.add),
-              onTap: () async {
-                if (user == null) {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) =>
-                          RegisterRequestPopup(ref));
-                } else {
-                  await context.push("/create/short");
-                  setState(() {});
-                }
-              })
-        ],
-      );
+    iconTheme: const IconThemeData(size: 40),
+    backgroundColor: CustomColors.blue,
+    direction: SpeedDialDirection.up,
+    icon: Icons.add_rounded,
+    children: [
+      SpeedDialChild(
+        label: "Lernpack Erstellen",
+        child: const Icon(Icons.comment),
+        onTap: () {
+          if (user == null) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => RegisterRequestPopup(ref),
+            );
+          } else if (user.role!.level < 3) {
+            CustomFlushbar.error(
+              message: "Du musst Creator sein um Lernpacks zu erstellen",
+            ).show(context);
+          } else {
+            context.go("/create/pack");
+          }
+        },
+      ),
+      SpeedDialChild(
+        label: "Short Erstellen",
+        child: const Icon(Icons.add),
+        onTap: () async {
+          if (user == null) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => RegisterRequestPopup(ref),
+            );
+          } else {
+            await context.push("/create/short");
+            setState(() {});
+          }
+        },
+      ),
+    ],
+  );
 
   void _updateIndex(int newIndex) {
     if (_currentIndex != newIndex) {

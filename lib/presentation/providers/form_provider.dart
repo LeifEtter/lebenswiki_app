@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lebenswiki_app/application/auth/string_validation_extensions.dart';
 import 'package:lebenswiki_app/domain/models/user/user.model.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 class ValidationModel {
   String? value;
@@ -36,8 +36,10 @@ class FormNotifier extends ChangeNotifier {
     if (val != null && val.isValidPassword) {
       _password = ValidationModel(val, null);
     } else {
-      _password = ValidationModel(null,
-          'Password sollte mind. 8 Zeichen lang sein, einen Groß- und Kleinbuchstaben als auch eine Zahl und Symbol enthalten');
+      _password = ValidationModel(
+        null,
+        'Password sollte mind. 8 Zeichen lang sein, einen Groß- und Kleinbuchstaben als auch eine Zahl und Symbol enthalten',
+      );
     }
     notifyListeners();
   }
@@ -46,8 +48,10 @@ class FormNotifier extends ChangeNotifier {
     if (val != null && val.isValidPassword) {
       _oldPassword = ValidationModel(val, null);
     } else {
-      _oldPassword = ValidationModel(null,
-          'Password sollte mind. 6 Zeichen lang sein, einen Groß- und Kleinbuchstaben als auch eine Zahl enthalten');
+      _oldPassword = ValidationModel(
+        null,
+        'Password sollte mind. 6 Zeichen lang sein, einen Groß- und Kleinbuchstaben als auch eine Zahl enthalten',
+      );
     }
     notifyListeners();
   }
@@ -56,8 +60,10 @@ class FormNotifier extends ChangeNotifier {
     if (val != null && val == _password.value) {
       _repeatPassword = ValidationModel(val, null);
     } else {
-      _repeatPassword =
-          ValidationModel(null, 'Passwörter müssen übereinstimmen');
+      _repeatPassword = ValidationModel(
+        null,
+        'Passwörter müssen übereinstimmen',
+      );
     }
     notifyListeners();
   }
@@ -94,12 +100,12 @@ class FormNotifier extends ChangeNotifier {
   }
 
   User convertToUser() => User(
-        isFirstLogin: true,
-        name: _name.value ?? "",
-        email: _email.value,
-        biography: _biography.value ?? "",
-        password: password.value,
-      );
+    isFirstLogin: true,
+    name: _name.value ?? "",
+    email: _email.value,
+    biography: _biography.value ?? "",
+    password: password.value,
+  );
 
   bool get validateForRegister {
     validateName(_name.value);

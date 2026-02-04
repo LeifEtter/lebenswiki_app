@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:lebenswiki_app/domain/models/category.model.dart';
 
 class CategoryProvider extends ChangeNotifier {
@@ -18,5 +18,6 @@ class CategoryProvider extends ChangeNotifier {
   }
 }
 
-final categoryProvider =
-    ChangeNotifierProvider<CategoryProvider>(((ref) => CategoryProvider()));
+final categoryProvider = ChangeNotifierProvider<CategoryProvider>(
+  ((ref) => CategoryProvider()),
+);

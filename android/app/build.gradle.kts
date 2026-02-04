@@ -13,10 +13,12 @@ val keystorePropertiesFile = rootProject.file("key.properties")
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
+
 android {
-    namespace = "com.example.lebenswiki_app"
-    compileSdk = 35
-    ndkVersion = "27.0.12077973"
+    namespace = "com.lebenswiki_projekt.lebenswiki_app"
+    // compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -32,12 +34,11 @@ android {
         applicationId = "com.lebenswiki_projekt.lebenswiki_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 26
-        targetSdk = 35
+        minSdk = flutter.minSdkVersion
+        // targetSdk = flutter.targetSdkVersion
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-
-        multiDexEnabled = true
     }
 
     signingConfigs {
