@@ -31,7 +31,8 @@ class ExploreView extends ConsumerStatefulWidget {
 class _ExploreViewState extends ConsumerState<ExploreView> {
   late List<Category> categoriesWithPacks;
   late Category selectedCategory;
-  final CarouselController carouselController = CarouselController();
+  final CarouselSliderController carouselController =
+      CarouselSliderController();
 
   @override
   void initState() {

@@ -59,10 +59,9 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
         .categories
         .skip(0)
         .toList()
-        .map<DropDownItem>((Category cat) => DropDownItem(
-              id: cat.id,
-              name: cat.name,
-            ))
+        .map<DropDownItem>(
+          (Category cat) => DropDownItem(id: cat.id, name: cat.name),
+        )
         .toList();
 
     user = ref.read(userProvider).user!;
@@ -106,25 +105,28 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
                 ],
                 readTime: 1,
               );
+
               bool isUpdate = widget.pack != null;
               int packId;
               if (isUpdate) {
-                Either<CustomError, Pack> updateRes =
-                    await PackApi().updatePack(packToSave, widget.pack!.id!);
+                Either<CustomError, Pack> updateRes = await PackApi()
+                    .updatePack(packToSave, widget.pack!.id!);
                 if (updateRes.isLeft) {
-                  CustomFlushbar.error(message: updateRes.left.error)
-                      .show(context);
+                  CustomFlushbar.error(
+                    message: updateRes.left.error,
+                  ).show(context);
                   return;
                 } else {
                   packId = updateRes.right.id!;
                 }
               } else {
-                Either<CustomError, Pack> createRes =
-                    await PackApi().createPack(packToSave);
-
+                print(packToSave);
+                Either<CustomError, Pack> createRes = await PackApi()
+                    .createPack(packToSave);
                 if (createRes.isLeft) {
-                  CustomFlushbar.error(message: createRes.left.error)
-                      .show(context);
+                  CustomFlushbar.error(
+                    message: createRes.left.error,
+                  ).show(context);
                   return;
                 } else {
                   packId = createRes.right.id!;
@@ -134,7 +136,9 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
                 print("Doing upload");
                 Either<CustomError, String> imageUpload = await PackApi()
                     .uploadCoverImage(
-                        pathToImage: pickedImage!.path, packId: packId);
+                      pathToImage: pickedImage!.path,
+                      packId: packId,
+                    );
                 if (imageUpload.isLeft) {
                   CustomFlushbar.error(
                     message:
@@ -143,8 +147,9 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
                 }
               }
               await context.push("/create/pack");
-              CustomFlushbar.success(message: "Pack erfolgreich gespeichert")
-                  .show(context);
+              CustomFlushbar.success(
+                message: "Pack erfolgreich gespeichert",
+              ).show(context);
             },
           ),
           ListView(
@@ -188,10 +193,9 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
                 padding: const EdgeInsets.only(bottom: 8.0, left: 3.0),
                 child: Text(
                   "Kategorie Wählen",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(fontSize: 16),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall!.copyWith(fontSize: 16),
                 ),
               ),
               CustomDropDownMenu(
@@ -204,8 +208,9 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
               S.h30(),
               GestureDetector(
                 onTap: () async {
-                  XFile? file =
-                      await picker.pickImage(source: ImageSource.gallery);
+                  XFile? file = await picker.pickImage(
+                    source: ImageSource.gallery,
+                  );
 
                   if (file != null) {
                     pickedImage = file;
@@ -218,38 +223,41 @@ class _CreatorPackInfoState extends ConsumerState<CreatorPackInfo> {
                     boxShadow: [LebenswikiShadows.fancyShadow],
                     color: Colors.white,
                     image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: imageIsWeb(imageCurrentlyShowing)
-                            ? NetworkImage(imageCurrentlyShowing.replaceAll(
-                                "https", "http"))
-                            : AssetImage(imageCurrentlyShowing)
-                                as ImageProvider),
+                      fit: BoxFit.cover,
+                      image: imageIsWeb(imageCurrentlyShowing)
+                          ? NetworkImage(
+                              imageCurrentlyShowing.replaceAll("https", "http"),
+                            )
+                          : AssetImage(imageCurrentlyShowing) as ImageProvider,
+                    ),
                   ),
                   width: double.infinity,
                   height: 200,
                   child: imageIsLoading
                       ? LoadingHelper.loadingIndicator()
                       : imageCurrentlyShowing == packPlaceholder
-                          ? Center(
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 10),
-                                decoration: BoxDecoration(
-                                  color:
-                                      const Color.fromRGBO(255, 255, 255, 0.6),
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: Text(
-                                  "Bild Ändern",
-                                  style: Theme.of(context).textTheme.labelSmall,
-                                ),
-                              ),
-                            )
-                          : Center(
-                              child: Text(
-                              "Wähle ein Bild",
+                      ? Center(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color.fromRGBO(255, 255, 255, 0.6),
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            child: Text(
+                              "Bild Ändern",
                               style: Theme.of(context).textTheme.labelSmall,
-                            )),
+                            ),
+                          ),
+                        )
+                      : Center(
+                          child: Text(
+                            "Wähle ein Bild",
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                        ),
                 ),
               ),
             ],

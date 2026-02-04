@@ -14,7 +14,7 @@ class CategoryApi extends BaseApi {
     apiErrorHandler = ApiErrorHandler();
   }
   Future<Either<CustomError, List<Category>>>
-      getCategorizedPacksAndShorts() async {
+  getCategorizedPacksAndShorts() async {
     try {
       Response res = await get(
         Uri.parse("$serverIp/category/packsAndShorts"),
@@ -23,12 +23,16 @@ class CategoryApi extends BaseApi {
 
       if (res.statusCode == 200) {
         List<dynamic> body = await jsonDecode(res.body);
-        List<Category> categories =
-            body.map((e) => Category.fromJson(e)).toList();
+        List<Category> categories = body
+            .map((e) => Category.fromJson(e))
+            .toList();
         return Right(categories);
       } else {
         // await Sentry.captureEvent(SentryEvent(message: SentryMessage("")),));
         apiErrorHandler.logRes(res, StackTrace.current);
+        if (res.statusCode == 401) {
+          return const Left(CustomError(error: "Authentication Issue"));
+        }
         return const Left(CustomError(error: "Irgendwas ist schiefgelaufen"));
       }
     } catch (error) {
@@ -40,14 +44,16 @@ class CategoryApi extends BaseApi {
 
   Future<List<Category>> getCategories() async {
     try {
+      print("$serverIp/category/");
       Response res = await get(
         Uri.parse("$serverIp/category/"),
         headers: await requestHeader(),
       );
       if (res.statusCode == 200) {
         List body = jsonDecode(res.body);
-        List<Category> categories =
-            body.map((e) => Category.fromJson(e)).toList();
+        List<Category> categories = body
+            .map((e) => Category.fromJson(e))
+            .toList();
         return categories;
       } else {
         log(res.body);

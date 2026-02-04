@@ -53,8 +53,10 @@ class _PackCardState extends ConsumerState<PackCard> {
     pack = widget.pack;
     user = ref.read(userProvider).user;
     if (widget.pack.readProgress > 0) isReading = true;
-    progressPercentage =
-        calculateProgressPercentage(pack.readProgress, pack.pages.length);
+    progressPercentage = calculateProgressPercentage(
+      pack.readProgress,
+      pack.pages.length,
+    );
     return GestureDetector(
       // onTap: () async {
       //   isReading || widget.isDraftView || pack.readProgress >= 1
@@ -83,8 +85,8 @@ class _PackCardState extends ConsumerState<PackCard> {
         decoration: BoxDecoration(
           border:
               (pack.published && user != null && pack.creator!.id == user!.id)
-                  ? Border.all(width: 3, color: Colors.green.shade200)
-                  : null,
+              ? Border.all(width: 3, color: Colors.green.shade200)
+              : null,
           borderRadius: BorderRadius.circular(15.0),
           color: CustomColors.lightGrey,
         ),
@@ -104,6 +106,9 @@ class _PackCardState extends ConsumerState<PackCard> {
                       ),
                       child: Hero(
                         tag: "${widget.heroParent}-${pack.id}-hero",
+                        // child: Image.asset(
+                        //   "assets/images/image_placeholder.png",
+                        // ),
                         child: pack.titleImage != null
                             ? Image.network(
                                 pack.titleImage!.replaceAll('https', 'http'),
@@ -129,10 +134,7 @@ class _PackCardState extends ConsumerState<PackCard> {
                             backgroundColor: CustomColors.whiteOverlay,
                           ),
                           InfoLabel(
-                            icon: const Icon(
-                              Icons.schedule,
-                              size: 18,
-                            ),
+                            icon: const Icon(Icons.schedule, size: 18),
                             text: (pack.pages.length).toString(),
                             backgroundColor: CustomColors.whiteOverlay,
                           ),
@@ -151,16 +153,18 @@ class _PackCardState extends ConsumerState<PackCard> {
                           child: Container(
                             height: 40,
                             decoration: BoxDecoration(
-                                boxShadow: [LebenswikiShadows.fancyShadow]),
+                              boxShadow: [LebenswikiShadows.fancyShadow],
+                            ),
                             child: InfoLabel(
-                                textStyle: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                  color: CustomColors.offBlack,
-                                ),
-                                borderRadius: 10.0,
-                                text: "VERÖFFENTLICHT",
-                                backgroundColor: Colors.green.shade200),
+                              textStyle: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                                color: CustomColors.offBlack,
+                              ),
+                              borderRadius: 10.0,
+                              text: "VERÖFFENTLICHT",
+                              backgroundColor: Colors.green.shade200,
+                            ),
                           ),
                         )
                       : Container(),
@@ -175,7 +179,11 @@ class _PackCardState extends ConsumerState<PackCard> {
                     width: double.infinity,
                     child: Padding(
                       padding: const EdgeInsets.only(
-                          left: 0, top: 15, right: 5, bottom: 0),
+                        left: 0,
+                        top: 15,
+                        right: 5,
+                        bottom: 0,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -188,12 +196,13 @@ class _PackCardState extends ConsumerState<PackCard> {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
-                                left: 10, bottom: 0, top: 5),
+                              left: 10,
+                              bottom: 0,
+                              top: 5,
+                            ),
                             child: Text(
                               "von ${pack.creator!.name} ${pack.initiative.isNotEmpty ? "für ${pack.initiative}" : ""}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
+                              style: Theme.of(context).textTheme.bodySmall!
                                   .copyWith(fontSize: 11.0, height: 1.1),
                             ),
                           ),
@@ -220,61 +229,71 @@ class _PackCardState extends ConsumerState<PackCard> {
                                   onPressed: () async {
                                     if (user == null) {
                                       showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) =>
-                                              RegisterRequestPopup(ref));
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            RegisterRequestPopup(ref),
+                                      );
                                     } else {
                                       await showDialog(
                                         context: context,
                                         builder: (context) => ReportDialog(
                                           resourceName: "Pack",
-                                          reportCallback: (bool blockUser,
-                                              String reason) async {
-                                            Either<CustomError, String>
-                                                reportResult =
-                                                await PackApi().reportPack(
-                                                    widget.pack.id!, reason);
-                                            if (reportResult.isRight &&
-                                                !blockUser) {
-                                              CustomFlushbar.success(
-                                                      message:
-                                                          "Pack wurde gemeldet. Wir sehen uns deine Meldung an")
-                                                  .show(context);
+                                          reportCallback:
+                                              (
+                                                bool blockUser,
+                                                String reason,
+                                              ) async {
+                                                Either<CustomError, String>
+                                                reportResult = await PackApi()
+                                                    .reportPack(
+                                                      widget.pack.id!,
+                                                      reason,
+                                                    );
+                                                if (reportResult.isRight &&
+                                                    !blockUser) {
+                                                  CustomFlushbar.success(
+                                                    message:
+                                                        "Pack wurde gemeldet. Wir sehen uns deine Meldung an",
+                                                  ).show(context);
 
-                                              return;
-                                            }
-                                            if (reportResult.isLeft) {
-                                              CustomFlushbar.error(
+                                                  return;
+                                                }
+                                                if (reportResult.isLeft) {
+                                                  CustomFlushbar.error(
+                                                    message:
+                                                        "Pack konnte nicht gemeldet werden",
+                                                  ).show(context);
+                                                  return;
+                                                }
+                                                if (blockUser) {
+                                                  Either<CustomError, String>
+                                                  blockResult = await UserApi()
+                                                      .blockUser(
+                                                        widget
+                                                            .pack
+                                                            .creator!
+                                                            .id!,
+                                                        reason,
+                                                      );
+                                                  if (blockResult.isRight) {
+                                                    CustomFlushbar.success(
                                                       message:
-                                                          "Pack konnte nicht gemeldet werden")
-                                                  .show(context);
-                                              return;
-                                            }
-                                            if (blockUser) {
-                                              Either<CustomError, String>
-                                                  blockResult =
-                                                  await UserApi().blockUser(
-                                                      widget.pack.creator!.id!,
-                                                      reason);
-                                              if (blockResult.isRight) {
-                                                CustomFlushbar.success(
-                                                        message:
-                                                            "Nutzer wurde blockiert. Shorts und Packs des Nutzers werden nicht mehr bei dir auftauchen")
-                                                    .show(context);
-                                                ref
-                                                    .read(reloadProvider)
-                                                    .reload();
-                                                return;
-                                              }
-                                              if (blockResult.isLeft) {
-                                                CustomFlushbar.error(
-                                                        message:
-                                                            "Nutzer konnte nicht blockiert werden. Bitte kontaktiere uns. Wir haben jedoch das Pack gemeldet.")
-                                                    .show(context);
-                                                return;
-                                              }
-                                            }
-                                          },
+                                                          "Nutzer wurde blockiert. Shorts und Packs des Nutzers werden nicht mehr bei dir auftauchen",
+                                                    ).show(context);
+                                                    ref
+                                                        .read(reloadProvider)
+                                                        .reload();
+                                                    return;
+                                                  }
+                                                  if (blockResult.isLeft) {
+                                                    CustomFlushbar.error(
+                                                      message:
+                                                          "Nutzer konnte nicht blockiert werden. Bitte kontaktiere uns. Wir haben jedoch das Pack gemeldet.",
+                                                    ).show(context);
+                                                    return;
+                                                  }
+                                                }
+                                              },
                                         ),
                                       );
                                     }
@@ -295,9 +314,10 @@ class _PackCardState extends ConsumerState<PackCard> {
                                   onPressed: () {
                                     if (user == null) {
                                       showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) =>
-                                              RegisterRequestPopup(ref));
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            RegisterRequestPopup(ref),
+                                      );
                                     } else {
                                       _bookmarkCallback();
                                     }
@@ -317,99 +337,112 @@ class _PackCardState extends ConsumerState<PackCard> {
   }
 
   Widget _buildInfoBar(context, ref) => SizedBox(
-        height: 35,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            InfoBar(
-              height: 35,
-              width: 160,
-              items: [
-                InfoItem.forText(
-                    text: DateFormat.MMMd().format(widget.pack.creationDate!) +
-                        ", " +
-                        DateFormat.y()
-                            .format(widget.pack.creationDate!)
-                            .split('20')
-                            .last),
-                InfoItem.forIconLabel(
-                  onPress: () async {
-                    if (user == null) {
-                      showDialog(
-                          context: context,
-                          builder: (context) => RegisterRequestPopup(ref));
-                    } else {
-                      pack.userHasClapped
-                          ? CustomFlushbar.error(
-                                  message: "Du hast schon geklatscht")
-                              .show(context)
-                          : (await PackApi().clapForPack(pack.id)).fold(
-                              (left) {
-                                CustomFlushbar.error(message: left.error)
-                                    .show(context);
-                              },
-                              (right) {
-                                CustomFlushbar.success(message: right)
-                                    .show(context);
-                                setState(() {
-                                  pack.userHasClapped = true;
-                                  pack.totalClaps += 1;
-                                });
-                              },
-                            );
-                    }
-                  },
-                  emoji: Emoji.byName("clapping hands").toString(),
-                  indicator: pack.totalClaps.toString(),
-                ),
-                // InfoItem.forIconLabel(
-                //   onPress: () => {},
-                //   //TODO Implement Navigate to comment view
-                //   // onPress: () => Navigator.push(
-                //   //     context,
-                //   //     MaterialPageRoute(
-                //   //         builder: (context) =>
-                //   //             CommentView(isShort: false, id: pack.id!))),
-                //   icon: const Icon(
-                //     Icons.mode_comment,
-                //     size: 15,
-                //   ),
-                //   indicator: pack.comments.length.toString(),
-                // ),
-              ],
+    height: 35,
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InfoBar(
+          height: 35,
+          width: 160,
+          items: [
+            InfoItem.forText(
+              text:
+                  DateFormat.MMMd().format(widget.pack.creationDate!) +
+                  ", " +
+                  DateFormat.y()
+                      .format(widget.pack.creationDate!)
+                      .split('20')
+                      .last,
             ),
+            InfoItem.forIconLabel(
+              onPress: () async {
+                if (user == null) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => RegisterRequestPopup(ref),
+                  );
+                } else {
+                  pack.userHasClapped
+                      ? CustomFlushbar.error(
+                          message: "Du hast schon geklatscht",
+                        ).show(context)
+                      : (await PackApi().clapForPack(pack.id)).fold(
+                          (left) {
+                            CustomFlushbar.error(
+                              message: left.error,
+                            ).show(context);
+                          },
+                          (right) {
+                            CustomFlushbar.success(
+                              message: right,
+                            ).show(context);
+                            setState(() {
+                              pack.userHasClapped = true;
+                              pack.totalClaps += 1;
+                            });
+                          },
+                        );
+                }
+              },
+              emoji: Emoji.byName("clapping hands").toString(),
+              indicator: pack.totalClaps.toString(),
+            ),
+            // InfoItem.forIconLabel(
+            //   onPress: () => {},
+            //   //TODO Implement Navigate to comment view
+            //   // onPress: () => Navigator.push(
+            //   //     context,
+            //   //     MaterialPageRoute(
+            //   //         builder: (context) =>
+            //   //             CommentView(isShort: false, id: pack.id!))),
+            //   icon: const Icon(
+            //     Icons.mode_comment,
+            //     size: 15,
+            //   ),
+            //   indicator: pack.comments.length.toString(),
+            // ),
           ],
         ),
-      );
+      ],
+    ),
+  );
 
   Widget _buildProgressRow(context) => Padding(
-        padding: const EdgeInsets.only(bottom: 10.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("$progressPercentage% fertig",
-                style: Theme.of(context).textTheme.blueLabel),
-          ],
+    padding: const EdgeInsets.only(bottom: 10.0),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "$progressPercentage% fertig",
+          style: Theme.of(context).textTheme.blueLabel,
         ),
-      );
+      ],
+    ),
+  );
 
   void _bookmarkCallback() async {
     pack.userHasBookmarked
-        ? (await packApi.removeBookmarkPack(pack.id)).fold((left) {
-            CustomFlushbar.error(message: left.error).show(context);
-          }, (right) {
-            pack.userHasBookmarked = false;
-            pack.totalBookmarks -= 1;
-            CustomFlushbar.success(message: right).show(context);
-          })
-        : (await packApi.bookmarkPack(pack.id)).fold((left) {
-            CustomFlushbar.error(message: left.error).show(context);
-          }, (right) {
-            pack.userHasBookmarked = true;
-            pack.totalBookmarks += 1;
-            CustomFlushbar.success(message: right).show(context);
-          });
+        ? (await packApi.removeBookmarkPack(pack.id)).fold(
+            (left) {
+              CustomFlushbar.error(message: left.error).show(context);
+            },
+            (right) {
+              pack.userHasBookmarked = false;
+              pack.totalBookmarks -= 1;
+              CustomFlushbar.success(message: right).show(context);
+            },
+          )
+        : (await packApi.bookmarkPack(pack.id)).fold(
+            (left) {
+              CustomFlushbar.error(message: left.error).show(context);
+            },
+            (right) {
+              pack.userHasBookmarked = true;
+              pack.totalBookmarks += 1;
+              CustomFlushbar.success(message: right).show(context);
+            },
+          );
     setState(() {});
   }
 }

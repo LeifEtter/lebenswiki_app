@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 class SearchQueryNotifier extends ChangeNotifier {
   SearchQueryNotifier({this.query = ""});
@@ -28,5 +28,6 @@ class SearchStateNotifier extends ChangeNotifier {
   }
 }
 
-final searchStateProvider =
-    ChangeNotifierProvider((ref) => SearchStateNotifier());
+final searchStateProvider = ChangeNotifierProvider(
+  (ref) => SearchStateNotifier(),
+);
